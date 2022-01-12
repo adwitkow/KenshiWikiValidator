@@ -14,5 +14,17 @@ namespace KenshiDataSnooper.Models
         public string? Name { get; set; }
 
         public Coverage? Coverage { get; set; }
+
+        public decimal RealFabricsCost { get; set; }
+
+        public decimal RealPlatesCost { get; set; }
+
+        public IEnumerable<Character>? AlwaysWornBy { get; set; }
+
+        public IEnumerable<Character>? PotentiallyWornBy { get; set; }
+
+        // TODO: Shops, Loot
+
+        public IEnumerable<DataItem>? UnknownReferences { get; set; }
     }
 }

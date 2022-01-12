@@ -7,23 +7,39 @@ namespace KenshiDataSnooper
 {
     public class ItemBuilder
     {
+        private readonly ItemRepository itemRepository;
         private readonly WeaponBuilder weaponBuilder;
         private readonly ArmourBuilder armourBuilder;
 
-        public ItemBuilder()
+        public ItemBuilder(ItemRepository itemRepository)
         {
-            this.weaponBuilder = new WeaponBuilder();
-            this.armourBuilder = new ArmourBuilder();
+            this.itemRepository = itemRepository;
+            this.weaponBuilder = new WeaponBuilder(itemRepository);
+            this.armourBuilder = new ArmourBuilder(itemRepository);
         }
 
-        public IItem BuildFrom(DataItem baseItem)
+        public IEnumerable<IItem> BuildItems()
         {
-            return baseItem.Type switch
+            var items = this.itemRepository.GetItemsByTypes(ItemType.Weapon, ItemType.Armour);
+
+            var results = new List<IItem>();
+
+            foreach (var item in items)
             {
-                ItemType.Weapon => this.weaponBuilder.Build(baseItem),
-                ItemType.Armour => this.armourBuilder.Build(baseItem),
-                _ => throw new ArgumentException($"ItemType {baseItem.Type} cannot be converted", nameof(baseItem)),
-            };
+                switch (item.Type)
+                {
+                    case ItemType.Weapon:
+                        results.Add(this.weaponBuilder.Build(item));
+                        break;
+                    case ItemType.Armour:
+                        results.Add(this.armourBuilder.Build(item));
+                        break;
+                    default:
+                        throw new ArgumentException($"ItemType {item.Type} cannot be converted", nameof(item));
+                }
+            }
+
+            return results;
         }
     }
 }

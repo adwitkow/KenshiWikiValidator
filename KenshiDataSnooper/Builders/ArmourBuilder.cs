@@ -8,9 +8,11 @@ namespace KenshiDataSnooper.Builders
     internal class ArmourBuilder : IItemBuilder<Armour>
     {
         private readonly Dictionary<string, Action<Coverage, int>> coverageMap;
+        private readonly ItemRepository itemRepository;
 
-        public ArmourBuilder()
+        public ArmourBuilder(ItemRepository itemRepository)
         {
+            // This can be partailly replaced by ItemRepository lookup
             this.coverageMap = new Dictionary<string, Action<Coverage, int>>()
             {
                 { "101-gamedata.quack", (coverage, val) => coverage.Chest = val },
@@ -23,6 +25,7 @@ namespace KenshiDataSnooper.Builders
                 { "31-gamedata.quack", (coverage, val) => coverage.RightLeg = val },
                 { "100-gamedata.quack", (coverage, val) => coverage.Stomach = val },
             };
+            this.itemRepository = itemRepository;
         }
 
         public Armour Build(DataItem baseItem)
@@ -33,6 +36,9 @@ namespace KenshiDataSnooper.Builders
             }
 
             var coverage = this.ConvertCoverage(baseItem);
+            var fabricsAmount = Convert.ToDecimal(baseItem.Values["fabrics amount"]);
+            var realPlatesCost = this.GetMaterialCost(coverage);
+            var realFabricsCost = realPlatesCost * fabricsAmount;
 
             return new Armour()
             {
@@ -40,7 +46,22 @@ namespace KenshiDataSnooper.Builders
                 Properties = new Dictionary<string, object>(baseItem.Values),
                 StringId = baseItem.StringId,
                 Coverage = coverage,
+                RealFabricsCost = realFabricsCost.Normalize(),
+                RealPlatesCost = realPlatesCost.Normalize(),
             };
+        }
+
+        private decimal GetMaterialCost(Coverage coverage)
+        {
+            return ((coverage.Chest * 1.5m)
+                + coverage.Head
+                + coverage.Stomach
+                + coverage.LeftForeleg
+                + coverage.RightForeleg
+                + coverage.LeftArm
+                + coverage.RightArm
+                + coverage.LeftLeg
+                + coverage.RightLeg) / 100;
         }
 
         private Coverage ConvertCoverage(DataItem baseItem)
