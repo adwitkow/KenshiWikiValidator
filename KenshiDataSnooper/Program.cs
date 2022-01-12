@@ -6,6 +6,7 @@ using OpenConstructionSet.Data;
 using OpenConstructionSet.Data.Models;
 using OpenConstructionSet.Models;
 
+var itemBuilder = new ItemBuilder();
 var installationDirectory = string.Empty;
 var typesToIgnore = new ItemType[]
 {
@@ -69,9 +70,10 @@ void WriteDetails(IEnumerable<DataItem> items, ItemType type)
     Directory.CreateDirectory(type.ToString());
     foreach (var item in itemsOfType)
     {
-        var trimmedName = item.Name.Replace("/", string.Empty).Replace("|", string.Empty).Trim();
+        var built = itemBuilder.BuildFrom(item);
+        var trimmedName = built.Name.Replace("/", string.Empty).Replace("|", string.Empty).Trim();
         Directory.CreateDirectory(@$"{type}\{trimmedName}");
-        File.WriteAllText($@"{type}\{trimmedName}\{trimmedName}-{item.StringId}.json", JsonConvert.SerializeObject(item, Formatting.Indented));
+        File.WriteAllText($@"{type}\{trimmedName}\{trimmedName}-{built.StringId}.json", JsonConvert.SerializeObject(built, Formatting.Indented));
         Console.WriteLine($"Writing {trimmedName}...");
 
         var references = items.Where(item => item.IsReferencing(item.StringId));
