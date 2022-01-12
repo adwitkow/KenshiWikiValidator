@@ -1,12 +1,12 @@
-﻿using KenshiDataSnooper;
+﻿using System.Text.RegularExpressions;
+using KenshiDataSnooper;
 using Newtonsoft.Json;
 using OpenConstructionSet;
 using OpenConstructionSet.Data;
 using OpenConstructionSet.Data.Models;
 using OpenConstructionSet.Models;
-using System.Text.RegularExpressions;
 
-var installationDirectory = "";
+var installationDirectory = string.Empty;
 var typesToIgnore = new ItemType[]
 {
     ItemType.DialogAction,
@@ -43,11 +43,12 @@ IEnumerable<DataItem> LoadItems()
 
     installationDirectory = installation.Game;
 
-    var options = new OcsDataContexOptions(Name: Guid.NewGuid().ToString(),
-                                       Installation: installation,
-                                       LoadGameFiles: ModLoadType.Base,
-                                       LoadEnabledMods: ModLoadType.Base,
-                                       ThrowIfMissing: false);
+    var options = new OcsDataContexOptions(
+        Name: Guid.NewGuid().ToString(),
+        Installation: installation,
+        LoadGameFiles: ModLoadType.Base,
+        LoadEnabledMods: ModLoadType.Base,
+        ThrowIfMissing: false);
 
     var items = OcsDataContextBuilder.Default.Build(options).Items.Values.ToList();
 
@@ -64,10 +65,11 @@ void WriteDetails(IEnumerable<DataItem> items, ItemType type)
     {
         Directory.Delete(type.ToString(), true);
     }
+
     Directory.CreateDirectory(type.ToString());
     foreach (var item in itemsOfType)
     {
-        var trimmedName = item.Name.Replace("/", "").Replace("|", "").Trim();
+        var trimmedName = item.Name.Replace("/", string.Empty).Replace("|", string.Empty).Trim();
         Directory.CreateDirectory(@$"{type}\{trimmedName}");
         File.WriteAllText($@"{type}\{trimmedName}\{trimmedName}-{item.StringId}.json", JsonConvert.SerializeObject(item, Formatting.Indented));
         Console.WriteLine($"Writing {trimmedName}...");
@@ -77,9 +79,10 @@ void WriteDetails(IEnumerable<DataItem> items, ItemType type)
         {
             Directory.CreateDirectory(@$"{type}\{trimmedName}\references");
         }
+
         foreach (var reference in references)
         {
-            var referenceTrimmed = reference.Name.Replace("/", "").Replace("|", "").Trim();
+            var referenceTrimmed = reference.Name.Replace("/", string.Empty).Replace("|", string.Empty).Trim();
             File.WriteAllText($@"{type}\{trimmedName}\references\{referenceTrimmed}-{reference.StringId}.json", JsonConvert.SerializeObject(reference, Formatting.Indented));
         }
 
@@ -89,6 +92,7 @@ void WriteDetails(IEnumerable<DataItem> items, ItemType type)
         {
             Directory.CreateDirectory(@$"{type}\{trimmedName}\icons");
         }
+
         foreach (var file in files)
         {
             var idMatches = stringIdRegex.Matches(file.Name);
