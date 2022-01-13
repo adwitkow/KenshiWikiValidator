@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 using OpenConstructionSet.Models;
 
 var repository = new ItemRepository();
-var itemBuilder = new ItemBuilder(repository);
 var referenceResolver = new ReferenceResolver();
 var stringIdRegex = new Regex(@"\d+-\w+\.\w+");
 
@@ -14,7 +13,7 @@ repository.Load();
 
 var iconsDirectoryInfo = new DirectoryInfo(Path.Combine(repository.GameDirectory!, "data", "icons"));
 
-var items = itemBuilder.BuildItems();
+var items = repository.GetItems();
 
 WriteDetails(items, ItemType.Armour);
 WriteDetails(items, ItemType.Weapon);
@@ -53,7 +52,7 @@ void WriteDetails(IEnumerable<IItem> items, ItemType type)
                 .Select(m => m.Value)
                 .ToArray();
 
-            var idItems = ids.Select(id => repository.GetByStringId(id));
+            var idItems = ids.Select(id => repository.GetDataItemByStringId(id));
             var names = idItems.Select(idItem => $"{idItem.Name}");
             var joined = string.Join(".", names);
             file.CopyTo(@$"{type}\{trimmedName}\icons\{item.StringId}.{joined}{file.Extension}");

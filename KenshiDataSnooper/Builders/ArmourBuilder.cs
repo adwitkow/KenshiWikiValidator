@@ -70,7 +70,7 @@ namespace KenshiDataSnooper.Builders
             var realFabricsCost = realMaterialCost * fabricsAmount;
 
             var functionalities = this.itemRepository
-                .GetReferencingItemsFor(baseItem)
+                .GetReferencingDataItemsFor(baseItem)
                 .Where(item => item.Type == ItemType.BuildingFunctionality);
 
             if (!functionalities.Any())
@@ -84,7 +84,7 @@ namespace KenshiDataSnooper.Builders
                     .Where(cat => "consumes".Equals(cat.Name))
                     .SelectMany(cat => cat.Values);
                 var consumedMaterialNames = flatConsumedReferences
-                    .Select(cat => this.itemRepository.GetByStringId(cat.TargetId).Name);
+                    .Select(cat => this.itemRepository.GetDataItemByStringId(cat.TargetId).Name);
 
                 var baseMaterial = consumedMaterialNames.FirstOrDefault(name => !"Fabrics".Equals(name));
                 if (string.IsNullOrEmpty(baseMaterial))
@@ -94,7 +94,7 @@ namespace KenshiDataSnooper.Builders
                 }
 
                 var craftingBuilding = this.itemRepository
-                    .GetReferencingItemsFor(functionality)
+                    .GetReferencingDataItemsFor(functionality)
                     .Single();
 
                 results.Add(new Crafting()

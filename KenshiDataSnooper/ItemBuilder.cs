@@ -20,7 +20,7 @@ namespace KenshiDataSnooper
 
         public IEnumerable<IItem> BuildItems()
         {
-            var items = this.itemRepository.GetItemsByTypes(ItemType.Weapon, ItemType.Armour);
+            var items = this.itemRepository.GetDataItemsByTypes(ItemType.Weapon, ItemType.Armour);
 
             var results = new List<IItem>();
 
