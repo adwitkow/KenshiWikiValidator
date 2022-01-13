@@ -15,7 +15,7 @@ namespace KenshiDataSnooper.Models
 
         public Coverage? Coverage { get; set; }
 
-        public IEnumerable<Crafting> CraftedIn { get; set; }
+        public IEnumerable<Crafting>? CraftedIn { get; set; }
 
         public IEnumerable<Character>? AlwaysWornBy { get; set; }
 

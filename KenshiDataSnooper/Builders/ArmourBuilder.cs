@@ -48,12 +48,25 @@ namespace KenshiDataSnooper.Builders
             };
         }
 
+        private static decimal GetMaterialCost(Coverage coverage)
+        {
+            return ((coverage.Chest * 1.5m)
+                + coverage.Head
+                + coverage.Stomach
+                + coverage.LeftForeleg
+                + coverage.RightForeleg
+                + coverage.LeftArm
+                + coverage.RightArm
+                + coverage.LeftLeg
+                + coverage.RightLeg) / 100;
+        }
+
         private IEnumerable<Crafting> ConvertCrafting(DataItem baseItem, Coverage coverage)
         {
             var results = new List<Crafting>();
 
             var fabricsAmount = Convert.ToDecimal(baseItem.Values["fabrics amount"]);
-            var realMaterialCost = this.GetMaterialCost(coverage);
+            var realMaterialCost = GetMaterialCost(coverage);
             var realFabricsCost = realMaterialCost * fabricsAmount;
 
             var functionalities = this.itemRepository
@@ -94,19 +107,6 @@ namespace KenshiDataSnooper.Builders
             }
 
             return results;
-        }
-
-        private decimal GetMaterialCost(Coverage coverage)
-        {
-            return ((coverage.Chest * 1.5m)
-                + coverage.Head
-                + coverage.Stomach
-                + coverage.LeftForeleg
-                + coverage.RightForeleg
-                + coverage.LeftArm
-                + coverage.RightArm
-                + coverage.LeftLeg
-                + coverage.RightLeg) / 100;
         }
 
         private Coverage ConvertCoverage(DataItem baseItem)
