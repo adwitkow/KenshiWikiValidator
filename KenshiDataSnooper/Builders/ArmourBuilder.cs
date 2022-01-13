@@ -37,8 +37,8 @@ namespace KenshiDataSnooper.Builders
 
             var coverage = this.ConvertCoverage(baseItem);
             var fabricsAmount = Convert.ToDecimal(baseItem.Values["fabrics amount"]);
-            var realPlatesCost = this.GetMaterialCost(coverage);
-            var realFabricsCost = realPlatesCost * fabricsAmount;
+            var realMaterialCost = this.GetMaterialCost(coverage);
+            var realFabricsCost = realMaterialCost * fabricsAmount;
 
             return new Armour()
             {
@@ -47,7 +47,7 @@ namespace KenshiDataSnooper.Builders
                 StringId = baseItem.StringId,
                 Coverage = coverage,
                 RealFabricsCost = realFabricsCost.Normalize(),
-                RealPlatesCost = realPlatesCost.Normalize(),
+                RealMaterialCost = realMaterialCost.Normalize(),
             };
         }
 

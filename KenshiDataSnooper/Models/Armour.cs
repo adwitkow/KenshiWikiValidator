@@ -17,7 +17,7 @@ namespace KenshiDataSnooper.Models
 
         public decimal RealFabricsCost { get; set; }
 
-        public decimal RealPlatesCost { get; set; }
+        public decimal RealMaterialCost { get; set; }
 
         public IEnumerable<Character>? AlwaysWornBy { get; set; }
 
