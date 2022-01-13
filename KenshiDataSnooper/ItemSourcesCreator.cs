@@ -74,7 +74,7 @@ namespace KenshiDataSnooper
         {
             var referencingCharacters = this.itemRepository
                 .GetReferencingDataItemsFor(baseItem)
-                .Where(item => item.Type == ItemType.Character);
+                .Where(item => item.Type == ItemType.Character && this.itemRepository.GetReferencingDataItemsFor(item).Count() > 0); // TODO: Squads which don't spawn anywhere?
 
             var slot = baseItem.Values["slot"];
 
