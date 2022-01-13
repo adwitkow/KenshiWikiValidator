@@ -38,18 +38,6 @@ void WriteDetails(IEnumerable<IItem> items, ItemType type)
         File.WriteAllText($@"{type}\{trimmedName}\{trimmedName}-{item.StringId}.json", JsonConvert.SerializeObject(item, Formatting.Indented));
         Console.WriteLine($"Writing {trimmedName}...");
 
-        // var references = items.Where(item => item.IsReferencing(item.StringId));
-        // if (references.Any())
-        // {
-        //     Directory.CreateDirectory(@$"{type}\{trimmedName}\references");
-        // }
-
-        // foreach (var reference in references)
-        // {
-        //     var referenceTrimmed = reference.Name.Replace("/", string.Empty).Replace("|", string.Empty).Trim();
-        //     File.WriteAllText($@"{type}\{trimmedName}\references\{referenceTrimmed}-{reference.StringId}.json", JsonConvert.SerializeObject(reference, Formatting.Indented));
-        // }
-
         var files = iconsDirectoryInfo.GetFiles($"*{item.StringId}*.*", new EnumerationOptions() { RecurseSubdirectories = true });
 
         if (files.Any())
