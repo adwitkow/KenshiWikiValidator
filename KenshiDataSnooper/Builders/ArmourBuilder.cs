@@ -55,7 +55,7 @@ namespace KenshiDataSnooper.Builders
 
         private static decimal GetMaterialCost(Coverage coverage)
         {
-            return ((coverage.Chest * 1.5m)
+            var materialCost = ((coverage.Chest * 1.5m)
                 + coverage.Head
                 + coverage.Stomach
                 + coverage.LeftForeleg
@@ -63,7 +63,14 @@ namespace KenshiDataSnooper.Builders
                 + coverage.LeftArm
                 + coverage.RightArm
                 + coverage.LeftLeg
-                + coverage.RightLeg) / 100;
+                + coverage.RightLeg) * 0.01m;
+
+            if (materialCost == 0)
+            {
+                materialCost = 1;
+            }
+
+            return materialCost;
         }
 
         private IEnumerable<Crafting> ConvertCrafting(DataItem baseItem, Coverage coverage)
