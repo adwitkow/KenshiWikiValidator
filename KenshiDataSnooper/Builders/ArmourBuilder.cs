@@ -36,9 +36,7 @@ namespace KenshiDataSnooper.Builders
             }
 
             var coverage = this.ConvertCoverage(baseItem);
-            var fabricsAmount = Convert.ToDecimal(baseItem.Values["fabrics amount"]);
-            var realMaterialCost = this.GetMaterialCost(coverage);
-            var realFabricsCost = realMaterialCost * fabricsAmount;
+            var crafting = this.ConvertCrafting(baseItem, coverage);
 
             return new Armour()
             {
@@ -46,9 +44,56 @@ namespace KenshiDataSnooper.Builders
                 Properties = new Dictionary<string, object>(baseItem.Values),
                 StringId = baseItem.StringId,
                 Coverage = coverage,
-                RealFabricsCost = realFabricsCost.Normalize(),
-                RealMaterialCost = realMaterialCost.Normalize(),
+                CraftedIn = crafting,
             };
+        }
+
+        private IEnumerable<Crafting> ConvertCrafting(DataItem baseItem, Coverage coverage)
+        {
+            var results = new List<Crafting>();
+
+            var fabricsAmount = Convert.ToDecimal(baseItem.Values["fabrics amount"]);
+            var realMaterialCost = this.GetMaterialCost(coverage);
+            var realFabricsCost = realMaterialCost * fabricsAmount;
+
+            var functionalities = this.itemRepository
+                .GetReferencingItemsFor(baseItem)
+                .Where(item => item.Type == ItemType.BuildingFunctionality);
+
+            if (!functionalities.Any())
+            {
+                return results;
+            }
+
+            foreach (var functionality in functionalities)
+            {
+                var flatConsumedReferences = functionality.ReferenceCategories.Values
+                    .Where(cat => "consumes".Equals(cat.Name))
+                    .SelectMany(cat => cat.Values);
+                var consumedMaterialNames = flatConsumedReferences
+                    .Select(cat => this.itemRepository.GetByStringId(cat.TargetId).Name);
+
+                var baseMaterial = consumedMaterialNames.FirstOrDefault(name => !"Fabrics".Equals(name));
+                if (string.IsNullOrEmpty(baseMaterial))
+                {
+                    baseMaterial = consumedMaterialNames.First();
+                    realFabricsCost = 0;
+                }
+
+                var craftingBuilding = this.itemRepository
+                    .GetReferencingItemsFor(functionality)
+                    .Single();
+
+                results.Add(new Crafting()
+                {
+                    Building = craftingBuilding.Name,
+                    BaseMaterial = baseMaterial,
+                    BaseMaterialCost = realMaterialCost.Normalize(),
+                    FabricsCost = realFabricsCost.Normalize(),
+                });
+            }
+
+            return results;
         }
 
         private decimal GetMaterialCost(Coverage coverage)

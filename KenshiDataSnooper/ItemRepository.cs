@@ -38,9 +38,14 @@ namespace KenshiDataSnooper
             return this.lookup[id];
         }
 
+        public IEnumerable<DataItem> GetReferencingItemsFor(string itemId)
+        {
+            return this.items.Where(item => item.IsReferencing(itemId));
+        }
+
         public IEnumerable<DataItem> GetReferencingItemsFor(DataItem reference)
         {
-            return this.items.Where(item => item.IsReferencing(reference.StringId));
+            return this.GetReferencingItemsFor(reference.StringId);
         }
 
         public void Load()
