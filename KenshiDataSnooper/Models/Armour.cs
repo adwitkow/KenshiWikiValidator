@@ -15,14 +15,8 @@ namespace KenshiDataSnooper.Models
 
         public Coverage? Coverage { get; set; }
 
+        public ItemSources? Sources { get; set; }
+
         public IEnumerable<Crafting>? CraftedIn { get; set; }
-
-        public IEnumerable<Character>? AlwaysWornBy { get; set; }
-
-        public IEnumerable<Character>? PotentiallyWornBy { get; set; }
-
-        // TODO: Shops, Loot
-
-        public IEnumerable<DataItem>? UnknownReferences { get; set; }
     }
 }

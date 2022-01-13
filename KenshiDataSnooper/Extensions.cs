@@ -11,6 +11,14 @@ namespace KenshiDataSnooper
                     .Any(val => val.TargetId == id));
         }
 
+        public static IEnumerable<DataItem> GetReferences(this DataItem item, ItemRepository repository, string categoryName)
+        {
+            return item.ReferenceCategories.Values
+                    .Where(cat => categoryName.Equals(cat.Name))
+                    .SelectMany(cat => cat.Values)
+                    .Select(cat => repository.GetDataItemByStringId(cat.TargetId));
+        }
+
         public static decimal Normalize(this decimal value)
         {
             // What an ugly hack :) https://stackoverflow.com/questions/4525854/remove-trailing-zeros

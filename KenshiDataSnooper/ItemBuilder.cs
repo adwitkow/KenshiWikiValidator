@@ -14,8 +14,10 @@ namespace KenshiDataSnooper
         public ItemBuilder(ItemRepository itemRepository)
         {
             this.itemRepository = itemRepository;
+
+            var itemSourcesCreator = new ItemSourcesCreator(itemRepository);
             this.weaponBuilder = new WeaponBuilder(itemRepository);
-            this.armourBuilder = new ArmourBuilder(itemRepository);
+            this.armourBuilder = new ArmourBuilder(itemRepository, itemSourcesCreator);
         }
 
         public IEnumerable<IItem> BuildItems()
@@ -24,8 +26,9 @@ namespace KenshiDataSnooper
 
             var results = new List<IItem>();
 
-            foreach (var item in items)
+            Parallel.ForEach(items, item =>
             {
+                Console.WriteLine($"Building {item.Name}");
                 switch (item.Type)
                 {
                     case ItemType.Weapon:
@@ -37,7 +40,7 @@ namespace KenshiDataSnooper
                     default:
                         throw new ArgumentException($"ItemType {item.Type} cannot be converted", nameof(item));
                 }
-            }
+            });
 
             return results;
         }

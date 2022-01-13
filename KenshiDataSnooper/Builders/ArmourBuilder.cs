@@ -9,8 +9,9 @@ namespace KenshiDataSnooper.Builders
     {
         private readonly Dictionary<string, Action<Coverage, int>> coverageMap;
         private readonly ItemRepository itemRepository;
+        private readonly ItemSourcesCreator itemSourcesCreator;
 
-        public ArmourBuilder(ItemRepository itemRepository)
+        public ArmourBuilder(ItemRepository itemRepository, ItemSourcesCreator itemSourcesCreator)
         {
             // This can be partailly replaced by ItemRepository lookup
             this.coverageMap = new Dictionary<string, Action<Coverage, int>>()
@@ -26,6 +27,7 @@ namespace KenshiDataSnooper.Builders
                 { "100-gamedata.quack", (coverage, val) => coverage.Stomach = val },
             };
             this.itemRepository = itemRepository;
+            this.itemSourcesCreator = itemSourcesCreator;
         }
 
         public Armour Build(DataItem baseItem)
@@ -38,6 +40,8 @@ namespace KenshiDataSnooper.Builders
             var coverage = this.ConvertCoverage(baseItem);
             var crafting = this.ConvertCrafting(baseItem, coverage);
 
+            var itemSources = this.itemSourcesCreator.Create(baseItem);
+
             return new Armour()
             {
                 Name = baseItem.Name,
@@ -45,6 +49,7 @@ namespace KenshiDataSnooper.Builders
                 StringId = baseItem.StringId,
                 Coverage = coverage,
                 CraftedIn = crafting,
+                Sources = itemSources,
             };
         }
 
