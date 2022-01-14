@@ -10,6 +10,8 @@ namespace KenshiDataSnooper
     {
         private readonly ItemBuilder itemBuilder;
 
+        private readonly Dictionary<string, IEnumerable<DataItem>> referenceCache;
+
         private HashSet<DataItem> dataItems;
         private Dictionary<string, DataItem> dataItemLookup;
 
@@ -22,6 +24,8 @@ namespace KenshiDataSnooper
             this.dataItemLookup = new Dictionary<string, DataItem>();
             this.items = new HashSet<IItem>();
             this.itemLookup = new Dictionary<string, IItem>();
+
+            this.referenceCache = new Dictionary<string, IEnumerable<DataItem>>();
 
             this.itemBuilder = new ItemBuilder(this);
         }
@@ -60,7 +64,18 @@ namespace KenshiDataSnooper
 
         public IEnumerable<DataItem> GetReferencingDataItemsFor(string itemId)
         {
-            return this.dataItems.Where(item => item.IsReferencing(itemId));
+            var isItemCached = this.referenceCache.TryGetValue(itemId, out var cached);
+
+            if (isItemCached)
+            {
+                return cached!;
+            }
+
+            var results = this.dataItems.Where(item => item.IsReferencing(itemId));
+
+            this.referenceCache.Add(itemId, results);
+
+            return results;
         }
 
         public IEnumerable<DataItem> GetReferencingDataItemsFor(DataItem reference)
