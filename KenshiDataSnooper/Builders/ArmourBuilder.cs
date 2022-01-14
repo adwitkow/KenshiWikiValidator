@@ -39,6 +39,8 @@ namespace KenshiDataSnooper.Builders
 
             var coverage = this.ConvertCoverage(baseItem);
             var crafting = this.ConvertCrafting(baseItem, coverage);
+            var unlockingResearch = this.ConvertUnlockingResearch(baseItem);
+            var blueprintLocations = this.ConvertBlueprintlocations(baseItem);
 
             var itemSources = this.itemSourcesCreator.Create(baseItem);
 
@@ -50,6 +52,8 @@ namespace KenshiDataSnooper.Builders
                 Coverage = coverage,
                 CraftedIn = crafting,
                 Sources = itemSources,
+                UnlockingResearch = unlockingResearch,
+                BlueprintLocations = blueprintLocations,
             };
         }
 
@@ -71,6 +75,62 @@ namespace KenshiDataSnooper.Builders
             }
 
             return materialCost;
+        }
+
+        private IEnumerable<ItemReference> ConvertBlueprintlocations(DataItem baseItem)
+        {
+            var results = new List<ItemReference>();
+
+            var referencingVendorLists = this.itemRepository
+                .GetReferencingDataItemsFor(baseItem)
+                .Where(item => item.Type == ItemType.VendorList);
+            var blueprintVendorLists = referencingVendorLists
+                .Where(list => list.ReferenceCategories.Values
+                    .Where(cat => "armour blueprints".Equals(cat.Name))
+                    .SelectMany(cat => cat.Values)
+                    .Any(cat => cat.TargetId.Equals(baseItem.StringId)));
+            var squads = blueprintVendorLists
+                .SelectMany(vendor => this.itemRepository
+                    .GetReferencingDataItemsFor(vendor)
+                    .Where(item => item.Type == ItemType.SquadTemplate));
+
+            foreach (var squad in squads)
+            {
+                var towns = this.itemRepository.GetReferencingDataItemsFor(squad)
+                    .Where(item => item.Type == ItemType.Town);
+
+                foreach (var town in towns)
+                {
+                    var reference = new ItemReference()
+                    {
+                        StringId = town.StringId,
+                        Name = town.Name,
+                    };
+
+                    results.Add(reference);
+                }
+            }
+
+            return results;
+        }
+
+        private ItemReference? ConvertUnlockingResearch(DataItem baseItem)
+        {
+            var researchItems = this.itemRepository.GetReferencingDataItemsFor(baseItem)
+                .Where(item => item.Type == ItemType.Research);
+
+            ItemReference? result = null;
+            if (researchItems.Any())
+            {
+                var research = researchItems.Single();
+                return new ItemReference()
+                {
+                    Name = research.Name,
+                    StringId = research.StringId,
+                };
+            }
+
+            return result;
         }
 
         private IEnumerable<Crafting> ConvertCrafting(DataItem baseItem, Coverage coverage)

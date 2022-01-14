@@ -18,5 +18,9 @@ namespace KenshiDataSnooper.Models
         public ItemSources? Sources { get; set; }
 
         public IEnumerable<Crafting>? CraftedIn { get; set; }
+
+        public ItemReference? UnlockingResearch { get; set; }
+
+        public IEnumerable<ItemReference>? BlueprintLocations { get; set; }
     }
 }
