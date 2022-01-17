@@ -53,9 +53,22 @@ void WriteDetails(IEnumerable<IItem> items, ItemType type)
                 .ToArray();
 
             var idItems = ids.Select(id => repository.GetDataItemByStringId(id));
-            var names = idItems.Select(idItem => $"{idItem.Name}");
-            var joined = string.Join(".", names);
-            file.CopyTo(@$"{type}\{trimmedName}\icons\{item.StringId}.{joined}{file.Extension}");
+            var names = idItems.Select(idItem => $"{idItem.Name}").ToList();
+
+            if (names.Count > 1)
+            {
+                var first = names.First();
+                names.RemoveAt(0);
+                names.Insert(1, first);
+            }
+
+            var joined = string.Join(" ", names);
+            var targetPath = @$"{type}\{trimmedName}\icons\{joined}{file.Extension}";
+            if (File.Exists(targetPath))
+            {
+                targetPath = @$"{type}\{trimmedName}\icons\{joined} DUPLICATE {file.Extension}";
+            }
+            file.CopyTo(targetPath);
         }
     }
 }
