@@ -22,6 +22,13 @@ namespace WeaponStatsConverter
         public string DamageVersusAnimals { get; set; }
         public string DamageVersusRobots { get; set; }
         public string DamageVersusHumans { get; set; }
+        public string DamageVersusSpider { get; set; }
+        public string DamageVersusSmallSpider { get; set; }
+        public string DamageVersusBonedog { get; set; }
+        public string DamageVersusSkimmer { get; set; }
+        public string DamageVersusBeakThing { get; set; }
+        public string DamageVersusGorillo { get; set; }
+        public string DamageVersusLeviathan { get; set; }
         public string RequiredStrength { get; set; }
         public string BuyValue { get; set; }
         public string SellValue { get; set; }
@@ -40,6 +47,13 @@ namespace WeaponStatsConverter
 | dmg_vs_animals = {DamageVersusAnimals}
 | dmg_vs_robots = {DamageVersusRobots}
 | dmg_vs_humans = {DamageVersusHumans}
+| dmg_vs_spider = {DamageVersusSpider}
+| dmg_vs_small_spider = {DamageVersusSmallSpider}
+| dmg_vs_bonedog = {DamageVersusBonedog}
+| dmg_vs_skimmer = {DamageVersusSkimmer}
+| dmg_vs_beak_thing = {DamageVersusBeakThing}
+| dmg_vs_gorillo = {DamageVersusGorillo}
+| dmg_vs_leviathan = {DamageVersusLeviathan}
 | str_required = {RequiredStrength}
 | weight = {Weight}
 | value = {BuyValue}
