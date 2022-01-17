@@ -68,6 +68,7 @@ void WriteDetails(IEnumerable<IItem> items, ItemType type)
             {
                 targetPath = @$"{type}\{trimmedName}\icons\{joined} DUPLICATE {file.Extension}";
             }
+
             file.CopyTo(targetPath);
         }
     }
