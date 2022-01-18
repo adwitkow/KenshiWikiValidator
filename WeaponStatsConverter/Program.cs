@@ -23,6 +23,13 @@ var beakThingRegex = new Regex(@"\| ?damage_beak thing ?= ?(?<animals>(-|\+)(\d|
 var gorilloRegex = new Regex(@"\| ?damage_gorillo ?= ?(?<animals>(-|\+)(\d|,|\.)+)");
 var leviathanRegex = new Regex(@"\| ?damage_leviathan ?= ?(?<animals>(-|\+)(\d|,|\.)+)");
 
+if (Directory.Exists("Weapons"))
+{
+    Directory.Delete("Weapons", true);
+}
+
+Directory.CreateDirectory("Weapons");
+
 using var client = new WikiClient();
 var site = new WikiaSite(client, "https://kenshi.fandom.com/api.php");
 await site.Initialization;
@@ -77,8 +84,8 @@ void ConvertArticle(WikiPage page)
     var manufacturerStats = ConvertTable(reader, page, false);
     var homemadeStats = ConvertTable(reader, page, true);
 
-    File.WriteAllText($"{page.Title}.txt", String.Join(Environment.NewLine, manufacturerStats));
-    File.WriteAllText($"{page.Title}_Homemade.txt", String.Join(Environment.NewLine, homemadeStats));
+    File.WriteAllText($"Weapons/{page.Title}.txt", String.Join(Environment.NewLine, manufacturerStats));
+    File.WriteAllText($"Weapons/{page.Title}_Homemade.txt", String.Join(Environment.NewLine, homemadeStats));
 
     Console.WriteLine($"Saved WeaponStats for {page.Title}");
 }
