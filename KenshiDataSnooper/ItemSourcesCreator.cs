@@ -74,15 +74,16 @@ namespace KenshiDataSnooper
         {
             var referencingCharacters = this.itemRepository
                 .GetReferencingDataItemsFor(baseItem)
-                .Where(item => item.Type == ItemType.Character && this.itemRepository.GetReferencingDataItemsFor(item).Any()); // TODO: Squads which don't spawn anywhere?
+                .Where(item => item.Type == ItemType.Character && this.itemRepository.GetReferencingDataItemsFor(item).Any())
+                .ToList(); // TODO: Squads which don't spawn anywhere?
 
             var slot = baseItem.Values["slot"];
 
             foreach (var character in referencingCharacters)
             {
                 var clothingItemPairs = character.ReferenceCategories.Values
-                    .Where(cat => "clothing".Equals(cat.Name))
-                    .SelectMany(cat => cat.Values)
+                    .First(cat => "clothing".Equals(cat.Name))
+                    .Select(cat => cat.Value)
                     .ToDictionary(cat => cat, cat => this.itemRepository.GetDataItemByStringId(cat.TargetId));
                 var clothingItemsInSlot = clothingItemPairs.Where(item => slot.Equals(item.Value.Values["slot"]));
 

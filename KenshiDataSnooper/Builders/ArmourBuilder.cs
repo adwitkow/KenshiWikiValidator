@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+﻿using System.Diagnostics;
 using KenshiDataSnooper.Models;
 using OpenConstructionSet.Data.Models;
 using OpenConstructionSet.Models;
@@ -37,12 +37,27 @@ namespace KenshiDataSnooper.Builders
                 throw new ArgumentException($"Cannot create Armour object using base ItemType {baseItem.Type}", nameof(baseItem));
             }
 
+            var sw = Stopwatch.StartNew();
             var coverage = this.ConvertCoverage(baseItem);
-            var crafting = this.ConvertCrafting(baseItem, coverage);
-            var unlockingResearch = this.ConvertUnlockingResearch(baseItem);
-            var blueprintLocations = this.ConvertBlueprintlocations(baseItem);
+            Console.WriteLine($" - Converting the coverage for {baseItem.Name} took {sw.Elapsed}");
 
+            sw.Restart();
+            var crafting = this.ConvertCrafting(baseItem, coverage);
+            Console.WriteLine($" - Converting the craftings for {baseItem.Name} took {sw.Elapsed}");
+
+            sw.Restart();
+            var unlockingResearch = this.ConvertUnlockingResearch(baseItem);
+            Console.WriteLine($" - Converting the unlocking research for {baseItem.Name} took {sw.Elapsed}");
+
+            sw.Restart();
+            var blueprintLocations = this.ConvertBlueprintlocations(baseItem);
+            Console.WriteLine($" - Converting the blueprint locations for {baseItem.Name} took {sw.Elapsed}");
+
+            sw.Restart();
             var itemSources = this.itemSourcesCreator.Create(baseItem);
+            Console.WriteLine($" - Converting the item sources for {baseItem.Name} took {sw.Elapsed}");
+
+            sw.Stop();
 
             return new Armour()
             {
@@ -83,16 +98,19 @@ namespace KenshiDataSnooper.Builders
 
             var referencingVendorLists = this.itemRepository
                 .GetReferencingDataItemsFor(baseItem)
-                .Where(item => item.Type == ItemType.VendorList);
+                .Where(item => item.Type == ItemType.VendorList)
+                .ToList();
             var blueprintVendorLists = referencingVendorLists
                 .Where(list => list.ReferenceCategories.Values
                     .Where(cat => "armour blueprints".Equals(cat.Name))
                     .SelectMany(cat => cat.Values)
-                    .Any(cat => cat.TargetId.Equals(baseItem.StringId)));
+                    .Any(cat => cat.TargetId.Equals(baseItem.StringId)))
+                .ToList();
             var squads = blueprintVendorLists
                 .SelectMany(vendor => this.itemRepository
                     .GetReferencingDataItemsFor(vendor)
-                    .Where(item => item.Type == ItemType.SquadTemplate));
+                    .Where(item => item.Type == ItemType.SquadTemplate))
+                .ToList();
 
             foreach (var squad in squads)
             {

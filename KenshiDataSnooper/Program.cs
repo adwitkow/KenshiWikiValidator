@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Diagnostics;
+using System.Text.RegularExpressions;
 using KenshiDataSnooper;
 using KenshiDataSnooper.Models;
 using Newtonsoft.Json;
@@ -9,7 +10,11 @@ var referenceResolver = new ReferenceResolver();
 var stringIdRegex = new Regex(@"\d+-\w+\.\w+");
 
 Console.WriteLine("Loading items...");
+var sw = Stopwatch.StartNew();
 repository.Load();
+sw.Stop();
+
+Console.WriteLine($"Loaded all items in {sw.Elapsed}");
 
 var iconsDirectoryInfo = new DirectoryInfo(Path.Combine(repository.GameDirectory!, "data", "icons"));
 

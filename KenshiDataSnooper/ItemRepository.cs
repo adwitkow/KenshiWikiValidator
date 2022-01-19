@@ -10,7 +10,7 @@ namespace KenshiDataSnooper
     {
         private readonly ItemBuilder itemBuilder;
 
-        private readonly Dictionary<string, IEnumerable<DataItem>> referenceCache;
+        private readonly Dictionary<string, ICollection<DataItem>> referenceCache;
 
         private HashSet<DataItem> dataItems;
         private Dictionary<string, DataItem> dataItemLookup;
@@ -25,7 +25,7 @@ namespace KenshiDataSnooper
             this.items = new HashSet<IItem>();
             this.itemLookup = new Dictionary<string, IItem>();
 
-            this.referenceCache = new Dictionary<string, IEnumerable<DataItem>>();
+            this.referenceCache = new Dictionary<string, ICollection<DataItem>>();
 
             this.itemBuilder = new ItemBuilder(this);
         }
@@ -70,12 +70,10 @@ namespace KenshiDataSnooper
             {
                 return cached!;
             }
-
-            var results = this.dataItems.Where(item => item.IsReferencing(itemId));
-
-            this.referenceCache.Add(itemId, results);
-
-            return results;
+            else
+            {
+                return Enumerable.Empty<DataItem>();
+            }
         }
 
         public IEnumerable<DataItem> GetReferencingDataItemsFor(DataItem reference)
@@ -97,6 +95,23 @@ namespace KenshiDataSnooper
                 ThrowIfMissing: false);
 
             var contextItems = OcsDataContextBuilder.Default.Build(options).Items.Values.ToList();
+
+            foreach (var item in contextItems)
+            {
+                foreach (var reference in item.ReferenceCategories
+                    .SelectMany(cat => cat.Value)
+                    .Select(pair => pair.Value))
+                {
+                    if (this.referenceCache.ContainsKey(reference.TargetId))
+                    {
+                        this.referenceCache[reference.TargetId].Add(item);
+                    }
+                    else
+                    {
+                        this.referenceCache.Add(reference.TargetId, new List<DataItem>() { item });
+                    }
+                }
+            }
 
             this.GameDirectory = installation.Game;
 
