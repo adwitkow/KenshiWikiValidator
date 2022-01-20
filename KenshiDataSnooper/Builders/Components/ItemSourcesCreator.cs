@@ -56,6 +56,12 @@ namespace KenshiDataSnooper.Builders.Components
                         Name = town.Name,
                     };
 
+                    if (itemSources.Shops.Any(shop => shop.StringId == town.StringId)
+                        || itemSources.Loot.Any(loot => loot.StringId == town.StringId))
+                    {
+                        continue;
+                    }
+
                     if (isShop)
                     {
                         itemSources.Shops.Add(reference);

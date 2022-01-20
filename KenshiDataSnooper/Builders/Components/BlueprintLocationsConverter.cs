@@ -40,6 +40,11 @@ namespace KenshiDataSnooper.Builders.Components
 
                 foreach (var town in towns)
                 {
+                    if (results.Any(reference => reference.StringId == town.StringId))
+                    {
+                        continue;
+                    }
+
                     var reference = new ItemReference()
                     {
                         StringId = town.StringId,
