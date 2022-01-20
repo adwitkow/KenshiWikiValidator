@@ -21,8 +21,15 @@ namespace KenshiDataSnooper
             this.itemRepository = itemRepository;
 
             var itemSourcesCreator = new ItemSourcesCreator(itemRepository);
+            var blueprintLocationsConverter = new BlueprintLocationsConverter(itemRepository);
+            var unlockingResearchConverter = new UnlockingResearchConverter(itemRepository);
+
             this.weaponBuilder = new WeaponBuilder(itemRepository);
-            this.armourBuilder = new ArmourBuilder(itemRepository, itemSourcesCreator);
+            this.armourBuilder = new ArmourBuilder(
+                itemRepository,
+                itemSourcesCreator,
+                blueprintLocationsConverter,
+                unlockingResearchConverter);
 
             this.longestItem = null!;
             this.longestTime = TimeSpan.Zero;

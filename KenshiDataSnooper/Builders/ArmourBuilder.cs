@@ -8,27 +8,24 @@ namespace KenshiDataSnooper.Builders
 {
     internal class ArmourBuilder : IItemBuilder<Armour>
     {
-        private readonly Dictionary<string, Action<Coverage, int>> coverageMap;
         private readonly ItemRepository itemRepository;
         private readonly ItemSourcesCreator itemSourcesCreator;
+        private readonly BlueprintLocationsConverter blueprintLocationsConverter;
+        private readonly UnlockingResearchConverter unlockingResearchConverter;
+        private readonly CoverageConverter coverageConverter;
 
-        public ArmourBuilder(ItemRepository itemRepository, ItemSourcesCreator itemSourcesCreator)
+        public ArmourBuilder(
+            ItemRepository itemRepository,
+            ItemSourcesCreator itemSourcesCreator,
+            BlueprintLocationsConverter blueprintLocationsConverter,
+            UnlockingResearchConverter unlockingResearchConverter)
         {
-            // This can be partailly replaced by ItemRepository lookup
-            this.coverageMap = new Dictionary<string, Action<Coverage, int>>()
-            {
-                { "101-gamedata.quack", (coverage, val) => coverage.Chest = val },
-                { "32-gamedata.quack", (coverage, val) => coverage.Head = val },
-                { "28-gamedata.quack", (coverage, val) => coverage.LeftArm = val },
-                { "4019-gamedata.base", (coverage, val) => coverage.LeftForeleg = val },
-                { "30-gamedata.quack", (coverage, val) => coverage.LeftLeg = val },
-                { "29-gamedata.quack", (coverage, val) => coverage.RightArm = val },
-                { "4018-gamedata.base", (coverage, val) => coverage.RightForeleg = val },
-                { "31-gamedata.quack", (coverage, val) => coverage.RightLeg = val },
-                { "100-gamedata.quack", (coverage, val) => coverage.Stomach = val },
-            };
             this.itemRepository = itemRepository;
             this.itemSourcesCreator = itemSourcesCreator;
+            this.blueprintLocationsConverter = blueprintLocationsConverter;
+            this.unlockingResearchConverter = unlockingResearchConverter;
+
+            this.coverageConverter = new CoverageConverter();
         }
 
         public Armour Build(DataItem baseItem)
@@ -39,7 +36,7 @@ namespace KenshiDataSnooper.Builders
             }
 
             var sw = Stopwatch.StartNew();
-            var coverage = this.ConvertCoverage(baseItem);
+            var coverage = this.coverageConverter.Convert(baseItem);
             Console.WriteLine($" - Converting the coverage for {baseItem.Name} took {sw.Elapsed}");
 
             sw.Restart();
@@ -47,11 +44,11 @@ namespace KenshiDataSnooper.Builders
             Console.WriteLine($" - Converting the craftings for {baseItem.Name} took {sw.Elapsed}");
 
             sw.Restart();
-            var unlockingResearch = this.ConvertUnlockingResearch(baseItem);
+            var unlockingResearch = this.unlockingResearchConverter.Convert(baseItem);
             Console.WriteLine($" - Converting the unlocking research for {baseItem.Name} took {sw.Elapsed}");
 
             sw.Restart();
-            var blueprintLocations = this.ConvertBlueprintlocations(baseItem);
+            var blueprintLocations = this.blueprintLocationsConverter.Convert(baseItem, "armour blueprints");
             Console.WriteLine($" - Converting the blueprint locations for {baseItem.Name} took {sw.Elapsed}");
 
             sw.Restart();
@@ -91,65 +88,6 @@ namespace KenshiDataSnooper.Builders
             }
 
             return materialCost;
-        }
-
-        private IEnumerable<ItemReference> ConvertBlueprintlocations(DataItem baseItem)
-        {
-            var results = new List<ItemReference>();
-
-            var referencingVendorLists = this.itemRepository
-                .GetReferencingDataItemsFor(baseItem)
-                .Where(item => item.Type == ItemType.VendorList)
-                .ToList();
-            var blueprintVendorLists = referencingVendorLists
-                .Where(list => list.ReferenceCategories.Values
-                    .Where(cat => "armour blueprints".Equals(cat.Name))
-                    .SelectMany(cat => cat.Values)
-                    .Any(cat => cat.TargetId.Equals(baseItem.StringId)))
-                .ToList();
-            var squads = blueprintVendorLists
-                .SelectMany(vendor => this.itemRepository
-                    .GetReferencingDataItemsFor(vendor)
-                    .Where(item => item.Type == ItemType.SquadTemplate))
-                .ToList();
-
-            foreach (var squad in squads)
-            {
-                var towns = this.itemRepository.GetReferencingDataItemsFor(squad)
-                    .Where(item => item.Type == ItemType.Town);
-
-                foreach (var town in towns)
-                {
-                    var reference = new ItemReference()
-                    {
-                        StringId = town.StringId,
-                        Name = town.Name,
-                    };
-
-                    results.Add(reference);
-                }
-            }
-
-            return results;
-        }
-
-        private ItemReference? ConvertUnlockingResearch(DataItem baseItem)
-        {
-            var researchItems = this.itemRepository.GetReferencingDataItemsFor(baseItem)
-                .Where(item => item.Type == ItemType.Research);
-
-            ItemReference? result = null;
-            if (researchItems.Any())
-            {
-                var research = researchItems.Single();
-                return new ItemReference()
-                {
-                    Name = research.Name,
-                    StringId = research.StringId,
-                };
-            }
-
-            return result;
         }
 
         private IEnumerable<Crafting> ConvertCrafting(DataItem baseItem, Coverage coverage)
@@ -198,25 +136,6 @@ namespace KenshiDataSnooper.Builders
             }
 
             return results;
-        }
-
-        private Coverage ConvertCoverage(DataItem baseItem)
-        {
-            var coverageCategory = baseItem.ReferenceCategories.Values
-                .FirstOrDefault(cat => "part coverage".Equals(cat.Key));
-
-            Coverage coverage = new ();
-            if (coverageCategory is not null)
-            {
-                var references = coverageCategory.Values;
-                foreach (var reference in references)
-                {
-                    var action = this.coverageMap[reference.Key];
-                    action(coverage, reference.Value0);
-                }
-            }
-
-            return coverage;
         }
     }
 }
