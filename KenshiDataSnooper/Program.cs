@@ -20,10 +20,14 @@ var iconsDirectoryInfo = new DirectoryInfo(Path.Combine(repository.GameDirectory
 
 var items = repository.GetItems();
 
+var colourSchemeItems = new List<string>();
+
 WriteDetails(items, ItemType.Armour);
 WriteDetails(items, ItemType.Weapon);
 
 Console.WriteLine("Finished.");
+Console.WriteLine();
+Console.WriteLine($"Items with colour schemes: {string.Join(", ", colourSchemeItems)}");
 
 void WriteDetails(IEnumerable<IItem> items, ItemType type)
 {
@@ -58,16 +62,20 @@ void WriteDetails(IEnumerable<IItem> items, ItemType type)
                 .ToArray();
 
             var idItems = ids.Select(id => repository.GetDataItemByStringId(id));
-            var names = idItems.Select(idItem => $"{idItem.Name}").ToList();
 
-            if (names.Count > 1)
+            var material = idItems.FirstOrDefault(i => i.Type == ItemType.MaterialSpecsWeapon
+                || item.Type == ItemType.MaterialSpecsClothing)?.Name.Trim();
+            var name = item.Name.Trim();
+            var colour = idItems.FirstOrDefault(i => i.Type == ItemType.ColorData)?.Name.Trim();
+
+            var names = new[] { material, name, colour };
+
+            if (colour != null && !colourSchemeItems.Contains(name))
             {
-                var first = names.First();
-                names.RemoveAt(0);
-                names.Insert(1, first);
+                colourSchemeItems.Add(name);
             }
 
-            var joined = string.Join(" ", names);
+            var joined = string.Join(" ", names).Trim();
             var targetPath = @$"{type}\{trimmedName}\icons\{joined}{file.Extension}";
             if (File.Exists(targetPath))
             {
