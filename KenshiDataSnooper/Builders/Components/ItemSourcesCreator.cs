@@ -2,7 +2,7 @@
 using OpenConstructionSet.Data.Models;
 using OpenConstructionSet.Models;
 
-namespace KenshiDataSnooper
+namespace KenshiDataSnooper.Builders.Components
 {
     public class ItemSourcesCreator
     {
