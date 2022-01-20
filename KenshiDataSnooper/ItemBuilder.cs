@@ -56,20 +56,14 @@ namespace KenshiDataSnooper
         private IItem BuildItem(DataItem item)
         {
             Console.WriteLine($"Building {item.Name}");
-            IItem result;
             var sw = Stopwatch.StartNew();
 
-            switch (item.Type)
+            IItem result = item.Type switch
             {
-                case ItemType.Weapon:
-                    result = this.weaponBuilder.Build(item);
-                    break;
-                case ItemType.Armour:
-                    result = this.armourBuilder.Build(item);
-                    break;
-                default:
-                    throw new ArgumentException($"ItemType {item.Type} cannot be converted", nameof(item));
-            }
+                ItemType.Weapon => this.weaponBuilder.Build(item),
+                ItemType.Armour => this.armourBuilder.Build(item),
+                _ => throw new ArgumentException($"ItemType {item.Type} cannot be converted", nameof(item)),
+            };
 
             Console.WriteLine($"Built {item.Name} in {sw.Elapsed}");
 
