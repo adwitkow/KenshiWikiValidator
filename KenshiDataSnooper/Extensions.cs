@@ -11,12 +11,23 @@ namespace KenshiDataSnooper
                     .Any(val => val.TargetId == id));
         }
 
-        public static IEnumerable<DataItem> GetReferences(this DataItem item, ItemRepository repository, string categoryName)
+        public static IEnumerable<DataItem> GetReferenceItems(this DataItem item, ItemRepository repository, string categoryName)
         {
-            return item.ReferenceCategories.Values
-                    .Where(cat => categoryName.Equals(cat.Name))
-                    .SelectMany(cat => cat.Values)
+            return item.GetReferences(categoryName)
                     .Select(cat => repository.GetDataItemByStringId(cat.TargetId));
+        }
+
+        public static IEnumerable<DataReference> GetReferences(this DataItem item, string categoryName)
+        {
+            var category = item.ReferenceCategories.Values
+                .FirstOrDefault(cat => categoryName.Equals(cat.Name));
+
+            if (category != null)
+            {
+                return category.Values;
+            }
+
+            return Enumerable.Empty<DataReference>();
         }
 
         public static decimal Normalize(this decimal value)

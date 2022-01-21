@@ -22,9 +22,7 @@ namespace KenshiDataSnooper.Builders.Components
                 .Where(item => item.Type == ItemType.VendorList)
                 .ToList();
             var blueprintVendorLists = referencingVendorLists
-                .Where(list => list.ReferenceCategories.Values
-                    .Where(cat => categoryName.Equals(cat.Name))
-                    .SelectMany(cat => cat.Values)
+                .Where(list => list.GetReferences(categoryName)
                     .Any(cat => cat.TargetId.Equals(baseItem.StringId)))
                 .ToList();
             var squads = blueprintVendorLists

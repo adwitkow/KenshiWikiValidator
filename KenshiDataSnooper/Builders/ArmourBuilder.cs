@@ -109,12 +109,9 @@ namespace KenshiDataSnooper.Builders
 
             foreach (var functionality in functionalities)
             {
-                var flatConsumedReferences = functionality.ReferenceCategories.Values
-                    .Where(cat => "consumes".Equals(cat.Name))
-                    .SelectMany(cat => cat.Values);
-                var consumedMaterialNames = flatConsumedReferences
-                    .Select(cat => this.itemRepository.GetDataItemByStringId(cat.TargetId).Name);
-
+                var consumedMaterialNames = functionality
+                    .GetReferenceItems(this.itemRepository, "consumes")
+                    .Select(item => item.Name);
                 var baseMaterial = consumedMaterialNames.FirstOrDefault(name => !"Fabrics".Equals(name));
                 if (string.IsNullOrEmpty(baseMaterial))
                 {

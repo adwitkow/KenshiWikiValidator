@@ -38,10 +38,10 @@ namespace KenshiDataSnooper.Builders.Components
 
             foreach (var squad in squads)
             {
-                var aiPackages = squad.GetReferences(this.itemRepository, "AI packages");
+                var aiPackages = squad.GetReferenceItems(this.itemRepository, "AI packages");
 
                 var isShop = aiPackages.Any(package => package
-                    .GetReferences(this.itemRepository, "Leader AI Goals")
+                    .GetReferenceItems(this.itemRepository, "Leader AI Goals")
                     .Where(reference => "Shopkeeper".Equals(reference.Name))
                     .Any());
 
@@ -87,9 +87,8 @@ namespace KenshiDataSnooper.Builders.Components
 
             foreach (var character in referencingCharacters)
             {
-                var clothingItemPairs = character.ReferenceCategories.Values
-                    .First(cat => "clothing".Equals(cat.Name))
-                    .Select(cat => cat.Value)
+                var clothingItemPairs = character
+                    .GetReferences("clothing")
                     .ToDictionary(cat => cat, cat => this.itemRepository.GetDataItemByStringId(cat.TargetId));
                 var clothingItemsInSlot = clothingItemPairs.Where(item => slot.Equals(item.Value.Values["slot"]));
 
