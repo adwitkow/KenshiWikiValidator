@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 
-namespace KenshiWikiValidator.Tests
+namespace KenshiWikiValidator.Tests.Validators
 {
     [TestClass]
     public class WeaponArticleValidatorTests
