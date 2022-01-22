@@ -8,17 +8,19 @@ namespace KenshiWikiValidator.Tests
     public class WeaponArticleValidatorTests
     {
         private string resourceContent;
+        private TemplateParser templateParser;
 
         [TestInitialize]
         public void Initialize()
         {
             this.resourceContent = File.ReadAllText(@"TestResources\WeaponArticleValidatorResource.txt");
+            this.templateParser = new TemplateParser();
         }
 
         [TestMethod]
         public void ShouldReturnArticleValidationResult()
         {
-            var validator = new WeaponArticleValidator();
+            var validator = new WeaponArticleValidator(this.templateParser);
 
             var result = validator.Validate(this.resourceContent);
 

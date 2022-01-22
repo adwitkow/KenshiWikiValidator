@@ -1,4 +1,7 @@
-﻿internal interface IArticleValidator
+﻿namespace KenshiWikiValidator
 {
-    ArticleValidationResult Validate(string articleContent);
+    internal interface IArticleValidator
+    {
+        ArticleValidationResult Validate(string articleContent);
+    }
 }

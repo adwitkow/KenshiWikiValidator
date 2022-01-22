@@ -1,4 +1,5 @@
-﻿using WikiClientLibrary.Client;
+﻿using KenshiWikiValidator;
+using WikiClientLibrary.Client;
 using WikiClientLibrary.Generators;
 using WikiClientLibrary.Pages;
 using WikiClientLibrary.Wikia.Sites;

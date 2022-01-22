@@ -1,6 +1,6 @@
 ﻿namespace KenshiWikiValidator
 {
-    public class ArticleValidationResult
+    public class RuleResult
     {
     }
 }
