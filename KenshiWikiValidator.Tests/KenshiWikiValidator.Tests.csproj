@@ -35,8 +35,4 @@
     <Resource Include="WeaponArticleValidatorTests.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Validators\Rules\" />
-  </ItemGroup>
-
 </Project>
