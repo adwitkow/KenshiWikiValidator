@@ -17,9 +17,26 @@ namespace KenshiWikiValidator.Validators
             };
         }
 
+        public string CategoryName => "Weapons"; // TODO: Should be melee weapons, actually
+
         public ArticleValidationResult Validate(string articleContent)
         {
-            return new ArticleValidationResult();
+            var result = new ArticleValidationResult();
+            var results = new List<RuleResult>();
+            foreach (var rule in rules)
+            {
+                results.Add(rule.Execute(articleContent));
+            }
+
+            var success = !results.Any(result => !result.Success);
+
+            if (!success)
+            {
+                var issues = results.SelectMany(result => result.Issues);
+                result.Issues = issues;
+            }
+
+            return result;
         }
     }
 }

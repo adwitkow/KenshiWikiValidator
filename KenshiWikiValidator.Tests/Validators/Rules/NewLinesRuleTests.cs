@@ -111,7 +111,7 @@ And another line of text";
         }
 
         [TestMethod]
-        public void ShouldNotSucceedForCorrectResource()
+        public void ShouldSucceedForCorrectResource()
         {
             var rule = new NewLinesRule();
             var content = this.correctResourceContent;

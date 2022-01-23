@@ -7,13 +7,15 @@ namespace KenshiWikiValidator.Tests.Validators
     [TestClass]
     public class WeaponArticleValidatorTests
     {
-        private string resourceContent;
         private TemplateParser templateParser;
+        private string incorrectResourceContent;
+        private string correctResourceContent;
 
         [TestInitialize]
         public void Initialize()
         {
-            this.resourceContent = File.ReadAllText(@"TestResources\WeaponArticleValidatorIncorrectResource.txt");
+            this.incorrectResourceContent = File.ReadAllText(@"TestResources\WeaponArticleValidatorIncorrectResource.txt");
+            this.correctResourceContent = File.ReadAllText(@"TestResources\WeaponArticleValidatorCorrectResource.txt");
             this.templateParser = new TemplateParser();
         }
 
@@ -22,9 +24,29 @@ namespace KenshiWikiValidator.Tests.Validators
         {
             var validator = new WeaponArticleValidator(this.templateParser);
 
-            var result = validator.Validate(this.resourceContent);
+            var result = validator.Validate(this.incorrectResourceContent);
 
             Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void ShouldNotSucceedForIncorrectResource()
+        {
+            var validator = new WeaponArticleValidator(this.templateParser);
+
+            var result = validator.Validate(this.incorrectResourceContent);
+
+            Assert.IsFalse(result.Success);
+        }
+
+        [TestMethod]
+        public void ShouldNotSucceedForCorrectResource()
+        {
+            var validator = new WeaponArticleValidator(this.templateParser);
+
+            var result = validator.Validate(this.correctResourceContent);
+
+            Assert.IsTrue(result.Success);
         }
     }
 }
