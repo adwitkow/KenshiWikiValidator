@@ -13,7 +13,7 @@ namespace KenshiWikiValidator.Tests.Validators
         [TestInitialize]
         public void Initialize()
         {
-            this.resourceContent = File.ReadAllText(@"TestResources\WeaponArticleValidatorResource.txt");
+            this.resourceContent = File.ReadAllText(@"TestResources\WeaponArticleValidatorIncorrectResource.txt");
             this.templateParser = new TemplateParser();
         }
 

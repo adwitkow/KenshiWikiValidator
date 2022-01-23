@@ -8,11 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="TestResources\WeaponArticleValidatorResource.txt" />
+    <None Remove="TestResources\WeaponArticleValidatorCorrectResource.txt" />
+    <None Remove="TestResources\WeaponArticleValidatorIncorrectResource.txt" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="TestResources\WeaponArticleValidatorResource.txt">
+    <EmbeddedResource Include="TestResources\WeaponArticleValidatorCorrectResource.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestResources\WeaponArticleValidatorIncorrectResource.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
@@ -29,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="TestResources\WeaponArticleValidatorResource.txt">
+    <Resource Include="TestResources\WeaponArticleValidatorIncorrectResource.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="WeaponArticleValidatorTests.cs" />

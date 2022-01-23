@@ -12,13 +12,15 @@ namespace KenshiWikiValidator.Tests.Validators.Rules
     [TestClass]
     public class NewLinesRuleTests
     {
-        private string resourceContent;
+        private string incorrectResourceContent;
+        private string correctResourceContent;
         private TemplateParser templateParser;
 
         [TestInitialize]
         public void Initialize()
         {
-            this.resourceContent = File.ReadAllText(@"TestResources\WeaponArticleValidatorResource.txt");
+            this.incorrectResourceContent = File.ReadAllText(@"TestResources\WeaponArticleValidatorIncorrectResource.txt");
+            this.correctResourceContent = File.ReadAllText(@"TestResources\WeaponArticleValidatorCorrectResource.txt");
             this.templateParser = new TemplateParser();
         }
 
@@ -26,7 +28,7 @@ namespace KenshiWikiValidator.Tests.Validators.Rules
         public void ShouldCatchSingleLineTemplateSharingLineWithParagraph()
         {
             var rule = new NewLinesRule();
-            var line = this.resourceContent.Split(Environment.NewLine).First();
+            var line = this.incorrectResourceContent.Split(Environment.NewLine).First();
 
             var result = rule.Execute(line);
 
@@ -54,6 +56,67 @@ namespace KenshiWikiValidator.Tests.Validators.Rules
             var line = "{{Test}}";
 
             var result = rule.Execute(line);
+
+            Assert.IsTrue(result.Success);
+        }
+
+        [TestMethod]
+        public void ShouldSucceedOnSingleEmptyLine()
+        {
+            var rule = new NewLinesRule();
+            var line = @"Text
+
+And another line of text";
+
+            var result = rule.Execute(line);
+
+            Assert.IsTrue(result.Success);
+        }
+
+        [TestMethod]
+        public void ShouldNotSucceedOnDoubleEmptyLine()
+        {
+            var rule = new NewLinesRule();
+            var line = @"Text
+
+
+And another line of text";
+
+            var result = rule.Execute(line);
+
+            Assert.IsFalse(result.Success);
+        }
+
+        [TestMethod]
+        public void ShouldNotSucceedOnNoEmptyLine()
+        {
+            var rule = new NewLinesRule();
+            var line = @"Text
+And another line of text";
+
+            var result = rule.Execute(line);
+
+            Assert.IsFalse(result.Success);
+        }
+
+        [TestMethod]
+        public void ShouldNotSucceedForIncorrectResource()
+        {
+            var rule = new NewLinesRule();
+            var content = this.incorrectResourceContent;
+
+            var result = rule.Execute(content);
+
+            Assert.IsFalse(result.Success);
+        }
+
+        [TestMethod]
+        public void ShouldNotSucceedForCorrectResource()
+        {
+            var rule = new NewLinesRule();
+            var content = this.correctResourceContent;
+
+            var result = rule.Execute(content);
 
             Assert.IsTrue(result.Success);
         }

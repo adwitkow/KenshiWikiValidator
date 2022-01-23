@@ -8,43 +8,115 @@
             var reader = new StringReader(content);
             var line = reader.ReadLine();
 
-            var lastLineWasTemplate = false;
+            var wasPreviousLineEmpty = false;
+            var firstLine = true;
             while (line != null)
             {
-                lastLineWasTemplate = HandleTemplates(result, reader, line);
+                HandleIgnores(result, reader, line);
+                HandleTemplates(result, reader, line);
 
+                if (!firstLine)
+                {
+                    wasPreviousLineEmpty = HandleNewlines(result, line, wasPreviousLineEmpty);
+                }
+
+                firstLine = false;
                 line = reader.ReadLine();
             }
 
             return result;
         }
 
-        private static bool HandleTemplates(RuleResult result, StringReader reader, string? line)
+        private void HandleIgnores(RuleResult result, StringReader reader, string line)
         {
-            var lastLineWasTemplate = false;
-            if (line.Contains("{{"))
+            if (line.StartsWith("<gallery"))
             {
-                lastLineWasTemplate = true;
+                while (line != null && !line.StartsWith("</gallery"))
+                {
+                    if (string.IsNullOrEmpty(line))
+                    {
+                        result.AddIssue("Gallery has empty lines.");
+                    }
+                    line = reader.ReadLine();
+                }
+            }
+
+            if (line.Contains("[[Category") || line.Contains("[[ru:"))
+            {
+                while (line != null)
+                {
+                    if (!(line.StartsWith("[[") && line.EndsWith("]]")))
+                    {
+                        result.AddIssue("Not enough newlines among categories/language links");
+                    }
+
+                    if (string.IsNullOrEmpty(line))
+                    {
+                        result.AddIssue("Empty lines among categories/language links");
+                    }
+
+                    line = reader.ReadLine();
+                }
+            }
+        }
+
+        private static bool HandleNewlines(RuleResult result, string line, bool wasPreviousLineEmpty)
+        {
+            if (string.IsNullOrEmpty(line.Trim()))
+            {
+                if (wasPreviousLineEmpty)
+                {
+                    result.AddIssue("There is a double newline");
+                }
+
+                wasPreviousLineEmpty = true;
+            }
+            else
+            {
+                if (!wasPreviousLineEmpty && !line.StartsWith("*"))
+                {
+                    result.AddIssue($"A newline is missing before line: '{line}'");
+                }
+
+                wasPreviousLineEmpty = false;
+            }
+
+            return wasPreviousLineEmpty;
+        }
+
+        private static void HandleTemplates(RuleResult result, StringReader reader, string? line)
+        {
+            var wasPreviousLineEmpty = false;
+            if (line!.Contains("{{"))
+            {
                 while (line != null && !line.Contains("}}"))
                 {
+                    if (string.IsNullOrEmpty(line.Trim()))
+                    {
+                        if (wasPreviousLineEmpty)
+                        {
+                            result.AddIssue("There is a double newline");
+                        }
+
+                        wasPreviousLineEmpty = true;
+                    }
                     line = reader.ReadLine();
-                    // check newlines on multi-line template, read more lines until we hit }}
                     continue;
                 }
 
                 if (line == null)
                 {
-                    return lastLineWasTemplate;
+                    return;
                 }
 
                 var indexOfTemplateEnd = line.LastIndexOf("}}") + "}}".Length;
                 if (indexOfTemplateEnd < line.Length)
                 {
-                    result.Success = false;
+                    result.AddIssue($"There is a paragraph sharing a line with a template ('{line}')");
                 }
             }
 
-            return lastLineWasTemplate;
+            return;
         }
     }
 }
