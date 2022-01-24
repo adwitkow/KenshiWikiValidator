@@ -48,6 +48,17 @@ void WriteDetails(IEnumerable<IItem> items, ItemType type)
 
         var files = iconsDirectoryInfo.GetFiles($"*{item.StringId}*.*", new EnumerationOptions() { RecurseSubdirectories = true });
 
+        if (item.Properties!.ContainsKey("icon"))
+        {
+            var iconFileValue = (FileValue)item.Properties["icon"];
+            if (!string.IsNullOrEmpty(iconFileValue.Path))
+            {
+                var path = Path.GetFullPath(repository.GameDirectory! + iconFileValue.Path);
+                var iconInfo = new FileInfo(path);
+                files = files.Concat(new[] { iconInfo }).ToArray();
+            }
+        }
+
         if (files.Any())
         {
             Directory.CreateDirectory(@$"{type}\{trimmedName}\icons");
@@ -77,9 +88,12 @@ void WriteDetails(IEnumerable<IItem> items, ItemType type)
 
             var joined = string.Join(" ", names).Trim();
             var targetPath = @$"{type}\{trimmedName}\icons\{joined}{file.Extension}";
-            if (File.Exists(targetPath))
+
+            var index = 1;
+            while (File.Exists(targetPath))
             {
-                targetPath = @$"{type}\{trimmedName}\icons\{joined} DUPLICATE {file.Extension}";
+                targetPath = @$"{type}\{trimmedName}\icons\{joined} ({index}){file.Extension}";
+                index++;
             }
 
             file.CopyTo(targetPath);
