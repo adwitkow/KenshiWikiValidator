@@ -42,8 +42,9 @@ void WriteDetails(IEnumerable<IItem> items, ItemType type)
     foreach (var item in itemsOfType)
     {
         var trimmedName = item.Name.Replace("/", string.Empty).Replace("|", string.Empty).Trim();
-        Directory.CreateDirectory(@$"{type}\{trimmedName}");
-        File.WriteAllText($@"{type}\{trimmedName}\{trimmedName}-{item.StringId}.json", JsonConvert.SerializeObject(item, Formatting.Indented));
+        var directory = Path.Combine(type.ToString(), trimmedName);
+        Directory.CreateDirectory(directory);
+        File.WriteAllText(Path.Combine(directory, $"{trimmedName}-{item.StringId}.json"), JsonConvert.SerializeObject(item, Formatting.Indented));
         Console.WriteLine($"Writing {trimmedName}...");
 
         var files = iconsDirectoryInfo.GetFiles($"*{item.StringId}*.*", new EnumerationOptions() { RecurseSubdirectories = true });
@@ -61,7 +62,7 @@ void WriteDetails(IEnumerable<IItem> items, ItemType type)
 
         if (files.Any())
         {
-            Directory.CreateDirectory(@$"{type}\{trimmedName}\icons");
+            Directory.CreateDirectory(Path.Combine(directory, "icons"));
         }
 
         foreach (var file in files)
@@ -87,12 +88,12 @@ void WriteDetails(IEnumerable<IItem> items, ItemType type)
             }
 
             var joined = string.Join(" ", names).Trim();
-            var targetPath = @$"{type}\{trimmedName}\icons\{joined}{file.Extension}";
+            var targetPath = Path.Combine(directory, "icons", $"{joined}{file.Extension}");
 
             var index = 1;
             while (File.Exists(targetPath))
             {
-                targetPath = @$"{type}\{trimmedName}\icons\{joined} ({index}){file.Extension}";
+                targetPath = Path.Combine(directory, "icons", $"{joined} ({index}){file.Extension}");
                 index++;
             }
 
