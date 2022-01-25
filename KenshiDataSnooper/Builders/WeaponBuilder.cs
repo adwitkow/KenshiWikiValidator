@@ -39,7 +39,6 @@ namespace KenshiDataSnooper.Builders
                 sw.Restart();
                 blueprintLocations = this.blueprintLocationsConverter.Convert(unlockingResearchItem, "blueprints");
                 Console.WriteLine($" - Converting the blueprint locations for {baseItem.Name} took {sw.Elapsed}");
-
             }
 
             sw.Restart();
