@@ -12,5 +12,11 @@ namespace KenshiDataSnooper.Models
         public string? StringId { get; set; }
 
         public string? Name { get; set; }
+
+        public ItemSources? Sources { get; set; }
+
+        public ItemReference? UnlockingResearch { get; set; }
+
+        public IEnumerable<ItemReference>? BlueprintLocations { get; set; }
     }
 }

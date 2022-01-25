@@ -24,7 +24,11 @@ namespace KenshiDataSnooper
             var blueprintLocationsConverter = new BlueprintLocationsConverter(itemRepository);
             var unlockingResearchConverter = new UnlockingResearchConverter(itemRepository);
 
-            this.weaponBuilder = new WeaponBuilder(itemRepository);
+            this.weaponBuilder = new WeaponBuilder(
+                itemRepository,
+                itemSourcesCreator,
+                blueprintLocationsConverter,
+                unlockingResearchConverter);
             this.armourBuilder = new ArmourBuilder(
                 itemRepository,
                 itemSourcesCreator,
