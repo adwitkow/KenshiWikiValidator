@@ -21,6 +21,7 @@ itemRepository.Load();
 sw.Stop();
 
 Console.WriteLine($"Loaded all items in {sw.Elapsed}");
+Console.WriteLine();
 
 foreach (var articleValidator in validators)
 {
