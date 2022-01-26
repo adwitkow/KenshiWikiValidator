@@ -5,7 +5,7 @@
         public RuleResult Execute(string title, string content)
         {
             var result = new RuleResult();
-            var reader = new StringReader(content);
+            using var reader = new StringReader(content);
             var line = reader.ReadLine();
 
             var wasPreviousLineEmpty = false;
