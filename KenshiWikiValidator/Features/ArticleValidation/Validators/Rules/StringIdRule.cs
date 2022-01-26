@@ -15,6 +15,11 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
         {
             var result = new RuleResult();
 
+            if (!content.Contains("{{Weapon") && !content.Contains("{{Armour"))
+            {
+                return result;
+            }
+
             using var reader = new StringReader(content);
 
             string? line;
