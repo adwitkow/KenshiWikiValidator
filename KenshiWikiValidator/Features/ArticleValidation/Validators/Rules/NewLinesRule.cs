@@ -37,6 +37,7 @@
                     {
                         result.AddIssue("Gallery has empty lines.");
                     }
+
                     line = reader.ReadLine()!;
                 }
             }
@@ -100,6 +101,7 @@
 
                         wasPreviousLineEmpty = true;
                     }
+
                     line = reader.ReadLine();
                     continue;
                 }

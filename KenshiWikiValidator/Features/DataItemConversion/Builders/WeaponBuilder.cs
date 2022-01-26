@@ -29,21 +29,21 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
         public Weapon Build(DataItem baseItem)
         {
             var sw = Stopwatch.StartNew();
-            var unlockingResearch = unlockingResearchConverter.Convert(baseItem);
+            var unlockingResearch = this.unlockingResearchConverter.Convert(baseItem);
             Console.WriteLine($" - Converting the unlocking research for {baseItem.Name} took {sw.Elapsed}");
 
             var blueprintLocations = Enumerable.Empty<ItemReference>();
             if (unlockingResearch is not null)
             {
-                var unlockingResearchItem = itemRepository.GetDataItemByStringId(unlockingResearch.StringId!);
+                var unlockingResearchItem = this.itemRepository.GetDataItemByStringId(unlockingResearch.StringId!);
 
                 sw.Restart();
-                blueprintLocations = blueprintLocationsConverter.Convert(unlockingResearchItem, "blueprints");
+                blueprintLocations = this.blueprintLocationsConverter.Convert(unlockingResearchItem, "blueprints");
                 Console.WriteLine($" - Converting the blueprint locations for {baseItem.Name} took {sw.Elapsed}");
             }
 
             sw.Restart();
-            var itemSources = itemSourcesCreator.Create(baseItem);
+            var itemSources = this.itemSourcesCreator.Create(baseItem);
             Console.WriteLine($" - Converting the item sources for {baseItem.Name} took {sw.Elapsed}");
 
             sw.Stop();

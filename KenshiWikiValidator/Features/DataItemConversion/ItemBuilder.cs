@@ -24,35 +24,35 @@ namespace KenshiWikiValidator.Features.DataItemConversion
             var blueprintLocationsConverter = new BlueprintLocationsConverter(itemRepository);
             var unlockingResearchConverter = new UnlockingResearchConverter(itemRepository);
 
-            weaponBuilder = new WeaponBuilder(
+            this.weaponBuilder = new WeaponBuilder(
                 itemRepository,
                 itemSourcesCreator,
                 blueprintLocationsConverter,
                 unlockingResearchConverter);
-            armourBuilder = new ArmourBuilder(
+            this.armourBuilder = new ArmourBuilder(
                 itemRepository,
                 itemSourcesCreator,
                 blueprintLocationsConverter,
                 unlockingResearchConverter);
 
-            longestItem = null!;
-            longestTime = TimeSpan.Zero;
+            this.longestItem = null!;
+            this.longestTime = TimeSpan.Zero;
         }
 
         public IEnumerable<IItem> BuildItems()
         {
-            var items = itemRepository.GetDataItemsByTypes(ItemType.Weapon, ItemType.Armour);
+            var items = this.itemRepository.GetDataItemsByTypes(ItemType.Weapon, ItemType.Armour);
 
             var results = new List<IItem>();
 
             Parallel.ForEach(items, item =>
             {
-                var built = BuildItem(item);
+                var built = this.BuildItem(item);
                 results.Add(built);
             });
 
             Console.WriteLine();
-            Console.WriteLine($"The longest item to build was {longestItem.Name} and took {longestTime}");
+            Console.WriteLine($"The longest item to build was {this.longestItem.Name} and took {this.longestTime}");
 
             return results;
         }
@@ -64,17 +64,17 @@ namespace KenshiWikiValidator.Features.DataItemConversion
 
             IItem result = item.Type switch
             {
-                ItemType.Weapon => weaponBuilder.Build(item),
-                ItemType.Armour => armourBuilder.Build(item),
+                ItemType.Weapon => this.weaponBuilder.Build(item),
+                ItemType.Armour => this.armourBuilder.Build(item),
                 _ => throw new ArgumentException($"ItemType {item.Type} cannot be converted", nameof(item)),
             };
 
             Console.WriteLine($"Built {item.Name} in {sw.Elapsed}");
 
-            if (sw.Elapsed > longestTime)
+            if (sw.Elapsed > this.longestTime)
             {
-                longestTime = sw.Elapsed;
-                longestItem = item;
+                this.longestTime = sw.Elapsed;
+                this.longestItem = item;
             }
 
             return result;

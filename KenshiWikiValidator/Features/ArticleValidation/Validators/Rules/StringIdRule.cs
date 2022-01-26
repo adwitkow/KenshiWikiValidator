@@ -18,7 +18,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
             using var reader = new StringReader(content);
 
             string? line;
-            var matchingItems = itemRepository
+            var matchingItems = this.itemRepository
                 .GetItems()
                 .Where(item => title.ToLower().Trim().Equals(item.Name!.ToLower().Trim()))
                 .ToList();

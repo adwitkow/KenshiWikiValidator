@@ -4,10 +4,10 @@
     {
         public ItemSources()
         {
-            AlwaysWornBy = new List<ItemReference>();
-            PotentiallyWornBy = new List<ItemReference>();
-            Shops = new List<ItemReference>();
-            Loot = new List<ItemReference>();
+            this.AlwaysWornBy = new List<ItemReference>();
+            this.PotentiallyWornBy = new List<ItemReference>();
+            this.Shops = new List<ItemReference>();
+            this.Loot = new List<ItemReference>();
         }
 
         public ICollection<ItemReference> AlwaysWornBy { get; set; }

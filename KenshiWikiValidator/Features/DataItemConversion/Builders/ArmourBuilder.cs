@@ -27,7 +27,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
             this.blueprintLocationsConverter = blueprintLocationsConverter;
             this.unlockingResearchConverter = unlockingResearchConverter;
 
-            coverageConverter = new CoverageConverter();
+            this.coverageConverter = new CoverageConverter();
         }
 
         public Armour Build(DataItem baseItem)
@@ -38,7 +38,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
             }
 
             var sw = Stopwatch.StartNew();
-            var coverage = coverageConverter.Convert(baseItem);
+            var coverage = this.coverageConverter.Convert(baseItem);
             Console.WriteLine($" - Converting the coverage for {baseItem.Name} took {sw.Elapsed}");
 
             sw.Restart();
@@ -46,15 +46,15 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
             Console.WriteLine($" - Converting the craftings for {baseItem.Name} took {sw.Elapsed}");
 
             sw.Restart();
-            var unlockingResearch = unlockingResearchConverter.Convert(baseItem);
+            var unlockingResearch = this.unlockingResearchConverter.Convert(baseItem);
             Console.WriteLine($" - Converting the unlocking research for {baseItem.Name} took {sw.Elapsed}");
 
             sw.Restart();
-            var blueprintLocations = blueprintLocationsConverter.Convert(baseItem, "armour blueprints");
+            var blueprintLocations = this.blueprintLocationsConverter.Convert(baseItem, "armour blueprints");
             Console.WriteLine($" - Converting the blueprint locations for {baseItem.Name} took {sw.Elapsed}");
 
             sw.Restart();
-            var itemSources = itemSourcesCreator.Create(baseItem);
+            var itemSources = this.itemSourcesCreator.Create(baseItem);
             Console.WriteLine($" - Converting the item sources for {baseItem.Name} took {sw.Elapsed}");
 
             sw.Stop();
@@ -74,7 +74,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
 
         private static decimal GetMaterialCost(Coverage coverage)
         {
-            var materialCost = (coverage.Chest * 1.5m
+            var materialCost = ((coverage.Chest * 1.5m)
                 + coverage.Head
                 + coverage.Stomach
                 + coverage.LeftForeleg
@@ -100,7 +100,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
             var realMaterialCost = GetMaterialCost(coverage);
             var realFabricsCost = realMaterialCost * fabricsAmount;
 
-            var functionalities = itemRepository
+            var functionalities = this.itemRepository
                 .GetReferencingDataItemsFor(baseItem)
                 .Where(item => item.Type == ItemType.BuildingFunctionality);
 
@@ -112,7 +112,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
             foreach (var functionality in functionalities)
             {
                 var consumedMaterialNames = functionality
-                    .GetReferenceItems(itemRepository, "consumes")
+                    .GetReferenceItems(this.itemRepository, "consumes")
                     .Select(item => item.Name);
                 var baseMaterial = consumedMaterialNames.FirstOrDefault(name => !"Fabrics".Equals(name));
                 if (string.IsNullOrEmpty(baseMaterial))
@@ -121,7 +121,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
                     realFabricsCost = 0;
                 }
 
-                var craftingBuilding = itemRepository
+                var craftingBuilding = this.itemRepository
                     .GetReferencingDataItemsFor(functionality)
                     .Single();
 

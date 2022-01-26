@@ -1,8 +1,8 @@
-﻿using KenshiWikiValidator;
+﻿using System.Diagnostics;
+using KenshiWikiValidator;
 using KenshiWikiValidator.Features.ArticleValidation.Validators;
 using KenshiWikiValidator.Features.DataItemConversion;
 using KenshiWikiValidator.Features.WikiTemplates;
-using System.Diagnostics;
 using WikiClientLibrary.Client;
 using WikiClientLibrary.Generators;
 using WikiClientLibrary.Pages;

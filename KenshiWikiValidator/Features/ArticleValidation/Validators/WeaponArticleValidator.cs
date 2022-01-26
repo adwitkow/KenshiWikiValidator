@@ -10,7 +10,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators
 
         public WeaponArticleValidator(IItemRepository itemRepository)
         {
-            rules = new List<IValidationRule>()
+            this.rules = new List<IValidationRule>()
             {
                 new StringIdRule(itemRepository),
                 new NewLinesRule(),
@@ -23,7 +23,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators
         {
             var result = new ArticleValidationResult();
             var results = new List<RuleResult>();
-            foreach (var rule in rules)
+            foreach (IValidationRule? rule in this.rules)
             {
                 results.Add(rule.Execute(title, articleContent));
             }

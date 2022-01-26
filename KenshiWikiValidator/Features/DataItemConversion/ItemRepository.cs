@@ -20,51 +20,51 @@ namespace KenshiWikiValidator.Features.DataItemConversion
 
         public ItemRepository()
         {
-            dataItems = new HashSet<DataItem>();
-            dataItemLookup = new Dictionary<string, DataItem>();
-            items = new HashSet<IItem>();
-            itemLookup = new Dictionary<string, IItem>();
+            this.dataItems = new HashSet<DataItem>();
+            this.dataItemLookup = new Dictionary<string, DataItem>();
+            this.items = new HashSet<IItem>();
+            this.itemLookup = new Dictionary<string, IItem>();
 
-            referenceCache = new Dictionary<string, ICollection<DataItem>>();
+            this.referenceCache = new Dictionary<string, ICollection<DataItem>>();
 
-            itemBuilder = new ItemBuilder(this);
+            this.itemBuilder = new ItemBuilder(this);
         }
 
         public string? GameDirectory { get; private set; }
 
         public IEnumerable<DataItem> GetDataItems()
         {
-            return dataItems;
+            return this.dataItems;
         }
 
         public IEnumerable<IItem> GetItems()
         {
-            return items;
+            return this.items;
         }
 
         public IEnumerable<DataItem> GetDataItemsByType(ItemType type)
         {
-            return dataItems.Where(item => item.Type == type);
+            return this.dataItems.Where(item => item.Type == type);
         }
 
         public IEnumerable<DataItem> GetDataItemsByTypes(params ItemType[] types)
         {
-            return dataItems.Where(item => types.Contains(item.Type));
+            return this.dataItems.Where(item => types.Contains(item.Type));
         }
 
         public DataItem GetDataItemByStringId(string id)
         {
-            return dataItemLookup[id];
+            return this.dataItemLookup[id];
         }
 
         public IItem GetItemByStringId(string id)
         {
-            return itemLookup[id];
+            return this.itemLookup[id];
         }
 
         public IEnumerable<DataItem> GetReferencingDataItemsFor(string itemId)
         {
-            var isItemCached = referenceCache.TryGetValue(itemId, out var cached);
+            var isItemCached = this.referenceCache.TryGetValue(itemId, out var cached);
 
             if (isItemCached)
             {
@@ -78,7 +78,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion
 
         public IEnumerable<DataItem> GetReferencingDataItemsFor(DataItem reference)
         {
-            return GetReferencingDataItemsFor(reference.StringId);
+            return this.GetReferencingDataItemsFor(reference.StringId);
         }
 
         public void Load()
@@ -102,25 +102,25 @@ namespace KenshiWikiValidator.Features.DataItemConversion
                     .SelectMany(cat => cat.Value)
                     .Select(pair => pair.Value))
                 {
-                    if (referenceCache.ContainsKey(reference.TargetId))
+                    if (this.referenceCache.ContainsKey(reference.TargetId))
                     {
-                        referenceCache[reference.TargetId].Add(item);
+                        this.referenceCache[reference.TargetId].Add(item);
                     }
                     else
                     {
-                        referenceCache.Add(reference.TargetId, new List<DataItem>() { item });
+                        this.referenceCache.Add(reference.TargetId, new List<DataItem>() { item });
                     }
                 }
             }
 
-            GameDirectory = installation.Game;
+            this.GameDirectory = installation.Game;
 
-            dataItemLookup = contextItems.ToDictionary(item => item.StringId, item => item);
-            dataItems = new HashSet<DataItem>(contextItems);
+            this.dataItemLookup = contextItems.ToDictionary(item => item.StringId, item => item);
+            this.dataItems = new HashSet<DataItem>(contextItems);
 
-            var builtItems = itemBuilder.BuildItems();
-            itemLookup = builtItems.ToDictionary(item => item.StringId!, item => item);
-            items = new HashSet<IItem>(builtItems);
+            var builtItems = this.itemBuilder.BuildItems();
+            this.itemLookup = builtItems.ToDictionary(item => item.StringId!, item => item);
+            this.items = new HashSet<IItem>(builtItems);
         }
     }
 }

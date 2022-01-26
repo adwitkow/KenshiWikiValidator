@@ -18,7 +18,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
         {
             var results = new List<ItemReference>();
 
-            var referencingVendorLists = itemRepository
+            var referencingVendorLists = this.itemRepository
                 .GetReferencingDataItemsFor(baseItem)
                 .Where(item => item.Type == ItemType.VendorList)
                 .ToList();
@@ -27,14 +27,14 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
                     .Any(cat => cat.TargetId.Equals(baseItem.StringId)))
                 .ToList();
             var squads = blueprintVendorLists
-                .SelectMany(vendor => itemRepository
+                .SelectMany(vendor => this.itemRepository
                     .GetReferencingDataItemsFor(vendor)
                     .Where(item => item.Type == ItemType.SquadTemplate))
                 .ToList();
 
             foreach (var squad in squads)
             {
-                var towns = itemRepository.GetReferencingDataItemsFor(squad)
+                var towns = this.itemRepository.GetReferencingDataItemsFor(squad)
                     .Where(item => item.Type == ItemType.Town);
 
                 foreach (var town in towns)

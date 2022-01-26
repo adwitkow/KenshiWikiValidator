@@ -15,7 +15,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
 
         public ItemReference? Convert(DataItem baseItem)
         {
-            var researchItems = itemRepository.GetReferencingDataItemsFor(baseItem)
+            var researchItems = this.itemRepository.GetReferencingDataItemsFor(baseItem)
                 .Where(item => item.Type == ItemType.Research);
 
             ItemReference? result = null;

@@ -9,7 +9,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
 
         public CoverageConverter()
         {
-            coverageMap = new Dictionary<string, Action<Coverage, int>>()
+            this.coverageMap = new Dictionary<string, Action<Coverage, int>>()
             {
                 { "101-gamedata.quack", (coverage, val) => coverage.Chest = val },
                 { "32-gamedata.quack", (coverage, val) => coverage.Head = val },
@@ -34,7 +34,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
                 var references = coverageCategory.Values;
                 foreach (var reference in references)
                 {
-                    var action = coverageMap[reference.Key];
+                    var action = this.coverageMap[reference.Key];
                     action(coverage, reference.Value0);
                 }
             }

@@ -17,8 +17,8 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
         public ItemSources Create(DataItem baseItem)
         {
             var itemSources = new ItemSources();
-            itemSources = ConvertCharacterSources(baseItem, itemSources);
-            itemSources = ConvertLocationSources(baseItem, itemSources);
+            itemSources = this.ConvertCharacterSources(baseItem, itemSources);
+            itemSources = this.ConvertLocationSources(baseItem, itemSources);
             return itemSources;
         }
 
@@ -74,24 +74,24 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
 
         private ItemSources ConvertLocationSources(DataItem baseItem, ItemSources itemSources)
         {
-            var referencingVendorLists = itemRepository
+            var referencingVendorLists = this.itemRepository
                 .GetReferencingDataItemsFor(baseItem)
                 .Where(item => item.Type == ItemType.VendorList);
             var squads = referencingVendorLists
-                .SelectMany(vendor => itemRepository
+                .SelectMany(vendor => this.itemRepository
                     .GetReferencingDataItemsFor(vendor)
                     .Where(item => item.Type == ItemType.SquadTemplate));
 
             foreach (var squad in squads)
             {
-                var aiPackages = squad.GetReferenceItems(itemRepository, "AI packages");
+                var aiPackages = squad.GetReferenceItems(this.itemRepository, "AI packages");
 
                 var isShop = aiPackages.Any(package => package
-                    .GetReferenceItems(itemRepository, "Leader AI Goals")
+                    .GetReferenceItems(this.itemRepository, "Leader AI Goals")
                     .Where(reference => "Shopkeeper".Equals(reference.Name))
                     .Any());
 
-                var towns = itemRepository.GetReferencingDataItemsFor(squad)
+                var towns = this.itemRepository.GetReferencingDataItemsFor(squad)
                     .Where(item => item.Type == ItemType.Town);
 
                 foreach (var town in towns)
@@ -124,16 +124,16 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
 
         private ItemSources ConvertCharacterSources(DataItem baseItem, ItemSources sources)
         {
-            var referencingCharacters = itemRepository
+            List<DataItem>? referencingCharacters = this.itemRepository
                 .GetReferencingDataItemsFor(baseItem)
-                .Where(item => item.Type == ItemType.Character && itemRepository.GetReferencingDataItemsFor(item).Any())
+                .Where(item => item.Type == ItemType.Character && this.itemRepository.GetReferencingDataItemsFor(item).Any())
                 .ToList(); // TODO: Squads which don't spawn anywhere?
 
             foreach (var character in referencingCharacters)
             {
                 if (baseItem.Type == ItemType.Armour)
                 {
-                    ConvertArmourSources(baseItem, sources, character);
+                    this.ConvertArmourSources(baseItem, sources, character);
                 }
                 else if (baseItem.Type == ItemType.Weapon)
                 {
@@ -150,7 +150,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
 
             var clothingItemPairs = character
                 .GetReferences("clothing")
-                .ToDictionary(cat => cat, cat => itemRepository.GetDataItemByStringId(cat.TargetId));
+                .ToDictionary(cat => cat, cat => this.itemRepository.GetDataItemByStringId(cat.TargetId));
             var clothingItemsInSlot = clothingItemPairs.Where(item => slot.Equals(item.Value.Values["slot"]));
 
             // -1 means that no item will spawn if this position is rolled
