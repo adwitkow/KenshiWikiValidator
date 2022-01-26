@@ -14,6 +14,7 @@
             {
                 HandleIgnores(result, reader, line);
                 HandleTemplates(result, reader, line);
+                HandleTables(result, reader, line);
 
                 if (!firstLine)
                 {
@@ -87,10 +88,20 @@
 
         private static void HandleTemplates(RuleResult result, StringReader reader, string? line)
         {
+            HandleStructure(result, reader, line, "{{", "}}");
+        }
+
+        private static void HandleTables(RuleResult result, StringReader reader, string? line)
+        {
+            HandleStructure(result, reader, line, "{|", "|}");
+        }
+
+        private static void HandleStructure(RuleResult result, StringReader reader, string? line, string opening, string ending)
+        {
             var wasPreviousLineEmpty = false;
-            if (line!.Contains("{{"))
+            if (line!.Contains(opening))
             {
-                while (line != null && !line.Contains("}}"))
+                while (line != null && !line.Contains(ending))
                 {
                     if (string.IsNullOrEmpty(line.Trim()))
                     {
@@ -111,14 +122,12 @@
                     return;
                 }
 
-                var indexOfTemplateEnd = line.LastIndexOf("}}") + "}}".Length;
+                var indexOfTemplateEnd = line.LastIndexOf(ending) + ending.Length;
                 if (indexOfTemplateEnd < line.Length)
                 {
                     result.AddIssue($"There is a paragraph sharing a line with a template ('{line}')");
                 }
             }
-
-            return;
         }
     }
 }
