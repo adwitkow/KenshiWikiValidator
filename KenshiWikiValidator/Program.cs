@@ -1,16 +1,26 @@
 ﻿using KenshiWikiValidator;
 using KenshiWikiValidator.Features.ArticleValidation.Validators;
+using KenshiWikiValidator.Features.DataItemConversion;
 using KenshiWikiValidator.Features.WikiTemplates;
+using System.Diagnostics;
 using WikiClientLibrary.Client;
 using WikiClientLibrary.Generators;
 using WikiClientLibrary.Pages;
 using WikiClientLibrary.Wikia.Sites;
 
+var itemRepository = new ItemRepository();
 var templateParser = new TemplateParser();
 var validators = new List<IArticleValidator>()
 {
-    new WeaponArticleValidator(templateParser),
+    new WeaponArticleValidator(templateParser, itemRepository),
 };
+
+Console.WriteLine("Loading items...");
+var sw = Stopwatch.StartNew();
+itemRepository.Load();
+sw.Stop();
+
+Console.WriteLine($"Loaded all items in {sw.Elapsed}");
 
 foreach (var articleValidator in validators)
 {

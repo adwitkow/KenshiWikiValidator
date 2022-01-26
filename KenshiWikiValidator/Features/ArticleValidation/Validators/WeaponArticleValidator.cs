@@ -1,4 +1,5 @@
 ﻿using KenshiWikiValidator.Features.ArticleValidation.Validators.Rules;
+using KenshiWikiValidator.Features.DataItemConversion;
 using KenshiWikiValidator.Features.WikiTemplates;
 
 namespace KenshiWikiValidator.Features.ArticleValidation.Validators
@@ -8,13 +9,14 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators
         private readonly TemplateParser parser;
         private readonly IEnumerable<IValidationRule> rules;
 
-        public WeaponArticleValidator(TemplateParser parser)
+        public WeaponArticleValidator(TemplateParser parser, IItemRepository itemRepository)
         {
             this.parser = parser;
 
             rules = new List<IValidationRule>()
             {
-                new NewLinesRule()
+                new StringIdRule(itemRepository),
+                new NewLinesRule(),
             };
         }
 
