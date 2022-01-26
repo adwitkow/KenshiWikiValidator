@@ -4,17 +4,18 @@
     {
         public RuleResult()
         {
-            Issues = new List<string>();
-            Success = true;
+            this.Issues = new List<string>();
+            this.Success = true;
         }
 
         public bool Success { get; private set; }
+
         public ICollection<string> Issues { get; private set; }
 
         public void AddIssue(string issueMessage)
         {
-            Issues.Add(issueMessage);
-            Success = false;
+            this.Issues.Add(issueMessage);
+            this.Success = false;
         }
     }
 }

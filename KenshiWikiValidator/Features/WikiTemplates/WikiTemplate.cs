@@ -4,8 +4,8 @@
     {
         public WikiTemplate(string name, SortedList<string, string> properties)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            Properties = properties ?? throw new ArgumentNullException(nameof(properties));
+            this.Name = name ?? throw new ArgumentNullException(nameof(name));
+            this.Properties = properties ?? throw new ArgumentNullException(nameof(properties));
         }
 
         public string Name { get; set; }

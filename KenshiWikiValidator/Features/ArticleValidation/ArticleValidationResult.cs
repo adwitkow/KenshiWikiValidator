@@ -4,10 +4,10 @@
     {
         public ArticleValidationResult()
         {
-            Issues = new List<string>();
+            this.Issues = new List<string>();
         }
 
-        public bool Success => !Issues.Any();
+        public bool Success => !this.Issues.Any();
 
         public IEnumerable<string> Issues { get; set; }
     }

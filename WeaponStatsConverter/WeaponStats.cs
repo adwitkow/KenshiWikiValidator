@@ -16,8 +16,8 @@ namespace WeaponStatsConverter
         public string BluntDamage { get; set; }
         public string BloodLoss { get; set; }
         public string ArmourPenetration { get; set; }
-        public string AttackModifier { get; set; }
-        public string DefenceModifier { get; set; }
+        public string? AttackModifier { get; set; }
+        public string? DefenceModifier { get; set; }
         public string IndoorsModifier { get; set; }
         public string DamageVersusAnimals { get; set; }
         public string DamageVersusRobots { get; set; }
