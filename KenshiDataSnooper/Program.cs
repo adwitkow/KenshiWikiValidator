@@ -47,6 +47,75 @@ void WriteDetails(IEnumerable<IItem> items, ItemType type)
         File.WriteAllText(Path.Combine(directory, $"{trimmedName}-{item.StringId}.json"), JsonConvert.SerializeObject(item, Formatting.Indented));
         Console.WriteLine($"Writing {trimmedName}...");
 
+        if (item is IResearchable researchable)
+        {
+            string result = string.Empty;
+            var color = item.Type switch
+            {
+                ItemType.Crossbow => "yellow",
+                ItemType.Armour => "green",
+                _ => "blue",
+            };
+
+            if (researchable.UnlockingResearch is null)
+            {
+                result = $@"{{{{Blueprint
+| name = {item.Name}
+| color = {color}
+| description = {item.Properties["description"]}
+| level = 1
+| value = ???
+| sell value = ???
+| new items = {item.Name}
+| vendors = TODO
+}}}}";
+            }
+            else
+            {
+                var research = repository.GetDataItemByStringId(researchable.UnlockingResearch.StringId!);
+                int cost = (int)research.Values["money"];
+
+                var requirements = research.GetReferenceItems(repository, "requirements");
+                var newBuildings = research.GetReferenceItems(repository, "enable buildings");
+                var newItems = research.ReferenceCategories.Values
+                    .Where(cat => cat.Key.StartsWith("enable"))
+                    .SelectMany(cat => cat.Values)
+                    .Select(reference => repository.GetDataItemByStringId(reference.TargetId))
+                    .Except(newBuildings);
+                var costs = research.GetReferences("cost")
+                    .ToDictionary(reference => reference, reference => repository.GetDataItemByStringId(reference.TargetId));
+
+                if (cost != 0)
+                {
+                    result = $@"{{{{Blueprint
+| name = {research.Name}
+| color = {color}
+| description = {research.Values["description"]}
+| level = {research.Values["level"]}
+| value = {cost}
+| sell value = {cost / 4}
+| prerequisites = {string.Join(", ", requirements.Select(req => $"[[{req.Name}]]"))}
+| new items = {string.Join(", ", newItems.Concat(newBuildings).Select(newItem => $"[[{newItem.Name}]]"))}
+| vendors = TODO
+}}}}";
+                }
+                else
+                {
+                    result = $@"{{{{Research
+| name = {research.Name}
+| description = {research.Values["description"]}
+| estimated_time = {research.Values["time"]} hours
+| level = {research.Values["level"]}
+| costs = {string.Join(", ", costs.Select(pair => $"{pair.Key.Value0} [[{pair.Value.Name}]]"))}
+| new_item(s) = {string.Join(", ", newItems.Select(item => $"[[{item.Name}]]"))}
+| new_building(s) = {string.Join(", ", newBuildings.Select(item => $"[[{item.Name}]]"))}
+}}}}";
+                }
+            }
+
+            File.WriteAllText(Path.Combine(directory, "blueprint.txt"), result);
+        }
+
         var files = iconsDirectoryInfo.GetFiles($"*{item.StringId}*.*", new EnumerationOptions() { RecurseSubdirectories = true });
 
         if (item.Properties!.ContainsKey("icon"))

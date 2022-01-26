@@ -3,7 +3,7 @@ using OpenConstructionSet.Models;
 
 namespace KenshiDataSnooper.Models
 {
-    public class Armour : IItem
+    public class Armour : IItem, IResearchable
     {
         public ItemType Type => ItemType.Armour;
 
