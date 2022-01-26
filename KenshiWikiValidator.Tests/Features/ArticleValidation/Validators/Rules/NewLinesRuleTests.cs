@@ -5,7 +5,7 @@ using System;
 using System.IO;
 using System.Linq;
 
-namespace KenshiWikiValidator.Tests.Validators.Rules
+namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
 {
     [TestClass]
     public class NewLinesRuleTests
