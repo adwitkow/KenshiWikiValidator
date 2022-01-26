@@ -1,5 +1,6 @@
 ﻿using KenshiWikiValidator;
-using KenshiWikiValidator.Validators;
+using KenshiWikiValidator.Features.ArticleValidation.Validators;
+using KenshiWikiValidator.Features.WikiTemplates;
 using WikiClientLibrary.Client;
 using WikiClientLibrary.Generators;
 using WikiClientLibrary.Pages;

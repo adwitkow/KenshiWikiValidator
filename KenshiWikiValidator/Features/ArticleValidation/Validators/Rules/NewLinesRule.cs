@@ -1,4 +1,4 @@
-﻿namespace KenshiWikiValidator.Validators.Rules
+﻿namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
 {
     public class NewLinesRule : IValidationRule
     {

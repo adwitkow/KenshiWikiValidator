@@ -1,11 +1,9 @@
-﻿using KenshiWikiValidator.Validators.Rules;
+﻿using KenshiWikiValidator.Features.ArticleValidation.Validators.Rules;
+using KenshiWikiValidator.Features.WikiTemplates;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KenshiWikiValidator.Tests.Validators.Rules
 {

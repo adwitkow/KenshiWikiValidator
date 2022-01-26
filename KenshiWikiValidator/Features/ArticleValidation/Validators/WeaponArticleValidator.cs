@@ -1,6 +1,7 @@
-﻿using KenshiWikiValidator.Validators.Rules;
+﻿using KenshiWikiValidator.Features.ArticleValidation.Validators.Rules;
+using KenshiWikiValidator.Features.WikiTemplates;
 
-namespace KenshiWikiValidator.Validators
+namespace KenshiWikiValidator.Features.ArticleValidation.Validators
 {
     public class WeaponArticleValidator : IArticleValidator
     {
@@ -11,7 +12,7 @@ namespace KenshiWikiValidator.Validators
         {
             this.parser = parser;
 
-            this.rules = new List<IValidationRule>()
+            rules = new List<IValidationRule>()
             {
                 new NewLinesRule()
             };

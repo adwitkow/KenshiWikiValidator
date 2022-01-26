@@ -1,11 +1,11 @@
-﻿namespace KenshiWikiValidator
+﻿namespace KenshiWikiValidator.Features.ArticleValidation
 {
     public class RuleResult
     {
         public RuleResult()
         {
-            this.Issues = new List<string>();
-            this.Success = true;
+            Issues = new List<string>();
+            Success = true;
         }
 
         public bool Success { get; private set; }
@@ -13,8 +13,8 @@
 
         public void AddIssue(string issueMessage)
         {
-            this.Issues.Add(issueMessage);
-            this.Success = false;
+            Issues.Add(issueMessage);
+            Success = false;
         }
     }
 }

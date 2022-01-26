@@ -1,4 +1,5 @@
-﻿using KenshiWikiValidator.Validators;
+﻿using KenshiWikiValidator.Features.ArticleValidation.Validators;
+using KenshiWikiValidator.Features.WikiTemplates;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 

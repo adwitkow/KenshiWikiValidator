@@ -1,4 +1,4 @@
-﻿namespace KenshiWikiValidator
+﻿namespace KenshiWikiValidator.Features.WikiTemplates
 {
     public class TemplateParser
     {

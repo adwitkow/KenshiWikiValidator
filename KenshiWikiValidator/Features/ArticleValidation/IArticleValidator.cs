@@ -1,4 +1,6 @@
-﻿namespace KenshiWikiValidator
+﻿using KenshiWikiValidator.Features.ArticleValidation;
+
+namespace KenshiWikiValidator
 {
     internal interface IArticleValidator
     {
