@@ -1,4 +1,4 @@
-﻿{{Weapon|class = Katana|blood loss = 1.20|indoors = +4|damage_robots = -40|damage_humans = +10|reach = 16|description = Smaller and lighter, usually used as a sidearm for backup.  It's worth noting that although short, it has a major advantage when fighting indoors against longer weapons.|armour penetration = -30|attack = +2|defence = -2}}
+﻿{{Weapon|string id = 1020-gamedata.base|class = Katana|blood loss = 1.20|indoors = +4|damage_robots = -40|damage_humans = +10|reach = 16|description = Smaller and lighter, usually used as a sidearm for backup.  It's worth noting that although short, it has a major advantage when fighting indoors against longer weapons.|armour penetration = -30|attack = +2|defence = -2}}
 
 A '''Wakizashi''' is a [[Katanas|Katana Class]] weapon. This is the smallest katana, giving it a major advantage indoors. Though like all katanas it has a large penalty against armour and robots. Its light weight and low damage makes it a common choice for training [[Dexterity]].
 
