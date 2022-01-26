@@ -2,6 +2,6 @@
 {
     public interface IValidationRule
     {
-        RuleResult Execute(string content);
+        RuleResult Execute(string title, string content);
     }
 }

@@ -45,7 +45,7 @@ async Task ValidateArticle(IArticleValidator articleValidator)
         await Task.Delay(1000);
         await page.RefreshAsync(PageQueryOptions.FetchContent);
 
-        var result = articleValidator.Validate(page.Content);
+        var result = articleValidator.Validate(page.Title, page.Content);
 
         foreach (var issue in result.Issues)
         {

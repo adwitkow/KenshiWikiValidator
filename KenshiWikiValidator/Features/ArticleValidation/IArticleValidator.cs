@@ -6,6 +6,6 @@ namespace KenshiWikiValidator
     {
         public string CategoryName { get; }
 
-        ArticleValidationResult Validate(string articleContent);
+        ArticleValidationResult Validate(string title, string content);
     }
 }

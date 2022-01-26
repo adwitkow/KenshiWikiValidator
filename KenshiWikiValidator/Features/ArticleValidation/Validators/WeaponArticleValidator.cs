@@ -20,13 +20,13 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators
 
         public string CategoryName => "Weapons"; // TODO: Should be melee weapons, actually
 
-        public ArticleValidationResult Validate(string articleContent)
+        public ArticleValidationResult Validate(string title, string articleContent)
         {
             var result = new ArticleValidationResult();
             var results = new List<RuleResult>();
             foreach (var rule in rules)
             {
-                results.Add(rule.Execute(articleContent));
+                results.Add(rule.Execute(title, articleContent));
             }
 
             var success = !results.Any(result => !result.Success);

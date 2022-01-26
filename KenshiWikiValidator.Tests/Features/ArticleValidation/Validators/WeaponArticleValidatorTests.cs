@@ -25,7 +25,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators
         {
             var validator = new WeaponArticleValidator(this.templateParser);
 
-            var result = validator.Validate(this.incorrectResourceContent);
+            var result = validator.Validate("Wakizashi", this.incorrectResourceContent);
 
             Assert.IsNotNull(result);
         }
@@ -35,7 +35,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators
         {
             var validator = new WeaponArticleValidator(this.templateParser);
 
-            var result = validator.Validate(this.incorrectResourceContent);
+            var result = validator.Validate("Wakizashi", this.incorrectResourceContent);
 
             Assert.IsFalse(result.Success);
         }
@@ -45,7 +45,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators
         {
             var validator = new WeaponArticleValidator(this.templateParser);
 
-            var result = validator.Validate(this.correctResourceContent);
+            var result = validator.Validate("Wakizashi", this.correctResourceContent);
 
             Assert.IsTrue(result.Success);
         }
