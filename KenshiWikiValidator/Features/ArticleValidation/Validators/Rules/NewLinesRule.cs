@@ -27,7 +27,7 @@
             return result;
         }
 
-        private void HandleIgnores(RuleResult result, StringReader reader, string line)
+        private static void HandleIgnores(RuleResult result, StringReader reader, string line)
         {
             if (line.StartsWith("<gallery"))
             {
@@ -37,11 +37,11 @@
                     {
                         result.AddIssue("Gallery has empty lines.");
                     }
-                    line = reader.ReadLine();
+                    line = reader.ReadLine()!;
                 }
             }
 
-            if (line.Contains("[[Category") || line.Contains("[[ru:"))
+            if (line!.Contains("[[Category") || line.Contains("[[ru:"))
             {
                 while (line != null)
                 {
@@ -55,7 +55,7 @@
                         result.AddIssue("Empty lines among categories/language links");
                     }
 
-                    line = reader.ReadLine();
+                    line = reader.ReadLine()!;
                 }
             }
         }

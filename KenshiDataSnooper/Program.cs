@@ -41,7 +41,7 @@ void WriteDetails(IEnumerable<IItem> items, ItemType type)
     Directory.CreateDirectory(type.ToString());
     foreach (var item in itemsOfType)
     {
-        var trimmedName = item.Name.Replace("/", string.Empty).Replace("|", string.Empty).Trim();
+        var trimmedName = item.Name!.Replace("/", string.Empty).Replace("|", string.Empty).Trim();
         var directory = Path.Combine(type.ToString(), trimmedName);
         Directory.CreateDirectory(directory);
         File.WriteAllText(Path.Combine(directory, $"{trimmedName}-{item.StringId}.json"), JsonConvert.SerializeObject(item, Formatting.Indented));
@@ -62,7 +62,7 @@ void WriteDetails(IEnumerable<IItem> items, ItemType type)
                 result = $@"{{{{Blueprint
 | name = {item.Name}
 | color = {color}
-| description = {item.Properties["description"]}
+| description = {item.Properties!["description"]}
 | level = 1
 | value = ???
 | sell value = ???

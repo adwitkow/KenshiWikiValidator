@@ -10,8 +10,8 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
     [TestClass]
     public class StringIdRuleTests
     {
-        private string incorrectResourceContent;
-        private string correctResourceContent;
+        private string? incorrectResourceContent;
+        private string? correctResourceContent;
 
         [TestInitialize]
         public void Initialize()
@@ -33,7 +33,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
             itemRepository.Setup(repo => repo.GetItems()).Returns(new[] { wakizashi });
             var rule = new StringIdRule(itemRepository.Object);
 
-            var result = rule.Execute("Wakizashi", this.correctResourceContent);
+            var result = rule.Execute("Wakizashi", this.correctResourceContent!);
 
             Assert.IsTrue(result.Success);
         }
@@ -51,7 +51,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
             itemRepository.Setup(repo => repo.GetItems()).Returns(new[] { wakizashi });
             var rule = new StringIdRule(itemRepository.Object);
 
-            var result = rule.Execute("Wakizashi", this.incorrectResourceContent);
+            var result = rule.Execute("Wakizashi", this.incorrectResourceContent!);
 
             Assert.IsFalse(result.Success);
         }

@@ -12,7 +12,7 @@ var itemRepository = new ItemRepository();
 var templateParser = new TemplateParser();
 var validators = new List<IArticleValidator>()
 {
-    new WeaponArticleValidator(templateParser, itemRepository),
+    new WeaponArticleValidator(itemRepository),
 };
 
 Console.WriteLine("Loading items...");
@@ -27,7 +27,7 @@ foreach (var articleValidator in validators)
     await ValidateArticle(articleValidator);
 }
 
-async Task ValidateArticle(IArticleValidator articleValidator)
+static async Task ValidateArticle(IArticleValidator articleValidator)
 {
     var category = articleValidator.CategoryName;
     if (Directory.Exists(category))

@@ -22,6 +22,51 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
             return itemSources;
         }
 
+        private static void ConvertWeaponSources(DataItem baseItem, ItemSources sources, DataItem character)
+        {
+            // value0 is quantity
+            // value1 is slot
+            // value2 is chance
+
+            // 0 quantity or negative quantity makes the spawning calculations ignore that weapon entirely.
+            // It is not factored into the chances, nor does it allow a chance to spawn with no weapons.
+            var viableWeapons = character
+                .GetReferences("weapons")
+                .Where(weaponReference => weaponReference.Value0 > 0);
+
+            if (!viableWeapons.Any(weapon => weapon.TargetId.Equals(baseItem.StringId)))
+            {
+                return;
+            }
+
+            var reference = new ItemReference()
+            {
+                Name = character.Name,
+                StringId = character.StringId,
+            };
+
+            // On the chance value, this is a case of 0 = 100.
+            // So if something with a 0 chance and a greater than 0 quantity is at the top of the list,
+            // nothing else can spawn in that slot.
+            var firstWeapon = viableWeapons.First();
+            int firstWeaponChance = firstWeapon.Value2;
+            if (firstWeaponChance == 0 || firstWeaponChance == 100)
+            {
+                if (firstWeapon.TargetId.Equals(baseItem.StringId))
+                {
+                    sources.AlwaysWornBy.Add(reference);
+                    return;
+                }
+                else
+                {
+                    // never worn
+                    return;
+                }
+            }
+
+            sources.PotentiallyWornBy.Add(reference); // TODO: Verify this
+        }
+
         private static bool IsItemTheOnlyOne(DataItem baseItem, IEnumerable<KeyValuePair<DataReference, DataItem>> clothingItemsInSlot)
         {
             return clothingItemsInSlot.Count() == 1 && clothingItemsInSlot.First().Value.Equals(baseItem);
@@ -97,51 +142,6 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
             }
 
             return sources;
-        }
-
-        private void ConvertWeaponSources(DataItem baseItem, ItemSources sources, DataItem character)
-        {
-            // value0 is quantity
-            // value1 is slot
-            // value2 is chance
-
-            // 0 quantity or negative quantity makes the spawning calculations ignore that weapon entirely.
-            // It is not factored into the chances, nor does it allow a chance to spawn with no weapons.
-            var viableWeapons = character
-                .GetReferences("weapons")
-                .Where(weaponReference => weaponReference.Value0 > 0);
-
-            if (!viableWeapons.Any(weapon => weapon.TargetId.Equals(baseItem.StringId)))
-            {
-                return;
-            }
-
-            var reference = new ItemReference()
-            {
-                Name = character.Name,
-                StringId = character.StringId,
-            };
-
-            // On the chance value, this is a case of 0 = 100.
-            // So if something with a 0 chance and a greater than 0 quantity is at the top of the list,
-            // nothing else can spawn in that slot.
-            var firstWeapon = viableWeapons.First();
-            int firstWeaponChance = firstWeapon.Value2;
-            if (firstWeaponChance == 0 || firstWeaponChance == 100)
-            {
-                if (firstWeapon.TargetId.Equals(baseItem.StringId))
-                {
-                    sources.AlwaysWornBy.Add(reference);
-                    return;
-                }
-                else
-                {
-                    // never worn
-                    return;
-                }
-            }
-
-            sources.PotentiallyWornBy.Add(reference); // TODO: Verify this
         }
 
         private void ConvertArmourSources(DataItem baseItem, ItemSources sources, DataItem character)

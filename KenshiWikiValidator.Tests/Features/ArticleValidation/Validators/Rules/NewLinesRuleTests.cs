@@ -10,23 +10,21 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
     [TestClass]
     public class NewLinesRuleTests
     {
-        private string incorrectResourceContent;
-        private string correctResourceContent;
-        private TemplateParser templateParser;
+        private string? incorrectResourceContent;
+        private string? correctResourceContent;
 
         [TestInitialize]
         public void Initialize()
         {
             this.incorrectResourceContent = File.ReadAllText(@"TestResources\WeaponArticleValidatorIncorrectResource.txt");
             this.correctResourceContent = File.ReadAllText(@"TestResources\WeaponArticleValidatorCorrectResource.txt");
-            this.templateParser = new TemplateParser();
         }
 
         [TestMethod]
         public void ShouldCatchSingleLineTemplateSharingLineWithParagraph()
         {
             var rule = new NewLinesRule();
-            var line = this.incorrectResourceContent.Split(Environment.NewLine).First();
+            var line = this.incorrectResourceContent!.Split(Environment.NewLine).First();
 
             var result = rule.Execute("Wakizashi", line);
 
@@ -103,7 +101,7 @@ And another line of text";
             var rule = new NewLinesRule();
             var content = this.incorrectResourceContent;
 
-            var result = rule.Execute("Wakizashi", content);
+            var result = rule.Execute("Wakizashi", content!);
 
             Assert.IsFalse(result.Success);
         }
@@ -114,7 +112,7 @@ And another line of text";
             var rule = new NewLinesRule();
             var content = this.correctResourceContent;
 
-            var result = rule.Execute("Wakizashi", content);
+            var result = rule.Execute("Wakizashi", content!);
 
             Assert.IsTrue(result.Success);
         }

@@ -6,13 +6,10 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators
 {
     public class WeaponArticleValidator : IArticleValidator
     {
-        private readonly TemplateParser parser;
         private readonly IEnumerable<IValidationRule> rules;
 
-        public WeaponArticleValidator(TemplateParser parser, IItemRepository itemRepository)
+        public WeaponArticleValidator(IItemRepository itemRepository)
         {
-            this.parser = parser;
-
             rules = new List<IValidationRule>()
             {
                 new StringIdRule(itemRepository),

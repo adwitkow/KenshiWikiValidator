@@ -20,7 +20,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
             string? line;
             var matchingItems = itemRepository
                 .GetItems()
-                .Where(item => title.ToLower().Trim().Equals(item.Name.ToLower().Trim()))
+                .Where(item => title.ToLower().Trim().Equals(item.Name!.ToLower().Trim()))
                 .ToList();
             var stringIdFound = false;
             while ((line = reader.ReadLine()) != null)
