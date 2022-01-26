@@ -57,9 +57,11 @@ async Task ValidateArticle(IArticleValidator articleValidator)
 
         var result = articleValidator.Validate(page.Title, page.Content);
 
-        foreach (var issue in result.Issues)
+        var issueGroups = result.Issues.GroupBy(issue => issue);
+
+        foreach (var issueGroup in issueGroups)
         {
-            Console.WriteLine($"{page.Title}: {issue}");
+            Console.WriteLine($"{page.Title}: {issueGroup.Key} ({issueGroup.Count()})");
         }
     }
 }
