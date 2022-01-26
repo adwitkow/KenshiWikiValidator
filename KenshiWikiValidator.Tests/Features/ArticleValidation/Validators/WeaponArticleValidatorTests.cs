@@ -1,6 +1,9 @@
 ﻿using KenshiWikiValidator.Features.ArticleValidation.Validators;
+using KenshiWikiValidator.Features.DataItemConversion;
+using KenshiWikiValidator.Features.DataItemConversion.Models;
 using KenshiWikiValidator.Features.WikiTemplates;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System.IO;
 
 namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators
@@ -23,7 +26,15 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators
         [TestMethod]
         public void ShouldReturnArticleValidationResult()
         {
-            var validator = new WeaponArticleValidator(this.templateParser);
+            var wakizashi = new Weapon()
+            {
+                Name = "Wakizashi",
+                StringId = "1020-gamedata.base"
+            };
+
+            var itemRepository = new Mock<IItemRepository>();
+            itemRepository.Setup(repo => repo.GetItems()).Returns(new[] { wakizashi });
+            var validator = new WeaponArticleValidator(itemRepository.Object);
 
             var result = validator.Validate("Wakizashi", this.incorrectResourceContent);
 
@@ -33,7 +44,15 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators
         [TestMethod]
         public void ShouldNotSucceedForIncorrectResource()
         {
-            var validator = new WeaponArticleValidator(this.templateParser);
+            var wakizashi = new Weapon()
+            {
+                Name = "Wakizashi",
+                StringId = "1020-gamedata.base"
+            };
+
+            var itemRepository = new Mock<IItemRepository>();
+            itemRepository.Setup(repo => repo.GetItems()).Returns(new[] { wakizashi });
+            var validator = new WeaponArticleValidator(itemRepository.Object);
 
             var result = validator.Validate("Wakizashi", this.incorrectResourceContent);
 
@@ -41,9 +60,17 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators
         }
 
         [TestMethod]
-        public void ShouldNotSucceedForCorrectResource()
+        public void ShouldSucceedForCorrectResource()
         {
-            var validator = new WeaponArticleValidator(this.templateParser);
+            var wakizashi = new Weapon()
+            {
+                Name = "Wakizashi",
+                StringId = "1020-gamedata.base"
+            };
+
+            var itemRepository = new Mock<IItemRepository>();
+            itemRepository.Setup(repo => repo.GetItems()).Returns(new[] { wakizashi });
+            var validator = new WeaponArticleValidator(itemRepository.Object);
 
             var result = validator.Validate("Wakizashi", this.correctResourceContent);
 
