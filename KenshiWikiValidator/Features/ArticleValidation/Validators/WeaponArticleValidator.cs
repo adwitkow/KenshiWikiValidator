@@ -13,6 +13,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators
             this.rules = new List<IValidationRule>()
             {
                 new StringIdRule(itemRepository),
+                new ContainsBlueprintTemplateRule(itemRepository),
                 new NewLinesRule(),
             };
         }
