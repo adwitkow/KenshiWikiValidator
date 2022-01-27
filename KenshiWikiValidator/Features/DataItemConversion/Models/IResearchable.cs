@@ -6,6 +6,6 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Models
     {
         ItemReference? UnlockingResearch { get; set; }
 
-        IEnumerable<ItemReference>? BlueprintLocations { get; set; }
+        IEnumerable<ItemReference> BlueprintLocations { get; set; }
     }
 }
