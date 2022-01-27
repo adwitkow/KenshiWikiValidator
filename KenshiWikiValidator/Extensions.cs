@@ -12,7 +12,7 @@ namespace KenshiDataSnooper
                     .Any(val => val.TargetId == id));
         }
 
-        public static IEnumerable<DataItem> GetReferenceItems(this DataItem item, ItemRepository repository, string categoryName)
+        public static IEnumerable<DataItem> GetReferenceItems(this DataItem item, IItemRepository repository, string categoryName)
         {
             return item.GetReferences(categoryName)
                     .Select(cat => repository.GetDataItemByStringId(cat.TargetId));
