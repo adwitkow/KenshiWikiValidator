@@ -1,5 +1,6 @@
 ﻿using KenshiDataSnooper;
 using KenshiWikiValidator.Features.DataItemConversion;
+using KenshiWikiValidator.Features.DataItemConversion.Builders.Components;
 using KenshiWikiValidator.Features.DataItemConversion.Models;
 using KenshiWikiValidator.Features.WikiTemplates;
 using OpenConstructionSet.Models;
@@ -9,10 +10,12 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
     public class ContainsBlueprintTemplateRule : ContainsTemplateRuleBase
     {
         private readonly IItemRepository itemRepository;
+        private readonly BlueprintLocationsConverter blueprintLocationsConverter;
 
         public ContainsBlueprintTemplateRule(IItemRepository itemRepository)
         {
             this.itemRepository = itemRepository;
+            this.blueprintLocationsConverter = new BlueprintLocationsConverter(itemRepository);
         }
 
         protected override WikiTemplate PrepareTemplate(ArticleData data)
@@ -48,7 +51,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
                 templateProperties.Add("prerequisites", string.Empty);
                 templateProperties.Add("sell value", "???");
                 templateProperties.Add("new items", item.Name!);
-                templateProperties.Add("vendors", "TODO");
+                templateProperties.Add("locations", "TODO");
             }
             else
             {
@@ -63,17 +66,27 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
                 var costs = research.GetReferences("cost")
                     .ToDictionary(reference => reference, reference => this.itemRepository.GetDataItemByStringId(reference.TargetId));
 
+                // TODO: Remove these
+                var vendors = this.itemRepository.GetReferencingDataItemsFor(research);
+                if (vendors.Any(vendor => vendor.Type != ItemType.VendorList))
+                {
+                    var invalidVendors = vendors.Where(vendor => vendor.Type != ItemType.VendorList);
+                    throw new InvalidOperationException($"There are other types than just vendors containing '{research.Name}'");
+                }
+
+                var blueprintLocations = this.blueprintLocationsConverter.Convert(research, "blueprints");
+
                 if (cost != 0)
                 {
                     templateProperties.Add("name", research.Name!);
                     templateProperties.Add("color", color);
                     templateProperties.Add("description", research.Values["description"].ToString()!);
                     templateProperties.Add("level", research.Values["level"].ToString()!);
-                    templateProperties.Add("value", cost.ToString());
+                    templateProperties.Add("value", string.Format("{0:n0}", cost));
                     templateProperties.Add("prerequisites", string.Join(", ", requirements.Select(req => $"[[{req.Name}]]")));
-                    templateProperties.Add("sell value", (cost / 4).ToString());
+                    templateProperties.Add("sell value", string.Format("{0:n0}", cost / 4));
                     templateProperties.Add("new items", string.Join(", ", newItems.Select(newItem => $"[[{newItem.Name}]]")));
-                    templateProperties.Add("vendors", "TODO");
+                    templateProperties.Add("locations", string.Join(", ", blueprintLocations.Select(loc => $"[[{loc.Name}]]")));
                 }
             }
 

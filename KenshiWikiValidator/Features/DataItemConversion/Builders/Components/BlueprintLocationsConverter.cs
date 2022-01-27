@@ -7,9 +7,9 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
 {
     internal class BlueprintLocationsConverter
     {
-        private readonly ItemRepository itemRepository;
+        private readonly IItemRepository itemRepository;
 
-        public BlueprintLocationsConverter(ItemRepository itemRepository)
+        public BlueprintLocationsConverter(IItemRepository itemRepository)
         {
             this.itemRepository = itemRepository;
         }
@@ -34,23 +34,47 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
 
             foreach (var squad in squads)
             {
-                var towns = this.itemRepository.GetReferencingDataItemsFor(squad)
+                var factions = this.itemRepository.GetReferencingDataItemsFor(squad)
+                    .Where(item => item.Type == ItemType.Faction);
+
+                if (factions.Any())
+                {
+                    foreach (var faction in factions)
+                    {
+                        if (results.Any(reference => reference.StringId == faction.StringId))
+                        {
+                            continue;
+                        }
+
+                        var reference = new ItemReference()
+                        {
+                            StringId = faction.StringId,
+                            Name = $"{faction.Name} (Faction)",
+                        };
+
+                        results.Add(reference);
+                    }
+                }
+                else
+                {
+                    var towns = this.itemRepository.GetReferencingDataItemsFor(squad)
                     .Where(item => item.Type == ItemType.Town);
 
-                foreach (var town in towns)
-                {
-                    if (results.Any(reference => reference.StringId == town.StringId))
+                    foreach (var town in towns)
                     {
-                        continue;
+                        if (results.Any(reference => reference.StringId == town.StringId || town.Name.Contains("(override)")))
+                        {
+                            continue;
+                        }
+
+                        var reference = new ItemReference()
+                        {
+                            StringId = town.StringId,
+                            Name = town.Name,
+                        };
+
+                        results.Add(reference);
                     }
-
-                    var reference = new ItemReference()
-                    {
-                        StringId = town.StringId,
-                        Name = town.Name,
-                    };
-
-                    results.Add(reference);
                 }
             }
 
