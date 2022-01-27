@@ -75,7 +75,7 @@
             }
             else
             {
-                if (!wasPreviousLineEmpty && !(line.StartsWith("*") || previousLine.StartsWith("=")))
+                if (!wasPreviousLineEmpty && !(line.StartsWith("*") || previousLine.StartsWith("=") || previousLine.EndsWith("}}")))
                 {
                     result.AddIssue($"A newline is missing before line: '{line}'");
                 }
