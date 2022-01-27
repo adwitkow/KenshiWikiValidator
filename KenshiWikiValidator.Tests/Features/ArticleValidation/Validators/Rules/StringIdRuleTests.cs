@@ -33,7 +33,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
             itemRepository.Setup(repo => repo.GetItems()).Returns(new[] { wakizashi });
             var rule = new StringIdRule(itemRepository.Object);
 
-            var result = rule.Execute("Wakizashi", this.correctResourceContent!);
+            var result = rule.Execute("Wakizashi", this.correctResourceContent!, new ArticleData());
 
             Assert.IsTrue(result.Success);
         }
@@ -51,7 +51,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
             itemRepository.Setup(repo => repo.GetItems()).Returns(new[] { wakizashi });
             var rule = new StringIdRule(itemRepository.Object);
 
-            var result = rule.Execute("Wakizashi", this.incorrectResourceContent!);
+            var result = rule.Execute("Wakizashi", this.incorrectResourceContent!, new ArticleData());
 
             Assert.IsFalse(result.Success);
         }

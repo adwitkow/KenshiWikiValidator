@@ -2,7 +2,7 @@
 {
     public class NewLinesRule : IValidationRule
     {
-        public RuleResult Execute(string title, string content)
+        public RuleResult Execute(string title, string content, ArticleData data)
         {
             var result = new RuleResult();
             using var reader = new StringReader(content);

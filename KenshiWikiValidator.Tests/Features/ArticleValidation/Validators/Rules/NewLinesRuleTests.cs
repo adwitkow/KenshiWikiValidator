@@ -26,7 +26,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
             var rule = new NewLinesRule();
             var line = this.incorrectResourceContent!.Split(Environment.NewLine).First();
 
-            var result = rule.Execute("Wakizashi", line);
+            var result = rule.Execute("Wakizashi", line, new ArticleData());
 
             Assert.IsFalse(result.Success);
         }
@@ -40,7 +40,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
 |test2 = 3
 }} And this is a test";
 
-            var result = rule.Execute("Wakizashi", content);
+            var result = rule.Execute("Wakizashi", content, new ArticleData());
 
             Assert.IsFalse(result.Success);
         }
@@ -51,7 +51,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
             var rule = new NewLinesRule();
             var line = "{{Test}}";
 
-            var result = rule.Execute("Wakizashi", line);
+            var result = rule.Execute("Wakizashi", line, new ArticleData());
 
             Assert.IsTrue(result.Success);
         }
@@ -64,7 +64,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
 
 And another line of text";
 
-            var result = rule.Execute("Wakizashi", line);
+            var result = rule.Execute("Wakizashi", line, new ArticleData());
 
             Assert.IsTrue(result.Success);
         }
@@ -78,7 +78,7 @@ And another line of text";
 
 And another line of text";
 
-            var result = rule.Execute("Wakizashi", line);
+            var result = rule.Execute("Wakizashi", line, new ArticleData());
 
             Assert.IsFalse(result.Success);
         }
@@ -90,7 +90,7 @@ And another line of text";
             var line = @"Text
 And another line of text";
 
-            var result = rule.Execute("Wakizashi", line);
+            var result = rule.Execute("Wakizashi", line, new ArticleData());
 
             Assert.IsFalse(result.Success);
         }
@@ -101,7 +101,7 @@ And another line of text";
             var rule = new NewLinesRule();
             var content = this.incorrectResourceContent;
 
-            var result = rule.Execute("Wakizashi", content!);
+            var result = rule.Execute("Wakizashi", content!, new ArticleData());
 
             Assert.IsFalse(result.Success);
         }
@@ -112,7 +112,7 @@ And another line of text";
             var rule = new NewLinesRule();
             var content = this.correctResourceContent;
 
-            var result = rule.Execute("Wakizashi", content!);
+            var result = rule.Execute("Wakizashi", content!, new ArticleData());
 
             Assert.IsTrue(result.Success);
         }
