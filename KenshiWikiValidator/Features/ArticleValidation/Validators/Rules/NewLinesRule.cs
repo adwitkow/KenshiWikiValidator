@@ -12,9 +12,9 @@
             var previousLine = string.Empty;
             while (line != null)
             {
-                HandleIgnores(result, reader, line);
-                HandleTemplates(result, reader, line);
-                HandleTables(result, reader, line);
+                line = HandleIgnores(result, reader, line);
+                line = HandleTemplates(result, reader, line);
+                line = HandleTables(result, reader, line);
 
                 if (!firstLine)
                 {
@@ -29,28 +29,25 @@
             return result;
         }
 
-        private static void HandleIgnores(RuleResult result, StringReader reader, string line)
+        private static string HandleIgnores(RuleResult result, StringReader reader, string line)
         {
             line = HandleMarkup("gallery", result, reader, line);
             line = HandleMarkup("tabview", result, reader, line);
 
             if (line!.Contains("[[Category") || line.Contains("[[ru:"))
             {
-                while (line != null)
+                if (!(line.StartsWith("[[") && line.EndsWith("]]")))
                 {
-                    if (!(line.StartsWith("[[") && line.EndsWith("]]")))
-                    {
-                        result.AddIssue("Not enough newlines among categories/language links");
-                    }
+                    result.AddIssue("Not enough newlines among categories/language links");
+                }
 
-                    if (string.IsNullOrEmpty(line))
-                    {
-                        result.AddIssue("Empty lines among categories/language links");
-                    }
-
-                    line = reader.ReadLine()!;
+                if (string.IsNullOrEmpty(line))
+                {
+                    result.AddIssue("Empty lines among categories/language links");
                 }
             }
+
+            return line!;
         }
 
         private static string HandleMarkup(string markupName, RuleResult result, StringReader reader, string line)
@@ -71,7 +68,7 @@
             return line!;
         }
 
-        private static bool HandleNewlines(RuleResult result, string line, string previousLine)
+        private static void HandleNewlines(RuleResult result, string line, string previousLine)
         {
             var wasPreviousLineEmpty = string.IsNullOrWhiteSpace(previousLine);
             if (string.IsNullOrEmpty(line.Trim()))
@@ -83,28 +80,24 @@
             }
             else
             {
-                if (!wasPreviousLineEmpty && !(line.StartsWith("*") || previousLine.StartsWith("=") || previousLine.EndsWith("}}") || previousLine.EndsWith("]]")))
+                if (!wasPreviousLineEmpty && !(line.StartsWith("*") || line.StartsWith("__") || previousLine.StartsWith("=") || previousLine.EndsWith("}}") || previousLine.EndsWith("]]")))
                 {
                     result.AddIssue($"A newline is missing before line: '{line}'");
                 }
-
-                wasPreviousLineEmpty = false;
             }
-
-            return wasPreviousLineEmpty;
         }
 
-        private static void HandleTemplates(RuleResult result, StringReader reader, string? line)
+        private static string HandleTemplates(RuleResult result, StringReader reader, string? line)
         {
-            HandleStructure(result, reader, line, "{{", "}}");
+            return HandleStructure(result, reader, line, "{{", "}}");
         }
 
-        private static void HandleTables(RuleResult result, StringReader reader, string? line)
+        private static string HandleTables(RuleResult result, StringReader reader, string? line)
         {
-            HandleStructure(result, reader, line, "{|", "|}");
+            return HandleStructure(result, reader, line, "{|", "|}");
         }
 
-        private static void HandleStructure(RuleResult result, StringReader reader, string? line, string opening, string ending)
+        private static string HandleStructure(RuleResult result, StringReader reader, string? line, string opening, string ending)
         {
             var wasPreviousLineEmpty = false;
             if (line!.Contains(opening))
@@ -127,7 +120,7 @@
 
                 if (line == null)
                 {
-                    return;
+                    return line!;
                 }
 
                 var indexOfTemplateStart = line.IndexOf(opening);
@@ -137,6 +130,8 @@
                     result.AddIssue($"There is a paragraph sharing a line with a template ('{line}')");
                 }
             }
+
+            return line;
         }
     }
 }
