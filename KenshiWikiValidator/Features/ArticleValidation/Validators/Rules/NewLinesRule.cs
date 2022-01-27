@@ -8,8 +8,8 @@
             using var reader = new StringReader(content);
             var line = reader.ReadLine();
 
-            var wasPreviousLineEmpty = false;
             var firstLine = true;
+            var previousLine = string.Empty;
             while (line != null)
             {
                 HandleIgnores(result, reader, line);
@@ -18,10 +18,11 @@
 
                 if (!firstLine)
                 {
-                    wasPreviousLineEmpty = HandleNewlines(result, line, wasPreviousLineEmpty);
+                    HandleNewlines(result, line, previousLine);
                 }
 
                 firstLine = false;
+                previousLine = line;
                 line = reader.ReadLine();
             }
 
@@ -62,20 +63,19 @@
             }
         }
 
-        private static bool HandleNewlines(RuleResult result, string line, bool wasPreviousLineEmpty)
+        private static bool HandleNewlines(RuleResult result, string line, string previousLine)
         {
+            var wasPreviousLineEmpty = string.IsNullOrWhiteSpace(previousLine);
             if (string.IsNullOrEmpty(line.Trim()))
             {
                 if (wasPreviousLineEmpty)
                 {
                     result.AddIssue("There is a double newline");
                 }
-
-                wasPreviousLineEmpty = true;
             }
             else
             {
-                if (!wasPreviousLineEmpty && !line.StartsWith("*"))
+                if (!wasPreviousLineEmpty && !(line.StartsWith("*") || previousLine.StartsWith("=")))
                 {
                     result.AddIssue($"A newline is missing before line: '{line}'");
                 }
