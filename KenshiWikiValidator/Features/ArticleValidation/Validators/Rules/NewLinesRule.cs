@@ -31,18 +31,8 @@
 
         private static void HandleIgnores(RuleResult result, StringReader reader, string line)
         {
-            if (line.StartsWith("<gallery"))
-            {
-                while (line != null && !line.StartsWith("</gallery"))
-                {
-                    if (string.IsNullOrEmpty(line))
-                    {
-                        result.AddIssue("Gallery has empty lines.");
-                    }
-
-                    line = reader.ReadLine()!;
-                }
-            }
+            line = HandleMarkup("gallery", result, reader, line);
+            line = HandleMarkup("tabview", result, reader, line);
 
             if (line!.Contains("[[Category") || line.Contains("[[ru:"))
             {
@@ -63,6 +53,24 @@
             }
         }
 
+        private static string HandleMarkup(string markupName, RuleResult result, StringReader reader, string line)
+        {
+            if (line.StartsWith($"<{markupName}"))
+            {
+                while (line != null && !line.StartsWith($"</{markupName}"))
+                {
+                    if (string.IsNullOrEmpty(line))
+                    {
+                        result.AddIssue($"{markupName} has empty lines.");
+                    }
+
+                    line = reader.ReadLine()!;
+                }
+            }
+
+            return line!;
+        }
+
         private static bool HandleNewlines(RuleResult result, string line, string previousLine)
         {
             var wasPreviousLineEmpty = string.IsNullOrWhiteSpace(previousLine);
@@ -75,7 +83,7 @@
             }
             else
             {
-                if (!wasPreviousLineEmpty && !(line.StartsWith("*") || previousLine.StartsWith("=") || previousLine.EndsWith("}}")))
+                if (!wasPreviousLineEmpty && !(line.StartsWith("*") || previousLine.StartsWith("=") || previousLine.EndsWith("}}") || previousLine.EndsWith("]]")))
                 {
                     result.AddIssue($"A newline is missing before line: '{line}'");
                 }
@@ -122,8 +130,9 @@
                     return;
                 }
 
+                var indexOfTemplateStart = line.IndexOf(opening);
                 var indexOfTemplateEnd = line.LastIndexOf(ending) + ending.Length;
-                if (indexOfTemplateEnd < line.Trim().Length)
+                if (indexOfTemplateStart > 0 || indexOfTemplateEnd < line.Trim().Length)
                 {
                     result.AddIssue($"There is a paragraph sharing a line with a template ('{line}')");
                 }

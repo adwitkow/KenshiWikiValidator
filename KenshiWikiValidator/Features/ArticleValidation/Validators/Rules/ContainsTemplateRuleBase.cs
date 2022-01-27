@@ -19,7 +19,6 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
 
             if (template is null)
             {
-                result.AddIssue($"Cannot check the templates since string id is not available in the article.");
                 return result;
             }
 
