@@ -25,6 +25,12 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators
                 var issues = results.SelectMany(result => result.Issues);
                 result.Issues = issues;
             }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"{title} is OK!");
+                Console.ResetColor();
+            }
 
             return result;
         }
