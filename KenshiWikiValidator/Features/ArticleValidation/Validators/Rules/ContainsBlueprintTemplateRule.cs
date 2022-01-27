@@ -65,9 +65,9 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
 
                 if (cost != 0)
                 {
-                    templateProperties.Add("name", item.Name!);
+                    templateProperties.Add("name", research.Name!);
                     templateProperties.Add("color", color);
-                    templateProperties.Add("description", item.Properties["description"].ToString()!);
+                    templateProperties.Add("description", research.Values["description"].ToString()!);
                     templateProperties.Add("level", research.Values["level"].ToString()!);
                     templateProperties.Add("value", cost.ToString());
                     templateProperties.Add("prerequisites", string.Join(", ", requirements.Select(req => $"[[{req.Name}]]")));
