@@ -25,7 +25,13 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
 
             var correctBlueprintString = this.templateBuilder.Build(template);
 
-            File.WriteAllText(Path.Combine(template.Name, $"{title}.txt"), correctBlueprintString);
+            var templateDirectory = Path.Combine("templates", template.Name);
+            if (!Directory.Exists(templateDirectory))
+            {
+                Directory.CreateDirectory(templateDirectory);
+            }
+
+            File.WriteAllText(Path.Combine(templateDirectory, $"{title}.txt"), correctBlueprintString);
 
             if (!content.Contains(correctBlueprintString))
             {
