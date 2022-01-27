@@ -47,6 +47,10 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
                             {
                                 result.AddIssue($"String id '{stringId}' is incorrect in the article. Should be corrected to one of the following: [{string.Join(", ", matchingItems.Select(item => item.StringId))}]");
                             }
+                            else
+                            {
+                                data.Add("string id", stringId); // TODO: this will probably need to have some exceptions
+                            }
 
                             stringIdFound = true;
                         }
