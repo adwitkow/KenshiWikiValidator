@@ -43,6 +43,11 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
             var templateProperties = new SortedList<string, string>();
             if (researchable.UnlockingResearch is null)
             {
+                if (!researchable.BlueprintLocations.Any())
+                {
+                    return null!;
+                }
+
                 templateProperties.Add("name", item.Name!);
                 templateProperties.Add("color", color);
                 templateProperties.Add("description", item.Properties["description"].ToString()!);
@@ -51,7 +56,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
                 templateProperties.Add("prerequisites", string.Empty);
                 templateProperties.Add("sell value", "???");
                 templateProperties.Add("new items", item.Name!);
-                templateProperties.Add("locations", "TODO");
+                templateProperties.Add("locations", string.Join(", ", researchable.BlueprintLocations.Select(loc => $"[[{loc.Name}]]")));
             }
             else
             {
