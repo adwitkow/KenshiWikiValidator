@@ -123,7 +123,7 @@
                 }
 
                 var indexOfTemplateEnd = line.LastIndexOf(ending) + ending.Length;
-                if (indexOfTemplateEnd < line.Length)
+                if (indexOfTemplateEnd < line.Trim().Length)
                 {
                     result.AddIssue($"There is a paragraph sharing a line with a template ('{line}')");
                 }
