@@ -1,12 +1,10 @@
 ﻿using KenshiWikiValidator.Features.ArticleValidation.Validators.Rules;
 using KenshiWikiValidator.Features.DataItemConversion;
 using KenshiWikiValidator.Features.DataItemConversion.Models;
-using KenshiWikiValidator.Features.WikiTemplates;
+using KenshiWikiValidator.Features.DataItemConversion.Models.Components;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
 using System.IO;
-using System.Linq;
 
 namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
 {
@@ -26,14 +24,20 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
         [TestMethod]
         public void ShouldSucceedIfArticleContainsBlueprintTemplate()
         {
+            var wakizashiId = "wakizashiId";
+            var wakizashiResearchStringId = "wakizashiResearchStringId";
             var wakizashi = new Weapon()
             {
                 Name = "Wakizashi",
-                StringId = "1020-gamedata.base"
+                StringId = wakizashiId,
+                UnlockingResearch = new ItemReference() { Name = "Wakizashis", StringId = "wakizashiResearchStringId" },
             };
 
+
+
             var itemRepository = new Mock<IItemRepository>();
-            itemRepository.Setup(repo => repo.GetItemByStringId(It.IsAny<string>())).Returns(wakizashi);
+            itemRepository.Setup(repo => repo.GetItemByStringId(wakizashiId)).Returns(wakizashi);
+            itemRepository.Setup(repo => repo.GetItemByStringId(wakizashiResearchStringId)).Returns(wakizashi);
             var rule = new ContainsBlueprintTemplateRule(itemRepository.Object);
             var data = new ArticleData();
             data.Add("string id", "1020-gamedata.base");
