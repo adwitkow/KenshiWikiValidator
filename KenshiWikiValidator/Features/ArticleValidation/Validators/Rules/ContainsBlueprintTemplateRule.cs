@@ -73,10 +73,10 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
 
                 // TODO: Remove these
                 var vendors = this.itemRepository.GetReferencingDataItemsFor(research);
-                if (vendors.Any(vendor => vendor.Type != ItemType.VendorList))
+                if (vendors.Any(vendor => vendor.Type != ItemType.VendorList && vendor.Type != ItemType.Research))
                 {
-                    var invalidVendors = vendors.Where(vendor => vendor.Type != ItemType.VendorList);
-                    throw new InvalidOperationException($"There are other types than just vendors containing '{research.Name}'");
+                    var invalidVendors = vendors.Where(vendor => vendor.Type != ItemType.VendorList && vendor.Type != ItemType.Research);
+                    throw new InvalidOperationException($"There are other types than just vendors or research containing '{research.Name}'");
                 }
 
                 var blueprintLocations = this.blueprintLocationsConverter.Convert(research, "blueprints");
