@@ -25,12 +25,32 @@ Console.WriteLine();
 
 foreach (var articleValidator in validators)
 {
-    await ValidateArticle(articleValidator);
+    using var client = new WikiClient();
+    var pages = await RetrieveArticles(client, articleValidator.CategoryName);
+
+    foreach (var page in pages)
+    {
+        await Task.Delay(1000);
+        await page.RefreshAsync(PageQueryOptions.FetchContent);
+
+        ValidateArticle(page, articleValidator);
+    }
 }
 
-static async Task ValidateArticle(IArticleValidator articleValidator)
+static void ValidateArticle(WikiPage page, IArticleValidator articleValidator)
 {
-    var category = articleValidator.CategoryName;
+    var result = articleValidator.Validate(page.Title, page.Content);
+
+    var issueGroups = result.Issues.GroupBy(issue => issue);
+
+    foreach (var issueGroup in issueGroups)
+    {
+        Console.WriteLine($"{page.Title}: {issueGroup.Key} ({issueGroup.Count()})");
+    }
+}
+
+static async Task<IEnumerable<WikiPage>> RetrieveArticles(WikiClient client, string category)
+{
     if (Directory.Exists(category))
     {
         Directory.Delete(category, true);
@@ -38,7 +58,6 @@ static async Task ValidateArticle(IArticleValidator articleValidator)
 
     Directory.CreateDirectory(category);
 
-    using var client = new WikiClient();
     var site = new WikiaSite(client, "https://kenshi.fandom.com/api.php");
     await site.Initialization;
 
@@ -49,20 +68,5 @@ static async Task ValidateArticle(IArticleValidator articleValidator)
         PaginationSize = 20,
     };
 
-    var pages = await generator.EnumPagesAsync().ToListAsync();
-
-    foreach (var page in pages)
-    {
-        await Task.Delay(1000);
-        await page.RefreshAsync(PageQueryOptions.FetchContent);
-
-        var result = articleValidator.Validate(page.Title, page.Content);
-
-        var issueGroups = result.Issues.GroupBy(issue => issue);
-
-        foreach (var issueGroup in issueGroups)
-        {
-            Console.WriteLine($"{page.Title}: {issueGroup.Key} ({issueGroup.Count()})");
-        }
-    }
+    return await generator.EnumPagesAsync().ToListAsync();
 }
