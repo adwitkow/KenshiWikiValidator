@@ -2,8 +2,14 @@
 {
     public class ItemReference
     {
-        public string? StringId { get; set; }
+        public ItemReference(string stringId, string name)
+        {
+            this.StringId = stringId;
+            this.Name = name;
+        }
 
-        public string? Name { get; set; }
+        public string StringId { get; set; }
+
+        public string Name { get; set; }
     }
 }

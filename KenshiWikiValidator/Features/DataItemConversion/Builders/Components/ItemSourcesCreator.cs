@@ -38,11 +38,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
                 return;
             }
 
-            var reference = new ItemReference()
-            {
-                Name = character.Name,
-                StringId = character.StringId,
-            };
+            var reference = new ItemReference(character.StringId, character.Name);
 
             // On the chance value, this is a case of 0 = 100.
             // So if something with a 0 chance and a greater than 0 quantity is at the top of the list,
@@ -95,11 +91,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
 
                 foreach (var town in towns)
                 {
-                    var reference = new ItemReference()
-                    {
-                        StringId = town.StringId,
-                        Name = town.Name,
-                    };
+                    var reference = new ItemReference(town.StringId, town.Name);
 
                     if (itemSources.Shops.Any(shop => shop.StringId == town.StringId)
                         || itemSources.Loot.Any(loot => loot.StringId == town.StringId))
@@ -162,11 +154,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
                 return;
             }
 
-            var reference = new ItemReference()
-            {
-                Name = character.Name,
-                StringId = character.StringId,
-            };
+            var reference = new ItemReference(character.StringId, character.Name);
 
             if (IsItemTheOnlyOne(baseItem, spawnablePairs))
             {

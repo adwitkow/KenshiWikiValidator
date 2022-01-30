@@ -22,11 +22,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
             if (researchItems.Any())
             {
                 var research = researchItems.Single();
-                return new ItemReference()
-                {
-                    Name = research.Name,
-                    StringId = research.StringId,
-                };
+                return new ItemReference(research.StringId, research.Name);
             }
 
             return result;

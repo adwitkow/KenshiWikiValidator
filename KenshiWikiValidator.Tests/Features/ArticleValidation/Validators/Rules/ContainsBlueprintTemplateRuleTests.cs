@@ -30,7 +30,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
             {
                 Name = "Wakizashi",
                 StringId = wakizashiId,
-                UnlockingResearch = new ItemReference() { Name = "Wakizashis", StringId = "wakizashiResearchStringId" },
+                UnlockingResearch = new ItemReference(wakizashiResearchStringId, "Wakizashis")
             };
 
 
