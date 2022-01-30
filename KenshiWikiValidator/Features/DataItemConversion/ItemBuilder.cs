@@ -12,6 +12,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion
         private readonly ItemRepository itemRepository;
         private readonly WeaponBuilder weaponBuilder;
         private readonly ArmourBuilder armourBuilder;
+        private readonly SquadBuilder squadBuilder;
 
         private DataItem longestItem;
         private TimeSpan longestTime;
@@ -21,19 +22,20 @@ namespace KenshiWikiValidator.Features.DataItemConversion
             this.itemRepository = itemRepository;
 
             var itemSourcesCreator = new ItemSourcesCreator(itemRepository);
-            var blueprintLocationsConverter = new BlueprintLocationsConverter(itemRepository);
+            var blueprintSquadsConverter = new BlueprintSquadsConverter(itemRepository);
             var unlockingResearchConverter = new UnlockingResearchConverter(itemRepository);
 
             this.weaponBuilder = new WeaponBuilder(
                 itemRepository,
                 itemSourcesCreator,
-                blueprintLocationsConverter,
+                blueprintSquadsConverter,
                 unlockingResearchConverter);
             this.armourBuilder = new ArmourBuilder(
                 itemRepository,
                 itemSourcesCreator,
-                blueprintLocationsConverter,
+                blueprintSquadsConverter,
                 unlockingResearchConverter);
+            this.squadBuilder = new SquadBuilder(itemRepository);
 
             this.longestItem = null!;
             this.longestTime = TimeSpan.Zero;
@@ -41,7 +43,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion
 
         public IEnumerable<IItem> BuildItems()
         {
-            var items = this.itemRepository.GetDataItemsByTypes(ItemType.Weapon, ItemType.Armour);
+            var items = this.itemRepository.GetDataItemsByTypes(ItemType.Weapon, ItemType.Armour, ItemType.SquadTemplate);
 
             var results = new List<IItem>();
 
@@ -66,6 +68,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion
             {
                 ItemType.Weapon => this.weaponBuilder.Build(item),
                 ItemType.Armour => this.armourBuilder.Build(item),
+                ItemType.SquadTemplate => this.squadBuilder.Build(item),
                 _ => throw new ArgumentException($"ItemType {item.Type} cannot be converted", nameof(item)),
             };
 

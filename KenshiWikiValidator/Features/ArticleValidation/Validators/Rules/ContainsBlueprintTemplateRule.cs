@@ -9,12 +9,12 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
     public class ContainsBlueprintTemplateRule : ContainsTemplateRuleBase
     {
         private readonly IItemRepository itemRepository;
-        private readonly BlueprintLocationsConverter blueprintLocationsConverter;
+        private readonly BlueprintSquadsConverter blueprintSquadsConverter;
 
         public ContainsBlueprintTemplateRule(IItemRepository itemRepository)
         {
             this.itemRepository = itemRepository;
-            this.blueprintLocationsConverter = new BlueprintLocationsConverter(itemRepository);
+            this.blueprintSquadsConverter = new BlueprintSquadsConverter(itemRepository);
         }
 
         protected override WikiTemplate PrepareTemplate(ArticleData data)
@@ -42,10 +42,24 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
             var templateProperties = new SortedList<string, string>();
             if (researchable.UnlockingResearch is null)
             {
-                if (!researchable.BlueprintLocations.Any())
+                if (!researchable.BlueprintSquads.Any())
                 {
                     return null!;
                 }
+
+                var blueprintSquads = researchable.BlueprintSquads
+                    .Select(reference => this.itemRepository.GetItemByStringId(reference.StringId))
+                    .Cast<Squad>();
+                var shopSquads = blueprintSquads.Where(squad => squad.IsShop);
+                var lootReferences = blueprintSquads
+                    .Except(shopSquads)
+                    .SelectMany(squad => squad.Locations);
+
+                var shops = shopSquads.Select(squad => $"[[{squad.Name}]]");
+                var lootLocations = lootReferences
+                    .GroupBy(reference => reference.Name)
+                    .Select(group => group.First())
+                    .Select(reference => $"[[{reference.Name}]]");
 
                 templateProperties.Add("name", item.Name!);
                 templateProperties.Add("color", color);
@@ -55,7 +69,8 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
                 templateProperties.Add("prerequisites", string.Empty);
                 templateProperties.Add("sell value", "???");
                 templateProperties.Add("new items", item.Name!);
-                templateProperties.Add("locations", string.Join(", ", researchable.BlueprintLocations.Select(loc => $"[[{loc.Name}]]")));
+                templateProperties.Add("sold at", string.Join(", ", shops));
+                templateProperties.Add("looted from", string.Join(", ", lootLocations));
             }
             else
             {
@@ -78,7 +93,20 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
                     throw new InvalidOperationException($"There are other types than just vendors or research containing '{research.Name}'");
                 }
 
-                var blueprintLocations = this.blueprintLocationsConverter.Convert(research, "blueprints");
+                var blueprintSquadReferences = this.blueprintSquadsConverter.Convert(research, "blueprints");
+                var blueprintSquads = blueprintSquadReferences
+                    .Select(reference => this.itemRepository.GetItemByStringId(reference.StringId))
+                    .Cast<Squad>();
+                var shopSquads = blueprintSquads.Where(squad => squad.IsShop);
+                var lootReferences = blueprintSquads
+                    .Except(shopSquads)
+                    .SelectMany(squad => squad.Locations);
+
+                var shops = shopSquads.Select(squad => $"[[{squad.Name}]]");
+                var lootLocations = lootReferences
+                    .GroupBy(reference => reference.Name)
+                    .Select(group => group.First())
+                    .Select(reference => $"[[{reference.Name}]]");
 
                 if (cost != 0)
                 {
@@ -90,7 +118,8 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
                     templateProperties.Add("prerequisites", string.Join(", ", requirements.Select(req => $"[[{req.Name}]]")));
                     templateProperties.Add("sell value", string.Format("{0:n0}", cost / 4));
                     templateProperties.Add("new items", string.Join(", ", newItems.Select(newItem => $"[[{newItem.Name}]]")));
-                    templateProperties.Add("locations", string.Join(", ", blueprintLocations.Select(loc => $"[[{loc.Name}]]")));
+                    templateProperties.Add("sold at", string.Join(", ", shops));
+                    templateProperties.Add("looted from", string.Join(", ", lootLocations));
                 }
             }
 

@@ -10,19 +10,19 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
     {
         private readonly ItemRepository itemRepository;
         private readonly ItemSourcesCreator itemSourcesCreator;
-        private readonly BlueprintLocationsConverter blueprintLocationsConverter;
+        private readonly BlueprintSquadsConverter blueprintSquadsConverter;
         private readonly UnlockingResearchConverter unlockingResearchConverter;
 
         public WeaponBuilder(
             ItemRepository itemRepository,
             ItemSourcesCreator itemSourcesCreator,
-            BlueprintLocationsConverter blueprintLocationsConverter,
+            BlueprintSquadsConverter blueprintSquadsConverter,
             UnlockingResearchConverter unlockingResearchConverter)
         {
             this.itemRepository = itemRepository;
 
             this.itemSourcesCreator = itemSourcesCreator;
-            this.blueprintLocationsConverter = blueprintLocationsConverter;
+            this.blueprintSquadsConverter = blueprintSquadsConverter;
             this.unlockingResearchConverter = unlockingResearchConverter;
         }
 
@@ -32,13 +32,13 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
             var unlockingResearch = this.unlockingResearchConverter.Convert(baseItem);
             Console.WriteLine($" - Converting the unlocking research for {baseItem.Name} took {sw.Elapsed}");
 
-            var blueprintLocations = Enumerable.Empty<ItemReference>();
+            var blueprintSquads = Enumerable.Empty<ItemReference>();
             if (unlockingResearch is not null)
             {
                 var unlockingResearchItem = this.itemRepository.GetDataItemByStringId(unlockingResearch.StringId!);
 
                 sw.Restart();
-                blueprintLocations = this.blueprintLocationsConverter.Convert(unlockingResearchItem, "blueprints");
+                blueprintSquads = this.blueprintSquadsConverter.Convert(unlockingResearchItem, "blueprints");
                 Console.WriteLine($" - Converting the blueprint locations for {baseItem.Name} took {sw.Elapsed}");
             }
 
@@ -54,7 +54,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
                 Properties = baseItem.Values,
                 StringId = baseItem.StringId,
                 Sources = itemSources,
-                BlueprintLocations = blueprintLocations,
+                BlueprintSquads = blueprintSquads,
                 UnlockingResearch = unlockingResearch,
             };
         }

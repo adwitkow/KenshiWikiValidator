@@ -11,19 +11,19 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
     {
         private readonly ItemRepository itemRepository;
         private readonly ItemSourcesCreator itemSourcesCreator;
-        private readonly BlueprintLocationsConverter blueprintLocationsConverter;
+        private readonly BlueprintSquadsConverter blueprintSquadsConverter;
         private readonly UnlockingResearchConverter unlockingResearchConverter;
         private readonly CoverageConverter coverageConverter;
 
         public ArmourBuilder(
             ItemRepository itemRepository,
             ItemSourcesCreator itemSourcesCreator,
-            BlueprintLocationsConverter blueprintLocationsConverter,
+            BlueprintSquadsConverter blueprintSquadsConverter,
             UnlockingResearchConverter unlockingResearchConverter)
         {
             this.itemRepository = itemRepository;
             this.itemSourcesCreator = itemSourcesCreator;
-            this.blueprintLocationsConverter = blueprintLocationsConverter;
+            this.blueprintSquadsConverter = blueprintSquadsConverter;
             this.unlockingResearchConverter = unlockingResearchConverter;
 
             this.coverageConverter = new CoverageConverter();
@@ -49,7 +49,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
             Console.WriteLine($" - Converting the unlocking research for {baseItem.Name} took {sw.Elapsed}");
 
             sw.Restart();
-            var blueprintLocations = this.blueprintLocationsConverter.Convert(baseItem, "armour blueprints");
+            var blueprintSquads = this.blueprintSquadsConverter.Convert(baseItem, "armour blueprints");
             Console.WriteLine($" - Converting the blueprint locations for {baseItem.Name} took {sw.Elapsed}");
 
             sw.Restart();
@@ -67,7 +67,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
                 CraftedIn = crafting,
                 Sources = itemSources,
                 UnlockingResearch = unlockingResearch,
-                BlueprintLocations = blueprintLocations,
+                BlueprintSquads = blueprintSquads,
             };
         }
 

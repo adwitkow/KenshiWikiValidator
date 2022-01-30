@@ -3,9 +3,9 @@ using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.Features.DataItemConversion.Models
 {
-    public class Weapon : IItem, IResearchable
+    internal class Squad : IItem
     {
-        public ItemType Type => ItemType.Weapon;
+        public ItemType Type => ItemType.VendorList;
 
         public Dictionary<string, object>? Properties { get; set; }
 
@@ -13,10 +13,8 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Models
 
         public string? Name { get; set; }
 
-        public ItemSources? Sources { get; set; }
+        public bool IsShop { get; set; }
 
-        public ItemReference? UnlockingResearch { get; set; }
-
-        public IEnumerable<ItemReference> BlueprintSquads { get; set; }
+        public IEnumerable<ItemReference> Locations { get; set; }
     }
 }
