@@ -1,7 +1,7 @@
 ﻿using KenshiWikiValidator.Features.DataItemConversion;
 using OpenConstructionSet.Data.Models;
 
-namespace KenshiDataSnooper
+namespace KenshiWikiValidator
 {
     public static class Extensions
     {

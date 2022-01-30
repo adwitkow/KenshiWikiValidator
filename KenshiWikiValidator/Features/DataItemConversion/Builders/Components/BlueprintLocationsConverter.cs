@@ -1,5 +1,4 @@
-﻿using KenshiDataSnooper;
-using KenshiWikiValidator.Features.DataItemConversion.Models.Components;
+﻿using KenshiWikiValidator.Features.DataItemConversion.Models.Components;
 using OpenConstructionSet.Data.Models;
 using OpenConstructionSet.Models;
 

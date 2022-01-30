@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using KenshiDataSnooper;
 using KenshiWikiValidator.Features.DataItemConversion.Builders.Components;
 using KenshiWikiValidator.Features.DataItemConversion.Models;
 using KenshiWikiValidator.Features.DataItemConversion.Models.Components;
