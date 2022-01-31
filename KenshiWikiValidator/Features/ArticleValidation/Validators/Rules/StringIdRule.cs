@@ -15,7 +15,9 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
         {
             var result = new RuleResult();
 
-            if (!content.Contains("{{Weapon") && !content.Contains("{{Armour"))
+            var validTemplates = new[] { "Weapon", "Armour", "Traders" };
+
+            if (!validTemplates.Any(template => content.Contains("{{" + template)))
             {
                 return result;
             }
