@@ -24,14 +24,34 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
 
             using var reader = new StringReader(content);
 
+            // TODO: Cleanup
+
             string? line;
             var matchingItems = this.itemRepository
-                .GetItems()
+                .GetDataItems()
                 .Where(item => title.ToLower().Trim().Equals(item.Name!.ToLower().Trim()))
                 .ToList();
             var stringIdFound = false;
             while ((line = reader.ReadLine()) != null)
             {
+                if (line.Contains("fcs_name"))
+                {
+                    var pairs = line.Split("|");
+                    var elements = pairs.SelectMany(pair => pair.Split("=")).ToArray();
+                    for (var i = 0; i < elements.Length; i++)
+                    {
+                        var element = elements[i].Trim();
+                        if (element.Contains("fcs_name"))
+                        {
+                            var fcsName = elements[i + 1].Trim();
+                            matchingItems = this.itemRepository
+                                .GetDataItems()
+                                .Where(item => item.Name.ToLower() == fcsName.ToLower())
+                                .ToList();
+                        }
+                    }
+                }
+
                 if (line.Contains("string id"))
                 {
                     var pairs = line.Split("|");
@@ -45,7 +65,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
 
                             var matchingItem = matchingItems.FirstOrDefault(item => item.StringId == stringId);
 
-                            if (matchingItem is null)
+                            if (matchingItem is null && matchingItems.Any())
                             {
                                 result.AddIssue($"String id '{stringId}' is incorrect in the article. Should be corrected to one of the following: [{string.Join(", ", matchingItems.Select(item => item.StringId))}]");
                             }
@@ -62,7 +82,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
 
             if (!stringIdFound)
             {
-                result.AddIssue($"No string id! Most likely string id: [{string.Join(", ", matchingItems.Select(item => item.StringId))}]");
+                result.AddIssue($"No string id! Most likely string id: [{string.Join(", ", matchingItems.Select(item => $"string id = {item.StringId}|"))}]");
             }
 
             return result;
