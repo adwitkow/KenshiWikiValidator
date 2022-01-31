@@ -12,6 +12,7 @@ var itemRepository = new ItemRepository();
 var templateParser = new TemplateParser();
 var validators = new List<IArticleValidator>()
 {
+    new TownResidentArticleValidator(itemRepository),
     new WeaponArticleValidator(itemRepository),
 };
 
