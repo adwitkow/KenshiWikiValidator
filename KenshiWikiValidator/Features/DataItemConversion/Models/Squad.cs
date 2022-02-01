@@ -9,9 +9,9 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Models
 
         public Dictionary<string, object>? Properties { get; set; }
 
-        public string? StringId { get; set; }
+        public string StringId { get; set; }
 
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         public bool IsShop { get; set; }
 
