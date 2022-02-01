@@ -7,12 +7,12 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators
     {
         private readonly IEnumerable<IValidationRule> rules;
 
-        public TownResidentArticleValidator(IItemRepository itemRepository)
+        public TownResidentArticleValidator(IItemRepository itemRepository, WikiTitleCache wikiTitles)
         {
             this.rules = new List<IValidationRule>()
             {
                 new NewLinesRule(),
-                new StringIdRule(itemRepository),
+                new StringIdRule(itemRepository, wikiTitles),
             };
         }
 

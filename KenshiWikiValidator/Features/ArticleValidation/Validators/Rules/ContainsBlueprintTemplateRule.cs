@@ -9,11 +9,13 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
     public class ContainsBlueprintTemplateRule : ContainsTemplateRuleBase
     {
         private readonly IItemRepository itemRepository;
+        private readonly WikiTitleCache wikiTitleCache;
         private readonly BlueprintSquadsConverter blueprintSquadsConverter;
 
-        public ContainsBlueprintTemplateRule(IItemRepository itemRepository)
+        public ContainsBlueprintTemplateRule(IItemRepository itemRepository, WikiTitleCache wikiTitleCache)
         {
             this.itemRepository = itemRepository;
+            this.wikiTitleCache = wikiTitleCache;
             this.blueprintSquadsConverter = new BlueprintSquadsConverter(itemRepository);
         }
 
@@ -50,16 +52,12 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
                 var blueprintSquads = researchable.BlueprintSquads
                     .Select(reference => this.itemRepository.GetItemByStringId(reference.StringId))
                     .Cast<Squad>();
-                var shopSquads = blueprintSquads.Where(squad => squad.IsShop);
-                var lootReferences = blueprintSquads
-                    .Except(shopSquads)
-                    .SelectMany(squad => squad.Locations);
 
-                var shops = shopSquads.Select(squad => $"[[{squad.Name}]]");
-                var lootLocations = lootReferences
-                    .GroupBy(reference => reference.Name)
-                    .Select(group => group.First())
-                    .Select(reference => $"[[{reference.Name}]]");
+                var shopSquads = blueprintSquads.Where(squad => squad.IsShop);
+                var shopLocations = this.ConvertLocationLinks(shopSquads);
+
+                var lootSquads = blueprintSquads.Where(squad => !squad.IsShop);
+                var lootLocations = this.ConvertLocationLinks(lootSquads);
 
                 templateProperties.Add("name", item.Name!);
                 templateProperties.Add("color", color);
@@ -69,7 +67,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
                 templateProperties.Add("prerequisites", string.Empty);
                 templateProperties.Add("sell value", "???");
                 templateProperties.Add("new items", item.Name!);
-                templateProperties.Add("sold at", string.Join(", ", shops));
+                templateProperties.Add("sold at", string.Join(", ", shopLocations));
                 templateProperties.Add("looted from", string.Join(", ", lootLocations));
             }
             else
@@ -97,16 +95,12 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
                 var blueprintSquads = blueprintSquadReferences
                     .Select(reference => this.itemRepository.GetItemByStringId(reference.StringId))
                     .Cast<Squad>();
-                var shopSquads = blueprintSquads.Where(squad => squad.IsShop);
-                var lootReferences = blueprintSquads
-                    .Except(shopSquads)
-                    .SelectMany(squad => squad.Locations);
 
-                var shops = shopSquads.Select(squad => $"[[{squad.Name}]]");
-                var lootLocations = lootReferences
-                    .GroupBy(reference => reference.Name)
-                    .Select(group => group.First())
-                    .Select(reference => $"[[{reference.Name}]]");
+                var shopSquads = blueprintSquads.Where(squad => squad.IsShop);
+                var shopLocations = this.ConvertLocationLinks(shopSquads);
+
+                var lootSquads = blueprintSquads.Where(squad => !squad.IsShop);
+                var lootLocations = this.ConvertLocationLinks(lootSquads);
 
                 if (cost != 0)
                 {
@@ -118,7 +112,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
                     templateProperties.Add("prerequisites", string.Join(", ", requirements.Select(req => $"[[{req.Name}]]")));
                     templateProperties.Add("sell value", string.Format("{0:n0}", cost / 4));
                     templateProperties.Add("new items", string.Join(", ", newItems.Select(newItem => $"[[{newItem.Name}]]")));
-                    templateProperties.Add("sold at", string.Join(", ", shops));
+                    templateProperties.Add("sold at", string.Join(", ", shopLocations));
                     templateProperties.Add("looted from", string.Join(", ", lootLocations));
                 }
             }
@@ -126,6 +120,24 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
             var templateName = "Blueprint";
 
             return new WikiTemplate(templateName, templateProperties);
+        }
+
+        private IEnumerable<string> ConvertLocationLinks(IEnumerable<Squad> squads)
+        {
+            var articleSquads = squads
+                .Where(squad => this.wikiTitleCache.HasArticle(squad));
+            var squadArticles = articleSquads.Select(squad => $"[[{this.wikiTitleCache.GetTitle(squad)}]]");
+
+            var locationReferences = squads
+                .Except(articleSquads)
+                .SelectMany(squad => squad.Locations);
+
+            var results = locationReferences
+                .GroupBy(reference => reference.Name)
+                .Select(group => group.First())
+                .Select(reference => $"[[{reference.Name}]]")
+                .Concat(squadArticles);
+            return results;
         }
     }
 }

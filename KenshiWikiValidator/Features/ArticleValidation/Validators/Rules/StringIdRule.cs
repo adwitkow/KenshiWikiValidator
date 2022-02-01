@@ -5,10 +5,12 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
     public class StringIdRule : IValidationRule
     {
         private readonly IItemRepository itemRepository;
+        private readonly WikiTitleCache wikiTitleCache;
 
-        public StringIdRule(IItemRepository itemRepository)
+        public StringIdRule(IItemRepository itemRepository, WikiTitleCache wikiTitleCache)
         {
             this.itemRepository = itemRepository;
+            this.wikiTitleCache = wikiTitleCache;
         }
 
         public RuleResult Execute(string title, string content, ArticleData data)
@@ -25,7 +27,6 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
             using var reader = new StringReader(content);
 
             // TODO: Cleanup
-
             string? line;
             var matchingItems = this.itemRepository
                 .GetDataItems()
@@ -72,6 +73,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
                             else
                             {
                                 data.Add("string id", stringId); // TODO: this will probably need to have some exceptions
+                                this.wikiTitleCache.AddTitle(stringId, title);
                             }
 
                             stringIdFound = true;

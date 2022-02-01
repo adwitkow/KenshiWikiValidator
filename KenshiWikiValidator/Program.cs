@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using KenshiWikiValidator;
+using KenshiWikiValidator.Features.ArticleValidation;
 using KenshiWikiValidator.Features.ArticleValidation.Validators;
 using KenshiWikiValidator.Features.DataItemConversion;
 using KenshiWikiValidator.Features.WikiTemplates;
@@ -10,10 +11,11 @@ using WikiClientLibrary.Wikia.Sites;
 
 var itemRepository = new ItemRepository();
 var templateParser = new TemplateParser();
+var wikiTitles = new WikiTitleCache();
 var validators = new List<IArticleValidator>()
 {
-    new TownResidentArticleValidator(itemRepository),
-    new WeaponArticleValidator(itemRepository),
+    new TownResidentArticleValidator(itemRepository, wikiTitles),
+    new WeaponArticleValidator(itemRepository, wikiTitles),
 };
 
 Console.WriteLine("Loading items...");

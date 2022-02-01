@@ -1,4 +1,5 @@
-﻿using KenshiWikiValidator.Features.ArticleValidation.Validators.Rules;
+﻿using KenshiWikiValidator.Features.ArticleValidation;
+using KenshiWikiValidator.Features.ArticleValidation.Validators.Rules;
 using KenshiWikiValidator.Features.DataItemConversion;
 using KenshiWikiValidator.Features.DataItemConversion.Models;
 using KenshiWikiValidator.Features.DataItemConversion.Models.Components;
@@ -38,7 +39,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
             var itemRepository = new Mock<IItemRepository>();
             itemRepository.Setup(repo => repo.GetItemByStringId(wakizashiId)).Returns(wakizashi);
             itemRepository.Setup(repo => repo.GetItemByStringId(wakizashiResearchStringId)).Returns(wakizashi);
-            var rule = new ContainsBlueprintTemplateRule(itemRepository.Object);
+            var rule = new ContainsBlueprintTemplateRule(itemRepository.Object, new WikiTitleCache());
             var data = new ArticleData();
             data.Add("string id", "1020-gamedata.base");
 
@@ -51,7 +52,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
         public void ShouldFailIfArticleContainsIncorrectBlueprintTemplate()
         {
             var itemRepository = new Mock<IItemRepository>();
-            var rule = new ContainsBlueprintTemplateRule(itemRepository.Object);
+            var rule = new ContainsBlueprintTemplateRule(itemRepository.Object, new WikiTitleCache());
             var data = new ArticleData();
 
             var result = rule.Execute("Wakizashi", this.incorrectResourceContent, data);

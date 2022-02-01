@@ -8,12 +8,12 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators
     {
         private readonly IEnumerable<IValidationRule> rules;
 
-        public WeaponArticleValidator(IItemRepository itemRepository)
+        public WeaponArticleValidator(IItemRepository itemRepository, WikiTitleCache wikiTitles)
         {
             this.rules = new List<IValidationRule>()
             {
-                new StringIdRule(itemRepository),
-                new ContainsBlueprintTemplateRule(itemRepository),
+                new StringIdRule(itemRepository, wikiTitles),
+                new ContainsBlueprintTemplateRule(itemRepository, wikiTitles),
                 new NewLinesRule(),
             };
         }
