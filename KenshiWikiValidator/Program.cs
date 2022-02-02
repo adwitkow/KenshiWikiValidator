@@ -54,13 +54,6 @@ static void ValidateArticle(WikiPage page, IArticleValidator articleValidator)
 
 static async Task<IEnumerable<WikiPage>> RetrieveArticles(WikiClient client, string category)
 {
-    if (Directory.Exists(category))
-    {
-        Directory.Delete(category, true);
-    }
-
-    Directory.CreateDirectory(category);
-
     var site = new WikiaSite(client, "https://kenshi.fandom.com/api.php");
     await site.Initialization;
 
