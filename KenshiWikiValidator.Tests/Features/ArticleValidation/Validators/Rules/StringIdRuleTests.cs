@@ -1,4 +1,5 @@
-﻿using KenshiWikiValidator.Features.ArticleValidation.Validators.Rules;
+﻿using KenshiWikiValidator.Features.ArticleValidation;
+using KenshiWikiValidator.Features.ArticleValidation.Validators.Rules;
 using KenshiWikiValidator.Features.DataItemConversion;
 using KenshiWikiValidator.Features.DataItemConversion.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -31,7 +32,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
 
             var itemRepository = new Mock<IItemRepository>();
             itemRepository.Setup(repo => repo.GetItems()).Returns(new[] { wakizashi });
-            var rule = new StringIdRule(itemRepository.Object);
+            var rule = new StringIdRule(itemRepository.Object, new WikiTitleCache());
 
             var result = rule.Execute("Wakizashi", this.correctResourceContent!, new ArticleData());
 
@@ -49,7 +50,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
 
             var itemRepository = new Mock<IItemRepository>();
             itemRepository.Setup(repo => repo.GetItems()).Returns(new[] { wakizashi });
-            var rule = new StringIdRule(itemRepository.Object);
+            var rule = new StringIdRule(itemRepository.Object, new WikiTitleCache());
 
             var result = rule.Execute("Wakizashi", this.incorrectResourceContent!, new ArticleData());
 

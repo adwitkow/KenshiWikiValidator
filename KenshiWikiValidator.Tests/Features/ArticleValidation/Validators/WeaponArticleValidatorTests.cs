@@ -1,4 +1,5 @@
-﻿using KenshiWikiValidator.Features.ArticleValidation.Validators;
+﻿using KenshiWikiValidator.Features.ArticleValidation;
+using KenshiWikiValidator.Features.ArticleValidation.Validators;
 using KenshiWikiValidator.Features.DataItemConversion;
 using KenshiWikiValidator.Features.DataItemConversion.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -31,7 +32,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators
 
             var itemRepository = new Mock<IItemRepository>();
             itemRepository.Setup(repo => repo.GetItems()).Returns(new[] { wakizashi });
-            var validator = new WeaponArticleValidator(itemRepository.Object);
+            var validator = new WeaponArticleValidator(itemRepository.Object, new WikiTitleCache());
 
             var result = validator.Validate("Wakizashi", this.incorrectResourceContent!);
 
@@ -49,7 +50,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators
 
             var itemRepository = new Mock<IItemRepository>();
             itemRepository.Setup(repo => repo.GetItems()).Returns(new[] { wakizashi });
-            var validator = new WeaponArticleValidator(itemRepository.Object);
+            var validator = new WeaponArticleValidator(itemRepository.Object, new WikiTitleCache());
 
             var result = validator.Validate("Wakizashi", this.incorrectResourceContent!);
 
@@ -67,7 +68,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators
 
             var itemRepository = new Mock<IItemRepository>();
             itemRepository.Setup(repo => repo.GetItems()).Returns(new[] { wakizashi });
-            var validator = new WeaponArticleValidator(itemRepository.Object);
+            var validator = new WeaponArticleValidator(itemRepository.Object, new WikiTitleCache());
 
             var result = validator.Validate("Wakizashi", this.correctResourceContent!);
 
