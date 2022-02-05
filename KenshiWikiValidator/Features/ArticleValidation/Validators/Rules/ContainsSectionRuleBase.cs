@@ -29,7 +29,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
 
             if (!content.Contains(sectionContent))
             {
-                result.AddIssue($"Incorrect or missing '{section.Header}' section in article '{title}'");
+                result.AddIssue($"Incorrect or missing '{section.Header}' section");
             }
 
             return result;
