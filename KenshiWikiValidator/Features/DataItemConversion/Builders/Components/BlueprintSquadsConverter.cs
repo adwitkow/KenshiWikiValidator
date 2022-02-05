@@ -4,7 +4,7 @@ using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
 {
-    internal class BlueprintSquadsConverter
+    public class BlueprintSquadsConverter
     {
         private readonly IItemRepository itemRepository;
 

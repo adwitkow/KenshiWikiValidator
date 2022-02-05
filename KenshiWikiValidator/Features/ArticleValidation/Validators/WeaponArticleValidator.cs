@@ -1,6 +1,5 @@
 ﻿using KenshiWikiValidator.Features.ArticleValidation.Validators.Rules;
 using KenshiWikiValidator.Features.DataItemConversion;
-using KenshiWikiValidator.Features.WikiTemplates;
 
 namespace KenshiWikiValidator.Features.ArticleValidation.Validators
 {
@@ -13,8 +12,8 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators
             this.rules = new List<IValidationRule>()
             {
                 new StringIdRule(itemRepository, wikiTitles),
-                new ContainsBlueprintTemplateRule(itemRepository, wikiTitles),
                 new NewLinesRule(),
+                new ContainsBlueprintsSectionRule(itemRepository, wikiTitles),
             };
         }
 
