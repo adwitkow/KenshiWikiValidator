@@ -75,7 +75,7 @@ namespace KenshiWikiValidator.Features.WikiTemplates.Creators
                     templateProperties.Add("description", research.Values["description"].ToString()!);
                     templateProperties.Add("level", research.Values["level"].ToString()!);
                     templateProperties.Add("value", string.Format("{0:n0}", cost));
-                    templateProperties.Add("prerequisites", string.Join(", ", requirements.Select(req => $"[[{req.Name}]]")));
+                    templateProperties.Add("prerequisites", string.Join(", ", requirements.Select(req => $"[[{req.Name} (Tech)]]")));
                     templateProperties.Add("sell value", string.Format("{0:n0}", cost / 4));
                     templateProperties.Add("new items", string.Join(", ", newItems.Select(newItem => $"[[{newItem.Name}]]")));
                 }
