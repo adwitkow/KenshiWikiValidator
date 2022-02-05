@@ -1,4 +1,5 @@
-﻿using KenshiWikiValidator.Features.WikiSections;
+﻿using System.Text.RegularExpressions;
+using KenshiWikiValidator.Features.WikiSections;
 
 namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
 {
@@ -27,7 +28,9 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
             var sectionPath = Path.Combine(sections, $"{title}-{section.Header}.txt");
             File.WriteAllText(sectionPath, sectionContent);
 
-            if (!content.Contains(sectionContent))
+            var contentToValidate = MakeNewlinesConsistent(content);
+
+            if (!contentToValidate.Contains(sectionContent))
             {
                 result.AddIssue($"Incorrect or missing '{section.Header}' section");
             }
@@ -36,5 +39,10 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
         }
 
         protected abstract WikiSectionBuilder CreateSectionBuilder(ArticleData data);
+
+        private static string MakeNewlinesConsistent(string input)
+        {
+            return Regex.Replace(input, @"\r\n|\r|\n", Environment.NewLine);
+        }
     }
 }
