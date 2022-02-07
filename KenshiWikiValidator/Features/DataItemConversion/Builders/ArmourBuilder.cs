@@ -7,7 +7,7 @@ using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.Features.DataItemConversion.Builders
 {
-    internal class ArmourBuilder : IItemBuilder<Armour>
+    internal class ArmourBuilder : ItemBuilderBase<Armour>
     {
         private readonly ItemRepository itemRepository;
         private readonly ItemSourcesCreator itemSourcesCreator;
@@ -29,7 +29,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
             this.coverageConverter = new CoverageConverter();
         }
 
-        public Armour Build(DataItem baseItem)
+        public override Armour Build(DataItem baseItem)
         {
             if (baseItem.Type != ItemType.Armour)
             {

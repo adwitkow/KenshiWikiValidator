@@ -6,7 +6,7 @@ using OpenConstructionSet.Data.Models;
 
 namespace KenshiWikiValidator.Features.DataItemConversion.Builders
 {
-    internal class WeaponBuilder : IItemBuilder<Weapon>
+    internal class WeaponBuilder : ItemBuilderBase<Weapon>
     {
         private readonly ItemRepository itemRepository;
         private readonly ItemSourcesCreator itemSourcesCreator;
@@ -26,7 +26,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
             this.unlockingResearchConverter = unlockingResearchConverter;
         }
 
-        public Weapon Build(DataItem baseItem)
+        public override Weapon Build(DataItem baseItem)
         {
             var sw = Stopwatch.StartNew();
             var unlockingResearch = this.unlockingResearchConverter.Convert(baseItem);

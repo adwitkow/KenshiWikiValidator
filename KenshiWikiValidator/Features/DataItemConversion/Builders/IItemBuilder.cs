@@ -1,15 +1,9 @@
-﻿using KenshiWikiValidator.Features.DataItemConversion.Models;
-using OpenConstructionSet.Data.Models;
+﻿using OpenConstructionSet.Data.Models;
 
 namespace KenshiWikiValidator.Features.DataItemConversion.Builders
 {
-    internal interface IItemBuilder<T> : IItemBuilder
-        where T : IItem
+    public interface IItemBuilder
     {
-        T Build(DataItem baseItem);
-    }
-
-    internal interface IItemBuilder
-    {
+        object Build(DataItem baseItem);
     }
 }

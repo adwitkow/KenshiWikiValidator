@@ -5,7 +5,7 @@ using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.Features.DataItemConversion.Builders
 {
-    internal class SquadBuilder : IItemBuilder<Squad>
+    internal class SquadBuilder : ItemBuilderBase<Squad>
     {
         private readonly IItemRepository itemRepository;
 
@@ -14,7 +14,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
             this.itemRepository = itemRepository;
         }
 
-        public Squad Build(DataItem baseItem)
+        public override Squad Build(DataItem baseItem)
         {
             var aiPackages = baseItem.GetReferenceItems(this.itemRepository, "AI packages");
 

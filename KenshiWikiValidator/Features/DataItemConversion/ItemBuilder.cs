@@ -13,6 +13,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion
         private readonly WeaponBuilder weaponBuilder;
         private readonly ArmourBuilder armourBuilder;
         private readonly SquadBuilder squadBuilder;
+        private readonly Dictionary<ItemType, IItemBuilder> itemBuilders;
 
         private DataItem longestItem;
         private TimeSpan longestTime;
@@ -37,13 +38,22 @@ namespace KenshiWikiValidator.Features.DataItemConversion
                 unlockingResearchConverter);
             this.squadBuilder = new SquadBuilder(itemRepository);
 
+            this.itemBuilders = new Dictionary<ItemType, IItemBuilder>()
+            {
+                { ItemType.Weapon, this.weaponBuilder },
+                { ItemType.Armour, this.weaponBuilder },
+                { ItemType.SquadTemplate, this.weaponBuilder },
+                { ItemType.VendorList, this.weaponBuilder },
+            };
+
             this.longestItem = null!;
             this.longestTime = TimeSpan.Zero;
         }
 
         public IEnumerable<IItem> BuildItems()
         {
-            var items = this.itemRepository.GetDataItemsByTypes(ItemType.Weapon, ItemType.Armour, ItemType.SquadTemplate);
+            var validTypes = this.itemBuilders.Keys.ToArray();
+            var items = this.itemRepository.GetDataItemsByTypes(validTypes);
 
             var results = new List<IItem>();
 
@@ -64,13 +74,14 @@ namespace KenshiWikiValidator.Features.DataItemConversion
             Console.WriteLine($"Building {item.Name}");
             var sw = Stopwatch.StartNew();
 
-            IItem result = item.Type switch
+            var builder = this.itemBuilders[item.Type];
+
+            var built = builder.Build(item);
+
+            if (built is not IItem result)
             {
-                ItemType.Weapon => this.weaponBuilder.Build(item),
-                ItemType.Armour => this.armourBuilder.Build(item),
-                ItemType.SquadTemplate => this.squadBuilder.Build(item),
-                _ => throw new ArgumentException($"ItemType {item.Type} cannot be converted", nameof(item)),
-            };
+                throw new InvalidOperationException($"Registered an {nameof(ItemBuilder)} that does not return objects of type {nameof(IItem)}");
+            }
 
             Console.WriteLine($"Built {item.Name} in {sw.Elapsed}");
 
