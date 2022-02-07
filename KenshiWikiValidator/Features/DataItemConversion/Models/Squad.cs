@@ -5,7 +5,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Models
 {
     internal class Squad : IItem
     {
-        public ItemType Type => ItemType.VendorList;
+        public ItemType Type => ItemType.SquadTemplate;
 
         public Dictionary<string, object>? Properties { get; set; }
 
