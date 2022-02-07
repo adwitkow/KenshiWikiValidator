@@ -41,9 +41,8 @@ namespace KenshiWikiValidator.Features.DataItemConversion
             this.itemBuilders = new Dictionary<ItemType, IItemBuilder>()
             {
                 { ItemType.Weapon, this.weaponBuilder },
-                { ItemType.Armour, this.weaponBuilder },
-                { ItemType.SquadTemplate, this.weaponBuilder },
-                { ItemType.VendorList, this.weaponBuilder },
+                { ItemType.Armour, this.armourBuilder },
+                { ItemType.SquadTemplate, this.squadBuilder },
             };
 
             this.longestItem = null!;
