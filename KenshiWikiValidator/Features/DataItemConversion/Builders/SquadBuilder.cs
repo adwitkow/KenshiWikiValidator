@@ -16,55 +16,8 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
 
         public override Squad Build(DataItem baseItem)
         {
-            var aiPackages = baseItem.GetReferenceItems(this.itemRepository, "AI packages");
-
-            var isShop = aiPackages.Any(package => package
-                .GetReferenceItems(this.itemRepository, "Leader AI Goals")
-                .Where(reference => "Shopkeeper".Equals(reference.Name))
-                .Any());
-
-            var towns = this.itemRepository.GetReferencingDataItemsFor(baseItem)
-                .Where(item => item.Type == ItemType.Town);
-            var townReferences = new List<ItemReference>();
-
-            foreach (var town in towns)
-            {
-                if (!town.Name.ToLower().Contains("override"))
-                {
-                    townReferences.Add(new ItemReference(town.StringId, town.Name));
-                    continue;
-                }
-
-                var parents = this.itemRepository.GetReferencingDataItemsFor(town)
-                    .Where(item => !item.Name.ToLower().Contains("override"));
-                var townFactionReference = town.GetReferences("faction").SingleOrDefault();
-
-                string townFaction;
-                if (townFactionReference is null)
-                {
-                    townFaction = "Destroyed";
-                }
-                else
-                {
-                    var townFactionId = townFactionReference.Key;
-                    townFaction = this.itemRepository.GetDataItemByStringId(townFactionId).Name;
-                }
-
-                foreach (var parent in parents)
-                {
-                    var parentFactionId = parent.GetReferences("faction").Single().Key;
-                    var parentFaction = this.itemRepository.GetDataItemByStringId(parentFactionId).Name;
-
-                    if (parentFaction != townFaction)
-                    {
-                        townReferences.Add(new ItemReference(town.StringId, $"{parent.Name}, {townFaction}"));
-                    }
-                    else
-                    {
-                        townReferences.Add(new ItemReference(town.StringId, parent.Name));
-                    }
-                }
-            }
+            var isShop = this.IsShop(baseItem);
+            var townReferences = this.GetLocations(baseItem);
 
             var squad = new Squad()
             {
@@ -76,6 +29,78 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
             };
 
             return squad;
+        }
+
+        private IEnumerable<ItemReference> GetLocations(DataItem baseItem)
+        {
+            var towns = this.itemRepository.GetReferencingDataItemsFor(baseItem)
+                            .Where(item => item.Type == ItemType.Town);
+            var locations = new List<ItemReference>();
+
+            foreach (var town in towns)
+            {
+                var townReferences = this.GetTownReferences(town);
+                locations.AddRange(townReferences);
+            }
+
+            return locations;
+        }
+
+        private IEnumerable<ItemReference> GetTownReferences(DataItem town)
+        {
+            var results = new List<ItemReference>();
+            if (!town.Name.ToLower().Contains("override"))
+            {
+                results.Add(new ItemReference(town.StringId, town.Name));
+                return results;
+            }
+
+            var townFaction = this.GetTownFaction(town);
+
+            var parents = this.itemRepository.GetReferencingDataItemsFor(town)
+                .Where(item => !item.Name.ToLower().Contains("override"));
+            foreach (var parent in parents)
+            {
+                var parentFactionId = parent.GetReferences("faction").Single().Key;
+                var parentFaction = this.itemRepository.GetDataItemByStringId(parentFactionId).Name;
+
+                if (parentFaction != townFaction)
+                {
+                    results.Add(new ItemReference(town.StringId, $"{parent.Name}, {townFaction}"));
+                }
+                else
+                {
+                    results.Add(new ItemReference(town.StringId, parent.Name));
+                }
+            }
+
+            return results;
+        }
+
+        private string GetTownFaction(DataItem town)
+        {
+            var townFactionReference = town.GetReferences("faction").SingleOrDefault();
+
+            if (townFactionReference is null)
+            {
+                return "Destroyed";
+            }
+            else
+            {
+                var townFactionId = townFactionReference.Key;
+                return this.itemRepository.GetDataItemByStringId(townFactionId).Name;
+            }
+        }
+
+        private bool IsShop(DataItem baseItem)
+        {
+            var aiPackages = baseItem.GetReferenceItems(this.itemRepository, "AI packages");
+
+            var isShop = aiPackages.Any(package => package
+                .GetReferenceItems(this.itemRepository, "Leader AI Goals")
+                .Where(reference => "Shopkeeper".Equals(reference.Name))
+                .Any());
+            return isShop;
         }
     }
 }
