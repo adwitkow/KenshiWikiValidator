@@ -96,6 +96,18 @@ And another line of text";
         }
 
         [TestMethod]
+        public void ShouldNotSucceedOnNewLineMissingAfterLink()
+        {
+            var rule = new NewLinesRule();
+            var line = @"[[item2]]
+== section ==";
+
+            var result = rule.Execute("Wakizashi", line, new ArticleData());
+
+            Assert.IsFalse(result.Success);
+        }
+
+        [TestMethod]
         public void ShouldNotSucceedForIncorrectResource()
         {
             var rule = new NewLinesRule();
