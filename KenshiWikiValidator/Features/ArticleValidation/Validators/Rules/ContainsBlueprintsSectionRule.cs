@@ -65,6 +65,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
                 .WithParagraph("The [[Blueprints]] for this item can be found at the following locations.")
                 .WithSubsection("Shops", 1)
                 .WithUnorderedList(shopLocations)
+                .WithNewline()
                 .WithSubsection("Loot", 1)
                 .WithUnorderedList(lootLocations);
 
