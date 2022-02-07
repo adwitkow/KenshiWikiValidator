@@ -96,6 +96,21 @@ And another line of text";
         }
 
         [TestMethod]
+        public void ShouldNotSucceedOnNoNewlineBetweenListAndSection()
+        {
+            var rule = new NewLinesRule();
+            var line = @"* item1
+* item2
+== section ==
+* item 3
+* item 4";
+
+            var result = rule.Execute("Wakizashi", line, new ArticleData());
+
+            Assert.IsFalse(result.Success);
+        }
+
+        [TestMethod]
         public void ShouldNotSucceedOnNewLineMissingAfterLink()
         {
             var rule = new NewLinesRule();

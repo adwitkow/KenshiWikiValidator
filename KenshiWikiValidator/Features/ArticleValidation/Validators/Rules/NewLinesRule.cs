@@ -34,7 +34,7 @@
             line = HandleMarkup("gallery", result, reader, line);
             line = HandleMarkup("tabview", result, reader, line);
 
-            if (line!.Contains("[[Category") || line.Contains("[[ru:"))
+            if (IsFooter(line))
             {
                 if (!(line.StartsWith("[[") && line.EndsWith("]]")))
                 {
@@ -81,11 +81,12 @@
             else
             {
                 if (!wasPreviousLineEmpty
+                    && !IsFooter(previousLine)
                     && !(line.StartsWith("*")
                     || line.StartsWith("__")
                     || previousLine.StartsWith("=")
                     || previousLine.EndsWith("}}")
-                    || previousLine.EndsWith("]]")
+                    || previousLine.EndsWith("|]")
                     || previousLine.Equals("<br />")))
                 {
                     result.AddIssue($"A newline is missing before line: '{line}'");
@@ -138,6 +139,12 @@
             }
 
             return line;
+        }
+
+        private static bool IsFooter(string line)
+        {
+            var trimmed = line.Trim();
+            return trimmed.StartsWith("[[Category") || line.StartsWith("[[ru:");
         }
     }
 }
