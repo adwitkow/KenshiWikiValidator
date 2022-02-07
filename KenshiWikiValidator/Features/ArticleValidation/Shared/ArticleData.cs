@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
+namespace KenshiWikiValidator.Features.ArticleValidation.Shared
 {
     public class ArticleData
     {

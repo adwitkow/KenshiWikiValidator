@@ -5,7 +5,7 @@ using KenshiWikiValidator.Features.DataItemConversion.Models.Components;
 using KenshiWikiValidator.Features.WikiSections;
 using KenshiWikiValidator.Features.WikiTemplates.Creators;
 
-namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
+namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
 {
     public class ContainsBlueprintsSectionRule : ContainsSectionRuleBase
     {

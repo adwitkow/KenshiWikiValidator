@@ -1,4 +1,4 @@
-﻿namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
+﻿namespace KenshiWikiValidator.Features.ArticleValidation.Shared
 {
     public interface IValidationRule
     {

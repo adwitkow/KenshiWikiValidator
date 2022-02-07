@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics;
 using KenshiWikiValidator;
 using KenshiWikiValidator.Features.ArticleValidation;
-using KenshiWikiValidator.Features.ArticleValidation.Validators;
+using KenshiWikiValidator.Features.ArticleValidation.TownResident;
+using KenshiWikiValidator.Features.ArticleValidation.Weapon;
 using KenshiWikiValidator.Features.DataItemConversion;
 using KenshiWikiValidator.Features.WikiTemplates;
 using WikiClientLibrary.Client;

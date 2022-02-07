@@ -1,6 +1,4 @@
-﻿using KenshiWikiValidator.Features.ArticleValidation.Validators.Rules;
-
-namespace KenshiWikiValidator.Features.ArticleValidation.Validators
+﻿namespace KenshiWikiValidator.Features.ArticleValidation.Shared
 {
     public abstract class ArticleValidatorBase : IArticleValidator
     {

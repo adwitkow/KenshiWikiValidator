@@ -1,7 +1,8 @@
-﻿using KenshiWikiValidator.Features.ArticleValidation.Validators.Rules;
+﻿using KenshiWikiValidator.Features.ArticleValidation.Shared;
+using KenshiWikiValidator.Features.ArticleValidation.Shared.Rules;
 using KenshiWikiValidator.Features.DataItemConversion;
 
-namespace KenshiWikiValidator.Features.ArticleValidation.Validators
+namespace KenshiWikiValidator.Features.ArticleValidation.Weapon
 {
     public class WeaponArticleValidator : ArticleValidatorBase
     {

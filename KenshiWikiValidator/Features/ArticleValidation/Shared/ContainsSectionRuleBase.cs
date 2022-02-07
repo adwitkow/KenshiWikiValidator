@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using KenshiWikiValidator.Features.WikiSections;
 
-namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
+namespace KenshiWikiValidator.Features.ArticleValidation.Shared
 {
     public abstract class ContainsSectionRuleBase : IValidationRule
     {

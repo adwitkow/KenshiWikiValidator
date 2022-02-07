@@ -1,6 +1,6 @@
 ﻿using KenshiWikiValidator.Features.DataItemConversion;
 
-namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
+namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
 {
     public class StringIdRule : IValidationRule
     {

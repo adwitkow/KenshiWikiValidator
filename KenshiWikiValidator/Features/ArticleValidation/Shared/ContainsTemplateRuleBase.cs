@@ -1,6 +1,6 @@
 ﻿using KenshiWikiValidator.Features.WikiTemplates;
 
-namespace KenshiWikiValidator.Features.ArticleValidation.Validators.Rules
+namespace KenshiWikiValidator.Features.ArticleValidation.Shared
 {
     public abstract class ContainsTemplateRuleBase : IValidationRule
     {
