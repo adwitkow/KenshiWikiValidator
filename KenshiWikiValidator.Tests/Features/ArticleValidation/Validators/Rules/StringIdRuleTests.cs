@@ -1,5 +1,6 @@
 ﻿using KenshiWikiValidator.Features.ArticleValidation;
-using KenshiWikiValidator.Features.ArticleValidation.Validators.Rules;
+using KenshiWikiValidator.Features.ArticleValidation.Shared;
+using KenshiWikiValidator.Features.ArticleValidation.Shared.Rules;
 using KenshiWikiValidator.Features.DataItemConversion;
 using KenshiWikiValidator.Features.DataItemConversion.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
