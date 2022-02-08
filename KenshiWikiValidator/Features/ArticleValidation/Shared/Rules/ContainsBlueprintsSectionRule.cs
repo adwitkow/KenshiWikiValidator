@@ -63,11 +63,28 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
                 .WithNewline()
                 .WithLine("<br />")
                 .WithParagraph("The [[Blueprints]] for this item can be found at the following locations.")
-                .WithSubsection("Shops", 1)
-                .WithUnorderedList(shopLocations)
-                .WithNewline()
-                .WithSubsection("Loot", 1)
-                .WithUnorderedList(lootLocations);
+                .WithSubsection("Shops", 1);
+
+            if (shopLocations.Any())
+            {
+                builder.WithUnorderedList(shopLocations)
+                    .WithNewline();
+            }
+            else
+            {
+                builder.WithParagraph("''This item cannot be bought at any location.''");
+            }
+
+            builder.WithSubsection("Loot", 1);
+
+            if (lootLocations.Any())
+            {
+                builder.WithUnorderedList(lootLocations);
+            }
+            else
+            {
+                builder.WithParagraph("''This item is not available as loot at any location.''");
+            }
 
             return builder;
         }
