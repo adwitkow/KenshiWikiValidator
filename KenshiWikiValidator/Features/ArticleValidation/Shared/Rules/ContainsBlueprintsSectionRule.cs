@@ -3,6 +3,7 @@ using KenshiWikiValidator.Features.DataItemConversion.Builders.Components;
 using KenshiWikiValidator.Features.DataItemConversion.Models;
 using KenshiWikiValidator.Features.DataItemConversion.Models.Components;
 using KenshiWikiValidator.Features.WikiSections;
+using KenshiWikiValidator.Features.WikiTemplates;
 using KenshiWikiValidator.Features.WikiTemplates.Creators;
 
 namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
@@ -25,8 +26,6 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
 
         protected override WikiSectionBuilder CreateSectionBuilder(ArticleData data)
         {
-            var builder = new WikiSectionBuilder();
-
             var stringId = data.Get("string id");
             if (string.IsNullOrEmpty(stringId))
             {
@@ -38,7 +37,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
 
             if (template is null)
             {
-                return builder
+                return new WikiSectionBuilder()
                     .WithHeader("Blueprints")
                     .WithParagraph("There are no [[Blueprints]] for this item available in the game.");
             }
@@ -58,6 +57,12 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
             var shopLocations = this.ConvertLocationLinks(shopSquads);
             var lootLocations = this.ConvertLocationLinks(lootSquads);
 
+            return CreateBuilder(template, shopLocations, lootLocations);
+        }
+
+        private static WikiSectionBuilder CreateBuilder(WikiTemplate template, IEnumerable<string> shopLocations, IEnumerable<string> lootLocations)
+        {
+            var builder = new WikiSectionBuilder();
             builder.WithHeader("Blueprints")
                 .WithTemplate(template)
                 .WithNewline()
