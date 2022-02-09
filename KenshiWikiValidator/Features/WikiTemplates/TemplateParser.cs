@@ -29,6 +29,7 @@
 
             var properties = new SortedList<string, string>();
             for (int i = 1; i < templateElements.Count(); i++)
+            var properties = new SortedList<string, string?>();
             {
                 var element = templateElements[i];
                 if (element.Contains('='))

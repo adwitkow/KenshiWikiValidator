@@ -16,7 +16,10 @@ namespace KenshiWikiValidator.Features.WikiTemplates
 
             foreach (var pair in template.Properties)
             {
-                builder.AppendLine($"| {pair.Key} = {pair.Value}");
+                if (pair.Value is not null)
+                {
+                    builder.AppendLine($"| {pair.Key} = {pair.Value}");
+                }
             }
 
             builder.Append("}}");

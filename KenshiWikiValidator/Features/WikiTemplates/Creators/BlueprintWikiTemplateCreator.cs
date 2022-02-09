@@ -38,7 +38,7 @@ public class BlueprintWikiTemplateCreator : IWikiTemplateCreator
             _ => "blue",
         };
 
-        var templateProperties = new SortedList<string, string>();
+        var templateProperties = new SortedList<string, string?>();
         if (researchable.UnlockingResearch is null)
         {
             if (!researchable.BlueprintSquads.Any())
