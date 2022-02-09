@@ -1,4 +1,5 @@
-﻿using KenshiWikiValidator.Features.WikiTemplates;
+﻿using System.Text.RegularExpressions;
+using KenshiWikiValidator.Features.WikiTemplates;
 
 namespace KenshiWikiValidator.Features.ArticleValidation.Shared
 {
@@ -32,7 +33,9 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared
 
             File.WriteAllText(Path.Combine(templateDirectory, $"{title}.txt"), correctBlueprintString);
 
-            if (!content.Contains(correctBlueprintString))
+            var contentToValidate = MakeNewlinesConsistent(content);
+
+            if (!contentToValidate.Contains(correctBlueprintString))
             {
                 result.AddIssue($"Incorrect or missing {template.Name} template");
             }
@@ -41,5 +44,10 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared
         }
 
         protected abstract WikiTemplate PrepareTemplate(ArticleData data);
+
+        private static string MakeNewlinesConsistent(string input)
+        {
+            return Regex.Replace(input, @"\r\n|\r|\n", Environment.NewLine);
+        }
     }
 }

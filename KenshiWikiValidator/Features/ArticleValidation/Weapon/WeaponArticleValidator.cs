@@ -1,5 +1,6 @@
 ﻿using KenshiWikiValidator.Features.ArticleValidation.Shared;
 using KenshiWikiValidator.Features.ArticleValidation.Shared.Rules;
+using KenshiWikiValidator.Features.ArticleValidation.Weapon.Rules;
 using KenshiWikiValidator.Features.DataItemConversion;
 
 namespace KenshiWikiValidator.Features.ArticleValidation.Weapon
@@ -15,6 +16,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Weapon
                 new StringIdRule(itemRepository, wikiTitles),
                 new NewLinesRule(),
                 new ContainsBlueprintsSectionRule(itemRepository, wikiTitles),
+                new ContainsWeaponTemplateRule(itemRepository),
             };
         }
 
