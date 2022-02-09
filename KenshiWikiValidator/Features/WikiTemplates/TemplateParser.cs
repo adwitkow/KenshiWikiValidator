@@ -2,7 +2,7 @@
 {
     public class TemplateParser
     {
-        public WikiTemplate Parse(string input)
+        public static WikiTemplate Parse(string input)
         {
             var trimmed = input.Trim();
             if (!trimmed.StartsWith("{{"))
@@ -27,9 +27,8 @@
                 .ToList();
             var name = templateElements.First();
 
-            var properties = new SortedList<string, string>();
-            for (int i = 1; i < templateElements.Count(); i++)
             var properties = new SortedList<string, string?>();
+            for (int i = 1; i < templateElements.Count; i++)
             {
                 var element = templateElements[i];
                 if (element.Contains('='))
