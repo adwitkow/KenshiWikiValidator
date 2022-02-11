@@ -25,14 +25,14 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared
                 Directory.CreateDirectory(sections);
             }
 
-            var sectionPath = Path.Combine(sections, $"{title}-{section.Header}.txt");
-            File.WriteAllText(sectionPath, sectionContent);
-
             var contentToValidate = MakeNewlinesConsistent(content);
 
             if (!contentToValidate.Contains(sectionContent))
             {
                 result.AddIssue($"Incorrect or missing '{section.Header}' section");
+
+                var sectionPath = Path.Combine(sections, $"{title}-{section.Header}.txt");
+                File.WriteAllText(sectionPath, sectionContent);
             }
 
             return result;
