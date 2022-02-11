@@ -77,7 +77,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
             }
             else
             {
-                builder.WithParagraph("''This item cannot be bought at any location.''");
+                builder.WithParagraph("''This item's blueprint cannot be bought at any location.''");
             }
 
             builder.WithSubsection("Loot", 1);
@@ -88,7 +88,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
             }
             else
             {
-                builder.WithParagraph("''This item is not available as loot at any location.''");
+                builder.WithParagraph("''This item's blueprint is not available as loot at any location.''");
             }
 
             return builder;
