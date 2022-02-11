@@ -23,7 +23,8 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared
                 return result;
             }
 
-            var correctBlueprintString = this.templateBuilder.Build(template);
+            var addNewlines = template.Properties.Count > 3;
+            var correctTemplateString = this.templateBuilder.Build(template, addNewlines);
 
             var templateDirectory = Path.Combine("templates", template.Name);
             if (!Directory.Exists(templateDirectory))
@@ -31,11 +32,13 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared
                 Directory.CreateDirectory(templateDirectory);
             }
 
-            File.WriteAllText(Path.Combine(templateDirectory, $"{title}.txt"), correctBlueprintString);
+            title = title.Replace("/", string.Empty);
+
+            File.WriteAllText(Path.Combine(templateDirectory, $"{title}.txt"), correctTemplateString);
 
             var contentToValidate = MakeNewlinesConsistent(content);
 
-            if (!contentToValidate.Contains(correctBlueprintString))
+            if (!contentToValidate.Contains(correctTemplateString))
             {
                 result.AddIssue($"Incorrect or missing {template.Name} template");
             }
