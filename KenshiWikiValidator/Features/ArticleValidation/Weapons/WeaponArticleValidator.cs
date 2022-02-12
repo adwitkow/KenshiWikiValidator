@@ -18,6 +18,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Weapons
                 new ContainsBlueprintsSectionRule(itemRepository, wikiTitles),
                 new ContainsWeaponTemplateRule(itemRepository),
                 new ContainsWeaponNavboxRule(),
+                new ContainsWeaponCraftingSectionRule(itemRepository),
             };
         }
 
