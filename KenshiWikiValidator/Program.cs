@@ -2,7 +2,7 @@
 using KenshiWikiValidator;
 using KenshiWikiValidator.Features.ArticleValidation;
 using KenshiWikiValidator.Features.ArticleValidation.TownResident;
-using KenshiWikiValidator.Features.ArticleValidation.Weapon;
+using KenshiWikiValidator.Features.ArticleValidation.Weapons;
 using KenshiWikiValidator.Features.DataItemConversion;
 using KenshiWikiValidator.Features.WikiTemplates;
 using WikiClientLibrary.Client;
