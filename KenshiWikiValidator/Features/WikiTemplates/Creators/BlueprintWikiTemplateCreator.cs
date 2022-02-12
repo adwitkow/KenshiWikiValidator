@@ -79,6 +79,10 @@ public class BlueprintWikiTemplateCreator : IWikiTemplateCreator
                 templateProperties.Add("sell value", string.Format("{0:n0}", cost / 4));
                 templateProperties.Add("new items", string.Join(", ", newItems.Select(newItem => $"[[{newItem.Name}]]")));
             }
+            else
+            {
+                return null!;
+            }
         }
 
         var templateName = "Blueprint";
