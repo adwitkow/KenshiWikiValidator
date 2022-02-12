@@ -2,7 +2,8 @@
 {
     public class TemplateParser
     {
-        public static WikiTemplate Parse(string input)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "I like it the way it is.")]
+        public WikiTemplate Parse(string input)
         {
             var trimmed = input.Trim();
             if (!trimmed.StartsWith("{{"))
