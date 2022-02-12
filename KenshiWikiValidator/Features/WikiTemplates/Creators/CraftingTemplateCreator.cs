@@ -1,6 +1,6 @@
 ﻿namespace KenshiWikiValidator.Features.WikiTemplates.Creators
 {
-    public class CraftingWikiTemplateCreator : IWikiTemplateCreator
+    public class CraftingTemplateCreator : ITemplateCreator
     {
         private const string TemplateName = "Crafting";
 

@@ -1,6 +1,6 @@
 ﻿namespace KenshiWikiValidator.Features.WikiTemplates.Creators
 {
-    public interface IWikiTemplateCreator
+    public interface ITemplateCreator
     {
         public WikiTemplate Generate();
     }

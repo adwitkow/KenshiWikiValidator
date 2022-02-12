@@ -5,12 +5,12 @@ using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.Features.WikiTemplates.Creators;
 
-public class BlueprintWikiTemplateCreator : IWikiTemplateCreator
+public class BlueprintTemplateCreator : ITemplateCreator
 {
     private readonly IItemRepository itemRepository;
     private readonly ArticleData data;
 
-    public BlueprintWikiTemplateCreator(IItemRepository itemRepository, ArticleData data)
+    public BlueprintTemplateCreator(IItemRepository itemRepository, ArticleData data)
     {
         this.itemRepository = itemRepository;
         this.data = data;

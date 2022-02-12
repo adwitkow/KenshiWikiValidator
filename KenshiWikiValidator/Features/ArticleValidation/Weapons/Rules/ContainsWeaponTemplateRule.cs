@@ -16,7 +16,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Weapons.Rules
 
         protected override WikiTemplate PrepareTemplate(ArticleData data)
         {
-            var weaponTemplateCreator = new WeaponWikiTemplateCreator(this.itemRepository, data);
+            var weaponTemplateCreator = new WeaponTemplateCreator(this.itemRepository, data);
 
             return weaponTemplateCreator.Generate();
         }

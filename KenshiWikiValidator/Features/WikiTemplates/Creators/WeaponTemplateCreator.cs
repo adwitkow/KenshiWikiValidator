@@ -4,7 +4,7 @@ using KenshiWikiValidator.Features.DataItemConversion;
 
 namespace KenshiWikiValidator.Features.WikiTemplates.Creators
 {
-    internal class WeaponWikiTemplateCreator : IWikiTemplateCreator
+    internal class WeaponTemplateCreator : ITemplateCreator
     {
         private const string WikiTemplateName = "Weapon";
 
@@ -13,7 +13,7 @@ namespace KenshiWikiValidator.Features.WikiTemplates.Creators
 
         private readonly Dictionary<int, string> skillToClassMap;
 
-        public WeaponWikiTemplateCreator(IItemRepository itemRepository, ArticleData data)
+        public WeaponTemplateCreator(IItemRepository itemRepository, ArticleData data)
         {
             this.itemRepository = itemRepository;
             this.data = data;

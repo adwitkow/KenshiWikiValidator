@@ -32,7 +32,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
                 return null!;
             }
 
-            var templateCreator = new BlueprintWikiTemplateCreator(this.itemRepository, data);
+            var templateCreator = new BlueprintTemplateCreator(this.itemRepository, data);
             var template = templateCreator.Generate();
 
             if (template is null)

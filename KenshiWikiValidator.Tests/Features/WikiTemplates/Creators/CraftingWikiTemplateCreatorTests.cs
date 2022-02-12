@@ -14,7 +14,7 @@ namespace KenshiWikiValidator.Tests.Features.WikiTemplates.Creators
         [TestMethod]
         public void ContainsAllKeys()
         {
-            var creator = new CraftingWikiTemplateCreator();
+            var creator = new CraftingTemplateCreator();
 
             var template = creator.Generate();
 
@@ -29,7 +29,7 @@ namespace KenshiWikiValidator.Tests.Features.WikiTemplates.Creators
         [TestMethod]
         public void BuldingNameMustBeGenerated()
         {
-            var creator = new CraftingWikiTemplateCreator()
+            var creator = new CraftingTemplateCreator()
             {
                 BuildingName = "building name"
             };
@@ -42,7 +42,7 @@ namespace KenshiWikiValidator.Tests.Features.WikiTemplates.Creators
         [TestMethod]
         public void Input1IsNotAvailableInResultIfItsNotSpecified()
         {
-            var creator = new CraftingWikiTemplateCreator()
+            var creator = new CraftingTemplateCreator()
             {
                 Input1 = ("input", 1)
             };
@@ -56,7 +56,7 @@ namespace KenshiWikiValidator.Tests.Features.WikiTemplates.Creators
         [TestMethod]
         public void OutputMustBeGenerated()
         {
-            var creator = new CraftingWikiTemplateCreator()
+            var creator = new CraftingTemplateCreator()
             {
                 Output = "test"
             };

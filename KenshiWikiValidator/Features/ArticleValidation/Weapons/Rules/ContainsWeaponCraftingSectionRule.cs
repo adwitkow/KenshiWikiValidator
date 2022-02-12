@@ -31,7 +31,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Weapons.Rules
                 return null!;
             }
 
-            var craftingTemplateCreator = new CraftingWikiTemplateCreator();
+            var craftingTemplateCreator = new CraftingTemplateCreator();
             var builder = new WikiSectionBuilder()
                 .WithHeader("Crafting");
 
