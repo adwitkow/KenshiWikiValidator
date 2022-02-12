@@ -1,9 +1,9 @@
 ﻿using KenshiWikiValidator.Features.ArticleValidation.Shared;
 using KenshiWikiValidator.Features.ArticleValidation.Shared.Rules;
-using KenshiWikiValidator.Features.ArticleValidation.Weapon.Rules;
+using KenshiWikiValidator.Features.ArticleValidation.Weapons.Rules;
 using KenshiWikiValidator.Features.DataItemConversion;
 
-namespace KenshiWikiValidator.Features.ArticleValidation.Weapon
+namespace KenshiWikiValidator.Features.ArticleValidation.Weapons
 {
     public class WeaponArticleValidator : ArticleValidatorBase
     {

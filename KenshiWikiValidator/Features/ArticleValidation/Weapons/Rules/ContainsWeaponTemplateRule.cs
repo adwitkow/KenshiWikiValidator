@@ -3,7 +3,7 @@ using KenshiWikiValidator.Features.DataItemConversion;
 using KenshiWikiValidator.Features.WikiTemplates;
 using KenshiWikiValidator.Features.WikiTemplates.Creators;
 
-namespace KenshiWikiValidator.Features.ArticleValidation.Weapon.Rules
+namespace KenshiWikiValidator.Features.ArticleValidation.Weapons.Rules
 {
     internal class ContainsWeaponTemplateRule : ContainsTemplateRuleBase
     {

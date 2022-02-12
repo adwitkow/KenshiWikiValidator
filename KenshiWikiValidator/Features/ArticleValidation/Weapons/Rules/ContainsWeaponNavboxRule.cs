@@ -1,7 +1,7 @@
 ﻿using KenshiWikiValidator.Features.ArticleValidation.Shared;
 using KenshiWikiValidator.Features.WikiTemplates;
 
-namespace KenshiWikiValidator.Features.ArticleValidation.Weapon.Rules
+namespace KenshiWikiValidator.Features.ArticleValidation.Weapons.Rules
 {
     internal class ContainsWeaponNavboxRule : ContainsTemplateRuleBase
     {
