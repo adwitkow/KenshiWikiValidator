@@ -26,7 +26,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared
             var addNewlines = template.Properties.Count > 3;
             var correctTemplateString = this.templateBuilder.Build(template, addNewlines);
 
-            var templateDirectory = Path.Combine("templates", template.Name);
+            var output = "output";
 
             title = title.Replace("/", string.Empty);
 
@@ -36,12 +36,12 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared
             {
                 result.AddIssue($"Incorrect or missing {template.Name} template");
 
-                if (!Directory.Exists(templateDirectory))
+                if (!Directory.Exists(output))
                 {
-                    Directory.CreateDirectory(templateDirectory);
+                    Directory.CreateDirectory(output);
                 }
 
-                File.WriteAllText(Path.Combine(templateDirectory, $"{title}.txt"), correctTemplateString);
+                File.WriteAllText(Path.Combine(output, $"{title}-{template.Name.Replace("/", string.Empty)}-Template.txt"), correctTemplateString);
             }
 
             return result;

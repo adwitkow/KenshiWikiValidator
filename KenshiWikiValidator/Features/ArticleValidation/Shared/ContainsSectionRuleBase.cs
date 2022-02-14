@@ -19,10 +19,10 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared
             var section = sectionBuilder.WikiSection;
             var sectionContent = sectionBuilder.Build();
 
-            var sections = "sections";
-            if (!Directory.Exists(sections))
+            var output = "output";
+            if (!Directory.Exists(output))
             {
-                Directory.CreateDirectory(sections);
+                Directory.CreateDirectory(output);
             }
 
             var contentToValidate = MakeNewlinesConsistent(content);
@@ -31,7 +31,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared
             {
                 result.AddIssue($"Incorrect or missing '{section.Header}' section");
 
-                var sectionPath = Path.Combine(sections, $"{title}-{section.Header}.txt");
+                var sectionPath = Path.Combine(output, $"{title}-{section.Header}-Section.txt");
                 File.WriteAllText(sectionPath, sectionContent);
             }
 
