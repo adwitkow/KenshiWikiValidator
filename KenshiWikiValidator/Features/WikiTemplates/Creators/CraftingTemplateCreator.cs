@@ -14,6 +14,8 @@
 
         public string ImageSettings { get; set; }
 
+        public bool Collapsed { get; set; }
+
         public WikiTemplate Generate()
         {
             var properties = new SortedList<string, string?>()
@@ -26,6 +28,11 @@
                 { "imagesettings", this.ImageSettings },
                 { "output", this.Output },
             };
+
+            if (this.Collapsed)
+            {
+                properties.Add("mw-collapsible mw-collapsed", "mw-collapsible mw-collapsed");
+            }
 
             return new WikiTemplate(TemplateName, properties);
         }
