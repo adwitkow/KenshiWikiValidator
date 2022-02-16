@@ -66,7 +66,6 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
             builder.WithHeader("Blueprints")
                 .WithTemplate(template)
                 .WithNewline()
-                .WithLine("<br />")
                 .WithParagraph("The [[Blueprints]] for this item can be found at the following locations.")
                 .WithSubsection("Shops", 1);
 
