@@ -31,6 +31,13 @@ namespace KenshiWikiValidator.Features.ArticleValidation
 
         public void AddTitle(string stringId, string title)
         {
+            var exists = this.data.TryGetValue(stringId, out var existingValue);
+
+            if (exists && title.Equals(existingValue))
+            {
+                return;
+            }
+
             this.data.Add(stringId, title);
         }
     }
