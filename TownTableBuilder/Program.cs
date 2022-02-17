@@ -33,7 +33,7 @@ Console.WriteLine(builder.ToString());
 void AppendTown(StringBuilder builder, DataItem town)
 {
     var factions = town.GetReferenceItems(repository, "faction");
-
+    var newFactionName = factions.FirstOrDefault()?.Name;
     var isBase = IsBaseTown(town);
 
     builder.AppendLine($"| {town.Name} ({town.StringId})");
@@ -53,7 +53,32 @@ void AppendTown(StringBuilder builder, DataItem town)
             baseTown = townReferences.FirstOrDefault(reference => IsBaseTown(reference));
         }
 
-        var subTitle = factions.Any() ? factions.FirstOrDefault().Name : "Destroyed";
+        var oldFactionName = baseTown?.GetReferenceItems(repository, "faction").SingleOrDefault().Name;
+
+        string subTitle;
+        if (oldFactionName.Equals(newFactionName))
+        {
+            if (town.Name.ToLower().Contains("half destroyed"))
+            {
+                subTitle = "Half-destroyed";
+            }
+            else if (town.Name.ToLower().Contains("destroyed"))
+            {
+                subTitle = "Destroyed";
+            }
+            else if (town.Name.ToLower().Contains("malnourished"))
+            {
+                subTitle = "Malnourished";
+            }
+            else
+            {
+                subTitle = newFactionName;
+            }
+        }
+        else
+        {
+            subTitle = factions.Any() ? factions.SingleOrDefault().Name : "Destroyed";
+        }
 
         builder.AppendLine($"| [[{baseTown.Name}/{subTitle}]]");
     }
