@@ -13,19 +13,36 @@ namespace KenshiWikiValidator.Features.WikiTemplates
 
             var builder = new StringBuilder("{{");
 
-            Append(builder, template.Name, newlines);
+            var newlineAfterName = true;
+            if (template.UnnamedParameters.Count == 1 || (!template.Parameters.Any() && !template.UnnamedParameters.Any()))
+            {
+                newlineAfterName = false;
+            }
+
+            Append(builder, template.Name, newlineAfterName);
+
+            if (!newlineAfterName && template.UnnamedParameters.Any())
+            {
+                builder.Append(' ');
+            }
 
             foreach (var parameter in template.UnnamedParameters)
             {
                 Append(builder, $" | {parameter}", newlines);
             }
 
-            foreach (var pair in template.Parameters)
+            var validParameters = template.Parameters.Where(pair => pair.Value is not null);
+
+            var maxLength = 0;
+            if (validParameters.Any())
             {
-                if (pair.Value is not null)
-                {
-                    Append(builder, $" | {pair.Key} = {pair.Value}", newlines);
-                }
+                maxLength = validParameters.Max(pair => pair.Key.Length);
+            }
+
+            foreach (var pair in validParameters)
+            {
+                var paddedKey = pair.Key.PadRight(maxLength);
+                Append(builder, $" | {paddedKey} = {pair.Value}", newlines);
             }
 
             builder.Append("}}");

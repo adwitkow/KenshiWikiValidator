@@ -18,6 +18,7 @@
 
         public WikiTemplate Generate()
         {
+            var unnamedProperties = new SortedSet<string>();
             var properties = new SortedList<string, string?>()
             {
                 { "building", this.BuildingName },
@@ -31,10 +32,10 @@
 
             if (this.Collapsed)
             {
-                properties.Add("mw-collapsible mw-collapsed", "mw-collapsible mw-collapsed");
+                unnamedProperties.Add("collapsed");
             }
 
-            return new WikiTemplate(TemplateName, properties);
+            return new WikiTemplate(TemplateName, unnamedProperties, properties);
         }
     }
 }
