@@ -15,6 +15,11 @@ namespace KenshiWikiValidator.Features.WikiTemplates
 
             Append(builder, template.Name, newlines);
 
+            foreach (var parameter in template.UnnamedParameters)
+            {
+                Append(builder, $" | {parameter}", newlines);
+            }
+
             foreach (var pair in template.Parameters)
             {
                 if (pair.Value is not null)

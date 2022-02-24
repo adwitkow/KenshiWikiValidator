@@ -20,12 +20,23 @@ namespace KenshiWikiValidator.Tests.Features.WikiTemplates
         }
 
         [TestMethod]
-        public void ConstructorMustThrowIfPropertiesParameterIsNull()
+        public void ConstructorMustThrowIfParametersParameterIsNull()
         {
             var name = string.Empty;
             SortedList<string, string?> properties = null!;
 
             var action = () => new WikiTemplate(name, properties);
+
+            Assert.ThrowsException<ArgumentNullException>(action);
+        }
+
+        [TestMethod]
+        public void ConstructorMustThrowIfUnnamedParametersParameterIsNull()
+        {
+            var name = string.Empty;
+            SortedSet<string> unnamedParameters = null!;
+
+            var action = () => new WikiTemplate(name, unnamedParameters);
 
             Assert.ThrowsException<ArgumentNullException>(action);
         }
