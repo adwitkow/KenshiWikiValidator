@@ -45,7 +45,7 @@ namespace KenshiWikiValidator.Tests.Features.WikiSections
         [TestMethod]
         public void WithTemplateShouldCreateProperTemplate()
         {
-            var templateProperties = new SortedList<string, string>()
+            var templateProperties = new SortedList<string, string?>()
             {
                 { "prop1", "val1" },
                 { "prop2", "val2" },

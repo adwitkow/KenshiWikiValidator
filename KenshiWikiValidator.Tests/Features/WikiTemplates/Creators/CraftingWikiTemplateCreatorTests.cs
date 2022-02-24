@@ -18,12 +18,12 @@ namespace KenshiWikiValidator.Tests.Features.WikiTemplates.Creators
 
             var template = creator.Generate();
 
-            Assert.IsTrue(template.Properties.ContainsKey("building"));
-            Assert.IsTrue(template.Properties.ContainsKey("input0"));
-            Assert.IsTrue(template.Properties.ContainsKey("input0amount"));
-            Assert.IsTrue(template.Properties.ContainsKey("input1"));
-            Assert.IsTrue(template.Properties.ContainsKey("input1amount"));
-            Assert.IsTrue(template.Properties.ContainsKey("output"));
+            Assert.IsTrue(template.Parameters.ContainsKey("building"));
+            Assert.IsTrue(template.Parameters.ContainsKey("input0"));
+            Assert.IsTrue(template.Parameters.ContainsKey("input0amount"));
+            Assert.IsTrue(template.Parameters.ContainsKey("input1"));
+            Assert.IsTrue(template.Parameters.ContainsKey("input1amount"));
+            Assert.IsTrue(template.Parameters.ContainsKey("output"));
         }
 
         [TestMethod]
@@ -36,7 +36,7 @@ namespace KenshiWikiValidator.Tests.Features.WikiTemplates.Creators
 
             var template = creator.Generate();
 
-            Assert.AreEqual("building name", template.Properties["building"]);
+            Assert.AreEqual("building name", template.Parameters["building"]);
         }
 
         [TestMethod]
@@ -49,8 +49,8 @@ namespace KenshiWikiValidator.Tests.Features.WikiTemplates.Creators
 
             var template = creator.Generate();
 
-            Assert.AreEqual(null, template.Properties["input1"]);
-            Assert.AreEqual(null, template.Properties["input1amount"]);
+            Assert.AreEqual(null, template.Parameters["input1"]);
+            Assert.AreEqual(null, template.Parameters["input1amount"]);
         }
 
         [TestMethod]
@@ -63,7 +63,7 @@ namespace KenshiWikiValidator.Tests.Features.WikiTemplates.Creators
 
             var template = creator.Generate();
 
-            Assert.AreEqual("test", template.Properties["output"]);
+            Assert.AreEqual("test", template.Parameters["output"]);
         }
     }
 }

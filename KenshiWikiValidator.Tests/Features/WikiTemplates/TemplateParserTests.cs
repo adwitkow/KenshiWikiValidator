@@ -68,29 +68,29 @@ namespace KenshiWikiValidator.Tests.Features.WikiTemplates
 
             var result = parser.Parse(SingleLineTemplate);
 
-            Assert.AreEqual(10, result.Properties.Count);
+            Assert.AreEqual(10, result.Parameters.Count);
 
             Assert.AreEqual("Weapon", result.Name);
-            Assert.IsTrue(result.Properties.ContainsKey("class"));
-            Assert.AreEqual("Katana", result.Properties["class"]);
-            Assert.IsTrue(result.Properties.ContainsKey("blood loss"));
-            Assert.AreEqual("1.20", result.Properties["blood loss"]);
-            Assert.IsTrue(result.Properties.ContainsKey("indoors"));
-            Assert.AreEqual("+4", result.Properties["indoors"]);
-            Assert.IsTrue(result.Properties.ContainsKey("damage_robots"));
-            Assert.AreEqual("-40", result.Properties["damage_robots"]);
-            Assert.IsTrue(result.Properties.ContainsKey("damage_humans"));
-            Assert.AreEqual("+10", result.Properties["damage_humans"]);
-            Assert.IsTrue(result.Properties.ContainsKey("reach"));
-            Assert.AreEqual("16", result.Properties["reach"]);
-            Assert.IsTrue(result.Properties.ContainsKey("description"));
-            Assert.AreEqual(description, result.Properties["description"]);
-            Assert.IsTrue(result.Properties.ContainsKey("armour penetration"));
-            Assert.AreEqual("-30", result.Properties["armour penetration"]);
-            Assert.IsTrue(result.Properties.ContainsKey("attack"));
-            Assert.AreEqual("+2", result.Properties["attack"]);
-            Assert.IsTrue(result.Properties.ContainsKey("defence"));
-            Assert.AreEqual("-2", result.Properties["defence"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("class"));
+            Assert.AreEqual("Katana", result.Parameters["class"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("blood loss"));
+            Assert.AreEqual("1.20", result.Parameters["blood loss"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("indoors"));
+            Assert.AreEqual("+4", result.Parameters["indoors"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("damage_robots"));
+            Assert.AreEqual("-40", result.Parameters["damage_robots"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("damage_humans"));
+            Assert.AreEqual("+10", result.Parameters["damage_humans"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("reach"));
+            Assert.AreEqual("16", result.Parameters["reach"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("description"));
+            Assert.AreEqual(description, result.Parameters["description"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("armour penetration"));
+            Assert.AreEqual("-30", result.Parameters["armour penetration"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("attack"));
+            Assert.AreEqual("+2", result.Parameters["attack"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("defence"));
+            Assert.AreEqual("-2", result.Parameters["defence"]);
         }
 
         [TestMethod]
@@ -101,29 +101,29 @@ namespace KenshiWikiValidator.Tests.Features.WikiTemplates
 
             var result = parser.Parse(MultiLineTemplate);
 
-            Assert.AreEqual(10, result.Properties.Count);
+            Assert.AreEqual(10, result.Parameters.Count);
 
             Assert.AreEqual("Weapon", result.Name);
-            Assert.IsTrue(result.Properties.ContainsKey("class"));
-            Assert.AreEqual("Katana", result.Properties["class"]);
-            Assert.IsTrue(result.Properties.ContainsKey("blood loss"));
-            Assert.AreEqual("1.20", result.Properties["blood loss"]);
-            Assert.IsTrue(result.Properties.ContainsKey("indoors"));
-            Assert.AreEqual("+4", result.Properties["indoors"]);
-            Assert.IsTrue(result.Properties.ContainsKey("damage_robots"));
-            Assert.AreEqual("-40", result.Properties["damage_robots"]);
-            Assert.IsTrue(result.Properties.ContainsKey("damage_humans"));
-            Assert.AreEqual("+10", result.Properties["damage_humans"]);
-            Assert.IsTrue(result.Properties.ContainsKey("reach"));
-            Assert.AreEqual("16", result.Properties["reach"]);
-            Assert.IsTrue(result.Properties.ContainsKey("description"));
-            Assert.AreEqual(description, result.Properties["description"]);
-            Assert.IsTrue(result.Properties.ContainsKey("armour penetration"));
-            Assert.AreEqual("-30", result.Properties["armour penetration"]);
-            Assert.IsTrue(result.Properties.ContainsKey("attack"));
-            Assert.AreEqual("+2", result.Properties["attack"]);
-            Assert.IsTrue(result.Properties.ContainsKey("defence"));
-            Assert.AreEqual("-2", result.Properties["defence"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("class"));
+            Assert.AreEqual("Katana", result.Parameters["class"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("blood loss"));
+            Assert.AreEqual("1.20", result.Parameters["blood loss"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("indoors"));
+            Assert.AreEqual("+4", result.Parameters["indoors"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("damage_robots"));
+            Assert.AreEqual("-40", result.Parameters["damage_robots"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("damage_humans"));
+            Assert.AreEqual("+10", result.Parameters["damage_humans"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("reach"));
+            Assert.AreEqual("16", result.Parameters["reach"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("description"));
+            Assert.AreEqual(description, result.Parameters["description"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("armour penetration"));
+            Assert.AreEqual("-30", result.Parameters["armour penetration"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("attack"));
+            Assert.AreEqual("+2", result.Parameters["attack"]);
+            Assert.IsTrue(result.Parameters.ContainsKey("defence"));
+            Assert.AreEqual("-2", result.Parameters["defence"]);
         }
     }
 }

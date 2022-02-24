@@ -15,7 +15,7 @@ namespace KenshiWikiValidator.Tests.Features.WikiTemplates
         public void ShouldThrowExceptionForInvalidTemplate()
         {
             var builder = new TemplateBuilder();
-            var template = new WikiTemplate(string.Empty, new SortedList<string, string>());
+            var template = new WikiTemplate(string.Empty, new SortedList<string, string?>());
 
             var action = () => builder.Build(template);
 
@@ -27,7 +27,7 @@ namespace KenshiWikiValidator.Tests.Features.WikiTemplates
         {
             var builder = new TemplateBuilder();
             var templateName = "Blueprint";
-            var templateValues = new SortedList<string, string>()
+            var templateValues = new SortedList<string, string?>()
             {
                 { "name", "Wakizashis" },
                 { "color", "green" },

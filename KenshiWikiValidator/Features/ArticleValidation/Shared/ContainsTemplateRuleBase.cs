@@ -23,7 +23,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared
                 return result;
             }
 
-            var addNewlines = template.Properties.Count > 3;
+            var addNewlines = template.Parameters.Count > 3;
             var correctTemplateString = this.templateBuilder.Build(template, addNewlines);
 
             var output = "output";

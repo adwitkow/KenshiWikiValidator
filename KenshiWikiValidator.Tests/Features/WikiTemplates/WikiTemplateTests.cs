@@ -12,7 +12,7 @@ namespace KenshiWikiValidator.Tests.Features.WikiTemplates
         public void ConstructorMustThrowIfNameParameterIsNull()
         {
             string name = null!;
-            var properties = new SortedList<string, string>();
+            var properties = new SortedList<string, string?>();
 
             var action = () => new WikiTemplate(name, properties);
 
@@ -23,7 +23,7 @@ namespace KenshiWikiValidator.Tests.Features.WikiTemplates
         public void ConstructorMustThrowIfPropertiesParameterIsNull()
         {
             var name = string.Empty;
-            SortedList<string, string> properties = null!;
+            SortedList<string, string?> properties = null!;
 
             var action = () => new WikiTemplate(name, properties);
 
