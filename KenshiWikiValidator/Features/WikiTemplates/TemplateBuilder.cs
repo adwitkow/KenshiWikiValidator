@@ -31,7 +31,7 @@ namespace KenshiWikiValidator.Features.WikiTemplates
                 Append(builder, $" | {parameter}", newlines);
             }
 
-            var validParameters = template.Parameters.Where(pair => pair.Value is not null);
+            var validParameters = template.Parameters.Where(pair => pair.Value is not null && !string.IsNullOrWhiteSpace(pair.Value));
 
             var maxLength = 0;
             if (validParameters.Any())
