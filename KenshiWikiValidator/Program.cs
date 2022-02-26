@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using KenshiWikiValidator;
 using KenshiWikiValidator.Features.ArticleValidation;
+using KenshiWikiValidator.Features.ArticleValidation.Locations;
 using KenshiWikiValidator.Features.ArticleValidation.TownResident;
 using KenshiWikiValidator.Features.ArticleValidation.Weapons;
 using KenshiWikiValidator.Features.DataItemConversion;
@@ -16,6 +17,7 @@ var wikiTitles = new WikiTitleCache();
 var validators = new List<IArticleValidator>()
 {
     new TownResidentArticleValidator(itemRepository, wikiTitles),
+    new LocationsArticleValidator(itemRepository, wikiTitles),
     new WeaponArticleValidator(itemRepository, wikiTitles),
 };
 

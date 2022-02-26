@@ -17,7 +17,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
         {
             var result = new RuleResult();
 
-            var validTemplates = new[] { "Weapon", "Armour", "Traders" };
+            var validTemplates = new[] { "Weapon", "Armour", "Traders", "Town" };
 
             if (!validTemplates.Any(template => content.Contains("{{" + template)))
             {
