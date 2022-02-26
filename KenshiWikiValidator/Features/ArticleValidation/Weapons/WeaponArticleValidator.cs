@@ -24,6 +24,6 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Weapons
 
         public override string CategoryName => "Weapons"; // TODO: Should be melee weapons, actually
 
-        protected override IEnumerable<IValidationRule> Rules => this.rules;
+        public override IEnumerable<IValidationRule> Rules => this.rules;
     }
 }

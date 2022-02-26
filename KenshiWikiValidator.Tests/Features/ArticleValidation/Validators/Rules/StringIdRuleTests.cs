@@ -1,6 +1,7 @@
 ﻿using KenshiWikiValidator.Features.ArticleValidation;
 using KenshiWikiValidator.Features.ArticleValidation.Shared;
 using KenshiWikiValidator.Features.ArticleValidation.Shared.Rules;
+using KenshiWikiValidator.Features.ArticleValidation.Weapons;
 using KenshiWikiValidator.Features.DataItemConversion;
 using KenshiWikiValidator.Features.DataItemConversion.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -32,10 +33,16 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
             };
 
             var itemRepository = new Mock<IItemRepository>();
-            itemRepository.Setup(repo => repo.GetItems()).Returns(new[] { wakizashi });
-            var rule = new StringIdRule(itemRepository.Object, new WikiTitleCache());
+            itemRepository
+                .Setup(repo => repo.GetItems())
+                .Returns(new[] { wakizashi });
 
-            var result = rule.Execute("Wakizashi", this.correctResourceContent!, new ArticleData());
+            var validator = new Mock<ArticleValidatorBase>();
+            validator
+                .Setup(v => v.Rules)
+                .Returns(new[] { new StringIdRule(itemRepository.Object, new WikiTitleCache()) });
+
+            var result = validator.Object.Validate("Wakizashi", this.correctResourceContent!);
 
             Assert.IsTrue(result.Success);
         }
@@ -50,10 +57,16 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
             };
 
             var itemRepository = new Mock<IItemRepository>();
-            itemRepository.Setup(repo => repo.GetItems()).Returns(new[] { wakizashi });
-            var rule = new StringIdRule(itemRepository.Object, new WikiTitleCache());
+            itemRepository
+                .Setup(repo => repo.GetItems())
+                .Returns(new[] { wakizashi });
 
-            var result = rule.Execute("Wakizashi", this.incorrectResourceContent!, new ArticleData());
+            var validator = new Mock<ArticleValidatorBase>();
+            validator
+                .Setup(v => v.Rules)
+                .Returns(new[] { new StringIdRule(itemRepository.Object, new WikiTitleCache()) });
+
+            var result = validator.Object.Validate("Wakizashi", this.incorrectResourceContent!);
 
             Assert.IsFalse(result.Success);
         }

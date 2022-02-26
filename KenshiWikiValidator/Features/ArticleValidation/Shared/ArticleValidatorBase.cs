@@ -6,7 +6,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared
     {
         public abstract string CategoryName { get; }
 
-        protected abstract IEnumerable<IValidationRule> Rules { get; }
+        public abstract IEnumerable<IValidationRule> Rules { get; }
 
         public ArticleValidationResult Validate(string title, string content)
         {

@@ -18,6 +18,6 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Locations
 
         public override string CategoryName => "Locations"; // TODO: Should be melee weapons, actually
 
-        protected override IEnumerable<IValidationRule> Rules => this.rules;
+        public override IEnumerable<IValidationRule> Rules => this.rules;
     }
 }

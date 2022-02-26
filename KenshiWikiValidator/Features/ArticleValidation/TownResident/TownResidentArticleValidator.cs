@@ -19,6 +19,6 @@ namespace KenshiWikiValidator.Features.ArticleValidation.TownResident
 
         public override string CategoryName => "Town Residents";
 
-        protected override IEnumerable<IValidationRule> Rules => this.rules;
+        public override IEnumerable<IValidationRule> Rules => this.rules;
     }
 }
