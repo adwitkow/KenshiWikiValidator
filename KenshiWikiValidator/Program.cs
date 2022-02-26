@@ -21,6 +21,13 @@ var validators = new List<IArticleValidator>()
     new WeaponArticleValidator(itemRepository, wikiTitles),
 };
 
+var output = "output";
+if (Directory.Exists(output))
+{
+    Console.WriteLine("Clearing the output directory...");
+    Directory.Delete(output, true);
+}
+
 Console.WriteLine("Loading items...");
 var sw = Stopwatch.StartNew();
 itemRepository.Load();
@@ -33,6 +40,9 @@ foreach (var articleValidator in validators)
 {
     using var client = new WikiClient();
     var pages = await RetrieveArticles(client, articleValidator.CategoryName);
+
+    Console.WriteLine();
+    Console.WriteLine("Validating category: " + articleValidator.CategoryName);
 
     foreach (var page in pages)
     {
@@ -51,7 +61,14 @@ static void ValidateArticle(WikiPage page, IArticleValidator articleValidator)
 
     foreach (var issueGroup in issueGroups)
     {
-        Console.WriteLine($"{page.Title}: {issueGroup.Key} ({issueGroup.Count()})");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.Write(page.Title);
+        Console.ResetColor();
+        Console.Write($": {issueGroup.Key} ");
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+        Console.Write($"({issueGroup.Count()})");
+        Console.ResetColor();
+        Console.WriteLine();
     }
 }
 
