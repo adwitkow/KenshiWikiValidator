@@ -55,20 +55,30 @@ foreach (var articleValidator in validators)
 
 static void ValidateArticle(WikiPage page, IArticleValidator articleValidator)
 {
-    var result = articleValidator.Validate(page.Title, page.Content);
-
-    var issueGroups = result.Issues.GroupBy(issue => issue);
-
-    foreach (var issueGroup in issueGroups)
+    try
     {
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.Write(page.Title);
+        var result = articleValidator.Validate(page.Title, page.Content);
+
+        var issueGroups = result.Issues.GroupBy(issue => issue);
+
+        foreach (var issueGroup in issueGroups)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write(page.Title);
+            Console.ResetColor();
+            Console.Write($": {issueGroup.Key} ");
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write($"({issueGroup.Count()})");
+            Console.ResetColor();
+            Console.WriteLine();
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"An exception has been thrown in the article: '{page.Title}'");
+        Console.WriteLine(ex);
         Console.ResetColor();
-        Console.Write($": {issueGroup.Key} ");
-        Console.ForegroundColor = ConsoleColor.DarkGray;
-        Console.Write($"({issueGroup.Count()})");
-        Console.ResetColor();
-        Console.WriteLine();
     }
 }
 
