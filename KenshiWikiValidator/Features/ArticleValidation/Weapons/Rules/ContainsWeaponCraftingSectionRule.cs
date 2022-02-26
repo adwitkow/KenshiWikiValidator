@@ -17,7 +17,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Weapons.Rules
 
         protected override WikiSectionBuilder CreateSectionBuilder(ArticleData data)
         {
-            var stringId = data.Get("string id");
+            var stringId = data.StringId;
             if (string.IsNullOrEmpty(stringId))
             {
                 return null!;

@@ -31,7 +31,7 @@ namespace KenshiWikiValidator.Features.WikiTemplates.Creators
 
         public WikiTemplate Generate()
         {
-            var stringId = this.data.Get("string id");
+            var stringId = this.data.StringId;
             if (string.IsNullOrEmpty(stringId))
             {
                 return null!;

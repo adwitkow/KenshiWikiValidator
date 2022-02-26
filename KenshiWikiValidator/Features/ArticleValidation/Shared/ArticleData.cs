@@ -1,30 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using KenshiWikiValidator.Features.WikiTemplates;
 
 namespace KenshiWikiValidator.Features.ArticleValidation.Shared
 {
     public class ArticleData
     {
-        private readonly Dictionary<string, string> data;
-
         public ArticleData()
         {
-            this.data = new Dictionary<string, string>();
+            this.WikiTemplates = new List<WikiTemplate>();
         }
 
-        public string? Get(string key)
-        {
-            this.data.TryGetValue(key, out var value);
+        public string? StringId { get; set; }
 
-            return value;
-        }
-
-        public void Add(string key, string value)
-        {
-            this.data.Add(key, value);
-        }
+        public IEnumerable<WikiTemplate> WikiTemplates { get; set; }
     }
 }
