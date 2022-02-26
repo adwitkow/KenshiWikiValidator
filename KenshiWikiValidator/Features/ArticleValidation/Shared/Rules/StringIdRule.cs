@@ -1,9 +1,13 @@
 ﻿using KenshiWikiValidator.Features.DataItemConversion;
+using KenshiWikiValidator.Features.WikiTemplates;
+using OpenConstructionSet.Data.Models;
 
 namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
 {
     public class StringIdRule : IValidationRule
     {
+        private static readonly string[] ValidTemplateNames = { "Weapon", "Armour", "Traders", "Town" };
+
         private readonly IItemRepository itemRepository;
         private readonly WikiTitleCache wikiTitleCache;
 
@@ -17,77 +21,56 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
         {
             var result = new RuleResult();
 
-            var validTemplates = new[] { "Weapon", "Armour", "Traders", "Town" };
-
-            if (!validTemplates.Any(template => content.Contains("{{" + template)))
+            var validTemplates = data.WikiTemplates.Where(template => ValidTemplateNames.Any(valid => template.Name.Equals(valid)));
+            if (!validTemplates.Any())
             {
                 return result;
             }
 
-            using var reader = new StringReader(content);
+            var matchingItems = this.GetMatchingItems(title);
+            var fcsName = this.SelectSingleParameter(validTemplates, "fcs_name");
 
-            // TODO: Cleanup
-            string? line;
-            var matchingItems = this.itemRepository
-                .GetDataItems()
-                .Where(item => title.ToLower().Trim().Equals(item.Name!.ToLower().Trim()))
-                .ToList();
-            var stringIdFound = false;
-            while ((line = reader.ReadLine()) != null)
+            if (!string.IsNullOrEmpty(fcsName))
             {
-                if (line.Contains("fcs_name"))
-                {
-                    var pairs = line.Split("|");
-                    var elements = pairs.SelectMany(pair => pair.Split("=")).ToArray();
-                    for (var i = 0; i < elements.Length; i++)
-                    {
-                        var element = elements[i].Trim();
-                        if (element.Contains("fcs_name"))
-                        {
-                            var fcsName = elements[i + 1].Trim();
-                            matchingItems = this.itemRepository
-                                .GetDataItems()
-                                .Where(item => item.Name.ToLower() == fcsName.ToLower())
-                                .ToList();
-                        }
-                    }
-                }
-
-                if (line.Contains("string id"))
-                {
-                    var pairs = line.Split("|");
-                    var elements = pairs.SelectMany(pair => pair.Split("=")).ToArray();
-                    for (var i = 0; i < elements.Length; i++)
-                    {
-                        var element = elements[i].Trim();
-                        if (element.Contains("string id"))
-                        {
-                            var stringId = elements[i + 1].Trim();
-
-                            var matchingItem = matchingItems.FirstOrDefault(item => item.StringId == stringId);
-
-                            if (matchingItem is null && matchingItems.Any())
-                            {
-                                result.AddIssue($"String id '{stringId}' is incorrect in the article. Should be corrected to one of the following: [{string.Join(", ", matchingItems.Select(item => item.StringId))}]");
-                            }
-                            else
-                            {
-                                data.Add("string id", stringId); // TODO: this will probably need to have some exceptions
-                                this.wikiTitleCache.AddTitle(stringId, title);
-                            }
-
-                            stringIdFound = true;
-                        }
-                    }
-                }
+                matchingItems = this.GetMatchingItems(fcsName);
             }
 
-            if (!stringIdFound)
+            var stringId = this.SelectSingleParameter(validTemplates, "string id");
+            if (!string.IsNullOrEmpty(stringId))
+            {
+                var matchingItem = matchingItems.FirstOrDefault(item => item.StringId == stringId);
+
+                if (matchingItem is null && matchingItems.Any())
+                {
+                    result.AddIssue($"String id '{stringId}' is incorrect in the article. Should be corrected to one of the following: [{string.Join(", ", matchingItems.Select(item => item.StringId))}]");
+                }
+                else
+                {
+                    data.StringId = stringId;
+                    this.wikiTitleCache.AddTitle(stringId, title);
+                }
+            }
+            else
             {
                 result.AddIssue($"No string id! Most likely string id: [{string.Join(", ", matchingItems.Select(item => $"string id = {item.StringId}|"))}]");
             }
 
             return result;
+        }
+
+        private string? SelectSingleParameter(IEnumerable<WikiTemplate> validTemplates, string parameterName)
+        {
+            return validTemplates.Where(template => template.Parameters.ContainsKey(parameterName))
+                .Select(template => template.Parameters[parameterName])
+                .SingleOrDefault();
+        }
+
+        private List<DataItem> GetMatchingItems(string name)
+        {
+            return this.itemRepository
+                .GetDataItems()
+                .Where(item => name.ToLower().Trim().Equals(item.Name.ToLower().Trim()))
+                .ToList();
         }
     }
 }
