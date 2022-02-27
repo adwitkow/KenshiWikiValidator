@@ -12,6 +12,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Locations
         {
             this.rules = new List<IValidationRule>()
             {
+                new ContainsTemplateRule("Town"),
                 new StringIdRule(itemRepository, wikiTitles),
             };
         }
