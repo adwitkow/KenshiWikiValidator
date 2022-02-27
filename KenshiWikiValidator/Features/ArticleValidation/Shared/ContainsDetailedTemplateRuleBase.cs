@@ -3,11 +3,11 @@ using KenshiWikiValidator.Features.WikiTemplates;
 
 namespace KenshiWikiValidator.Features.ArticleValidation.Shared
 {
-    public abstract class ContainsTemplateRuleBase : IValidationRule
+    public abstract class ContainsDetailedTemplateRuleBase : IValidationRule
     {
         private readonly TemplateBuilder templateBuilder;
 
-        public ContainsTemplateRuleBase()
+        public ContainsDetailedTemplateRuleBase()
         {
             this.templateBuilder = new TemplateBuilder();
         }

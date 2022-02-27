@@ -5,7 +5,7 @@ using KenshiWikiValidator.Features.WikiTemplates.Creators;
 
 namespace KenshiWikiValidator.Features.ArticleValidation.Weapons.Rules
 {
-    internal class ContainsWeaponTemplateRule : ContainsTemplateRuleBase
+    internal class ContainsWeaponTemplateRule : ContainsDetailedTemplateRuleBase
     {
         private readonly IItemRepository itemRepository;
 

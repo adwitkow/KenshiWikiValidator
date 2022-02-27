@@ -3,7 +3,7 @@ using KenshiWikiValidator.Features.WikiTemplates;
 
 namespace KenshiWikiValidator.Features.ArticleValidation.Weapons.Rules
 {
-    internal class ContainsWeaponNavboxRule : ContainsTemplateRuleBase
+    internal class ContainsWeaponNavboxRule : ContainsDetailedTemplateRuleBase
     {
         protected override WikiTemplate PrepareTemplate(ArticleData data)
         {
