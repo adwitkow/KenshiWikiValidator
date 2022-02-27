@@ -66,7 +66,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
 
                 if (parentFaction != townFaction)
                 {
-                    results.Add(new ItemReference(town.StringId, $"{parent.Name}, {townFaction}"));
+                    results.Add(new ItemReference(town.StringId, $"{parent.Name}/{townFaction}"));
                 }
                 else
                 {
