@@ -13,19 +13,29 @@ namespace KenshiWikiValidator.Features.ArticleValidation
 
         public bool HasArticle(IItem item)
         {
-            return this.data.ContainsKey(item.StringId);
+            return this.HasArticle(item.StringId);
         }
 
-        public string? GetTitle(IItem item)
+        public bool HasArticle(string stringId)
         {
-            var success = this.data.TryGetValue(item.StringId, out var title);
+            return this.data.ContainsKey(stringId);
+        }
+
+        public string GetTitle(IItem item)
+        {
+            return this.GetTitle(item.StringId, item.Name);
+        }
+
+        public string GetTitle(string stringId, string itemName)
+        {
+            var success = this.data.TryGetValue(stringId, out var title);
             if (success)
             {
-                return title;
+                return title!;
             }
             else
             {
-                return item.Name;
+                return itemName;
             }
         }
 

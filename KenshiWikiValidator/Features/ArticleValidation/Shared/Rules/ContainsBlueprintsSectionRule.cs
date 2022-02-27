@@ -129,7 +129,9 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
             var results = locationReferences
                 .GroupBy(reference => reference.Name)
                 .Select(group => group.First())
-                .Select(reference => $"[[{reference.Name}]]")
+                .Select(reference => this.wikiTitleCache.HasArticle(reference.StringId)
+                    ? $"[[{this.wikiTitleCache.GetTitle(reference.StringId, reference.Name)}]]"
+                    : $"[[{reference.Name}]]")
                 .Concat(squadArticles);
             return results.OrderBy(loc => loc);
         }
