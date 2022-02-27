@@ -127,12 +127,11 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
                 .SelectMany(squad => squad.Locations);
 
             var results = locationReferences
-                .GroupBy(reference => reference.Name)
-                .Select(group => group.First())
                 .Select(reference => this.wikiTitleCache.HasArticle(reference.StringId)
                     ? $"[[{this.wikiTitleCache.GetTitle(reference.StringId, reference.Name)}]]"
                     : $"[[{reference.Name}]]")
-                .Concat(squadArticles);
+                .Concat(squadArticles)
+                .Distinct();
             return results.OrderBy(loc => loc);
         }
     }
