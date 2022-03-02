@@ -7,9 +7,10 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared
         public ArticleData()
         {
             this.WikiTemplates = new List<WikiTemplate>();
+            this.StringIds = new List<string>();
         }
 
-        public string? StringId { get; set; }
+        public ICollection<string> StringIds { get; set; }
 
         public IEnumerable<WikiTemplate> WikiTemplates { get; set; }
     }

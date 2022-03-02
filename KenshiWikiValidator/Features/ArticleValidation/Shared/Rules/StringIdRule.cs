@@ -28,26 +28,44 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
             }
 
             var matchingItems = this.GetMatchingItems(title);
-            var fcsName = this.SelectSingleParameter(validTemplates, "fcs_name");
+            var fcsNameValue = this.SelectSingleParameter(validTemplates, "fcs_name");
 
-            if (!string.IsNullOrEmpty(fcsName))
+            if (!string.IsNullOrEmpty(fcsNameValue))
             {
-                matchingItems = this.GetMatchingItems(fcsName);
+                matchingItems.Clear();
+                var fcsNames = fcsNameValue.Split(',').Select(name => name.Trim());
+
+                foreach (var fcsName in fcsNames)
+                {
+                    matchingItems.AddRange(this.GetMatchingItems(fcsName));
+                }
             }
 
-            var stringId = this.SelectSingleParameter(validTemplates, "string id");
-            if (!string.IsNullOrEmpty(stringId))
+            var stringIdValue = this.SelectSingleParameter(validTemplates, "string id");
+            if (!string.IsNullOrEmpty(stringIdValue))
             {
-                var matchingItem = matchingItems.FirstOrDefault(item => item.StringId == stringId);
+                var stringIds = stringIdValue.Split(',')
+                    .Select(id => id.Trim());
+                foreach (var stringId in stringIds)
+                {
+                    var matchingItem = matchingItems.FirstOrDefault(item => item.StringId == stringId);
 
-                if (matchingItem is null && matchingItems.Any())
-                {
-                    result.AddIssue($"String id '{stringId}' is incorrect in the article. Should be corrected to one of the following: [{string.Join(", ", matchingItems.Select(item => item.StringId))}]");
-                }
-                else
-                {
-                    data.StringId = stringId;
-                    this.wikiTitleCache.AddTitle(stringId, title);
+                    if (matchingItem is null)
+                    {
+                        if (matchingItems.Any())
+                        {
+                            result.AddIssue($"String id '{stringId}' is incorrect in the article. Should be corrected to one of the following: [{string.Join(", ", matchingItems.Select(item => item.StringId))}]");
+                        }
+                        else
+                        {
+                            result.AddIssue($"String id '{stringId}' could not be found in the game files.");
+                        }
+                    }
+                    else
+                    {
+                        data.StringIds.Add(stringId);
+                        this.wikiTitleCache.AddTitle(stringId, title);
+                    }
                 }
             }
             else

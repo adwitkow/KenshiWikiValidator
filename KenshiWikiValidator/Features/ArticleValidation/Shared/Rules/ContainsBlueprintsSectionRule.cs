@@ -26,7 +26,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
 
         protected override WikiSectionBuilder CreateSectionBuilder(ArticleData data)
         {
-            var stringId = data.StringId;
+            var stringId = data.StringIds.SingleOrDefault();
             if (string.IsNullOrEmpty(stringId))
             {
                 return null!;

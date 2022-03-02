@@ -18,7 +18,7 @@ public class BlueprintTemplateCreator : ITemplateCreator
 
     public WikiTemplate Generate()
     {
-        var stringId = this.data.StringId;
+        var stringId = this.data.StringIds.SingleOrDefault();
         if (string.IsNullOrEmpty(stringId))
         {
             return null!;
