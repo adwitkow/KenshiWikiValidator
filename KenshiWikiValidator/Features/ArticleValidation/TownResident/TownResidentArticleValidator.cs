@@ -14,7 +14,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.TownResident
             {
                 new NewLinesRule(),
                 new ContainsTemplateRule("Traders"),
-                new StringIdRule(itemRepository, wikiTitles),
+                new StringIdRule(itemRepository, wikiTitles, true),
             };
         }
 

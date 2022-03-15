@@ -10,11 +10,13 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
 
         private readonly IItemRepository itemRepository;
         private readonly WikiTitleCache wikiTitleCache;
+        private readonly bool shouldCheckFcsName;
 
-        public StringIdRule(IItemRepository itemRepository, WikiTitleCache wikiTitleCache)
+        public StringIdRule(IItemRepository itemRepository, WikiTitleCache wikiTitleCache, bool shouldCheckFcsName = false)
         {
             this.itemRepository = itemRepository;
             this.wikiTitleCache = wikiTitleCache;
+            this.shouldCheckFcsName = shouldCheckFcsName;
         }
 
         public RuleResult Execute(string title, string content, ArticleData data)
@@ -30,7 +32,14 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
             var matchingItems = this.GetMatchingItems(title);
             var fcsNameValue = this.SelectSingleParameter(validTemplates, "fcs_name");
 
-            if (!string.IsNullOrEmpty(fcsNameValue))
+            if (string.IsNullOrEmpty(fcsNameValue))
+            {
+                if (this.shouldCheckFcsName)
+                {
+                    result.AddIssue("FCS name is missing!");
+                }
+            }
+            else
             {
                 matchingItems.Clear();
                 var fcsNames = fcsNameValue.Split(',').Select(name => name.Trim());
