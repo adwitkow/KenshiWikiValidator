@@ -41,7 +41,9 @@ foreach (var articleValidator in validators)
     var pages = await RetrieveArticles(client, articleValidator.CategoryName);
 
     Console.WriteLine();
+    Console.ForegroundColor = ConsoleColor.White;
     Console.WriteLine("Validating category: " + articleValidator.CategoryName);
+    Console.ResetColor();
 
     foreach (var page in pages)
     {
