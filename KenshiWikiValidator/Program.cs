@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using KenshiWikiValidator;
 using KenshiWikiValidator.Features.ArticleValidation;
 using KenshiWikiValidator.Features.ArticleValidation.Locations;
 using KenshiWikiValidator.Features.ArticleValidation.TownResident;

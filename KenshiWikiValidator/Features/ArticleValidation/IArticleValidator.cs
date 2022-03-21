@@ -1,7 +1,6 @@
-﻿using KenshiWikiValidator.Features.ArticleValidation;
-using KenshiWikiValidator.Features.ArticleValidation.Shared;
+﻿using KenshiWikiValidator.Features.ArticleValidation.Shared;
 
-namespace KenshiWikiValidator
+namespace KenshiWikiValidator.Features.ArticleValidation
 {
     public interface IArticleValidator
     {
