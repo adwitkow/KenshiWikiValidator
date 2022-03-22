@@ -1,9 +1,12 @@
-﻿using KenshiWikiValidator.Features.WikiTemplates;
+﻿using System.Text.RegularExpressions;
+using KenshiWikiValidator.Features.WikiTemplates;
 
 namespace KenshiWikiValidator.Features.ArticleValidation.Shared
 {
     public abstract class ArticleValidatorBase : IArticleValidator
     {
+        private static readonly Regex CategoryRegex = new Regex(@"\[\[Category:(?<name>.*?)(\|#)?]]");
+
         public abstract string CategoryName { get; }
 
         public abstract IEnumerable<IValidationRule> Rules { get; }
@@ -12,9 +15,18 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared
         {
             var result = new ArticleValidationResult();
             var results = new List<RuleResult>();
+
+            var categories = new List<string>();
+            foreach (Match match in CategoryRegex.Matches(content))
+            {
+                var category = match.Groups["name"].Value;
+                categories.Add(category);
+            }
+
             var data = new ArticleData
             {
                 WikiTemplates = this.ParseTemplates(content),
+                Categories = categories,
             };
 
             foreach (IValidationRule? rule in this.Rules)
