@@ -34,9 +34,11 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
 
             if (string.IsNullOrEmpty(fcsNameValue))
             {
-                if (this.shouldCheckFcsName)
+                var possibleFcsNames = matchingItems.Select(item => item.Name.ToLower().Trim());
+
+                if (this.shouldCheckFcsName && possibleFcsNames.Any(name => !name.Equals(title.ToLower().Trim())))
                 {
-                    result.AddIssue("FCS name is missing!");
+                    result.AddIssue($"FCS name is missing! Possible FCS names: {string.Join(", ", possibleFcsNames)}");
                 }
             }
             else
