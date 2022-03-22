@@ -8,12 +8,12 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
 {
     public class ContainsTemplateRule : IValidationRule
     {
-        public string TemplateName { get; }
-
         public ContainsTemplateRule(string templateName)
         {
             this.TemplateName = templateName;
         }
+
+        public string TemplateName { get; }
 
         public RuleResult Execute(string title, string content, ArticleData data)
         {
