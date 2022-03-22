@@ -14,7 +14,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Weapons
             this.rules = new List<IValidationRule>()
             {
                 new StringIdRule(itemRepository, wikiTitles),
-                new ContainsTemplateRule("Weapon", categoryExceptions: "Weapon Types"),
+                new ContainsTemplateRule("Weapon", new[] { "Weapon Types" }),
                 new NewLinesRule(),
                 new ContainsBlueprintsSectionRule(itemRepository, wikiTitles),
                 new ContainsWeaponTemplateRule(itemRepository),

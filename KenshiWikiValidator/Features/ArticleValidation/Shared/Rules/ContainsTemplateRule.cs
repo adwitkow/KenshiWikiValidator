@@ -8,7 +8,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
 {
     public class ContainsTemplateRule : IValidationRule
     {
-        public ContainsTemplateRule(string templateName, params string[]? categoryExceptions)
+        public ContainsTemplateRule(string templateName, IEnumerable<string>? categoryExceptions = null)
         {
             this.TemplateName = templateName;
             this.CategoryExceptions = categoryExceptions ?? Enumerable.Empty<string>();
