@@ -1,6 +1,7 @@
 ﻿using KenshiWikiValidator.Features.DataItemConversion;
 using KenshiWikiValidator.Features.WikiTemplates;
 using OpenConstructionSet.Data.Models;
+using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
 {
@@ -11,12 +12,14 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
         private readonly IItemRepository itemRepository;
         private readonly WikiTitleCache wikiTitleCache;
         private readonly bool shouldCheckFcsName;
+        private readonly ItemType? itemType;
 
-        public StringIdRule(IItemRepository itemRepository, WikiTitleCache wikiTitleCache, bool shouldCheckFcsName = false)
+        public StringIdRule(IItemRepository itemRepository, WikiTitleCache wikiTitleCache, bool shouldCheckFcsName = false, ItemType? itemType = null)
         {
             this.itemRepository = itemRepository;
             this.wikiTitleCache = wikiTitleCache;
             this.shouldCheckFcsName = shouldCheckFcsName;
+            this.itemType = itemType;
         }
 
         public RuleResult Execute(string title, string content, ArticleData data)
@@ -96,8 +99,17 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
 
         private List<DataItem> GetMatchingItems(string name)
         {
-            return this.itemRepository
-                .GetDataItems()
+            IEnumerable<DataItem> items;
+            if (this.itemType is null)
+            {
+                items = this.itemRepository.GetDataItems();
+            }
+            else
+            {
+                items = this.itemRepository.GetDataItemsByType(this.itemType.Value);
+            }
+
+            return items
                 .Where(item => name.ToLower().Trim().Equals(item.Name.ToLower().Trim()))
                 .ToList();
         }
