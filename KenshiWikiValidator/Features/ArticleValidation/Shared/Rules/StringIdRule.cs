@@ -94,6 +94,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
         {
             return validTemplates.Where(template => template.Parameters.ContainsKey(parameterName))
                 .Select(template => template.Parameters[parameterName])
+                .Distinct()
                 .SingleOrDefault();
         }
 
