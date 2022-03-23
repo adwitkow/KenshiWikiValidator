@@ -37,13 +37,13 @@ Console.WriteLine();
 
 foreach (var articleValidator in validators)
 {
-    using var client = new WikiClient();
-    var pages = await RetrieveArticles(client, articleValidator.CategoryName);
-
     Console.WriteLine();
     Console.ForegroundColor = ConsoleColor.White;
     Console.WriteLine("Validating category: " + articleValidator.CategoryName);
     Console.ResetColor();
+
+    using var client = new WikiClient();
+    var pages = await RetrieveArticles(client, articleValidator.CategoryName);
 
     foreach (var page in pages)
     {
