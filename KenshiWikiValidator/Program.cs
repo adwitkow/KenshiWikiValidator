@@ -37,23 +37,43 @@ sw.Stop();
 Console.WriteLine($"Loaded all items in {sw.Elapsed}");
 Console.WriteLine();
 
-foreach (var articleValidator in validators)
+Console.WriteLine("Please choose which of the following Wiki categories you wish to validate:");
+for (int i = 1; i <= validators.Count; i++)
 {
-    Console.WriteLine();
-    Console.ForegroundColor = ConsoleColor.White;
-    Console.WriteLine("Validating category: " + articleValidator.CategoryName);
-    Console.ResetColor();
-
-    using var client = new WikiClient();
-    var pages = await RetrieveArticles(client, articleValidator.CategoryName);
-
-    foreach (var page in pages)
-    {
-        await page.RefreshAsync(PageQueryOptions.FetchContent);
-
-        ValidateArticle(page, articleValidator);
-    }
+    Console.WriteLine($"[{i}] {validators[i - 1].CategoryName}");
 }
+
+Console.WriteLine();
+
+var response = (int)char.GetNumericValue(Console.ReadKey().KeyChar);
+
+if (response < 1 || response > validators.Count)
+{
+    return 1;
+}
+
+var validator = validators[response - 1];
+
+using var client = new WikiClient();
+
+Console.WriteLine();
+Console.ForegroundColor = ConsoleColor.White;
+Console.WriteLine("Retrieving the articles for category: " + validator.CategoryName + "...");
+
+var pages = await RetrieveArticles(client, validator.CategoryName);
+
+Console.WriteLine("Retrieved. Beginning to validate.");
+
+Console.ResetColor();
+
+foreach (var page in pages)
+{
+    await page.RefreshAsync(PageQueryOptions.FetchContent);
+
+    ValidateArticle(page, validator);
+}
+
+return 0;
 
 static void ValidateArticle(WikiPage page, IArticleValidator articleValidator)
 {
