@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using KenshiWikiValidator.Features.CharacterDialogue;
+using KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue;
 using KenshiWikiValidator.Features.DataItemConversion.Builders;
 using KenshiWikiValidator.Features.DataItemConversion.Builders.Components;
 using KenshiWikiValidator.Features.DataItemConversion.Models;
