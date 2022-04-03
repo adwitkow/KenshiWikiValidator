@@ -23,8 +23,11 @@ namespace KenshiWikiValidator.Features.CharacterDialogue
         public IEnumerable<DataItem> TargetItems { get; set; }
 
         public IEnumerable<DataItem> TargetFactions { get; set; }
-        public IEnumerable<DataItem> TargetRaces { get; internal set; }
-        public IEnumerable<DataItem> SpeakerIsCharacter { get; internal set; }
-        public IEnumerable<DataItem> InTownOfFactions { get; internal set; }
+
+        public IEnumerable<DataItem> TargetRaces { get; set; }
+
+        public IEnumerable<DataItem> SpeakerIsCharacter { get; set; }
+
+        public IEnumerable<DataItem> InTownOfFactions { get; set; }
     }
 }
