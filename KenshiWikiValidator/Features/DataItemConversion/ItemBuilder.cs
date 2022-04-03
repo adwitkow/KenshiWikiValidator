@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using KenshiWikiValidator.Features.CharacterDialogue;
 using KenshiWikiValidator.Features.DataItemConversion.Builders;
 using KenshiWikiValidator.Features.DataItemConversion.Builders.Components;
 using KenshiWikiValidator.Features.DataItemConversion.Models;
@@ -13,6 +14,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion
         private readonly WeaponBuilder weaponBuilder;
         private readonly ArmourBuilder armourBuilder;
         private readonly SquadBuilder squadBuilder;
+        private readonly DialogueBuilder dialogueBuilder;
         private readonly Dictionary<ItemType, IItemBuilder> itemBuilders;
 
         private DataItem longestItem;
@@ -37,12 +39,14 @@ namespace KenshiWikiValidator.Features.DataItemConversion
                 blueprintSquadsConverter,
                 unlockingResearchConverter);
             this.squadBuilder = new SquadBuilder(itemRepository);
+            this.dialogueBuilder = new DialogueBuilder(itemRepository);
 
             this.itemBuilders = new Dictionary<ItemType, IItemBuilder>()
             {
                 { ItemType.Weapon, this.weaponBuilder },
                 { ItemType.Armour, this.armourBuilder },
                 { ItemType.SquadTemplate, this.squadBuilder },
+                { ItemType.DialoguePackage, this.dialogueBuilder },
             };
 
             this.longestItem = null!;
