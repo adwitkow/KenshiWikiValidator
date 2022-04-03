@@ -1,4 +1,4 @@
-﻿namespace KenshiWikiValidator.Features.CharacterDialogue
+﻿namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
 {
     public class DialogueEffect : DialogueAction
     {

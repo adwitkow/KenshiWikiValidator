@@ -2,7 +2,7 @@
 using OpenConstructionSet.Data.Models;
 using OpenConstructionSet.Models;
 
-namespace KenshiWikiValidator.Features.CharacterDialogue
+namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
 {
     public class DialogueLine : IItem
     {

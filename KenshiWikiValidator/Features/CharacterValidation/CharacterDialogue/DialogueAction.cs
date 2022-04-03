@@ -1,18 +1,16 @@
 ﻿using KenshiWikiValidator.Features.DataItemConversion.Models;
 using OpenConstructionSet.Models;
 
-namespace KenshiWikiValidator.Features.CharacterDialogue
+namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
 {
-    public class DialoguePackage : IItem
+    public class DialogueAction : IItem
     {
-        public ItemType Type => ItemType.DialoguePackage;
+        public ItemType Type => ItemType.DialogAction;
 
         public Dictionary<string, object>? Properties { get; set; }
 
         public string StringId { get; set; }
 
         public string Name { get; set; }
-
-        public IEnumerable<Dialogue> Dialogues { get; set; }
     }
 }

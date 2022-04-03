@@ -1,4 +1,4 @@
-﻿namespace KenshiWikiValidator.Features.CharacterDialogue
+﻿namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1602:Enumeration items should be documented", Justification = "Maybe later")]
     public enum DialogueEffectName
