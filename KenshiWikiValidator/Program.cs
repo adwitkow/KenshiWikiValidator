@@ -3,6 +3,7 @@ using KenshiWikiValidator.Features.ArticleValidation;
 using KenshiWikiValidator.Features.ArticleValidation.Locations;
 using KenshiWikiValidator.Features.ArticleValidation.TownResident;
 using KenshiWikiValidator.Features.ArticleValidation.Weapons;
+using KenshiWikiValidator.Features.CharacterValidation;
 using KenshiWikiValidator.Features.DataItemConversion;
 using KenshiWikiValidator.Features.WikiTemplates;
 using WikiClientLibrary.Client;
@@ -15,6 +16,7 @@ var templateParser = new TemplateParser();
 var wikiTitles = new WikiTitleCache();
 var validators = new List<IArticleValidator>()
 {
+    new CharactersArticleValidator(itemRepository, wikiTitles),
     new TownResidentArticleValidator(itemRepository, wikiTitles),
     new LocationsArticleValidator(itemRepository, wikiTitles),
     new WeaponArticleValidator(itemRepository, wikiTitles),
