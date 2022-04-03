@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
+﻿namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
 {
     public class ContainsTemplateRule : IValidationRule
     {

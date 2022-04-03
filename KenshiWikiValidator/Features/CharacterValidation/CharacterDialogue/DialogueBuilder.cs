@@ -29,16 +29,16 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
         {
             this.itemRepository = itemRepository;
 
-            lineCache = new ConcurrentDictionary<string, DialogueLine>();
-            dialogueCache = new ConcurrentDictionary<string, Dialogue>();
+            this.lineCache = new ConcurrentDictionary<string, DialogueLine>();
+            this.dialogueCache = new ConcurrentDictionary<string, Dialogue>();
         }
 
         public override DialoguePackage Build(DataItem baseItem)
         {
-            var inheritedItems = baseItem.GetReferenceItems(itemRepository, "inheritsFrom"); // do not forget about the inheritance
-            var dialogueItems = baseItem.GetReferenceItems(itemRepository, "dialogs");
+            var inheritedItems = baseItem.GetReferenceItems(this.itemRepository, "inheritsFrom"); // do not forget about the inheritance
+            var dialogueItems = baseItem.GetReferenceItems(this.itemRepository, "dialogs");
 
-            var dialogues = BuildDialogues(dialogueItems);
+            var dialogues = this.BuildDialogues(dialogueItems);
 
             var resultPackage = new DialoguePackage()
             {
@@ -56,7 +56,7 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
             var dialogues = new List<Dialogue>();
             foreach (var dialogueItem in dialogueItems)
             {
-                var dialogue = ConvertDialogue(dialogueItem);
+                var dialogue = this.ConvertDialogue(dialogueItem);
 
                 dialogues.Add(dialogue);
             }
@@ -67,9 +67,9 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
         private Dialogue ConvertDialogue(DataItem dialogueItem)
         {
             Dialogue result;
-            if (dialogueCache.ContainsKey(dialogueItem.StringId))
+            if (this.dialogueCache.ContainsKey(dialogueItem.StringId))
             {
-                result = dialogueCache[dialogueItem.StringId];
+                result = this.dialogueCache[dialogueItem.StringId];
             }
             else
             {
@@ -80,16 +80,16 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
                     Properties = dialogueItem.Values,
                 };
 
-                dialogueCache.TryAdd(dialogueItem.StringId, result);
+                this.dialogueCache.TryAdd(dialogueItem.StringId, result);
 
-                result.Conditions = ConvertConditions(dialogueItem);
-                result.Lines = ConvertLines(dialogueItem);
-                result.WorldStates = ConvertWorldStates(dialogueItem);
-                result.TargetItems = ConvertTargetItems(dialogueItem);
-                result.TargetFactions = ConvertTargetedFaction(dialogueItem);
-                result.TargetRaces = ConvertTargetedRaces(dialogueItem);
-                result.SpeakerIsCharacter = ConvertCharacter(dialogueItem);
-                result.InTownOfFactions = ConvertInTownOf(dialogueItem);
+                result.Conditions = this.ConvertConditions(dialogueItem);
+                result.Lines = this.ConvertLines(dialogueItem);
+                result.WorldStates = this.ConvertWorldStates(dialogueItem);
+                result.TargetItems = this.ConvertTargetItems(dialogueItem);
+                result.TargetFactions = this.ConvertTargetedFaction(dialogueItem);
+                result.TargetRaces = this.ConvertTargetedRaces(dialogueItem);
+                result.SpeakerIsCharacter = this.ConvertCharacter(dialogueItem);
+                result.InTownOfFactions = this.ConvertInTownOf(dialogueItem);
             }
 
             return result;
@@ -98,12 +98,12 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
         private IEnumerable<DialogueLine> ConvertLines(DataItem dialogueItem)
         {
             var lines = new List<DialogueLine>();
-            var lineItems = dialogueItem.GetReferenceItems(itemRepository, "lines");
+            var lineItems = dialogueItem.GetReferenceItems(this.itemRepository, "lines");
 
             foreach (var lineItem in lineItems)
             {
                 DialogueLine line;
-                if (!lineCache.ContainsKey(lineItem.StringId))
+                if (!this.lineCache.ContainsKey(lineItem.StringId))
                 {
                     line = new DialogueLine()
                     {
@@ -112,30 +112,30 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
                         Properties = lineItem.Values,
                     };
 
-                    lineCache.TryAdd(line.StringId, line);
+                    this.lineCache.TryAdd(line.StringId, line);
 
-                    line.Lines = ConvertLines(lineItem);
-                    line.Conditions = ConvertConditions(lineItem);
-                    line.Effects = ConvertEffects(lineItem);
-                    line.UnlockedDialogues = ConvertUnlocks(lineItem);
-                    line.RelationChanges = ConvertRelationChanges(lineItem);
-                    line.TargetedFactions = ConvertTargetedFaction(lineItem);
-                    line.TargetedRaces = ConvertTargetedRaces(lineItem);
-                    line.CharactersCarriedByTarget = ConvertCarriedCharacters(lineItem);
-                    line.WorldStates = ConvertWorldStates(lineItem);
-                    line.InTownOfFactions = ConvertInTownOf(lineItem);
-                    line.CrowdTriggers = ConvertCrowdTriggers(lineItem);
-                    line.SpeakerRaces = ConvertSpeakerRace(lineItem);
-                    line.SpeakerFactions = ConvertSpeakerFactions(lineItem);
-                    line.TargetItems = ConvertTargetItems(lineItem);
-                    line.SpeakerSubraces = ConvertSpeakerSubrace(lineItem);
-                    line.SpeakerIsCharacter = ConvertCharacter(lineItem);
-                    line.GivenItem = ConvertGivenItem(lineItem);
-                    line.TriggeredCampaigns = ConvertTriggeredCampaigns(lineItem);
+                    line.Lines = this.ConvertLines(lineItem);
+                    line.Conditions = this.ConvertConditions(lineItem);
+                    line.Effects = this.ConvertEffects(lineItem);
+                    line.UnlockedDialogues = this.ConvertUnlocks(lineItem);
+                    line.RelationChanges = this.ConvertRelationChanges(lineItem);
+                    line.TargetedFactions = this.ConvertTargetedFaction(lineItem);
+                    line.TargetedRaces = this.ConvertTargetedRaces(lineItem);
+                    line.CharactersCarriedByTarget = this.ConvertCarriedCharacters(lineItem);
+                    line.WorldStates = this.ConvertWorldStates(lineItem);
+                    line.InTownOfFactions = this.ConvertInTownOf(lineItem);
+                    line.CrowdTriggers = this.ConvertCrowdTriggers(lineItem);
+                    line.SpeakerRaces = this.ConvertSpeakerRace(lineItem);
+                    line.SpeakerFactions = this.ConvertSpeakerFactions(lineItem);
+                    line.TargetItems = this.ConvertTargetItems(lineItem);
+                    line.SpeakerSubraces = this.ConvertSpeakerSubrace(lineItem);
+                    line.SpeakerIsCharacter = this.ConvertCharacter(lineItem);
+                    line.GivenItem = this.ConvertGivenItem(lineItem);
+                    line.TriggeredCampaigns = this.ConvertTriggeredCampaigns(lineItem);
                 }
                 else
                 {
-                    line = lineCache[lineItem.StringId];
+                    line = this.lineCache[lineItem.StringId];
                 }
 
                 lines.Add(line);
@@ -146,75 +146,75 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
 
         private IEnumerable<DataItem> ConvertTriggeredCampaigns(DataItem lineItem)
         {
-            return lineItem.GetReferenceItems(itemRepository, "trigger campaign");
+            return lineItem.GetReferenceItems(this.itemRepository, "trigger campaign");
         }
 
         private IEnumerable<DataItem> ConvertGivenItem(DataItem lineItem)
         {
-            return lineItem.GetReferenceItems(itemRepository, "give item");
+            return lineItem.GetReferenceItems(this.itemRepository, "give item");
         }
 
         private IEnumerable<DataItem> ConvertCharacter(DataItem lineItem)
         {
-            return lineItem.GetReferenceItems(itemRepository, "is character");
+            return lineItem.GetReferenceItems(this.itemRepository, "is character");
         }
 
         private IEnumerable<DataItem> ConvertTargetItems(DataItem lineItem)
         {
-            return lineItem.GetReferenceItems(itemRepository, "target has item type")
-                .Concat(lineItem.GetReferenceItems(itemRepository, "target has item"));
+            return lineItem.GetReferenceItems(this.itemRepository, "target has item type")
+                .Concat(lineItem.GetReferenceItems(this.itemRepository, "target has item"));
         }
 
         private IEnumerable<DataItem> ConvertSpeakerFactions(DataItem lineItem)
         {
-            return lineItem.GetReferenceItems(itemRepository, "my faction");
+            return lineItem.GetReferenceItems(this.itemRepository, "my faction");
         }
 
         private IEnumerable<DataItem> ConvertSpeakerSubrace(DataItem lineItem)
         {
-            return lineItem.GetReferenceItems(itemRepository, "my subrace");
+            return lineItem.GetReferenceItems(this.itemRepository, "my subrace");
         }
 
         private IEnumerable<DataItem> ConvertSpeakerRace(DataItem lineItem)
         {
-            return lineItem.GetReferenceItems(itemRepository, "my race");
+            return lineItem.GetReferenceItems(this.itemRepository, "my race");
         }
 
         private IEnumerable<Dialogue> ConvertCrowdTriggers(DataItem lineItem)
         {
-            return lineItem.GetReferenceItems(itemRepository, "crowd trigger")
-                .Select(item => ConvertDialogue(item));
+            return lineItem.GetReferenceItems(this.itemRepository, "crowd trigger")
+                .Select(item => this.ConvertDialogue(item));
         }
 
         private IEnumerable<DataItem> ConvertInTownOf(DataItem lineItem)
         {
-            return lineItem.GetReferenceItems(itemRepository, "in town of");
+            return lineItem.GetReferenceItems(this.itemRepository, "in town of");
         }
 
         private IEnumerable<DataItem> ConvertWorldStates(DataItem lineItem)
         {
-            return lineItem.GetReferenceItems(itemRepository, "world state");
+            return lineItem.GetReferenceItems(this.itemRepository, "world state");
         }
 
         private IEnumerable<DataItem> ConvertCarriedCharacters(DataItem lineItem)
         {
-            return lineItem.GetReferenceItems(itemRepository, "target carrying character");
+            return lineItem.GetReferenceItems(this.itemRepository, "target carrying character");
         }
 
         private IEnumerable<DataItem> ConvertTargetedFaction(DataItem lineItem)
         {
-            return lineItem.GetReferenceItems(itemRepository, "target faction");
+            return lineItem.GetReferenceItems(this.itemRepository, "target faction");
         }
 
         private IEnumerable<DataItem> ConvertTargetedRaces(DataItem lineItem)
         {
-            return lineItem.GetReferenceItems(itemRepository, "target race");
+            return lineItem.GetReferenceItems(this.itemRepository, "target race");
         }
 
         private IEnumerable<DialogueEffect> ConvertEffects(DataItem item)
         {
             var effects = new List<DialogueEffect>();
-            var effectItems = item.GetReferenceItems(itemRepository, "effects");
+            var effectItems = item.GetReferenceItems(this.itemRepository, "effects");
 
             foreach (var effectItem in effectItems)
             {
@@ -235,7 +235,7 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
         private IEnumerable<DialogueCondition> ConvertConditions(DataItem item)
         {
             var conditions = new List<DialogueCondition>();
-            var conditionItems = item.GetReferenceItems(itemRepository, "conditions");
+            var conditionItems = item.GetReferenceItems(this.itemRepository, "conditions");
 
             foreach (var conditionItem in conditionItems)
             {
@@ -260,11 +260,11 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
                 .Concat(item.GetReferences("interrupt"))
                 .Concat(item.GetReferences("unlock but keep me"))
                 .Distinct()
-                .Select(item => itemRepository.GetDataItemByStringId(item.TargetId));
+                .Select(item => this.itemRepository.GetDataItemByStringId(item.TargetId));
 
             foreach (var dialogueItem in dialogueItems)
             {
-                var dialogue = ConvertDialogue(dialogueItem);
+                var dialogue = this.ConvertDialogue(dialogueItem);
                 dialogues.Add(dialogue);
             }
 
@@ -274,7 +274,7 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
         private Dictionary<string, int> ConvertRelationChanges(DataItem item)
         {
             return item.GetReferences("change relations")
-                .ToDictionary(reference => itemRepository.GetDataItemByStringId(reference.TargetId).Name, reference => reference.Value0);
+                .ToDictionary(reference => this.itemRepository.GetDataItemByStringId(reference.TargetId).Name, reference => reference.Value0);
         }
     }
 }
