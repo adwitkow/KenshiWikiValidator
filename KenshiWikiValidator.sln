@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KenshiDataSnooper", "KenshiDataSnooper\KenshiDataSnooper.csproj", "{3C0D7173-832D-4BBE-80C6-BE1D58B623D7}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A6AD562A-0501-4C6B-B92B-D794A8642E44}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -16,7 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KenshiWikiValidator", "Kens
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KenshiWikiValidator.Tests", "KenshiWikiValidator.Tests\KenshiWikiValidator.Tests.csproj", "{7AAC143C-7F7A-4F11-8CBB-D6FA5C58B300}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TownTableBuilder", "TownTableBuilder\TownTableBuilder.csproj", "{6FB2F975-D714-4541-BE1D-966B6A34B07F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TownTableBuilder", "TownTableBuilder\TownTableBuilder.csproj", "{6FB2F975-D714-4541-BE1D-966B6A34B07F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,10 +22,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3C0D7173-832D-4BBE-80C6-BE1D58B623D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3C0D7173-832D-4BBE-80C6-BE1D58B623D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3C0D7173-832D-4BBE-80C6-BE1D58B623D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3C0D7173-832D-4BBE-80C6-BE1D58B623D7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B299359C-BECE-4ABD-9391-E2B1414F3916}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B299359C-BECE-4ABD-9391-E2B1414F3916}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B299359C-BECE-4ABD-9391-E2B1414F3916}.Release|Any CPU.ActiveCfg = Release|Any CPU

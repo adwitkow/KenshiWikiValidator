@@ -47,7 +47,6 @@ foreach (var articleValidator in validators)
 
     foreach (var page in pages)
     {
-        await Task.Delay(1000);
         await page.RefreshAsync(PageQueryOptions.FetchContent);
 
         ValidateArticle(page, articleValidator);
