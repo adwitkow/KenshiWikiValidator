@@ -5,7 +5,7 @@ using OpenConstructionSet.Data.Models;
 
 namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
 {
-    internal class DialogueBuilder : ItemBuilderBase<DialoguePackage>
+    public class DialogueBuilder : ItemBuilderBase<DialoguePackage>
     {
         private readonly IItemRepository itemRepository;
 
