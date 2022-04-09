@@ -49,5 +49,7 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
         public IEnumerable<DataItem> GivenItem { get; set; }
 
         public IEnumerable<DataItem> TriggeredCampaigns { get; set; }
+
+        public DialogueSpeaker Speaker { get; set; }
     }
 }

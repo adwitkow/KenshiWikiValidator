@@ -16,14 +16,6 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
         //  0: ==
         //  1: <
         //  2: >
-        // who
-        //  0: me
-        //  1: target
-        //  2: interjector1
-        //  3: interjector2
-        //  4: interjector3
-        //  5: whole squad
-        //  6: target with race
 
         public DialogueBuilder(IItemRepository itemRepository)
         {
@@ -36,9 +28,10 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
         public override DialoguePackage Build(DataItem baseItem)
         {
             var inheritedItems = baseItem.GetReferenceItems(this.itemRepository, "inheritsFrom"); // do not forget about the inheritance
-            var dialogueItems = baseItem.GetReferenceItems(this.itemRepository, "dialogs");
+            var dialogueReferencePairs = baseItem.GetReferences("dialogs")
+                .ToDictionary(reference => reference, reference => this.itemRepository.GetDataItemByStringId(reference.TargetId));
 
-            var dialogues = this.BuildDialogues(dialogueItems);
+            var dialogues = this.BuildDialogues(dialogueReferencePairs);
 
             var resultPackage = new DialoguePackage()
             {
@@ -51,12 +44,41 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
             return resultPackage;
         }
 
-        private IEnumerable<Dialogue> BuildDialogues(IEnumerable<DataItem> dialogueItems)
+        public IEnumerable<DialoguePackage> BuildUnparentedDialogues(IEnumerable<DataItem> baseItems)
+        {
+            var packages = new List<DialoguePackage>();
+            foreach (var item in baseItems)
+            {
+                var dialogue = this.ConvertDialogue(item, new[] { DialogueEvent.EV_NONE });
+
+                var package = new DialoguePackage()
+                {
+                    StringId = $"Virtual-{dialogue.StringId}",
+                    Name = $"Virtual-{dialogue.Name}",
+                    Properties = new Dictionary<string, object>(),
+                    Dialogues = new[] { dialogue },
+                };
+                packages.Add(package);
+            }
+
+            return packages;
+        }
+
+        public bool ContainsDialogue(string stringId)
+        {
+            return this.dialogueCache.ContainsKey(stringId);
+        }
+
+        private IEnumerable<Dialogue> BuildDialogues(Dictionary<DataReference, DataItem> dialogueReferencePairs)
         {
             var dialogues = new List<Dialogue>();
-            foreach (var dialogueItem in dialogueItems)
+            foreach (var pair in dialogueReferencePairs)
             {
-                var dialogue = this.ConvertDialogue(dialogueItem);
+                var referenceValues = new[] { pair.Key.Value0, pair.Key.Value1, pair.Key.Value2 };
+                var dialogueEvents = referenceValues
+                    .Except(new[] { 0 })
+                    .Select(eventId => (DialogueEvent)eventId);
+                var dialogue = this.ConvertDialogue(pair.Value, dialogueEvents);
 
                 dialogues.Add(dialogue);
             }
@@ -64,7 +86,7 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
             return dialogues;
         }
 
-        private Dialogue ConvertDialogue(DataItem dialogueItem)
+        private Dialogue ConvertDialogue(DataItem dialogueItem, IEnumerable<DialogueEvent> dialogueEvents)
         {
             Dialogue result;
             if (this.dialogueCache.ContainsKey(dialogueItem.StringId))
@@ -82,6 +104,7 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
 
                 this.dialogueCache.TryAdd(dialogueItem.StringId, result);
 
+                result.Events = dialogueEvents;
                 result.Conditions = this.ConvertConditions(dialogueItem);
                 result.Lines = this.ConvertLines(dialogueItem);
                 result.WorldStates = this.ConvertWorldStates(dialogueItem);
@@ -114,6 +137,7 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
 
                     this.lineCache.TryAdd(line.StringId, line);
 
+                    line.Speaker = (DialogueSpeaker)line.Properties["speaker"];
                     line.Lines = this.ConvertLines(lineItem);
                     line.Conditions = this.ConvertConditions(lineItem);
                     line.Effects = this.ConvertEffects(lineItem);
@@ -183,7 +207,7 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
         private IEnumerable<Dialogue> ConvertCrowdTriggers(DataItem lineItem)
         {
             return lineItem.GetReferenceItems(this.itemRepository, "crowd trigger")
-                .Select(item => this.ConvertDialogue(item));
+                .Select(item => this.ConvertDialogue(item, new[] { DialogueEvent.EV_NONE }));
         }
 
         private IEnumerable<DataItem> ConvertInTownOf(DataItem lineItem)
@@ -264,7 +288,7 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
 
             foreach (var dialogueItem in dialogueItems)
             {
-                var dialogue = this.ConvertDialogue(dialogueItem);
+                var dialogue = this.ConvertDialogue(dialogueItem, new[] { DialogueEvent.EV_NONE });
                 dialogues.Add(dialogue);
             }
 

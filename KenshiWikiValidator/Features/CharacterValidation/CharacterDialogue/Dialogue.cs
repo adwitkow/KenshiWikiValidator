@@ -29,5 +29,7 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
         public IEnumerable<DataItem> SpeakerIsCharacter { get; set; }
 
         public IEnumerable<DataItem> InTownOfFactions { get; set; }
+
+        public IEnumerable<DialogueEvent> Events { get; set; }
     }
 }

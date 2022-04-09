@@ -66,6 +66,11 @@ namespace KenshiWikiValidator.Features.DataItemConversion
                 results.Add(built);
             });
 
+            var dialogues = this.itemRepository.GetDataItemsByType(ItemType.Dialogue)
+                .Where(dialogue => !this.dialogueBuilder.ContainsDialogue(dialogue.StringId));
+
+            results.AddRange(this.dialogueBuilder.BuildUnparentedDialogues(dialogues));
+
             Console.WriteLine();
             Console.WriteLine($"The longest item to build was {this.longestItem.Name} and took {this.longestTime}");
 
