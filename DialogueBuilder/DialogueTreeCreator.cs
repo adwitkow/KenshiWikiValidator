@@ -211,10 +211,6 @@ namespace DialogueDumper
 
                 int nextLevel = CalculateNextLevel(level, previousLines.Count(), dialogueLines.Count(), line.Lines.Count(), isInterjection);
 
-                if (dialogueLine == "* '''Interjector #2''': ... Well... this is tense.")
-                {
-                    Console.WriteLine("sztop");
-                }
 
                 var stackContainsCharacter = this.AddDialogueLines(allLines, nextLevel, dialogueLines, line.Lines, newSpeakersMap, dialogueStack, characterName, isSearchedCharactersLineInternal);
 
@@ -223,7 +219,7 @@ namespace DialogueDumper
                     isSearchedCharactersLineResult = true;
                 }
 
-                if (!isSearchedCharactersLineResult && !isInterjection && allLines.Any())
+                if (!stackContainsCharacter && !isSearchedCharactersLineInternal && !isInterjection && allLines.Any())
                 {
                     var lastLineId = allLines.Count - 1;
                     var lastLine = allLines[lineIdToRemove];
