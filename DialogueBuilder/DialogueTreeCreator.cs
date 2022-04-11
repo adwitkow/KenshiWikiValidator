@@ -160,14 +160,9 @@ namespace DialogueDumper
 
         private bool AddDialogueLines(IList<string> allLines, int level, IEnumerable<DialogueLine> previousLines, IEnumerable<DialogueLine> dialogueLines, Dictionary<DialogueSpeaker, IEnumerable<string>> speakersMap, Stack<DialogueLine> dialogueStack, string characterName, bool isSearchedCharactersLine)
         {
-            var isSearchedCharactersLineState = isSearchedCharactersLine;
             var isSearchedCharactersLineResult = false;
             foreach (var line in dialogueLines)
             {
-                if (!isSearchedCharactersLine)
-                {
-                    isSearchedCharactersLine = isSearchedCharactersLineState;
-                }
                 var isSearchedCharactersLineInternal = false;
                 if (dialogueStack.Contains(line))
                 {
@@ -178,7 +173,7 @@ namespace DialogueDumper
 
                 var newSpeakersMap = RecreateSpeakersMap(speakersMap, line);
 
-                if (newSpeakersMap[line.Speaker].Contains(characterName) || isSearchedCharactersLineState)
+                if (newSpeakersMap[line.Speaker].Contains(characterName) || isSearchedCharactersLine)
                 {
                     isSearchedCharactersLineInternal = true;
                 }
@@ -210,7 +205,6 @@ namespace DialogueDumper
                 }
 
                 int nextLevel = CalculateNextLevel(level, previousLines.Count(), dialogueLines.Count(), line.Lines.Count(), isInterjection);
-
 
                 var stackContainsCharacter = this.AddDialogueLines(allLines, nextLevel, dialogueLines, line.Lines, newSpeakersMap, dialogueStack, characterName, isSearchedCharactersLineInternal);
 
