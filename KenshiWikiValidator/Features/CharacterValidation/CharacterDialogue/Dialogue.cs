@@ -31,5 +31,10 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
         public IEnumerable<DataItem> InTownOfFactions { get; set; }
 
         public IEnumerable<DialogueEvent> Events { get; set; }
+
+        public override string ToString()
+        {
+            return this.Name;
+        }
     }
 }

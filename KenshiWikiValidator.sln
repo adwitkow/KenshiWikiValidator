@@ -18,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TownTableBuilder", "TownTab
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Additionals", "Additionals", "{A17CD540-08B1-48A3-B977-96A35667CAC2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DialogueBuilder", "DialogueBuilder\DialogueBuilder.csproj", "{20A3863B-5354-41E1-A49D-C34F29423CEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DialogueDumper", "DialogueBuilder\DialogueDumper.csproj", "{20A3863B-5354-41E1-A49D-C34F29423CEF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
