@@ -99,7 +99,16 @@ namespace DialogueDumper
             {
                 var referencingItems = this.itemRepository
                     .GetReferencingDataItemsFor(package.StringId);
-                var packageOwnerName = referencingItems.FirstOrDefault(item => item.Type == ItemType.Character)?.Name;
+
+                string packageOwnerName;
+                if (referencingItems.Count() > 1)
+                {
+                    packageOwnerName = null;
+                }
+                else
+                {
+                    packageOwnerName = referencingItems.SingleOrDefault(item => item.Type == ItemType.Character)?.Name;
+                }
 
                 var externalDialogues = package.Dialogues;
                 foreach (var dialogue in externalDialogues)
@@ -205,6 +214,11 @@ namespace DialogueDumper
                 }
 
                 int nextLevel = CalculateNextLevel(level, previousLines.Count(), dialogueLines.Count(), line.Lines.Count(), isInterjection);
+
+                if (dialogueLine == "* '''Hundred Guardian''': Okranite dogs...")
+                {
+                    Console.WriteLine("sztop");
+                }
 
                 var stackContainsCharacter = this.AddDialogueLines(allLines, nextLevel, dialogueLines, line.Lines, newSpeakersMap, dialogueStack, characterName, isSearchedCharactersLineInternal);
 
