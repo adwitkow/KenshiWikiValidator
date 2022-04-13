@@ -38,20 +38,35 @@ namespace DialogueDumper
                 var validCharacters = dialogueIdTocharacter[dialogue.StringId];
                 var speakers = CreateSpeakersDictionary(dialogue, validCharacters);
 
-                var dialogueStack = new Stack<DialogueLine>();
-                var allLines = new List<string>();
+                var allLines = new List<DialogueNode>();
+                this.AddDialogueLines(allLines, null, 1, Enumerable.Empty<DialogueLine>(), dialogue.Lines, speakers, new Stack<DialogueLine>(), character.Name, false);
 
-                this.AddDialogueLines(allLines, 1, Enumerable.Empty<DialogueLine>(), dialogue.Lines, speakers, dialogueStack, character.Name, false);
+                var roots = allLines
+                    .Where(node => !allLines
+                        .Any(n => n.Children.Contains(node)))
+                    .ToList();
+                RecalculateLevels(1, roots);
 
                 foreach (var line in allLines)
                 {
-                    sectionBuilder.WithLine(line);
+                    sectionBuilder.WithLine(line.ToString());
                 }
 
                 results.Add(sectionBuilder.Build());
             }
 
             return string.Join(Environment.NewLine, results);
+        }
+
+        private void RecalculateLevels(int level, ICollection<DialogueNode> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                node.Level = level;
+
+                var nextLevel = CalculateNextLevel(level, nodes.Count, node.Children.Count, false);
+                RecalculateLevels(nextLevel, node.Children);
+            }
         }
 
         private static Dictionary<DialogueSpeaker, IEnumerable<string>> CreateSpeakersDictionary(Dialogue dialogue, List<string> validCharacters)
@@ -167,7 +182,7 @@ namespace DialogueDumper
             }
         }
 
-        private bool AddDialogueLines(IList<string> allLines, int level, IEnumerable<DialogueLine> previousLines, IEnumerable<DialogueLine> dialogueLines, Dictionary<DialogueSpeaker, IEnumerable<string>> speakersMap, Stack<DialogueLine> dialogueStack, string characterName, bool isSearchedCharactersLine)
+        private bool AddDialogueLines(IList<DialogueNode> allLines, DialogueNode? previousNode, int level, IEnumerable<DialogueLine> previousLines, IEnumerable<DialogueLine> dialogueLines, Dictionary<DialogueSpeaker, IEnumerable<string>> speakersMap, Stack<DialogueLine> dialogueStack, string characterName, bool isSearchedCharactersLine)
         {
             var isSearchedCharactersLineResult = false;
             foreach (var line in dialogueLines)
@@ -190,37 +205,33 @@ namespace DialogueDumper
                 var text = (string)line.Properties["text0"];
                 var isInterjection = false;
                 var lineIdToRemove = -1;
-                string dialogueLine = null;
+                DialogueNode? currentNode;
                 if (string.IsNullOrEmpty(text))
                 {
                     isInterjection = true;
+                    currentNode = previousNode;
                 }
                 else
                 {
                     var validSpeakers = newSpeakersMap[line.Speaker];
-                    string speakers;
-                    if (validSpeakers.Count() > 1)
-                    {
-                        speakers = string.Join(", ", validSpeakers.SkipLast(1)) + " or " + validSpeakers.TakeLast(1).Single();
-                    }
-                    else
-                    {
-                        speakers = validSpeakers.Single();
-                    }
 
                     lineIdToRemove = allLines.Count;
-                    dialogueLine = $"{new string('*', level)} '''{speakers}''': {text}";
-                    allLines.Add(dialogueLine);
+                    currentNode = new DialogueNode()
+                    {
+                        Level = level,
+                        Speakers = validSpeakers,
+                        Line = text,
+                    };
+
+                    if (previousNode != null)
+                    {
+                        previousNode.Children.Add(currentNode);
+                    }
+
+                    allLines.Add(currentNode);
                 }
 
-                int nextLevel = CalculateNextLevel(level, previousLines.Count(), dialogueLines.Count(), line.Lines.Count(), isInterjection);
-
-                if (dialogueLine == "* '''Hundred Guardian''': Okranite dogs...")
-                {
-                    Console.WriteLine("sztop");
-                }
-
-                var stackContainsCharacter = this.AddDialogueLines(allLines, nextLevel, dialogueLines, line.Lines, newSpeakersMap, dialogueStack, characterName, isSearchedCharactersLineInternal);
+                var stackContainsCharacter = this.AddDialogueLines(allLines, currentNode, level + 1, dialogueLines, line.Lines, newSpeakersMap, dialogueStack, characterName, isSearchedCharactersLineInternal);
 
                 if (stackContainsCharacter || isSearchedCharactersLineInternal)
                 {
@@ -229,15 +240,12 @@ namespace DialogueDumper
 
                 if (!stackContainsCharacter && !isSearchedCharactersLineInternal && !isInterjection && allLines.Any())
                 {
-                    var lastLineId = allLines.Count - 1;
-                    var lastLine = allLines[lineIdToRemove];
-
-                    if (lastLine != dialogueLine)
-                    {
-                        throw new InvalidOperationException();
-                    }
-
                     allLines.RemoveAt(lineIdToRemove);
+
+                    if (previousNode is not null && currentNode is not null)
+                    {
+                        previousNode.Children.Remove(currentNode);
+                    }
                 }
 
                 dialogueStack.Pop();
@@ -259,10 +267,11 @@ namespace DialogueDumper
             return newSpeakersMap;
         }
 
-        private static int CalculateNextLevel(int level, int previousLinesCount, int dialogueLinesCount, int nextLinesCount, bool isInterjection)
+        private static int CalculateNextLevel(int level, int dialogueLinesCount, int nextLinesCount, bool isInterjection)
         {
             int nextLevel;
-            if ((previousLinesCount > 1 || dialogueLinesCount > 1 || nextLinesCount > 1) && !isInterjection)
+
+            if ((dialogueLinesCount > 1 || nextLinesCount > 1) && !isInterjection)
             {
                 nextLevel = level + 1;
             }
