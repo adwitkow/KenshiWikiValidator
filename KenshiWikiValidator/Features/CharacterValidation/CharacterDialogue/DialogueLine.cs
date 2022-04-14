@@ -1,14 +1,13 @@
 ﻿using KenshiWikiValidator.Features.DataItemConversion.Models;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
 {
-    public class DialogueLine : IItem
+    public class DialogueLine : IDataItem
     {
         public ItemType Type => ItemType.DialogueLine;
 
-        public Dictionary<string, object>? Properties { get; set; }
+        public IDictionary<string, object>? Properties { get; set; }
 
         public string StringId { get; set; }
 
@@ -24,31 +23,31 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
 
         public Dictionary<string, int> RelationChanges { get; set; }
 
-        public IEnumerable<DataItem> TargetedFactions { get; set; }
+        public IEnumerable<IItem> TargetedFactions { get; set; }
 
-        public IEnumerable<DataItem> TargetedRaces { get; set; }
+        public IEnumerable<IItem> TargetedRaces { get; set; }
 
-        public IEnumerable<DataItem> CharactersCarriedByTarget { get; set; }
+        public IEnumerable<IItem> CharactersCarriedByTarget { get; set; }
 
-        public IEnumerable<DataItem> WorldStates { get; set; }
+        public IEnumerable<IItem> WorldStates { get; set; }
 
-        public IEnumerable<DataItem> InTownOfFactions { get; set; }
+        public IEnumerable<IItem> InTownOfFactions { get; set; }
 
         public IEnumerable<Dialogue> CrowdTriggers { get; set; }
 
-        public IEnumerable<DataItem> SpeakerRaces { get; set; }
+        public IEnumerable<IItem> SpeakerRaces { get; set; }
 
-        public IEnumerable<DataItem> SpeakerFactions { get; set; }
+        public IEnumerable<IItem> SpeakerFactions { get; set; }
 
-        public IEnumerable<DataItem> TargetItems { get; set; }
+        public IEnumerable<IItem> TargetItems { get; set; }
 
-        public IEnumerable<DataItem> SpeakerSubraces { get; set; }
+        public IEnumerable<IItem> SpeakerSubraces { get; set; }
 
-        public IEnumerable<DataItem> SpeakerIsCharacter { get; set; }
+        public IEnumerable<IItem> SpeakerIsCharacter { get; set; }
 
-        public IEnumerable<DataItem> GivenItem { get; set; }
+        public IEnumerable<IItem> GivenItem { get; set; }
 
-        public IEnumerable<DataItem> TriggeredCampaigns { get; set; }
+        public IEnumerable<IItem> TriggeredCampaigns { get; set; }
 
         public DialogueSpeaker Speaker { get; set; }
     }

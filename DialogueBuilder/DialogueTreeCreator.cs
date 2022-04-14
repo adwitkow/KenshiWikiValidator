@@ -2,8 +2,7 @@
 using KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue;
 using KenshiWikiValidator.Features.DataItemConversion;
 using KenshiWikiValidator.Features.WikiSections;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
 
 namespace DialogueDumper
 {
@@ -21,7 +20,7 @@ namespace DialogueDumper
             this.dialogueBuilder = new DialogueBuilder(itemRepository);
         }
 
-        public string Create(DataItem character)
+        public string Create(IItem character)
         {
             var results = new List<string>();
 
@@ -108,7 +107,7 @@ namespace DialogueDumper
             return speakers;
         }
 
-        private Dictionary<string, List<string>> MapAllDialogues(DataItem character, ref List<Dialogue> dialogues)
+        private Dictionary<string, List<string>> MapAllDialogues(IItem character, ref List<Dialogue> dialogues)
         {
             var dialogueIdTocharacter = dialogues
                 .ToDictionary(dialogue => dialogue.StringId, _ => new[] { character.Name }
@@ -166,7 +165,7 @@ namespace DialogueDumper
             return dialogueIdTocharacter;
         }
 
-        private static void FindSpeakerDialoguesFromLines(DataItem character, List<Dialogue> dialogues, Dialogue dialogue)
+        private static void FindSpeakerDialoguesFromLines(IItem character, List<Dialogue> dialogues, Dialogue dialogue)
         {
             var linesQueue = new Queue<DialogueLine>(dialogue.Lines);
             var processedLines = new HashSet<string>();

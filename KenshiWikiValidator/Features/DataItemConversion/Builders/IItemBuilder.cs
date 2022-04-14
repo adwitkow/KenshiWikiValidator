@@ -1,9 +1,9 @@
-﻿using OpenConstructionSet.Data.Models;
+﻿using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator.Features.DataItemConversion.Builders
 {
     public interface IItemBuilder
     {
-        object Build(DataItem baseItem);
+        object Build(IItem baseItem);
     }
 }

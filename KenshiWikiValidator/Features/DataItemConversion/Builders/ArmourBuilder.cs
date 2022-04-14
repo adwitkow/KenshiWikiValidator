@@ -2,8 +2,7 @@
 using KenshiWikiValidator.Features.DataItemConversion.Builders.Components;
 using KenshiWikiValidator.Features.DataItemConversion.Models;
 using KenshiWikiValidator.Features.DataItemConversion.Models.Components;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator.Features.DataItemConversion.Builders
 {
@@ -29,7 +28,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
             this.coverageConverter = new CoverageConverter();
         }
 
-        public override Armour Build(DataItem baseItem)
+        public override Armour Build(IItem baseItem)
         {
             if (baseItem.Type != ItemType.Armour)
             {
@@ -91,7 +90,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
             return materialCost;
         }
 
-        private IEnumerable<Crafting> ConvertCrafting(DataItem baseItem, Coverage coverage)
+        private IEnumerable<Crafting> ConvertCrafting(IItem baseItem, Coverage coverage)
         {
             var results = new List<Crafting>();
 

@@ -3,7 +3,7 @@
 using DialogueDumper;
 using KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue;
 using KenshiWikiValidator.Features.DataItemConversion;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
 
 if (Directory.Exists("characters"))
 {
@@ -11,7 +11,7 @@ if (Directory.Exists("characters"))
 }
 
 var repository = new ItemRepository();
-repository.Load();
+await repository.Load();
 
 var dialogueBuilder = new DialogueBuilder(repository);
 var characters = repository.GetDataItemsByType(ItemType.Character);

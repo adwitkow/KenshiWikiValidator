@@ -1,8 +1,8 @@
 ﻿using KenshiWikiValidator.Features.DataItemConversion.Models;
 using OpenConstructionSet;
 using OpenConstructionSet.Data;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Mods;
+using OpenConstructionSet.Mods.Context;
 
 namespace KenshiWikiValidator.Features.DataItemConversion
 {
@@ -10,54 +10,52 @@ namespace KenshiWikiValidator.Features.DataItemConversion
     {
         private readonly ItemBuilder itemBuilder;
 
-        private readonly Dictionary<string, ICollection<DataItem>> referenceCache;
+        private readonly Dictionary<string, ICollection<IItem>> referenceCache;
 
-        private Dictionary<string, DataItem> dataItemLookup;
-        private Dictionary<string, IItem> itemLookup;
+        private Dictionary<string, IItem> dataItemLookup;
+        private Dictionary<string, IDataItem> itemLookup;
 
         public ItemRepository()
         {
-            this.dataItemLookup = new Dictionary<string, DataItem>();
-            this.itemLookup = new Dictionary<string, IItem>();
+            this.dataItemLookup = new Dictionary<string, IItem>();
+            this.itemLookup = new Dictionary<string, IDataItem>();
 
-            this.referenceCache = new Dictionary<string, ICollection<DataItem>>();
+            this.referenceCache = new Dictionary<string, ICollection<IItem>>();
 
             this.itemBuilder = new ItemBuilder(this);
         }
 
-        public string? GameDirectory { get; private set; }
-
-        public IEnumerable<DataItem> GetDataItems()
+        public IEnumerable<IItem> GetDataItems()
         {
             return this.dataItemLookup.Values;
         }
 
-        public IEnumerable<IItem> GetItems()
+        public IEnumerable<IDataItem> GetItems()
         {
             return this.itemLookup.Values;
         }
 
-        public IEnumerable<DataItem> GetDataItemsByType(ItemType type)
+        public IEnumerable<IItem> GetDataItemsByType(ItemType type)
         {
             return this.GetDataItems().Where(item => item.Type == type);
         }
 
-        public IEnumerable<DataItem> GetDataItemsByTypes(params ItemType[] types)
+        public IEnumerable<IItem> GetDataItemsByTypes(params ItemType[] types)
         {
             return this.GetDataItems().Where(item => types.Contains(item.Type));
         }
 
-        public DataItem GetDataItemByStringId(string id)
+        public IItem GetDataItemByStringId(string id)
         {
             return this.dataItemLookup[id];
         }
 
-        public IItem GetItemByStringId(string id)
+        public IDataItem GetItemByStringId(string id)
         {
             return this.itemLookup[id];
         }
 
-        public IEnumerable<DataItem> GetReferencingDataItemsFor(string itemId)
+        public IEnumerable<IItem> GetReferencingDataItemsFor(string itemId)
         {
             var isItemCached = this.referenceCache.TryGetValue(itemId, out var cached);
 
@@ -67,35 +65,39 @@ namespace KenshiWikiValidator.Features.DataItemConversion
             }
             else
             {
-                return Enumerable.Empty<DataItem>();
+                return Enumerable.Empty<IItem>();
             }
         }
 
-        public IEnumerable<DataItem> GetReferencingDataItemsFor(DataItem reference)
+        public IEnumerable<IItem> GetReferencingDataItemsFor(IItem reference)
         {
             return this.GetReferencingDataItemsFor(reference.StringId);
         }
 
-        public void Load()
+        public async Task Load()
         {
-            var installations = OcsDiscoveryService.Default.DiscoverAllInstallations();
+            var installations = await new InstallationService().DiscoverAllInstallationsAsync().ToDictionaryAsync(i => i.Identifier);
             var installation = installations.Values.First();
-            var baseMods = installation.Data.Mods;
 
-            var options = new OcsDataContexOptions(
-                Name: Guid.NewGuid().ToString(),
-                Installation: installation,
-                LoadGameFiles: ModLoadType.Base,
-                LoadEnabledMods: ModLoadType.Base,
-                ThrowIfMissing: false);
+            var options = new ModContextOptions(
+                Guid.NewGuid().ToString(),
+                installation,
+                loadGameFiles: ModLoadType.Base,
+                loadEnabledMods: ModLoadType.Base,
+                throwIfMissing: false);
 
-            var contextItems = OcsDataContextBuilder.Default.Build(options).Items.Values.ToList();
+            var context = await new ContextBuilder().BuildAsync(options);
+            var contextItems = context.Items;
 
             foreach (var item in contextItems)
             {
+                if (item.StringId == "923-gamedata.base")
+                {
+                    Console.WriteLine("sztop");
+                }
+
                 foreach (var reference in item.ReferenceCategories
-                    .SelectMany(cat => cat.Value)
-                    .Select(pair => pair.Value))
+                    .SelectMany(cat => cat.References))
                 {
                     if (this.referenceCache.ContainsKey(reference.TargetId))
                     {
@@ -103,14 +105,12 @@ namespace KenshiWikiValidator.Features.DataItemConversion
                     }
                     else
                     {
-                        this.referenceCache.Add(reference.TargetId, new List<DataItem>() { item });
+                        this.referenceCache.Add(reference.TargetId, new List<IItem>() { item });
                     }
                 }
             }
 
-            this.GameDirectory = installation.Game;
-
-            this.dataItemLookup = contextItems.ToDictionary(item => item.StringId, item => item);
+            this.dataItemLookup = contextItems.ToDictionary(item => item.StringId, item => (IItem)item);
 
             var builtItems = this.itemBuilder.BuildItems();
             this.itemLookup = builtItems.ToDictionary(item => item.StringId!, item => item);

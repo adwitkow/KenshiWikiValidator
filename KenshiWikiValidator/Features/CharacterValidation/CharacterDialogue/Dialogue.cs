@@ -1,14 +1,13 @@
 ﻿using KenshiWikiValidator.Features.DataItemConversion.Models;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
 {
-    public class Dialogue : IItem
+    public class Dialogue : IDataItem
     {
         public ItemType Type => ItemType.Dialogue;
 
-        public Dictionary<string, object>? Properties { get; set; }
+        public IDictionary<string, object>? Properties { get; set; }
 
         public string StringId { get; set; }
 
@@ -18,17 +17,17 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
 
         public IEnumerable<DialogueCondition> Conditions { get; set; }
 
-        public IEnumerable<DataItem> WorldStates { get; set; }
+        public IEnumerable<IItem> WorldStates { get; set; }
 
-        public IEnumerable<DataItem> TargetItems { get; set; }
+        public IEnumerable<IItem> TargetItems { get; set; }
 
-        public IEnumerable<DataItem> TargetFactions { get; set; }
+        public IEnumerable<IItem> TargetFactions { get; set; }
 
-        public IEnumerable<DataItem> TargetRaces { get; set; }
+        public IEnumerable<IItem> TargetRaces { get; set; }
 
-        public IEnumerable<DataItem> SpeakerIsCharacter { get; set; }
+        public IEnumerable<IItem> SpeakerIsCharacter { get; set; }
 
-        public IEnumerable<DataItem> InTownOfFactions { get; set; }
+        public IEnumerable<IItem> InTownOfFactions { get; set; }
 
         public IEnumerable<DialogueEvent> Events { get; set; }
 

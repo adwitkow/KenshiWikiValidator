@@ -1,34 +1,35 @@
 ﻿using KenshiWikiValidator.Features.DataItemConversion;
-using OpenConstructionSet.Data.Models;
+using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator
 {
     public static class Extensions
     {
-        public static bool IsReferencing(this DataItem item, string id)
+        public static bool IsReferencing(this Item item, string id)
         {
-            return item.ReferenceCategories.Values
-                .Any(cat => cat.Values
+            return item.ReferenceCategories
+                .Any(cat => cat.References
                     .Any(val => val.TargetId == id));
         }
 
-        public static IEnumerable<DataItem> GetReferenceItems(this DataItem item, IItemRepository repository, string categoryName)
+        public static IEnumerable<IItem> GetReferenceItems(this IItem item, IItemRepository repository, string categoryName)
         {
             return item.GetReferences(categoryName)
-                    .Select(cat => repository.GetDataItemByStringId(cat.TargetId));
+                    .Select(cat => repository.GetDataItemByStringId(cat.TargetId))
+                    .ToList();
         }
 
-        public static IEnumerable<DataReference> GetReferences(this DataItem item, string categoryName)
+        public static IEnumerable<IReference> GetReferences(this IItem item, string categoryName)
         {
-            var category = item.ReferenceCategories.Values
+            var category = item.ReferenceCategories
                 .FirstOrDefault(cat => categoryName.Equals(cat.Name));
 
             if (category != null)
             {
-                return category.Values;
+                return category.References;
             }
 
-            return Enumerable.Empty<DataReference>();
+            return Enumerable.Empty<Reference>();
         }
 
         public static decimal Normalize(this decimal value)

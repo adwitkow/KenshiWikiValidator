@@ -2,7 +2,7 @@
 using KenshiWikiValidator.Features.DataItemConversion.Builders.Components;
 using KenshiWikiValidator.Features.DataItemConversion.Models;
 using KenshiWikiValidator.Features.DataItemConversion.Models.Components;
-using OpenConstructionSet.Data.Models;
+using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator.Features.DataItemConversion.Builders
 {
@@ -26,7 +26,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
             this.unlockingResearchConverter = unlockingResearchConverter;
         }
 
-        public override Weapon Build(DataItem baseItem)
+        public override Weapon Build(IItem baseItem)
         {
             var sw = Stopwatch.StartNew();
             var unlockingResearch = this.unlockingResearchConverter.Convert(baseItem);

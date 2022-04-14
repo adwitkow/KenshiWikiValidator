@@ -1,13 +1,13 @@
 ﻿using KenshiWikiValidator.Features.DataItemConversion.Models.Components;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator.Features.DataItemConversion.Models
 {
-    internal class Squad : IItem
+    internal class Squad : IDataItem
     {
         public ItemType Type => ItemType.SquadTemplate;
 
-        public Dictionary<string, object>? Properties { get; set; }
+        public IDictionary<string, object>? Properties { get; set; }
 
         public string StringId { get; set; }
 

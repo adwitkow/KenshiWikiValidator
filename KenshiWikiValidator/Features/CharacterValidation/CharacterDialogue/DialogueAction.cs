@@ -1,13 +1,13 @@
 ﻿using KenshiWikiValidator.Features.DataItemConversion.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
 {
-    public class DialogueAction : IItem
+    public class DialogueAction : IDataItem
     {
         public ItemType Type => ItemType.DialogAction;
 
-        public Dictionary<string, object>? Properties { get; set; }
+        public IDictionary<string, object>? Properties { get; set; }
 
         public string StringId { get; set; }
 

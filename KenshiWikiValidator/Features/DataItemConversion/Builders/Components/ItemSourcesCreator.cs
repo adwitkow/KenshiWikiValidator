@@ -1,6 +1,5 @@
 ﻿using KenshiWikiValidator.Features.DataItemConversion.Models.Components;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
 {
@@ -13,7 +12,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
             this.itemRepository = itemRepository;
         }
 
-        public ItemSources Create(DataItem baseItem)
+        public ItemSources Create(IItem baseItem)
         {
             var itemSources = new ItemSources();
             itemSources = this.ConvertCharacterSources(baseItem, itemSources);
@@ -21,7 +20,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
             return itemSources;
         }
 
-        private static void ConvertWeaponSources(DataItem baseItem, ItemSources sources, DataItem character)
+        private static void ConvertWeaponSources(IItem baseItem, ItemSources sources, IItem character)
         {
             // value0 is quantity
             // value1 is slot
@@ -62,12 +61,12 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
             sources.PotentiallyWornBy.Add(reference); // TODO: Verify this
         }
 
-        private static bool IsItemTheOnlyOne(DataItem baseItem, IEnumerable<KeyValuePair<DataReference, DataItem>> clothingItemsInSlot)
+        private static bool IsItemTheOnlyOne(IItem baseItem, IEnumerable<KeyValuePair<IReference, IItem>> clothingItemsInSlot)
         {
             return clothingItemsInSlot.Count() == 1 && clothingItemsInSlot.First().Value.Equals(baseItem);
         }
 
-        private ItemSources ConvertLocationSources(DataItem baseItem, ItemSources itemSources)
+        private ItemSources ConvertLocationSources(IItem baseItem, ItemSources itemSources)
         {
             var referencingVendorLists = this.itemRepository
                 .GetReferencingDataItemsFor(baseItem)
@@ -113,9 +112,9 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
             return itemSources;
         }
 
-        private ItemSources ConvertCharacterSources(DataItem baseItem, ItemSources sources)
+        private ItemSources ConvertCharacterSources(IItem baseItem, ItemSources sources)
         {
-            List<DataItem>? referencingCharacters = this.itemRepository
+            List<IItem>? referencingCharacters = this.itemRepository
                 .GetReferencingDataItemsFor(baseItem)
                 .Where(item => item.Type == ItemType.Character && this.itemRepository.GetReferencingDataItemsFor(item).Any())
                 .ToList(); // TODO: Squads which don't spawn anywhere?
@@ -135,7 +134,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
             return sources;
         }
 
-        private void ConvertArmourSources(DataItem baseItem, ItemSources sources, DataItem character)
+        private void ConvertArmourSources(IItem baseItem, ItemSources sources, IItem character)
         {
             var slot = baseItem.Values["slot"];
 

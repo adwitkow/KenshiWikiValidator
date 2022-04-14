@@ -1,7 +1,7 @@
 ﻿using KenshiWikiValidator.Features.ArticleValidation.Shared;
 using KenshiWikiValidator.Features.DataItemConversion;
 using KenshiWikiValidator.Features.DataItemConversion.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator.Features.WikiTemplates.Creators;
 
@@ -61,9 +61,9 @@ public class BlueprintTemplateCreator : ITemplateCreator
             int cost = (int)research.Values["money"];
 
             var requirements = research.GetReferenceItems(this.itemRepository, "requirements");
-            var newItems = research.ReferenceCategories.Values
-                .Where(cat => cat.Key.StartsWith("enable"))
-                .SelectMany(cat => cat.Values)
+            var newItems = research.ReferenceCategories
+                .Where(cat => cat.Name.StartsWith("enable"))
+                .SelectMany(cat => cat.References)
                 .Select(reference => this.itemRepository.GetDataItemByStringId(reference.TargetId));
             var costs = research.GetReferences("cost")
                 .ToDictionary(reference => reference, reference => this.itemRepository.GetDataItemByStringId(reference.TargetId));

@@ -1,29 +1,26 @@
 ﻿using KenshiWikiValidator.Features.DataItemConversion.Models;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator.Features.DataItemConversion
 {
     public interface IItemRepository
     {
-        string? GameDirectory { get; }
+        IItem GetDataItemByStringId(string id);
 
-        DataItem GetDataItemByStringId(string id);
+        IEnumerable<IItem> GetDataItems();
 
-        IEnumerable<DataItem> GetDataItems();
+        IEnumerable<IItem> GetDataItemsByType(ItemType type);
 
-        IEnumerable<DataItem> GetDataItemsByType(ItemType type);
+        IEnumerable<IItem> GetDataItemsByTypes(params ItemType[] types);
 
-        IEnumerable<DataItem> GetDataItemsByTypes(params ItemType[] types);
+        IDataItem GetItemByStringId(string id);
 
-        IItem GetItemByStringId(string id);
+        IEnumerable<IDataItem> GetItems();
 
-        IEnumerable<IItem> GetItems();
+        IEnumerable<IItem> GetReferencingDataItemsFor(IItem reference);
 
-        IEnumerable<DataItem> GetReferencingDataItemsFor(DataItem reference);
+        IEnumerable<IItem> GetReferencingDataItemsFor(string itemId);
 
-        IEnumerable<DataItem> GetReferencingDataItemsFor(string itemId);
-
-        void Load();
+        Task Load();
     }
 }

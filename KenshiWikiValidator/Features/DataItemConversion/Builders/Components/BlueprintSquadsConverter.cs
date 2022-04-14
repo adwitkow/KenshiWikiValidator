@@ -1,6 +1,5 @@
 ﻿using KenshiWikiValidator.Features.DataItemConversion.Models.Components;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
 {
@@ -13,7 +12,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
             this.itemRepository = itemRepository;
         }
 
-        public IEnumerable<ItemReference> Convert(DataItem baseItem, string categoryName)
+        public IEnumerable<ItemReference> Convert(IItem baseItem, string categoryName)
         {
             var results = new List<ItemReference>();
 

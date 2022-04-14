@@ -1,7 +1,6 @@
 ﻿using KenshiWikiValidator.Features.DataItemConversion;
 using KenshiWikiValidator.Features.WikiTemplates;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
 {
@@ -98,9 +97,9 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
                 .SingleOrDefault();
         }
 
-        private List<DataItem> GetMatchingItems(string name)
+        private List<IItem> GetMatchingItems(string name)
         {
-            IEnumerable<DataItem> items;
+            IEnumerable<IItem> items;
             if (this.itemType is null)
             {
                 items = this.itemRepository.GetDataItems();

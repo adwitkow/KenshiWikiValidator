@@ -66,7 +66,8 @@ namespace KenshiWikiValidator.Features.WikiTemplates.Creators
             var raceDamageReferences = item.GetReferences("race damage");
             foreach (var reference in raceDamageReferences)
             {
-                var name = this.itemRepository.GetDataItemByStringId(reference.TargetId).Name;
+                var referenceItem = this.itemRepository.GetDataItemByStringId(reference.TargetId);
+                var name = referenceItem.Name;
 
                 var damage = FormatIntStat(reference.Value0 - 100);
 

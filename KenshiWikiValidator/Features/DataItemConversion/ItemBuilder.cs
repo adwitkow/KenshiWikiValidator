@@ -3,8 +3,7 @@ using KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue;
 using KenshiWikiValidator.Features.DataItemConversion.Builders;
 using KenshiWikiValidator.Features.DataItemConversion.Builders.Components;
 using KenshiWikiValidator.Features.DataItemConversion.Models;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator.Features.DataItemConversion
 {
@@ -17,7 +16,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion
         private readonly DialogueBuilder dialogueBuilder;
         private readonly Dictionary<ItemType, IItemBuilder> itemBuilders;
 
-        private DataItem longestItem;
+        private IItem longestItem;
         private TimeSpan longestTime;
 
         public ItemBuilder(ItemRepository itemRepository)
@@ -53,12 +52,12 @@ namespace KenshiWikiValidator.Features.DataItemConversion
             this.longestTime = TimeSpan.Zero;
         }
 
-        public IEnumerable<IItem> BuildItems()
+        public IEnumerable<IDataItem> BuildItems()
         {
             var validTypes = this.itemBuilders.Keys.ToArray();
             var items = this.itemRepository.GetDataItemsByTypes(validTypes);
 
-            var results = new List<IItem>();
+            var results = new List<IDataItem>();
 
             Parallel.ForEach(items, item =>
             {
@@ -77,7 +76,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion
             return results;
         }
 
-        private IItem BuildItem(DataItem item)
+        private IDataItem BuildItem(IItem item)
         {
             Console.WriteLine($"Building {item.Name}");
             var sw = Stopwatch.StartNew();
@@ -86,9 +85,9 @@ namespace KenshiWikiValidator.Features.DataItemConversion
 
             var built = builder.Build(item);
 
-            if (built is not IItem result)
+            if (built is not IDataItem result)
             {
-                throw new InvalidOperationException($"Registered an {nameof(ItemBuilder)} that does not return objects of type {nameof(IItem)}");
+                throw new InvalidOperationException($"Registered an {nameof(ItemBuilder)} that does not return objects of type {nameof(IDataItem)}");
             }
 
             Console.WriteLine($"Built {item.Name} in {sw.Elapsed}");

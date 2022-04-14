@@ -1,5 +1,5 @@
 ﻿using KenshiWikiValidator.Features.DataItemConversion.Models.Components;
-using OpenConstructionSet.Data.Models;
+using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
 {
@@ -23,18 +23,18 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
             };
         }
 
-        public Coverage Convert(DataItem baseItem)
+        public Coverage Convert(IItem baseItem)
         {
-            var coverageCategory = baseItem.ReferenceCategories.Values
-                .FirstOrDefault(cat => "part coverage".Equals(cat.Key));
+            var coverageCategory = baseItem.ReferenceCategories
+                .FirstOrDefault(cat => "part coverage".Equals(cat.Name));
 
             var coverage = new Coverage();
             if (coverageCategory is not null)
             {
-                var references = coverageCategory.Values;
+                var references = coverageCategory.References;
                 foreach (var reference in references)
                 {
-                    var action = this.coverageMap[reference.Key];
+                    var action = this.coverageMap[reference.TargetId];
                     action(coverage, reference.Value0);
                 }
             }

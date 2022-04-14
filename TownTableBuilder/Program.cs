@@ -1,14 +1,13 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using KenshiWikiValidator;
 using KenshiWikiValidator.Features.DataItemConversion;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
 using System.Text;
 
 var states = new List<string>() { "dead", "alive", "imprisoned" };
 
 var repository = new ItemRepository();
-repository.Load();
+await repository.Load();
 
 var towns = repository.GetDataItemsByType(ItemType.Town);
 
@@ -30,7 +29,7 @@ builder.AppendLine("|}");
 
 Console.WriteLine(builder.ToString());
 
-void AppendTown(StringBuilder builder, DataItem town)
+void AppendTown(StringBuilder builder, IItem town)
 {
     var factions = town.GetReferenceItems(repository, "faction");
     var newFactionName = factions.FirstOrDefault()?.Name;
@@ -94,7 +93,7 @@ void AppendTown(StringBuilder builder, DataItem town)
     builder.AppendLine($"| {furtherOverrides}");
 }
 
-string UnwrapWorldStates(DataItem town)
+string UnwrapWorldStates(IItem town)
 {
     var results = new List<string>();
     var worldStates = town.GetReferences("world state")
@@ -180,8 +179,8 @@ string UnwrapWorldStates(DataItem town)
     return string.Join(", ", results);
 }
 
-bool IsBaseTown(DataItem item)
+bool IsBaseTown(IItem item)
 {
     return !repository.GetReferencingDataItemsFor(item)
-        .Any(item => item.Type == ItemType.Town);
+        .Any(IItem => item.Type == ItemType.Town);
 }

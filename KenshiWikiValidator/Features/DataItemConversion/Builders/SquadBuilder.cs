@@ -1,7 +1,6 @@
 ﻿using KenshiWikiValidator.Features.DataItemConversion.Models;
 using KenshiWikiValidator.Features.DataItemConversion.Models.Components;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator.Features.DataItemConversion.Builders
 {
@@ -14,7 +13,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
             this.itemRepository = itemRepository;
         }
 
-        public override Squad Build(DataItem baseItem)
+        public override Squad Build(IItem baseItem)
         {
             var isShop = this.IsShop(baseItem);
             var townReferences = this.GetLocations(baseItem);
@@ -31,7 +30,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
             return squad;
         }
 
-        private IEnumerable<ItemReference> GetLocations(DataItem baseItem)
+        private IEnumerable<ItemReference> GetLocations(IItem baseItem)
         {
             var towns = this.itemRepository.GetReferencingDataItemsFor(baseItem)
                             .Where(item => item.Type == ItemType.Town);
@@ -46,7 +45,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
             return locations;
         }
 
-        private IEnumerable<ItemReference> GetTownReferences(DataItem town)
+        private IEnumerable<ItemReference> GetTownReferences(IItem town)
         {
             var results = new List<ItemReference>();
             if (!town.Name.ToLower().Contains("override"))
@@ -61,7 +60,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
                 .Where(item => !item.Name.ToLower().Contains("override"));
             foreach (var parent in parents)
             {
-                var parentFactionId = parent.GetReferences("faction").Single().Key;
+                var parentFactionId = parent.GetReferences("faction").Single().TargetId;
                 var parentFaction = this.itemRepository.GetDataItemByStringId(parentFactionId).Name;
 
                 if (parentFaction != townFaction)
@@ -77,7 +76,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
             return results;
         }
 
-        private string GetTownFaction(DataItem town)
+        private string GetTownFaction(IItem town)
         {
             var townFactionReference = town.GetReferences("faction").SingleOrDefault();
 
@@ -87,12 +86,12 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders
             }
             else
             {
-                var townFactionId = townFactionReference.Key;
+                var townFactionId = townFactionReference.TargetId;
                 return this.itemRepository.GetDataItemByStringId(townFactionId).Name;
             }
         }
 
-        private bool IsShop(DataItem baseItem)
+        private bool IsShop(IItem baseItem)
         {
             var aiPackages = baseItem.GetReferenceItems(this.itemRepository, "AI packages");
 

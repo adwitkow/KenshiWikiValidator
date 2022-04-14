@@ -11,7 +11,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation
             this.data = new Dictionary<string, string>();
         }
 
-        public bool HasArticle(IItem item)
+        public bool HasArticle(IDataItem item)
         {
             return this.HasArticle(item.StringId);
         }
@@ -21,7 +21,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation
             return this.data.ContainsKey(stringId);
         }
 
-        public string GetTitle(IItem item)
+        public string GetTitle(IDataItem item)
         {
             return this.GetTitle(item.StringId, item.Name);
         }

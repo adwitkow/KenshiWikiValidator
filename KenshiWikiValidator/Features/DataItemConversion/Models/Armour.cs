@@ -1,13 +1,13 @@
 ﻿using KenshiWikiValidator.Features.DataItemConversion.Models.Components;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator.Features.DataItemConversion.Models
 {
-    public class Armour : IItem, IResearchable
+    public class Armour : IDataItem, IResearchable
     {
         public ItemType Type => ItemType.Armour;
 
-        public Dictionary<string, object>? Properties { get; set; }
+        public IDictionary<string, object>? Properties { get; set; }
 
         public string StringId { get; set; }
 

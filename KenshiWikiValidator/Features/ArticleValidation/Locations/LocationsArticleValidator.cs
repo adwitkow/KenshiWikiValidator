@@ -1,7 +1,7 @@
 ﻿using KenshiWikiValidator.Features.ArticleValidation.Shared;
 using KenshiWikiValidator.Features.ArticleValidation.Shared.Rules;
 using KenshiWikiValidator.Features.DataItemConversion;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator.Features.ArticleValidation.Locations
 {

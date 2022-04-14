@@ -1,6 +1,5 @@
 ﻿using KenshiWikiValidator.Features.DataItemConversion.Models.Components;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
 {
@@ -13,7 +12,7 @@ namespace KenshiWikiValidator.Features.DataItemConversion.Builders.Components
             this.itemRepository = itemRepository;
         }
 
-        public ItemReference? Convert(DataItem baseItem)
+        public ItemReference? Convert(IItem baseItem)
         {
             var researchItems = this.itemRepository.GetReferencingDataItemsFor(baseItem)
                 .Where(item => item.Type == ItemType.Research);
