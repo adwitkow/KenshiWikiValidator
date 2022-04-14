@@ -22,34 +22,34 @@ namespace KenshiWikiValidator.Features.WikiSections
 
         public WikiSectionBuilder WithNewline()
         {
-            this.WikiSection.Components.Add(string.Empty);
+            this.AddComponent(string.Empty);
             return this;
         }
 
         public WikiSectionBuilder WithParagraph(string paragraph)
         {
-            this.WikiSection.Components.Add(paragraph);
-            this.WikiSection.Components.Add(string.Empty);
+            this.AddComponent(paragraph);
+            this.AddComponent(string.Empty);
             return this;
         }
 
         public WikiSectionBuilder WithLine(string line)
         {
-            this.WikiSection.Components.Add(line);
+            this.AddComponent(line);
             return this;
         }
 
         public WikiSectionBuilder WithUnorderedList(IEnumerable<string> list)
         {
             var formattedList = list.Select(item => "* " + item);
-            this.WikiSection.Components.AddRange(formattedList);
+            this.AddComponents(formattedList);
             return this;
         }
 
         public WikiSectionBuilder WithTemplate(WikiTemplate template)
         {
             var builtTemplate = this.templateBuilder.Build(template);
-            this.WikiSection.Components.Add(builtTemplate);
+            this.AddComponent(builtTemplate);
             return this;
         }
 
@@ -61,7 +61,7 @@ namespace KenshiWikiValidator.Features.WikiSections
             }
 
             var prefixSuffix = new string('=', level + 2);
-            this.WikiSection.Components.Add($"{prefixSuffix} {title} {prefixSuffix}");
+            this.AddComponent($"{prefixSuffix} {title} {prefixSuffix}");
             return this;
         }
 
@@ -75,6 +75,26 @@ namespace KenshiWikiValidator.Features.WikiSections
             var allStrings = new string[] { $"== {this.WikiSection.Header} ==" }.Concat(this.WikiSection.Components);
 
             return string.Join(Environment.NewLine, allStrings);
+        }
+
+        private void AddComponent(string component)
+        {
+            if (component is null)
+            {
+                throw new ArgumentNullException(nameof(component));
+            }
+
+            this.WikiSection.Components.Add(component);
+        }
+
+        private void AddComponents(IEnumerable<string> components)
+        {
+            if (components is null || !components.Any())
+            {
+                throw new ArgumentNullException(nameof(components));
+            }
+
+            this.WikiSection.Components.AddRange(components);
         }
     }
 }
