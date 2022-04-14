@@ -10,12 +10,14 @@ namespace DialogueDumper
     internal class DialogueTreeCreator
     {
         private readonly IItemRepository itemRepository;
+        private readonly DialogueNodeFactory dialogueNodeFactory;
         private readonly DialogueBuilder dialogueBuilder;
 
         public DialogueTreeCreator(IItemRepository itemRepository)
         {
             this.itemRepository = itemRepository;
 
+            this.dialogueNodeFactory = new DialogueNodeFactory();
             this.dialogueBuilder = new DialogueBuilder(itemRepository);
         }
 
@@ -49,6 +51,11 @@ namespace DialogueDumper
 
                 foreach (var line in allLines)
                 {
+                    foreach (var condition in line.Conditions)
+                    {
+                        sectionBuilder.WithLine(condition);
+                    }
+
                     sectionBuilder.WithLine(line.ToString());
                 }
 
@@ -216,12 +223,7 @@ namespace DialogueDumper
                     var validSpeakers = newSpeakersMap[line.Speaker];
 
                     lineIdToRemove = allLines.Count;
-                    currentNode = new DialogueNode()
-                    {
-                        Level = level,
-                        Speakers = validSpeakers,
-                        Line = text,
-                    };
+                    currentNode = this.dialogueNodeFactory.Create(line, level, validSpeakers, newSpeakersMap);
 
                     if (previousNode != null)
                     {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DialogueDumper
+﻿namespace DialogueDumper
 {
     public class DialogueNode
     {
@@ -20,6 +14,8 @@ namespace DialogueDumper
         public string Line { get; set; }
 
         public ICollection<DialogueNode> Children { get; set; }
+
+        public IEnumerable<string> Conditions { get; set; }
 
         public override string ToString()
         {

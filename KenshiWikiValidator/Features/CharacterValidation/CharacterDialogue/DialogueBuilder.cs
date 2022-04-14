@@ -264,12 +264,14 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
             foreach (var conditionItem in conditionItems)
             {
                 var conditionName = (DialogueConditionName)conditionItem.Values["condition name"];
+                var speaker = (DialogueSpeaker)conditionItem.Values["who"];
                 var condition = new DialogueCondition()
                 {
                     StringId = conditionItem.StringId,
                     Name = conditionItem.Name,
                     Properties = conditionItem.Values,
                     ConditionName = conditionName,
+                    Who = speaker,
                 };
                 conditions.Add(condition);
             }
