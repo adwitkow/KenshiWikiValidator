@@ -47,7 +47,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared
             return result;
         }
 
-        protected abstract WikiTemplate PrepareTemplate(ArticleData data);
+        protected abstract WikiTemplate? PrepareTemplate(ArticleData data);
 
         private static string MakeNewlinesConsistent(string input)
         {

@@ -16,6 +16,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="ZoneData.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CXuesong.MW.WikiClientLibrary.Wikia" Version="0.7.5" />
     <PackageReference Include="OpenConstructionSet" Version="2.2.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">

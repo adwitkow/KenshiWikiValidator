@@ -11,6 +11,9 @@ using WikiClientLibrary.Generators;
 using WikiClientLibrary.Pages;
 using WikiClientLibrary.Wikia.Sites;
 
+var zoneDataProvider = new ZoneDataProvider();
+await zoneDataProvider.Load();
+
 var itemRepository = new ItemRepository();
 var templateParser = new TemplateParser();
 var wikiTitles = new WikiTitleCache();
@@ -18,7 +21,7 @@ var validators = new List<IArticleValidator>()
 {
     new CharactersArticleValidator(itemRepository, wikiTitles),
     new TownResidentArticleValidator(itemRepository, wikiTitles),
-    new LocationsArticleValidator(itemRepository, wikiTitles),
+    new LocationsArticleValidator(itemRepository, zoneDataProvider, wikiTitles),
     new WeaponArticleValidator(itemRepository, wikiTitles),
 };
 

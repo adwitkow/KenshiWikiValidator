@@ -1,0 +1,1038 @@
+﻿[
+  {
+    "name": "Admag",
+    "zone": "Stenn Desert"
+  },
+  {
+    "name": "Bad Teeth",
+    "zone": "Okran's Pride"
+  },
+  {
+    "name": "Bark",
+    "zone": "The Great Desert"
+  },
+  {
+    "name": "Black Desert City",
+    "zone": "Deadlands"
+  },
+  {
+    "name": "Black Scratch",
+    "zone": "The Outlands"
+  },
+  {
+    "name": "Blister Hill",
+    "zone": "Okran's Pride"
+  },
+  {
+    "name": "Brink",
+    "zone": "Stormgap Coast"
+  },
+  {
+    "name": "Cannibal Capital",
+    "zone": "Cannibal Plains"
+  },
+  {
+    "name": "Cat-Lon's Exile",
+    "zone": "Ashlands"
+  },
+  {
+    "name": "Catun",
+    "zone": "Bonefields"
+  },
+  {
+    "name": "Clownsteady",
+    "zone": "The Hook"
+  },
+  {
+    "name": "Drifter's Last",
+    "zone": "The Hook"
+  },
+  {
+    "name": "Fish Isle",
+    "zone": "Fishman Isle"
+  },
+  {
+    "name": "Flats Lagoon",
+    "zone": "Flats Lagoon"
+  },
+  {
+    "name": "Heft",
+    "zone": "The Great Desert"
+  },
+  {
+    "name": "Heng",
+    "zone": "Heng"
+  },
+  {
+    "name": "Mongrel",
+    "zone": "Fog Islands"
+  },
+  {
+    "name": "Mourn",
+    "zone": "Bonefields"
+  },
+  {
+    "name": "Shark",
+    "zone": "The Swamp"
+  },
+  {
+    "name": "Sho-Battai",
+    "zone": "The Great Desert"
+  },
+  {
+    "name": "Southern Hive",
+    "zone": "Royal Valley"
+  },
+  {
+    "name": "Spring",
+    "zone": "Stobe's Gamble"
+  },
+  {
+    "name": "Squin",
+    "zone": "Border Zone"
+  },
+  {
+    "name": "Stack",
+    "zone": "Okran's Gulf"
+  },
+  {
+    "name": "Stoat",
+    "zone": "The Great Desert"
+  },
+  {
+    "name": "The Hub",
+    "zone": "Border Zone"
+  },
+  {
+    "name": "World's End",
+    "zone": "Arm of Okran"
+  },
+  {
+    "name": "Old Village",
+    "zone": "Cannibal Plains"
+  },
+  {
+    "name": "Armoruy Ruin",
+    "zone": "Cannibal Plains"
+  },
+  {
+    "name": "Fallen Tower",
+    "zone": "Arach"
+  },
+  {
+    "name": "Ashland Dome Ruin",
+    "zone": "Ashlands"
+  },
+  {
+    "name": "Ashland Dome Ruin",
+    "zone": "Ashlands"
+  },
+  {
+    "name": "Ashland Dome I",
+    "zone": "Ashlands"
+  },
+  {
+    "name": "Ashland Dome II",
+    "zone": "Ashlands"
+  },
+  {
+    "name": "Ashland Dome III",
+    "zone": "Ashlands"
+  },
+  {
+    "name": "Ashland Dome IV",
+    "zone": "Ashlands"
+  },
+  {
+    "name": "Bast",
+    "zone": "Bast"
+  },
+  {
+    "name": "Endin",
+    "zone": "Bast"
+  },
+  {
+    "name": "Drin",
+    "zone": "Bast"
+  },
+  {
+    "name": "The Old Prison",
+    "zone": "Bonefields"
+  },
+  {
+    "name": "Tiny Settlement",
+    "zone": "Border Zone"
+  },
+  {
+    "name": "Ruined Holy Outpost",
+    "zone": "Border Zone"
+  },
+  {
+    "name": "Farm Ruin",
+    "zone": "Burning Forest"
+  },
+  {
+    "name": "Ancient Labs",
+    "zone": "Burning Forest"
+  },
+  {
+    "name": "Police Barracks",
+    "zone": "Cheater's Run"
+  },
+  {
+    "name": "Horrible Ruin",
+    "zone": "Cheater's Run"
+  },
+  {
+    "name": "Lost Library",
+    "zone": "Darkfinger"
+  },
+  {
+    "name": "Lost Armoury",
+    "zone": "Deadlands"
+  },
+  {
+    "name": "Reprogramming Workshop",
+    "zone": "Deadlands"
+  },
+  {
+    "name": "Deadland Workshop",
+    "zone": "Deadlands"
+  },
+  {
+    "name": "Deadland Workshop",
+    "zone": "Deadlands"
+  },
+  {
+    "name": "Armoury Ruin",
+    "zone": "Deadlands"
+  },
+  {
+    "name": "Deadland Workshop",
+    "zone": "Deadlands"
+  },
+  {
+    "name": "Lost Armoury",
+    "zone": "Deadlands"
+  },
+  {
+    "name": "Island Lab",
+    "zone": "Fishman Isle"
+  },
+  {
+    "name": "Suspicious Lab",
+    "zone": "Fishman Isle"
+  },
+  {
+    "name": "Spider Factory",
+    "zone": "Forbidden Isle"
+  },
+  {
+    "name": "Ancient Labs",
+    "zone": "Forbidden Isle"
+  },
+  {
+    "name": "Burn's Tower",
+    "zone": "Floodlands"
+  },
+  {
+    "name": "Empty Ruins",
+    "zone": "Floodlands"
+  },
+  {
+    "name": "Fallen Tower",
+    "zone": "Floodlands"
+  },
+  {
+    "name": "Leaning Tower",
+    "zone": "Floodlands"
+  },
+  {
+    "name": "Ancient Labs",
+    "zone": "Floodlands"
+  },
+  {
+    "name": "Ruined Tower",
+    "zone": "Floodlands"
+  },
+  {
+    "name": "Empty Ruins",
+    "zone": "Floodlands"
+  },
+  {
+    "name": "Armoury Ruin",
+    "zone": "Greyshelf"
+  },
+  {
+    "name": "Armoury Ruin",
+    "zone": "Greyshelf"
+  },
+  {
+    "name": "Hiver-Claimed Armoury",
+    "zone": "Greyshelf"
+  },
+  {
+    "name": "Hiver-Claimed Armoury",
+    "zone": "Greyshelf"
+  },
+  {
+    "name": "Looted Ruins",
+    "zone": "Howler Maze"
+  },
+  {
+    "name": "Lost Town",
+    "zone": "Howler Maze"
+  },
+  {
+    "name": "Archive Town",
+    "zone": "Howler Maze"
+  },
+  {
+    "name": "Lost Armoury",
+    "zone": "Iron Valleys"
+  },
+  {
+    "name": "Fallen Tower",
+    "zone": "Leviathan Coast"
+  },
+  {
+    "name": "Old Empire Watchtower",
+    "zone": "Leviathan Coast"
+  },
+  {
+    "name": "Old Empire Watchtower",
+    "zone": "Leviathan Coast"
+  },
+  {
+    "name": "Lost Armoury",
+    "zone": "Leviathan Coast"
+  },
+  {
+    "name": "Lost Armoury",
+    "zone": "Leviathan Coast"
+  },
+  {
+    "name": "Lost Armoury",
+    "zone": "Leviathan Coast"
+  },
+  {
+    "name": "Lost Library",
+    "zone": "Leviathan Coast"
+  },
+  {
+    "name": "Post-Ancient Workshop",
+    "zone": "Purple Sands"
+  },
+  {
+    "name": "Ancient Labs",
+    "zone": "No Zone"
+  },
+  {
+    "name": "Library Ruins",
+    "zone": "No Zone"
+  },
+  {
+    "name": "Deadhive Overrun",
+    "zone": "Okran's Gulf"
+  },
+  {
+    "name": "Farm Ruins",
+    "zone": "Okran's Valley"
+  },
+  {
+    "name": "Hiver-Claimed Armoury",
+    "zone": "Royal Valley"
+  },
+  {
+    "name": "Ancient Tech Lab",
+    "zone": "Shun"
+  },
+  {
+    "name": "Lost Library",
+    "zone": "Shun"
+  },
+  {
+    "name": "Armoury Ruin",
+    "zone": "Shun"
+  },
+  {
+    "name": "Lost Library",
+    "zone": "Shun"
+  },
+  {
+    "name": "Lost Armoury",
+    "zone": "Shun"
+  },
+  {
+    "name": "Lost Library",
+    "zone": "Shun"
+  },
+  {
+    "name": "Lost Library",
+    "zone": "Shun"
+  },
+  {
+    "name": "Lost Library",
+    "zone": "Shun"
+  },
+  {
+    "name": "Abandoned Town",
+    "zone": "Shun"
+  },
+  {
+    "name": "Lost Library",
+    "zone": "Shun"
+  },
+  {
+    "name": "Holy Mine Ruin",
+    "zone": "Skinner's Roam"
+  },
+  {
+    "name": "Holy Mine Ruin",
+    "zone": "Skinner's Roam"
+  },
+  {
+    "name": "Police Barracks",
+    "zone": "Sniper Valley"
+  },
+  {
+    "name": "Old Empire Supply Outpost",
+    "zone": "Sniper Valley"
+  },
+  {
+    "name": "Old Frontlines",
+    "zone": "Spider Plains"
+  },
+  {
+    "name": "Fallen Tower",
+    "zone": "Stenn Desert"
+  },
+  {
+    "name": "Shek Ruins",
+    "zone": "Stenn Desert"
+  },
+  {
+    "name": "Empty Ruins",
+    "zone": "Stenn Desert"
+  },
+  {
+    "name": "Waystation Ruins",
+    "zone": "Stobe's Garden"
+  },
+  {
+    "name": "Lost Armour Store",
+    "zone": "Stobe's Gamble"
+  },
+  {
+    "name": "Free Settlement",
+    "zone": "Stobe's Gamble"
+  },
+  {
+    "name": "Crumbling Labs",
+    "zone": "Stobe's Gamble"
+  },
+  {
+    "name": "Old Empire Supply Outpost",
+    "zone": "Stobe's Gamble"
+  },
+  {
+    "name": "Expedition 5",
+    "zone": "Stobe's Gamble"
+  },
+  {
+    "name": "Expedition 4",
+    "zone": "Stobe's Garden"
+  },
+  {
+    "name": "Old Empire Supply Outpost",
+    "zone": "The Crags"
+  },
+  {
+    "name": "Ancient Labs",
+    "zone": "The Crater"
+  },
+  {
+    "name": "Empty Lab",
+    "zone": "The Crater"
+  },
+  {
+    "name": "Lab Ruin",
+    "zone": "The Crater"
+  },
+  {
+    "name": "Empty Lab",
+    "zone": "The Crater"
+  },
+  {
+    "name": "Empty Lab",
+    "zone": "The Crater"
+  },
+  {
+    "name": "Old Village",
+    "zone": "The Great Desert"
+  },
+  {
+    "name": "Workshop Complex",
+    "zone": "The Grid"
+  },
+  {
+    "name": "Library Ruins",
+    "zone": "The Hook"
+  },
+  {
+    "name": "Abandoned Town",
+    "zone": "The Hook"
+  },
+  {
+    "name": "Ancient Tech Lab",
+    "zone": "The Iron Trail"
+  },
+  {
+    "name": "Lost Armoury",
+    "zone": "The Pits"
+  },
+  {
+    "name": "Police Barracks",
+    "zone": "The Pits"
+  },
+  {
+    "name": "Old Empire Supply Outpost",
+    "zone": "The Pits East"
+  },
+  {
+    "name": "Dead Workshop",
+    "zone": "The Pits East"
+  },
+  {
+    "name": "Lost Library Outpost",
+    "zone": "The Swamp"
+  },
+  {
+    "name": "Infested Lab",
+    "zone": "The Swamp"
+  },
+  {
+    "name": "Swamped Lab",
+    "zone": "The Swamp"
+  },
+  {
+    "name": "Lost Library",
+    "zone": "Vain"
+  },
+  {
+    "name": "Western Hive",
+    "zone": "Vain"
+  },
+  {
+    "name": "Post Ancient Workshop",
+    "zone": "Vain"
+  },
+  {
+    "name": "Tower of Fog",
+    "zone": "Vain"
+  },
+  {
+    "name": "Waystation Ruins",
+    "zone": "Venge"
+  },
+  {
+    "name": "Tower of Abuse",
+    "zone": "Venge"
+  },
+  {
+    "name": "Ruined Control Tower",
+    "zone": "Venge"
+  },
+  {
+    "name": "Old Control Tower",
+    "zone": "Venge"
+  },
+  {
+    "name": "Drowned Ruins",
+    "zone": "Wend"
+  },
+  {
+    "name": "Cannibal Village",
+    "zone": "Cannibal Plains"
+  },
+  {
+    "name": "Cannibal Village",
+    "zone": "Cannibal Plains"
+  },
+  {
+    "name": "Cannibal Village",
+    "zone": "Cannibal Plains"
+  },
+  {
+    "name": "Okran's Fist",
+    "zone": "Arm of Okran"
+  },
+  {
+    "name": "Waystation",
+    "zone": "Border Zone"
+  },
+  {
+    "name": "Cannibal Village",
+    "zone": "Darkfinger"
+  },
+  {
+    "name": "Cannibal Village",
+    "zone": "Darkfinger"
+  },
+  {
+    "name": "Crab Village",
+    "zone": "Greenbeach"
+  },
+  {
+    "name": "Waystation",
+    "zone": "Grey Desert"
+  },
+  {
+    "name": "Trader's Edge",
+    "zone": "Heng"
+  },
+  {
+    "name": "Narko's Trap",
+    "zone": "Iron Valleys"
+  },
+  {
+    "name": "Okran's Shield",
+    "zone": "No Zone"
+  },
+  {
+    "name": "Holy Military Base",
+    "zone": "Okran's Gulf"
+  },
+  {
+    "name": "Holy Military Base",
+    "zone": "Okran's Gulf"
+  },
+  {
+    "name": "Fort Simion",
+    "zone": "Sinkuun"
+  },
+  {
+    "name": "The Bastion",
+    "zone": "Sinkuun"
+  },
+  {
+    "name": "Tengu's Vault",
+    "zone": "Skimsands"
+  },
+  {
+    "name": "Barrier Tower",
+    "zone": "Sonorous Dark"
+  },
+  {
+    "name": "Skinhouse HQ",
+    "zone": "Sonorous Dark"
+  },
+  {
+    "name": "Skinhouse",
+    "zone": "Sonorous Dark"
+  },
+  {
+    "name": "Skinhouse",
+    "zone": "Sonorous Dark"
+  },
+  {
+    "name": "Last Stand",
+    "zone": "Spider Plains"
+  },
+  {
+    "name": "Berserker Village",
+    "zone": "Spider Plains"
+  },
+  {
+    "name": "New Kralia",
+    "zone": "Stenn Desert"
+  },
+  {
+    "name": "The Great Fortress",
+    "zone": "Stenn Desert"
+  },
+  {
+    "name": "Waystation",
+    "zone": "Stenn Desert"
+  },
+  {
+    "name": "Secret Drug Farm",
+    "zone": "Stobe's Gamble"
+  },
+  {
+    "name": "Ark",
+    "zone": "Stobe's Garden"
+  },
+  {
+    "name": "Reaver Camp",
+    "zone": "Stobe's Garden"
+  },
+  {
+    "name": "Reaver Camp",
+    "zone": "Stobe's Garden"
+  },
+  {
+    "name": "Crab Village",
+    "zone": "Stobe's Garden"
+  },
+  {
+    "name": "Iron HQ",
+    "zone": "The Crags"
+  },
+  {
+    "name": "Fort Mirage",
+    "zone": "The Great Desert"
+  },
+  {
+    "name": "Manhunter Base",
+    "zone": "The Hook"
+  },
+  {
+    "name": "Waystation",
+    "zone": "The Hook"
+  },
+  {
+    "name": "Reaver Camp",
+    "zone": "The Outlands"
+  },
+  {
+    "name": "Crab Town",
+    "zone": "The Pits East"
+  },
+  {
+    "name": "Throne of the Bugmaster",
+    "zone": "Arach"
+  },
+  {
+    "name": "Watchtower",
+    "zone": "Arm of Okran"
+  },
+  {
+    "name": "Ravaged Hamlet",
+    "zone": "Bast"
+  },
+  {
+    "name": "Ravaged Hamlet",
+    "zone": "Bast"
+  },
+  {
+    "name": "Ravaged Hamlet",
+    "zone": "Bast"
+  },
+  {
+    "name": "Ravaged Hamlet",
+    "zone": "Bast"
+  },
+  {
+    "name": "Ravaged Hamlet",
+    "zone": "Bast"
+  },
+  {
+    "name": "Ravaged Hamlet",
+    "zone": "Bast"
+  },
+  {
+    "name": "Ravaged Hamlet",
+    "zone": "Bast"
+  },
+  {
+    "name": "Ravaged Hamlet",
+    "zone": "Bast"
+  },
+  {
+    "name": "Ravaged Hamlet",
+    "zone": "Bast"
+  },
+  {
+    "name": "Guard Outpost",
+    "zone": "Bast"
+  },
+  {
+    "name": "Guard Outpost",
+    "zone": "Bast"
+  },
+  {
+    "name": "Empty Ruin",
+    "zone": "Bonefields"
+  },
+  {
+    "name": "Tower of Ninjas",
+    "zone": "Border Zone"
+  },
+  {
+    "name": "Dust King Tower",
+    "zone": "Border Zone"
+  },
+  {
+    "name": "Rebel Base",
+    "zone": "Border Zone"
+  },
+  {
+    "name": "Scout Post",
+    "zone": "Cannibal Plains"
+  },
+  {
+    "name": "Scout Post",
+    "zone": "Cannibal Plains"
+  },
+  {
+    "name": "Scraphouse",
+    "zone": "Deadlands"
+  },
+  {
+    "name": "Strange Camp",
+    "zone": "Gut"
+  },
+  {
+    "name": "Raptor Island",
+    "zone": "Raptor Island"
+  },
+  {
+    "name": "Flotsam Safehouse",
+    "zone": "Rebirth"
+  },
+  {
+    "name": "Smuggler's Bar",
+    "zone": "Shem"
+  },
+  {
+    "name": "Tower of Goats",
+    "zone": "Sinkuun"
+  },
+  {
+    "name": "Cactus Den",
+    "zone": "Skimsands"
+  },
+  {
+    "name": "Swamp Ninja Base",
+    "zone": "South Wetlands"
+  },
+  {
+    "name": "Empty Ruin",
+    "zone": "South Wetlands"
+  },
+  {
+    "name": "Slave Markets",
+    "zone": "South Wetlands"
+  },
+  {
+    "name": "Exile Camp",
+    "zone": "Stenn Desert"
+  },
+  {
+    "name": "Tower of Spiders",
+    "zone": "Stobe's Garden"
+  },
+  {
+    "name": "Black Dog HQ",
+    "zone": "The Outlands"
+  },
+  {
+    "name": "Sniper Tower",
+    "zone": "The Pits"
+  },
+  {
+    "name": "Empty Ruin",
+    "zone": "The Swamp"
+  },
+  {
+    "name": "Red Sabre Hideout",
+    "zone": "The Swamp"
+  },
+  {
+    "name": "Dead Fishing Village",
+    "zone": "Cheater's Run"
+  },
+  {
+    "name": "First Village",
+    "zone": "Darkfinger"
+  },
+  {
+    "name": "Hive Village",
+    "zone": "Dreg"
+  },
+  {
+    "name": "Settled Nomad Village",
+    "zone": "Dreg"
+  },
+  {
+    "name": "Gatherer Village",
+    "zone": "Dreg"
+  },
+  {
+    "name": "Gatherer Village",
+    "zone": "Dreg"
+  },
+  {
+    "name": "Hive Village",
+    "zone": "Dreg"
+  },
+  {
+    "name": "Hive Village",
+    "zone": "Dreg"
+  },
+  {
+    "name": "Southern Hive Village",
+    "zone": "Greyshelf"
+  },
+  {
+    "name": "Fishing Village",
+    "zone": "None"
+  },
+  {
+    "name": "Ghost Village",
+    "zone": "None"
+  },
+  {
+    "name": "Holy Mines",
+    "zone": "Okran's Gulf"
+  },
+  {
+    "name": "Holy Mines",
+    "zone": "Okran's Gulf"
+  },
+  {
+    "name": "Holy Farm",
+    "zone": "Okran's Pride"
+  },
+  {
+    "name": "Holy Farm",
+    "zone": "Okran's Pride"
+  },
+  {
+    "name": "Holy Farm",
+    "zone": "Okran's Pride"
+  },
+  {
+    "name": "Holy Farm",
+    "zone": "Okran's Pride"
+  },
+  {
+    "name": "Holy Mines",
+    "zone": "Okran's Pride"
+  },
+  {
+    "name": "Holy Farm",
+    "zone": "Okran's Valley"
+  },
+  {
+    "name": "Holy Farm",
+    "zone": "Okran's Valley"
+  },
+  {
+    "name": "Southern Hive Village",
+    "zone": "Royal Valley"
+  },
+  {
+    "name": "Settled Nomads",
+    "zone": "Shem"
+  },
+  {
+    "name": "Distant Hive Village",
+    "zone": "Sinkuun"
+  },
+  {
+    "name": "Holy Mines",
+    "zone": "Skinner's Roam"
+  },
+  {
+    "name": "Holy Mines",
+    "zone": "Skinner's Roam"
+  },
+  {
+    "name": "Farming Village",
+    "zone": "Stormgap Coast"
+  },
+  {
+    "name": "Cult Village",
+    "zone": "Stormgap Coast"
+  },
+  {
+    "name": "Fishing Village",
+    "zone": "Stormgap Coast"
+  },
+  {
+    "name": "Distant Hive Village",
+    "zone": "The Great Desert"
+  },
+  {
+    "name": "Flotsam Village",
+    "zone": "The Hidden Forest"
+  },
+  {
+    "name": "Rot",
+    "zone": "The Swamp"
+  },
+  {
+    "name": "Swamp Village",
+    "zone": "The Swamp"
+  },
+  {
+    "name": "Mud Town",
+    "zone": "The Swamp"
+  },
+  {
+    "name": "Grayflayer Village",
+    "zone": "The Swamp"
+  },
+  {
+    "name": "Swamp Village",
+    "zone": "The Swamp"
+  },
+  {
+    "name": "Stone Rat Village",
+    "zone": "The Swamp"
+  },
+  {
+    "name": "Hive Village",
+    "zone": "Vain"
+  },
+  {
+    "name": "Hive Village",
+    "zone": "Vain"
+  },
+  {
+    "name": "Hive Village",
+    "zone": "Vain"
+  },
+  {
+    "name": "Hive Village",
+    "zone": "Vain"
+  },
+  {
+    "name": "Hive Village",
+    "zone": "Vain"
+  },
+  {
+    "name": "Stone Camp",
+    "zone": "Heng"
+  },
+  {
+    "name": "Slave Farm",
+    "zone": "Heng"
+  },
+  {
+    "name": "Rebirth",
+    "zone": "Rebirth"
+  },
+  {
+    "name": "Eyesocket",
+    "zone": "Stormgap Coast"
+  },
+  {
+    "name": "Port North",
+    "zone": "The Great Desert"
+  },
+  {
+    "name": "Stone Camp",
+    "zone": "The Great Desert"
+  },
+  {
+    "name": "Port South",
+    "zone": "The Great Desert"
+  },
+  {
+    "name": "Slave Farm South",
+    "zone": "The Hook"
+  }
+]

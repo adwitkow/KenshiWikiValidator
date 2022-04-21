@@ -2,6 +2,6 @@
 {
     public interface ITemplateCreator
     {
-        public WikiTemplate Generate();
+        public WikiTemplate? Generate();
     }
 }
