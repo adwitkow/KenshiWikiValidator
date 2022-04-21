@@ -145,7 +145,7 @@ namespace DialogueDumper
 
                     if (result == null)
                     {
-                        throw new ArgumentException();
+                        result = "Unknown condition";
                     }
 
                     return result;

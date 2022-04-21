@@ -53,7 +53,7 @@ namespace DialogueDumper
                 {
                     foreach (var condition in line.Conditions)
                     {
-                        sectionBuilder.WithLine(condition);
+                        sectionBuilder.WithLine($"{new string('*', line.Level)} ''{condition}''");
                     }
 
                     sectionBuilder.WithLine(line.ToString());
