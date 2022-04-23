@@ -45,7 +45,14 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Locations.Templates
             var stringIds = this.data.StringIds;
             if (!stringIds.Any())
             {
-                return null;
+                if (string.IsNullOrEmpty(this.data.PotentialStringId))
+                {
+                    return null;
+                }
+                else
+                {
+                    stringIds = new[] { this.data.PotentialStringId };
+                }
             }
 
             var items = stringIds.Select(stringId => this.itemRepository.GetDataItemByStringId(stringId));
@@ -53,7 +60,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Locations.Templates
             var baseArticleTitle = articleTitle.Split('/').First();
 
             var existingTemplate = this.data.WikiTemplates
-                .Single(template => template.Name.ToLower().Equals("town"));
+                .SingleOrDefault(template => template.Name.ToLower().Equals("town"));
 
             var factions = items
                 .SelectMany(item => item.GetReferenceItems(this.itemRepository, "faction")
@@ -120,8 +127,13 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Locations.Templates
             return zones;
         }
 
-        private string? GetExistingParameter(WikiTemplate existingTemplate, string parameter)
+        private string? GetExistingParameter(WikiTemplate? existingTemplate, string parameter)
         {
+            if (existingTemplate is null)
+            {
+                return null;
+            }
+
             existingTemplate.Parameters.TryGetValue(parameter, out var value);
 
             return value;

@@ -9,6 +9,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared
             this.WikiTemplates = new List<WikiTemplate>();
             this.StringIds = new List<string>();
             this.Categories = new List<string>();
+            this.PotentialStringId = string.Empty;
         }
 
         public ICollection<string> StringIds { get; set; }
@@ -16,5 +17,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared
         public ICollection<string> Categories { get; set; }
 
         public IEnumerable<WikiTemplate> WikiTemplates { get; set; }
+
+        public string PotentialStringId { get; set; }
     }
 }

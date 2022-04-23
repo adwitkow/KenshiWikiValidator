@@ -87,6 +87,12 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
                 result.AddIssue($"No string id! Most likely string id: [{string.Join(", ", matchingItems.Select(item => $"string id = {item.StringId}|"))}]");
             }
 
+            if (matchingItems.Count == 1)
+            {
+                var matchingItem = matchingItems.Single();
+                data.PotentialStringId = matchingItem.StringId;
+            }
+
             return result;
         }
 
