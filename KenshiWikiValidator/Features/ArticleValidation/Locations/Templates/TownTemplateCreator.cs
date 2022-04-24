@@ -112,9 +112,7 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Locations.Templates
                 return zones;
             }
 
-            var baseTowns = items
-                .SelectMany(item => this.itemRepository.GetReferencingDataItemsFor(item))
-                .Where(item => item.Type == ItemType.Town);
+            var baseTowns = this.FindBaseItems(items);
 
             if (!baseTowns.Any())
             {
@@ -125,6 +123,23 @@ namespace KenshiWikiValidator.Features.ArticleValidation.Locations.Templates
             zones = this.zoneDataProvider.GetZones(baseTowns.Single().Name);
 
             return zones;
+        }
+
+        private IEnumerable<OpenConstructionSet.Data.Models.DataItem> FindBaseItems(IEnumerable<OpenConstructionSet.Data.Models.DataItem> items)
+        {
+            var baseItems = items;
+            var previousBaseItems = items;
+            while (baseItems is not null && baseItems.Any())
+            {
+                previousBaseItems = baseItems;
+                baseItems = baseItems
+                    .SelectMany(item => this.itemRepository.GetReferencingDataItemsFor(item))
+                    .Where(item => item.Type == ItemType.Town)
+                    .Distinct()
+                    .ToList();
+            }
+
+            return previousBaseItems;
         }
 
         private string? GetExistingParameter(WikiTemplate? existingTemplate, string parameter)
