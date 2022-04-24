@@ -27,9 +27,16 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
 
         public override DialoguePackage Build(DataItem baseItem)
         {
-            var inheritedItems = baseItem.GetReferenceItems(this.itemRepository, "inheritsFrom"); // do not forget about the inheritance
+            var inheritedDialogues = baseItem.GetReferenceItems(this.itemRepository, "inheritsFrom")
+                .SelectMany(package => package.GetReferences("dialogs")
+                    .ToDictionary(reference => reference, reference => this.itemRepository.GetDataItemByStringId(reference.TargetId)));
             var dialogueReferencePairs = baseItem.GetReferences("dialogs")
                 .ToDictionary(reference => reference, reference => this.itemRepository.GetDataItemByStringId(reference.TargetId));
+
+            dialogueReferencePairs = dialogueReferencePairs
+                .Concat(inheritedDialogues)
+                .Distinct()
+                .ToDictionary(pair => pair.Key, pair => pair.Value);
 
             var dialogues = this.BuildDialogues(dialogueReferencePairs);
 

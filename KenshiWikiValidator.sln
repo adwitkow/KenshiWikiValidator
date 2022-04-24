@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Additionals", "Additionals"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DialogueDumper", "DialogueBuilder\DialogueDumper.csproj", "{20A3863B-5354-41E1-A49D-C34F29423CEF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecruitTableCreator", "RecruitTableCreator\RecruitTableCreator.csproj", "{737E82F4-EE90-4167-8BE8-D260740DBC27}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{20A3863B-5354-41E1-A49D-C34F29423CEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20A3863B-5354-41E1-A49D-C34F29423CEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20A3863B-5354-41E1-A49D-C34F29423CEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{737E82F4-EE90-4167-8BE8-D260740DBC27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{737E82F4-EE90-4167-8BE8-D260740DBC27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{737E82F4-EE90-4167-8BE8-D260740DBC27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{737E82F4-EE90-4167-8BE8-D260740DBC27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,6 +60,7 @@ Global
 		{B299359C-BECE-4ABD-9391-E2B1414F3916} = {A17CD540-08B1-48A3-B977-96A35667CAC2}
 		{6FB2F975-D714-4541-BE1D-966B6A34B07F} = {A17CD540-08B1-48A3-B977-96A35667CAC2}
 		{20A3863B-5354-41E1-A49D-C34F29423CEF} = {A17CD540-08B1-48A3-B977-96A35667CAC2}
+		{737E82F4-EE90-4167-8BE8-D260740DBC27} = {A17CD540-08B1-48A3-B977-96A35667CAC2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {054A46B7-AF5A-4DF0-A7EB-9C516ED29AB5}

@@ -36,5 +36,29 @@ namespace KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue
         {
             return this.Name;
         }
+
+        public IEnumerable<DialogueLine> GetAllLines()
+        {
+            var stack = new Stack<DialogueLine>(this.Lines);
+            var results = new List<DialogueLine>();
+            while (stack.Any())
+            {
+                var next = stack.Pop();
+
+                if (results.Contains(next))
+                {
+                    continue;
+                }
+
+                results.Add(next);
+
+                foreach (var child in next.Lines)
+                {
+                    stack.Push(child);
+                }
+            }
+
+            return results;
+        }
     }
 }
