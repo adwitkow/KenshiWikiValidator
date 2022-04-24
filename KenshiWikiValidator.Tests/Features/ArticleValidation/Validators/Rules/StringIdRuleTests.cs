@@ -1,11 +1,12 @@
 ﻿using KenshiWikiValidator.Features.ArticleValidation;
 using KenshiWikiValidator.Features.ArticleValidation.Shared;
 using KenshiWikiValidator.Features.ArticleValidation.Shared.Rules;
-using KenshiWikiValidator.Features.ArticleValidation.Weapons;
 using KenshiWikiValidator.Features.DataItemConversion;
 using KenshiWikiValidator.Features.DataItemConversion.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using OpenConstructionSet.Data.Models;
+using OpenConstructionSet.Models;
 using System.IO;
 
 namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
@@ -26,15 +27,11 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
         [TestMethod]
         public void ShouldSucceedIfArticleContainsCorrectStringId()
         {
-            var wakizashi = new Weapon()
-            {
-                Name = "Wakizashi",
-                StringId = "1020-gamedata.base"
-            };
+            var wakizashi = new DataItem(ItemType.Weapon, 0, "Wakizashi", "1020-gamedata.base");
 
             var itemRepository = new Mock<IItemRepository>();
             itemRepository
-                .Setup(repo => repo.GetItems())
+                .Setup(repo => repo.GetDataItems())
                 .Returns(new[] { wakizashi });
 
             var validator = new Mock<ArticleValidatorBase>();
