@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using KenshiWikiValidator.Features.ArticleValidation.Shared;
-using KenshiWikiValidator.Features.DataItemConversion;
+using KenshiWikiValidator.OcsProxy;
 
 namespace KenshiWikiValidator.Features.WikiTemplates.Creators
 {

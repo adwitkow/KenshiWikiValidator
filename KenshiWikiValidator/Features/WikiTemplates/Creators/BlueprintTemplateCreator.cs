@@ -1,6 +1,5 @@
 ﻿using KenshiWikiValidator.Features.ArticleValidation.Shared;
-using KenshiWikiValidator.Features.DataItemConversion;
-using KenshiWikiValidator.Features.DataItemConversion.Models;
+using KenshiWikiValidator.OcsProxy;
 using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.Features.WikiTemplates.Creators;

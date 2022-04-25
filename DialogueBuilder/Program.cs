@@ -1,8 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using DialogueDumper;
-using KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue;
-using KenshiWikiValidator.Features.DataItemConversion;
+using KenshiWikiValidator.OcsProxy;
+using KenshiWikiValidator.OcsProxy.DialogueComponents;
 using OpenConstructionSet.Models;
 
 if (Directory.Exists("characters"))

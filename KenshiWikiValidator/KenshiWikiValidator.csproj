@@ -30,4 +30,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\KenshiWikiValidator.OcsProxy\KenshiWikiValidator.OcsProxy.csproj" />
+  </ItemGroup>
+
 </Project>

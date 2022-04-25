@@ -1,10 +1,9 @@
-﻿using KenshiWikiValidator.Features.DataItemConversion;
-using KenshiWikiValidator.Features.DataItemConversion.Builders.Components;
-using KenshiWikiValidator.Features.DataItemConversion.Models;
-using KenshiWikiValidator.Features.DataItemConversion.Models.Components;
-using KenshiWikiValidator.Features.WikiSections;
+﻿using KenshiWikiValidator.Features.WikiSections;
 using KenshiWikiValidator.Features.WikiTemplates;
 using KenshiWikiValidator.Features.WikiTemplates.Creators;
+using KenshiWikiValidator.OcsProxy;
+using KenshiWikiValidator.OcsProxy.SharedComponents;
+using KenshiWikiValidator.OcsProxy.SquadComponents;
 
 namespace KenshiWikiValidator.Features.ArticleValidation.Shared.Rules
 {

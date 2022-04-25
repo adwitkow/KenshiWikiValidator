@@ -1,4 +1,4 @@
-﻿using KenshiWikiValidator.Features.DataItemConversion.Models;
+﻿using KenshiWikiValidator.OcsProxy;
 
 namespace KenshiWikiValidator.Features.ArticleValidation
 {

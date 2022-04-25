@@ -1,6 +1,6 @@
 ﻿using KenshiWikiValidator.Features.ArticleValidation.Shared;
 using KenshiWikiValidator.Features.ArticleValidation.Shared.Rules;
-using KenshiWikiValidator.Features.DataItemConversion;
+using KenshiWikiValidator.OcsProxy;
 
 namespace KenshiWikiValidator.Features.ArticleValidation.TownResident
 {

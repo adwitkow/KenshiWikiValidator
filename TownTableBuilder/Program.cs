@@ -1,6 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using KenshiWikiValidator;
-using KenshiWikiValidator.Features.DataItemConversion;
+using KenshiWikiValidator.OcsProxy;
 using OpenConstructionSet.Data.Models;
 using OpenConstructionSet.Models;
 using System.Text;

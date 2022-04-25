@@ -1,7 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue;
-using KenshiWikiValidator.Features.DataItemConversion;
+using KenshiWikiValidator.OcsProxy;
+using KenshiWikiValidator.OcsProxy.DialogueComponents;
 using OpenConstructionSet.Models;
 
 var repository = new ItemRepository();

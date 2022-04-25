@@ -1,4 +1,4 @@
-﻿using KenshiWikiValidator.Features.CharacterValidation.CharacterDialogue;
+﻿using KenshiWikiValidator.OcsProxy.DialogueComponents;
 
 namespace DialogueDumper
 {

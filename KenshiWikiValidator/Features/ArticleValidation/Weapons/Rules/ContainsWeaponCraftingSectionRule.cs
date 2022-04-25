@@ -1,8 +1,8 @@
 ﻿using KenshiWikiValidator.Features.ArticleValidation.Shared;
-using KenshiWikiValidator.Features.DataItemConversion;
-using KenshiWikiValidator.Features.DataItemConversion.Models;
 using KenshiWikiValidator.Features.WikiSections;
 using KenshiWikiValidator.Features.WikiTemplates.Creators;
+using KenshiWikiValidator.OcsProxy;
+using KenshiWikiValidator.OcsProxy.WeaponComponents;
 
 namespace KenshiWikiValidator.Features.ArticleValidation.Weapons.Rules
 {
