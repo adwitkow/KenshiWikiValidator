@@ -1,6 +1,6 @@
-﻿using KenshiWikiValidator.Features.WikiSections;
-using KenshiWikiValidator.OcsProxy;
+﻿using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.DialogueComponents;
+using KenshiWikiValidator.WikiSections;
 using OpenConstructionSet.Data.Models;
 using OpenConstructionSet.Models;
 

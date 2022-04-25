@@ -1,10 +1,7 @@
-﻿using KenshiWikiValidator.Features.WikiTemplates;
+﻿using KenshiWikiValidator.WikiTemplates;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KenshiWikiValidator.Tests.Features.WikiTemplates
 {

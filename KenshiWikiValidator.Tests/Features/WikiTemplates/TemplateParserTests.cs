@@ -1,4 +1,4 @@
-﻿using KenshiWikiValidator.Features.WikiTemplates;
+﻿using KenshiWikiValidator.WikiTemplates;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 

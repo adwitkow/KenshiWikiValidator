@@ -1,11 +1,11 @@
 ﻿using System.Diagnostics;
-using KenshiWikiValidator.Features.ArticleValidation;
-using KenshiWikiValidator.Features.ArticleValidation.Locations;
-using KenshiWikiValidator.Features.ArticleValidation.TownResident;
-using KenshiWikiValidator.Features.ArticleValidation.Weapons;
-using KenshiWikiValidator.Features.CharacterValidation;
-using KenshiWikiValidator.Features.WikiTemplates;
+using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.OcsProxy;
+using KenshiWikiValidator.WikiCategories.Characters;
+using KenshiWikiValidator.WikiCategories.Locations;
+using KenshiWikiValidator.WikiCategories.TownResidents;
+using KenshiWikiValidator.WikiCategories.Weapons;
+using KenshiWikiValidator.WikiTemplates;
 using WikiClientLibrary.Client;
 using WikiClientLibrary.Generators;
 using WikiClientLibrary.Pages;

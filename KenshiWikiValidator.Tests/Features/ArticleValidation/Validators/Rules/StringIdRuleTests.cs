@@ -1,8 +1,7 @@
-﻿using KenshiWikiValidator.Features.ArticleValidation;
-using KenshiWikiValidator.Features.ArticleValidation.Shared;
-using KenshiWikiValidator.Features.ArticleValidation.Shared.Rules;
+﻿using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.WeaponComponents;
+using KenshiWikiValidator.WikiCategories.SharedRules;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using OpenConstructionSet.Data.Models;
