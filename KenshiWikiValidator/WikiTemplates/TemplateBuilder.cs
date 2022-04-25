@@ -14,7 +14,7 @@ namespace KenshiWikiValidator.WikiTemplates
             var builder = new StringBuilder("{{");
 
             var newlineAfterName = true;
-            if (template.UnnamedParameters.Count == 1 || !template.Parameters.Any() && !template.UnnamedParameters.Any())
+            if ((!template.Parameters.Any() && !template.UnnamedParameters.Any()) || template.UnnamedParameters.Count == 1)
             {
                 newlineAfterName = false;
             }
