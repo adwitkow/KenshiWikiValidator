@@ -110,6 +110,7 @@ namespace DialogueDumper
         private Dictionary<string, List<string>> MapAllDialogues(DataItem character, ref List<Dialogue> dialogues)
         {
             var dialogueIdTocharacter = dialogues
+                .Distinct()
                 .ToDictionary(dialogue => dialogue.StringId, _ => new[] { character.Name }
                 .ToList());
             var externalPackages = this.itemRepository
