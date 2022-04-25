@@ -39,11 +39,8 @@ namespace KenshiWikiValidator.OcsProxy.DialogueComponents
 
             var dialogues = this.BuildDialogues(dialogueReferencePairs);
 
-            var resultPackage = new DialoguePackage()
+            var resultPackage = new DialoguePackage(baseItem.Values, baseItem.StringId, baseItem.Name)
             {
-                StringId = baseItem.StringId,
-                Name = baseItem.Name,
-                Properties = baseItem.Values,
                 Dialogues = dialogues,
             };
 
@@ -57,11 +54,8 @@ namespace KenshiWikiValidator.OcsProxy.DialogueComponents
             {
                 var dialogue = this.ConvertDialogue(item, new[] { DialogueEvent.EV_NONE });
 
-                var package = new DialoguePackage()
+                var package = new DialoguePackage($"Virtual-{dialogue.StringId}", $"Virtual-{dialogue.Name}")
                 {
-                    StringId = $"Virtual-{dialogue.StringId}",
-                    Name = $"Virtual-{dialogue.Name}",
-                    Properties = new Dictionary<string, object>(),
                     Dialogues = new[] { dialogue },
                 };
                 packages.Add(package);
@@ -101,12 +95,7 @@ namespace KenshiWikiValidator.OcsProxy.DialogueComponents
             }
             else
             {
-                result = new Dialogue()
-                {
-                    StringId = dialogueItem.StringId,
-                    Name = dialogueItem.Name,
-                    Properties = dialogueItem.Values,
-                };
+                result = new Dialogue(dialogueItem.Values, dialogueItem.StringId, dialogueItem.Name);
 
                 this.dialogueCache.TryAdd(dialogueItem.StringId, result);
 
@@ -134,12 +123,7 @@ namespace KenshiWikiValidator.OcsProxy.DialogueComponents
                 DialogueLine line;
                 if (!this.lineCache.ContainsKey(lineItem.StringId))
                 {
-                    line = new DialogueLine()
-                    {
-                        StringId = lineItem.StringId,
-                        Name = lineItem.Name,
-                        Properties = lineItem.Values,
-                    };
+                    line = new DialogueLine(lineItem.Values, lineItem.StringId, lineItem.Name);
 
                     this.lineCache.TryAdd(line.StringId, line);
 
@@ -249,13 +233,7 @@ namespace KenshiWikiValidator.OcsProxy.DialogueComponents
             foreach (var effectItem in effectItems)
             {
                 var effectName = (DialogueEffectName)effectItem.Values["action name"];
-                var effect = new DialogueEffect()
-                {
-                    StringId = effectItem.StringId,
-                    Name = effectItem.Name,
-                    Properties = effectItem.Values,
-                    EffectName = effectName,
-                };
+                var effect = new DialogueEffect(effectItem.Values, effectItem.StringId, effectItem.Name, effectName);
                 effects.Add(effect);
             }
 
@@ -271,11 +249,8 @@ namespace KenshiWikiValidator.OcsProxy.DialogueComponents
             {
                 var conditionName = (DialogueConditionName)conditionItem.Values["condition name"];
                 var speaker = (DialogueSpeaker)conditionItem.Values["who"];
-                var condition = new DialogueCondition()
+                var condition = new DialogueCondition(conditionItem.Values, conditionItem.StringId, conditionItem.Name)
                 {
-                    StringId = conditionItem.StringId,
-                    Name = conditionItem.Name,
-                    Properties = conditionItem.Values,
                     ConditionName = conditionName,
                     Who = speaker,
                 };

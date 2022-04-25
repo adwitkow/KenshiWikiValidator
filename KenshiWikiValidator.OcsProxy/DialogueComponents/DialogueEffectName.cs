@@ -1,6 +1,5 @@
 ﻿namespace KenshiWikiValidator.OcsProxy.DialogueComponents
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1602:Enumeration items should be documented", Justification = "Maybe later")]
     public enum DialogueEffectName
     {
         DA_NONE,

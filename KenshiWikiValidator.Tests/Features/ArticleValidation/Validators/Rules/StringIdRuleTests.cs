@@ -46,11 +46,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
         [TestMethod]
         public void ShouldFailIfArticleContainsIncorrectStringId()
         {
-            var wakizashi = new Weapon()
-            {
-                Name = "Wakizashi",
-                StringId = "1020-gamedata.base"
-            };
+            var wakizashi = new Weapon("1020-gamedata.base", "Wakizashi");
 
             var itemRepository = new Mock<IItemRepository>();
             itemRepository

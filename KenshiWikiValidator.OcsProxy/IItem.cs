@@ -6,10 +6,10 @@ namespace KenshiWikiValidator.OcsProxy
     {
         public ItemType Type { get; }
 
-        public Dictionary<string, object>? Properties { get; set; }
+        public Dictionary<string, object> Properties { get; }
 
-        public string StringId { get; set; }
+        public string StringId { get; }
 
-        public string Name { get; set; }
+        public string Name { get; }
     }
 }

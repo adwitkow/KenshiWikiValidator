@@ -47,11 +47,8 @@ namespace KenshiWikiValidator.OcsProxy.WeaponComponents
 
             sw.Stop();
 
-            return new Weapon()
+            return new Weapon(baseItem.Values, baseItem.StringId, baseItem.Name)
             {
-                Name = baseItem.Name,
-                Properties = baseItem.Values,
-                StringId = baseItem.StringId,
                 Sources = itemSources,
                 BlueprintSquads = blueprintSquads,
                 UnlockingResearch = unlockingResearch,

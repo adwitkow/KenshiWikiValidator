@@ -40,7 +40,7 @@ namespace DialogueDumper
                 var speakers = CreateSpeakersDictionary(dialogue, validCharacters);
 
                 var allLines = new List<DialogueNode>();
-                this.AddDialogueLines(allLines, null, 1, Enumerable.Empty<DialogueLine>(), dialogue.Lines, speakers, new Stack<DialogueLine>(), character.Name, false);
+                this.AddDialogueLines(allLines, null, 1, dialogue.Lines, speakers, new Stack<DialogueLine>(), character.Name, false);
 
                 var roots = allLines
                     .Where(node => !allLines
@@ -122,7 +122,7 @@ namespace DialogueDumper
                 var referencingItems = this.itemRepository
                     .GetReferencingDataItemsFor(package.StringId);
 
-                string packageOwnerName;
+                string? packageOwnerName;
                 if (referencingItems.Count() > 1)
                 {
                     packageOwnerName = null;
@@ -189,7 +189,7 @@ namespace DialogueDumper
             }
         }
 
-        private bool AddDialogueLines(IList<DialogueNode> allLines, DialogueNode? previousNode, int level, IEnumerable<DialogueLine> previousLines, IEnumerable<DialogueLine> dialogueLines, Dictionary<DialogueSpeaker, IEnumerable<string>> speakersMap, Stack<DialogueLine> dialogueStack, string characterName, bool isSearchedCharactersLine)
+        private bool AddDialogueLines(IList<DialogueNode> allLines, DialogueNode? previousNode, int level, IEnumerable<DialogueLine> dialogueLines, Dictionary<DialogueSpeaker, IEnumerable<string>> speakersMap, Stack<DialogueLine> dialogueStack, string characterName, bool isSearchedCharactersLine)
         {
             var isSearchedCharactersLineResult = false;
             foreach (var line in dialogueLines)
@@ -233,7 +233,7 @@ namespace DialogueDumper
                     allLines.Add(currentNode);
                 }
 
-                var stackContainsCharacter = this.AddDialogueLines(allLines, currentNode, level + 1, dialogueLines, line.Lines, newSpeakersMap, dialogueStack, characterName, isSearchedCharactersLineInternal);
+                var stackContainsCharacter = this.AddDialogueLines(allLines, currentNode, level + 1, line.Lines, newSpeakersMap, dialogueStack, characterName, isSearchedCharactersLineInternal);
 
                 if (stackContainsCharacter || isSearchedCharactersLineInternal)
                 {
@@ -262,8 +262,10 @@ namespace DialogueDumper
             if (line.SpeakerIsCharacter.Any())
             {
                 var characterNames = line.SpeakerIsCharacter.Select(character => character.Name);
-                newSpeakersMap = new Dictionary<DialogueSpeaker, IEnumerable<string>>(speakersMap);
-                newSpeakersMap[line.Speaker] = characterNames;
+                newSpeakersMap = new Dictionary<DialogueSpeaker, IEnumerable<string>>(speakersMap)
+                {
+                    [line.Speaker] = characterNames
+                };
             }
 
             return newSpeakersMap;

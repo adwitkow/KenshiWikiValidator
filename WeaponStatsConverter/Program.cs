@@ -176,15 +176,21 @@ IEnumerable<WeaponStats> ReadWeaponStats(StringReader reader)
             throw new InvalidDataException($"Expected '|-', instead got: '{newRow}'");
         }
 
-        var manufacturer = reader.ReadLine().Replace("|", "").Replace("[", "").Replace("]", "").Trim();
-        var model = reader.ReadLine().Replace("|", "").Trim();
-        var weight = reader.ReadLine().Replace("|", "").Replace("kg", "").Trim();
-        var cuttingDamage = reader.ReadLine().Replace("|", "").Trim();
-        var bluntDamage = reader.ReadLine().Replace("|", "").Trim();
+        var manufacturer = reader.ReadLine()?.Replace("|", "").Replace("[", "").Replace("]", "").Trim();
+        var model = reader.ReadLine()?.Replace("|", "").Trim();
+        var weight = reader.ReadLine()?.Replace("|", "").Replace("kg", "").Trim();
+        var cuttingDamage = reader.ReadLine()?.Replace("|", "").Trim();
+        var bluntDamage = reader.ReadLine()?.Replace("|", "").Trim();
         var line = reader.ReadLine();
-        string attackModifier = null;
-        string defenceModifier = null;
-        string requiredStrength = null;
+        string? attackModifier = null;
+        string? defenceModifier = null;
+        string? requiredStrength = null;
+
+        if (line is null)
+        {
+            throw new InvalidDataException("Article content has ended abruptly during table reading.");
+        }
+
         if (line.Contains("Atk"))
         {
             attackModifier = line.Replace("|", "").Replace("Atk", "").Replace("<nowiki>", "").Replace("</nowiki>", "").Trim();
@@ -197,6 +203,12 @@ IEnumerable<WeaponStats> ReadWeaponStats(StringReader reader)
         if (!line.Contains("N/A"))
         {
             line = reader.ReadLine();
+
+            if (line is null)
+            {
+                throw new InvalidDataException("Article content has ended abruptly during table reading.");
+            }
+
             if (line.StartsWith("|"))
             {
                 requiredStrength = line;
@@ -216,10 +228,10 @@ IEnumerable<WeaponStats> ReadWeaponStats(StringReader reader)
             line = reader.ReadLine();
         }
 
-        requiredStrength = line.Replace("|", "").Replace("Str", "").Replace("<nowiki>", "").Replace("</nowiki>", "").Trim();
+        requiredStrength = line?.Replace("|", "").Replace("Str", "").Replace("<nowiki>", "").Replace("</nowiki>", "").Trim();
 
-        var buyValue = reader.ReadLine().Replace("|", "").Trim();
-        var sellValue = reader.ReadLine().Replace("|", "").Trim();
+        var buyValue = reader.ReadLine()?.Replace("|", "").Trim();
+        var sellValue = reader.ReadLine()?.Replace("|", "").Trim();
 
         results.Add(new WeaponStats()
         {
@@ -256,6 +268,12 @@ bool ValidateHeaders(StringReader reader)
     foreach (var header in headers)
     {
         var line = reader.ReadLine();
+
+        if (line is null)
+        {
+            throw new InvalidDataException("Article content has ended abruptly during header validation.");
+        }
+
         if (!header.Equals(line.Replace("'''", "")))
         {
             return false;

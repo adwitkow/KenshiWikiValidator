@@ -1,4 +1,20 @@
-﻿using KenshiWikiValidator.BaseComponents;
+﻿// This file is part of KenshiWikiValidator project <https://github.com/adwitkow/KenshiWikiValidator>
+// Copyright (C) 2021  Adam Witkowski <https://github.com/adwitkow/>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.OcsProxy;
 using OpenConstructionSet.Models;
 
@@ -25,7 +41,7 @@ public class BlueprintTemplateCreator : ITemplateCreator
 
         var item = this.itemRepository.GetItemByStringId(stringId);
 
-        if (item is null || item is not IResearchable researchable)
+        if (item is not IResearchable researchable)
         {
             throw new InvalidOperationException($"{item.Name} is not researchable.");
         }
@@ -47,7 +63,7 @@ public class BlueprintTemplateCreator : ITemplateCreator
 
             templateProperties.Add("name", item.Name!);
             templateProperties.Add("color", color);
-            templateProperties.Add("description", item.Properties["description"].ToString()!);
+            templateProperties.Add("description", item.Properties["description"].ToString());
             templateProperties.Add("level", "1");
             templateProperties.Add("value", "???");
             templateProperties.Add("prerequisites", string.Empty);
@@ -71,8 +87,8 @@ public class BlueprintTemplateCreator : ITemplateCreator
             {
                 templateProperties.Add("name", research.Name!);
                 templateProperties.Add("color", color);
-                templateProperties.Add("description", research.Values["description"].ToString()!);
-                templateProperties.Add("level", research.Values["level"].ToString()!);
+                templateProperties.Add("description", research.Values["description"].ToString());
+                templateProperties.Add("level", research.Values["level"].ToString());
                 templateProperties.Add("value", string.Format("{0:n0}", cost));
                 templateProperties.Add("prerequisites", string.Join(", ", requirements.Select(req => $"[[{req.Name} (Tech)]]")));
                 templateProperties.Add("sell value", string.Format("{0:n0}", cost / 4));

@@ -3,15 +3,18 @@ using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.OcsProxy.WeaponComponents
 {
-    public class Weapon : IItem, IResearchable
+    public class Weapon : ItemBase, IResearchable
     {
-        public ItemType Type => ItemType.Weapon;
+        public Weapon(Dictionary<string, object> properties, string stringId, string name) : base(properties, stringId, name)
+        {
+            this.BlueprintSquads = Enumerable.Empty<ItemReference>();
+        }
 
-        public Dictionary<string, object>? Properties { get; set; }
+        public Weapon(string stringId, string name) : this(new Dictionary<string, object>(), stringId, name)
+        {
+        }
 
-        public string StringId { get; set; }
-
-        public string Name { get; set; }
+        public override ItemType Type => ItemType.Weapon;
 
         public ItemSources? Sources { get; set; }
 

@@ -1,4 +1,20 @@
-﻿using System.Text.RegularExpressions;
+﻿// This file is part of KenshiWikiValidator project <https://github.com/adwitkow/KenshiWikiValidator>
+// Copyright (C) 2021  Adam Witkowski <https://github.com/adwitkow/>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using System.Text.RegularExpressions;
 using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.OcsProxy;
 
@@ -48,20 +64,24 @@ namespace KenshiWikiValidator.WikiTemplates.Creators
             var humanDamage = FormatMultiplier(item.GetDecimal("human damage mult"), true);
             var animalDamage = FormatMultiplier(item.GetDecimal("animal damage mult"), true);
 
-            var reach = item.Values["length"].ToString()!;
-            var description = item.Values["description"].ToString()!;
-            description = Regex.Replace(description, @"\r\n|\r|\n", "<br />");
+            var reach = item.Values["length"].ToString();
+            var description = item.Values["description"].ToString();
+
+            if (!string.IsNullOrEmpty(description))
+            {
+                description = Regex.Replace(description, @"\r\n|\r|\n", "<br />");
+            }
 
             var skillCategory = (int)item.Values["skill category"];
             var weaponClass = this.skillToClassMap[skillCategory];
 
-            string spiderDamage = null;
-            string smallSpiderDamage = null;
-            string bonedogDamage = null;
-            string skimmerDamage = null;
-            string beakThingDamage = null;
-            string gorilloDamage = null;
-            string leviathanDamage = null;
+            string? spiderDamage = null;
+            string? smallSpiderDamage = null;
+            string? bonedogDamage = null;
+            string? skimmerDamage = null;
+            string? beakThingDamage = null;
+            string? gorilloDamage = null;
+            string? leviathanDamage = null;
 
             var raceDamageReferences = item.GetReferences("race damage");
             foreach (var reference in raceDamageReferences)

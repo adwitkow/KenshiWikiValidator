@@ -8,30 +8,30 @@ namespace WeaponStatsConverter
 {
     internal class WeaponStats
     {
-        public string Class { get; set; }
-        public string Manufacturer { get; set; }
-        public string Grade { get; set; }
-        public string Weight { get; set; }
-        public string CuttingDamage { get; set; }
-        public string BluntDamage { get; set; }
-        public string BloodLoss { get; set; }
-        public string ArmourPenetration { get; set; }
+        public string? Class { get; set; }
+        public string? Manufacturer { get; set; }
+        public string? Grade { get; set; }
+        public string? Weight { get; set; }
+        public string? CuttingDamage { get; set; }
+        public string? BluntDamage { get; set; }
+        public string? BloodLoss { get; set; }
+        public string? ArmourPenetration { get; set; }
         public string? AttackModifier { get; set; }
         public string? DefenceModifier { get; set; }
-        public string IndoorsModifier { get; set; }
-        public string DamageVersusAnimals { get; set; }
-        public string DamageVersusRobots { get; set; }
-        public string DamageVersusHumans { get; set; }
-        public string DamageVersusSpider { get; set; }
-        public string DamageVersusSmallSpider { get; set; }
-        public string DamageVersusBonedog { get; set; }
-        public string DamageVersusSkimmer { get; set; }
-        public string DamageVersusBeakThing { get; set; }
-        public string DamageVersusGorillo { get; set; }
-        public string DamageVersusLeviathan { get; set; }
-        public string RequiredStrength { get; set; }
-        public string BuyValue { get; set; }
-        public string SellValue { get; set; }
+        public string? IndoorsModifier { get; set; }
+        public string? DamageVersusAnimals { get; set; }
+        public string? DamageVersusRobots { get; set; }
+        public string? DamageVersusHumans { get; set; }
+        public string? DamageVersusSpider { get; set; }
+        public string? DamageVersusSmallSpider { get; set; }
+        public string? DamageVersusBonedog { get; set; }
+        public string? DamageVersusSkimmer { get; set; }
+        public string? DamageVersusBeakThing { get; set; }
+        public string? DamageVersusGorillo { get; set; }
+        public string? DamageVersusLeviathan { get; set; }
+        public string? RequiredStrength { get; set; }
+        public string? BuyValue { get; set; }
+        public string? SellValue { get; set; }
 
         public override string ToString()
         {

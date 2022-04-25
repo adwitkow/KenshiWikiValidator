@@ -52,8 +52,9 @@ namespace DialogueDumper
 
         private class ConditionMap
         {
-            private static Dictionary<DialogueConditionName, string> map = new Dictionary<DialogueConditionName, string>()
+            private static readonly Dictionary<DialogueConditionName, string> map = new()
             {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
                 { DialogueConditionName.DC_NONE, null },
                 { DialogueConditionName.DC_RELATIONS, null },
                 { DialogueConditionName.DC_PLAYERMONEY, null },
@@ -135,6 +136,7 @@ namespace DialogueDumper
                 { DialogueConditionName.DC_HAS_AI_CONTRACT, null },
                 { DialogueConditionName.DC_HAS_ROBOT_LIMBS, "has robotic limbs attached" },
                 { DialogueConditionName.DC_END, null },
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             };
 
             public string this[DialogueConditionName conditionName]

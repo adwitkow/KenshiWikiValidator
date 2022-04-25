@@ -46,7 +46,7 @@ foreach (var name in characterNames.Distinct())
     Console.WriteLine(name);
 }
 
-Dictionary<string, ICollection<DialoguePackage>> MapDialoguesToPackages(IEnumerable<DialoguePackage> packages)
+static Dictionary<string, ICollection<DialoguePackage>> MapDialoguesToPackages(IEnumerable<DialoguePackage> packages)
 {
     var result = new Dictionary<string, ICollection<DialoguePackage>>();
     foreach (var package in packages)

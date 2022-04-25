@@ -4,7 +4,10 @@
     {
         public DialogueNode()
         {
+            this.Line = string.Empty;
             this.Children = new List<DialogueNode>();
+            this.Speakers = Enumerable.Empty<string>();
+            this.Conditions = Enumerable.Empty<string>();
         }
 
         public int Level { get; set; }

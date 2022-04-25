@@ -14,18 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace KenshiWikiValidator.WikiSections
-{
-    public class WikiSection
-    {
-        public WikiSection()
-        {
-            this.Header = string.Empty;
-            this.Components = new List<string>();
-        }
+// This file is used by Code Analysis to maintain SuppressMessage
+// attributes that are applied to this project.
+// Project-level suppressions either have no target or are given
+// a specific target and scoped to a namespace, type, member, etc.
+using System.Diagnostics.CodeAnalysis;
 
-        public string Header { get; set; }
-
-        public List<string> Components { get; }
-    }
-}
+[assembly: SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "Regex won't get the colours without the oldschool constructor", Scope = "member", Target = "~F:KenshiWikiValidator.BaseComponents.ArticleValidatorBase.CategoryRegex")]

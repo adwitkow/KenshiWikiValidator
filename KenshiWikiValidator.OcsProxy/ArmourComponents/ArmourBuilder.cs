@@ -57,11 +57,8 @@ namespace KenshiWikiValidator.OcsProxy.ArmourComponents
 
             sw.Stop();
 
-            return new Armour()
+            return new Armour(baseItem.Values, baseItem.StringId, baseItem.Name)
             {
-                Name = baseItem.Name,
-                Properties = new Dictionary<string, object>(baseItem.Values),
-                StringId = baseItem.StringId,
                 Coverage = coverage,
                 CraftedIn = crafting,
                 Sources = itemSources,

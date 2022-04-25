@@ -3,15 +3,23 @@ using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.OcsProxy.DialogueComponents
 {
-    public class Dialogue : IItem
+    public class Dialogue : ItemBase
     {
-        public ItemType Type => ItemType.Dialogue;
+        public Dialogue(Dictionary<string, object> properties, string stringId, string name)
+            : base(properties, stringId, name)
+        {
+            this.Lines = Enumerable.Empty<DialogueLine>();
+            this.Conditions = Enumerable.Empty<DialogueCondition>();
+            this.WorldStates = Enumerable.Empty<DataItem>();
+            this.TargetItems = Enumerable.Empty<DataItem>();
+            this.TargetFactions = Enumerable.Empty<DataItem>();
+            this.TargetRaces = Enumerable.Empty<DataItem>();
+            this.SpeakerIsCharacter = Enumerable.Empty<DataItem>();
+            this.InTownOfFactions = Enumerable.Empty<DataItem>();
+            this.Events = Enumerable.Empty<DialogueEvent>();
+        }
 
-        public Dictionary<string, object>? Properties { get; set; }
-
-        public string StringId { get; set; }
-
-        public string Name { get; set; }
+        public override ItemType Type => ItemType.Dialogue;
 
         public IEnumerable<DialogueLine> Lines { get; set; }
 

@@ -2,15 +2,19 @@
 
 namespace KenshiWikiValidator.OcsProxy.DialogueComponents
 {
-    public class DialoguePackage : IItem
+    public class DialoguePackage : ItemBase
     {
-        public ItemType Type => ItemType.DialoguePackage;
+        public DialoguePackage(string stringId, string name) : this(new Dictionary<string, object>(), stringId, name)
+        {
+        }
 
-        public Dictionary<string, object>? Properties { get; set; }
+        public DialoguePackage(IDictionary<string, object> properties, string stringId, string name)
+            : base(properties, stringId, name)
+        {
+            this.Dialogues = Enumerable.Empty<Dialogue>();
+        }
 
-        public string StringId { get; set; }
-
-        public string Name { get; set; }
+        public override ItemType Type => ItemType.DialoguePackage;
 
         public IEnumerable<Dialogue> Dialogues { get; set; }
     }

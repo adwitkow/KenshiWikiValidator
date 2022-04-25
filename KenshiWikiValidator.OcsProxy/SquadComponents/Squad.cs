@@ -3,15 +3,14 @@ using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.OcsProxy.SquadComponents
 {
-    public class Squad : IItem
+    public class Squad : ItemBase
     {
-        public ItemType Type => ItemType.SquadTemplate;
+        public Squad(Dictionary<string, object> properties, string stringId, string name) : base(properties, stringId, name)
+        {
+            this.Locations = Enumerable.Empty<ItemReference>();
+        }
 
-        public Dictionary<string, object>? Properties { get; set; }
-
-        public string StringId { get; set; }
-
-        public string Name { get; set; }
+        public override ItemType Type => ItemType.SquadTemplate;
 
         public bool IsShop { get; set; }
 

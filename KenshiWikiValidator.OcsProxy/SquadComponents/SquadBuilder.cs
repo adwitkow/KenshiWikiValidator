@@ -19,11 +19,8 @@ namespace KenshiWikiValidator.OcsProxy.SquadComponents
             var isShop = this.IsShop(baseItem);
             var townReferences = this.GetLocations(baseItem);
 
-            var squad = new Squad()
+            var squad = new Squad(baseItem.Values, baseItem.StringId, baseItem.Name)
             {
-                StringId = baseItem.StringId,
-                Name = baseItem.Name,
-                Properties = baseItem.Values,
                 IsShop = isShop,
                 Locations = townReferences,
             };
