@@ -1,0 +1,61 @@
+using OpenConstructionSet.Models;
+
+namespace KenshiWikiValidator.OcsProxy.Models
+{
+    public class MapFeatures : ItemBase
+    {
+        public MapFeatures(string stringId, string name)
+            : base(stringId, name)
+        {
+            this.BirdAttractor = Enumerable.Empty<ItemReference<WildlifeBirds>>();
+        }
+
+        public override ItemType Type => ItemType.MapFeatures;
+
+        [Value("hidden")]
+        public bool? Hidden { get; set; }
+
+        [Value("local coordinates")]
+        public bool? LocalCoordinates { get; set; }
+
+        [Value("distance")]
+        public float? Distance { get; set; }
+
+        [Value("specular mult")]
+        public float? SpecularMult { get; set; }
+
+        [Value("tile X")]
+        public float? TileX { get; set; }
+
+        [Value("tile Y")]
+        public float? TileY { get; set; }
+
+        [Value("alpha threshold")]
+        public int? AlphaThreshold { get; set; }
+
+        [Value("texture mode")]
+        public int? TextureMode { get; set; }
+
+        [Value("collision")]
+        public object? Collision { get; set; }
+
+        [Value("mesh")]
+        public object? Mesh { get; set; }
+
+        [Value("normal map")]
+        public object? NormalMap { get; set; }
+
+        [Value("normal map 2")]
+        public object? NormalMap2 { get; set; }
+
+        [Value("texture map")]
+        public object? TextureMap { get; set; }
+
+        [Value("texture map 2")]
+        public object? TextureMap2 { get; set; }
+
+        [Reference("bird attractor")]
+        public IEnumerable<ItemReference<WildlifeBirds>> BirdAttractor { get; set; }
+
+    }
+}
