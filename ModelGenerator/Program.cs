@@ -25,8 +25,11 @@ if (Directory.Exists(output))
     Directory.Delete(output, true);
 }
 
+Console.WriteLine();
 foreach (var itemTypeGroup in itemsByType)
 {
+    Console.WriteLine($"{{ ItemType.{itemTypeGroup.Key}, (item) => new {itemTypeGroup.Key}(item.StringId, item.Name) }},");
+
     var props = new Dictionary<string, object>();
     var categories = new Dictionary<string, DataItem>();
     foreach (var item in itemTypeGroup)
@@ -68,12 +71,13 @@ namespace KenshiWikiValidator.OcsProxy.NamespaceToFix
     
     foreach (var category in categories)
     {
-        builder.AppendLine($"            this.{ToPropertyName(category.Key)} = Enumerable.Empty<ItemReference<{category.Value.Type}>>");
+        builder.AppendLine($"            this.{ToPropertyName(category.Key)} = Enumerable.Empty<ItemReference<{category.Value.Type}>>();");
     }
 
     builder.AppendLine(@$"        }}
 
-        public override ItemType Type => ItemType.{itemTypeGroup.Key};");
+        public override ItemType Type => ItemType.{itemTypeGroup.Key};
+");
 
     foreach (var prop in props)
     {
@@ -95,6 +99,8 @@ namespace KenshiWikiValidator.OcsProxy.NamespaceToFix
     Directory.CreateDirectory(output);
     File.WriteAllText(Path.Combine(output, $"{itemTypeGroup.Key}.cs"), builder.ToString());
 }
+
+Console.WriteLine("Finished.");
 
 static string ToPropertyName(string valueName)
 {
