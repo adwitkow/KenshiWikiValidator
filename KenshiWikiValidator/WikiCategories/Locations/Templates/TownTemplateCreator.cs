@@ -85,17 +85,21 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
             var zones = this.ExtractZones(items, baseArticleTitle);
 
             var regions = string.Join(", ", zones
-                .Select(region => $"[[{region}]]")
+                .Select(region => region.Equals("Bast") ? $"[[Bast (Zone)|Bast]]" : $"[[{region}]]")
                 .Distinct());
-            var fcsNames = string.Join(", ", items
-                .Where(item => !item.Name.Equals(articleTitle))
+            var fcsNames = items
                 .Select(item => item.Name)
-                .Distinct());
+                .Distinct();
+
+            if (fcsNames.Count() == 1 && fcsNames.Single().Equals(articleTitle))
+            {
+                fcsNames = Enumerable.Empty<string>();
+            }
 
             var properties = new SortedList<string, string?>
             {
                 { "string id", string.Join(", ", stringIds) },
-                { "fcs_name", fcsNames },
+                { "fcs_name", string.Join(", ", fcsNames) },
                 { "type", this.townTypes[items.Min(item => (int)item.Values["type"])] },
                 { "biome", regions },
                 { "image1", this.GetExistingParameter(existingTemplate, "image1") },
@@ -105,7 +109,7 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
                 { "factions", string.Join(", ", factions) },
             };
 
-            if (!fcsNames.All(name => name.Equals(articleTitle)))
+            if (fcsNames.Any(fcsName => !fcsName.Equals(articleTitle)))
             {
                 properties.Add("title1", baseArticleTitle);
             }
