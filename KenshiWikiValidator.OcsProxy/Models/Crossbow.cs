@@ -1,8 +1,9 @@
+using KenshiWikiValidator.OcsProxy.Models.Interfaces;
 using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
-    public class Crossbow : ItemBase
+    public class Crossbow : ItemBase, IDescriptive
     {
         public Crossbow(string stringId, string name)
             : base(stringId, name)

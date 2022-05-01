@@ -1,8 +1,9 @@
+using KenshiWikiValidator.OcsProxy.Models.Interfaces;
 using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
-    public class MapItem : ItemBase
+    public class MapItem : ItemBase, IDescriptive
     {
         public MapItem(string stringId, string name)
             : base(stringId, name)

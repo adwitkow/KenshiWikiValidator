@@ -1,16 +1,17 @@
+using KenshiWikiValidator.OcsProxy.Models.Interfaces;
 using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
-    public class Research : ItemBase
+    public class Research : ItemBase, IDescriptive
     {
         public Research(string stringId, string name)
             : base(stringId, name)
         {
-            this.Cost = Enumerable.Empty<ItemReference<Item>>();
+            this.Costs = Enumerable.Empty<ItemReference<Item>>();
             this.EnableBuildings = Enumerable.Empty<ItemReference<Building>>();
             this.Requirements = Enumerable.Empty<ItemReference<Research>>();
-            this.EnableWeaponType = Enumerable.Empty<ItemReference<Weapon>>();
+            this.EnableWeaponTypes = Enumerable.Empty<ItemReference<Weapon>>();
             this.EnableRobotics = Enumerable.Empty<ItemReference<LimbReplacement>>();
             this.BlueprintItem = Enumerable.Empty<ItemReference<Item>>();
             this.EnableArmour = Enumerable.Empty<ItemReference<Armour>>();
@@ -59,7 +60,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public string? Description { get; set; }
 
         [Reference("cost")]
-        public IEnumerable<ItemReference<Item>> Cost { get; set; }
+        public IEnumerable<ItemReference<Item>> Costs { get; set; }
 
         [Reference("enable buildings")]
         public IEnumerable<ItemReference<Building>> EnableBuildings { get; set; }
@@ -68,7 +69,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<Research>> Requirements { get; set; }
 
         [Reference("enable weapon type")]
-        public IEnumerable<ItemReference<Weapon>> EnableWeaponType { get; set; }
+        public IEnumerable<ItemReference<Weapon>> EnableWeaponTypes { get; set; }
 
         [Reference("enable robotics")]
         public IEnumerable<ItemReference<LimbReplacement>> EnableRobotics { get; set; }
