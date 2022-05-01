@@ -77,6 +77,12 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
             {
                 var stringIds = stringIdValue.Split(',')
                     .Select(id => id.Trim());
+
+                if (!matchingItems.Any())
+                {
+                    matchingItems = stringIds.Select(id => this.itemRepository.GetDataItemByStringId(id)).ToList();
+                }
+
                 foreach (var stringId in stringIds)
                 {
                     var matchingItem = matchingItems.FirstOrDefault(item => item.StringId == stringId);
