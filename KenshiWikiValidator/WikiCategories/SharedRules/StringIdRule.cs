@@ -80,7 +80,7 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
 
                 if (!matchingItems.Any())
                 {
-                    matchingItems = stringIds.Select(id => this.itemRepository.GetDataItemByStringId(id)).ToList();
+                    matchingItems = stringIds.Select(id => this.itemRepository.GetItemByStringId(id)).ToList();
                 }
 
                 foreach (var stringId in stringIds)
@@ -127,16 +127,16 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
                 .SingleOrDefault();
         }
 
-        private List<DataItem> GetMatchingItems(string name)
+        private List<IItem> GetMatchingItems(string name)
         {
-            IEnumerable<DataItem> items;
+            IEnumerable<IItem> items;
             if (this.itemType is null)
             {
-                items = this.itemRepository.GetDataItems();
+                items = this.itemRepository.GetItems();
             }
             else
             {
-                items = this.itemRepository.GetDataItemsByType(this.itemType.Value);
+                items = this.itemRepository.GetItems().Where(item => item.Type == this.itemType.Value);
             }
 
             return items
