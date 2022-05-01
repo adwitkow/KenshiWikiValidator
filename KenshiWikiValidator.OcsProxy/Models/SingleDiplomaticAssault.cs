@@ -10,7 +10,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
             this.Conditions = Enumerable.Empty<ItemReference<DialogAction>>();
             this.Dialogue = Enumerable.Empty<ItemReference<Dialogue>>();
             this.DialogueAnnounce = Enumerable.Empty<ItemReference<Dialogue>>();
-            this.MainSquad = Enumerable.Empty<ItemReference<SquadTemplate>>();
+            this.MainSquad = Enumerable.Empty<ItemReference<Squad>>();
             this.DeliveryAiPackage = Enumerable.Empty<ItemReference<AiPackage>>();
             this.DialogueSquad = Enumerable.Empty<ItemReference<Dialogue>>();
             this.FallbackAiPackage = Enumerable.Empty<ItemReference<AiPackage>>();
@@ -38,7 +38,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<Dialogue>> DialogueAnnounce { get; set; }
 
         [Reference("main squad")]
-        public IEnumerable<ItemReference<SquadTemplate>> MainSquad { get; set; }
+        public IEnumerable<ItemReference<Squad>> MainSquad { get; set; }
 
         [Reference("delivery AI package")]
         public IEnumerable<ItemReference<AiPackage>> DeliveryAiPackage { get; set; }

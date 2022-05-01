@@ -7,7 +7,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public Road(string stringId, string name)
             : base(stringId, name)
         {
-            this.Spawns = Enumerable.Empty<ItemReference<SquadTemplate>>();
+            this.Spawns = Enumerable.Empty<ItemReference<Squad>>();
         }
 
         public override ItemType Type => ItemType.Road;
@@ -34,7 +34,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public object? Imagefile { get; set; }
 
         [Reference("spawns")]
-        public IEnumerable<ItemReference<SquadTemplate>> Spawns { get; set; }
+        public IEnumerable<ItemReference<Squad>> Spawns { get; set; }
 
     }
 }

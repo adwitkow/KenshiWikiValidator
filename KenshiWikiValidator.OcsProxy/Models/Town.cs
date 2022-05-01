@@ -7,15 +7,15 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public Town(string stringId, string name)
             : base(stringId, name)
         {
-            this.BarSquads = Enumerable.Empty<ItemReference<SquadTemplate>>();
+            this.BarSquads = Enumerable.Empty<ItemReference<Squad>>();
             this.Faction = Enumerable.Empty<ItemReference<Faction>>();
             this.OverrideTown = Enumerable.Empty<ItemReference<Town>>();
-            this.Residents = Enumerable.Empty<ItemReference<SquadTemplate>>();
+            this.Residents = Enumerable.Empty<ItemReference<Squad>>();
             this.TradeCulture = Enumerable.Empty<ItemReference<ItemsCulture>>();
             this.Material = Enumerable.Empty<ItemReference<MaterialSpec>>();
-            this.RoamingSquads = Enumerable.Empty<ItemReference<SquadTemplate>>();
+            this.RoamingSquads = Enumerable.Empty<ItemReference<Squad>>();
             this.TradePrices = Enumerable.Empty<ItemReference<Item>>();
-            this.DefaultResident = Enumerable.Empty<ItemReference<SquadTemplate>>();
+            this.DefaultResident = Enumerable.Empty<ItemReference<Squad>>();
             this.DebrisBuilding = Enumerable.Empty<ItemReference<Building>>();
             this.Debris = Enumerable.Empty<ItemReference<NestItem>>();
             this.WorldState = Enumerable.Empty<ItemReference<WorldEventState>>();
@@ -73,7 +73,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public string? UnexploredName { get; set; }
 
         [Reference("bar squads")]
-        public IEnumerable<ItemReference<SquadTemplate>> BarSquads { get; set; }
+        public IEnumerable<ItemReference<Squad>> BarSquads { get; set; }
 
         [Reference("faction")]
         public IEnumerable<ItemReference<Faction>> Faction { get; set; }
@@ -82,7 +82,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<Town>> OverrideTown { get; set; }
 
         [Reference("residents")]
-        public IEnumerable<ItemReference<SquadTemplate>> Residents { get; set; }
+        public IEnumerable<ItemReference<Squad>> Residents { get; set; }
 
         [Reference("trade culture")]
         public IEnumerable<ItemReference<ItemsCulture>> TradeCulture { get; set; }
@@ -91,13 +91,13 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<MaterialSpec>> Material { get; set; }
 
         [Reference("roaming squads")]
-        public IEnumerable<ItemReference<SquadTemplate>> RoamingSquads { get; set; }
+        public IEnumerable<ItemReference<Squad>> RoamingSquads { get; set; }
 
         [Reference("trade prices")]
         public IEnumerable<ItemReference<Item>> TradePrices { get; set; }
 
         [Reference("default resident")]
-        public IEnumerable<ItemReference<SquadTemplate>> DefaultResident { get; set; }
+        public IEnumerable<ItemReference<Squad>> DefaultResident { get; set; }
 
         [Reference("debris building")]
         public IEnumerable<ItemReference<Building>> DebrisBuilding { get; set; }

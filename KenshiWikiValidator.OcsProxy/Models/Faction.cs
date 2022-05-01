@@ -7,22 +7,22 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public Faction(string stringId, string name)
             : base(stringId, name)
         {
-            this.BarSquads = Enumerable.Empty<ItemReference<SquadTemplate>>();
+            this.BarSquads = Enumerable.Empty<ItemReference<Squad>>();
             this.Biomes = Enumerable.Empty<ItemReference<BiomeGroup>>();
             this.BuildingsReplacements = Enumerable.Empty<ItemReference<BuildingsSwap>>();
             this.Campaigns = Enumerable.Empty<ItemReference<FactionCampaign>>();
             this.Color = Enumerable.Empty<ItemReference<ColorData>>();
-            this.DefaultResident = Enumerable.Empty<ItemReference<SquadTemplate>>();
+            this.DefaultResident = Enumerable.Empty<ItemReference<Squad>>();
             this.DialogDefault = Enumerable.Empty<ItemReference<DialoguePackage>>();
             this.Hairstyles = Enumerable.Empty<ItemReference<Attachment>>();
             this.LegalSystem = Enumerable.Empty<ItemReference<Faction>>();
             this.NoGoZones = Enumerable.Empty<ItemReference<BiomeGroup>>();
             this.Races = Enumerable.Empty<ItemReference<Race>>();
             this.Relations = Enumerable.Empty<ItemReference<Faction>>();
-            this.Residents = Enumerable.Empty<ItemReference<SquadTemplate>>();
+            this.Residents = Enumerable.Empty<ItemReference<Squad>>();
             this.SlaveClothing = Enumerable.Empty<ItemReference<Armour>>();
-            this.SquadDefault = Enumerable.Empty<ItemReference<SquadTemplate>>();
-            this.Squads = Enumerable.Empty<ItemReference<SquadTemplate>>();
+            this.SquadDefault = Enumerable.Empty<ItemReference<Squad>>();
+            this.Squads = Enumerable.Empty<ItemReference<Squad>>();
             this.TradeCulture = Enumerable.Empty<ItemReference<ItemsCulture>>();
             this.Coexistence = Enumerable.Empty<ItemReference<Faction>>();
             this.Personality = Enumerable.Empty<ItemReference<Personality>>();
@@ -35,7 +35,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
             this.SpecialSquads = Enumerable.Empty<ItemReference<UniqueSquadTemplate>>();
             this.AiGoals = Enumerable.Empty<ItemReference<AiTask>>();
             this.ItemSpawnsBar = Enumerable.Empty<ItemReference<VendorList>>();
-            this.RoamingSquads = Enumerable.Empty<ItemReference<SquadTemplate>>();
+            this.RoamingSquads = Enumerable.Empty<ItemReference<Squad>>();
             this.AiFallback = Enumerable.Empty<ItemReference<AiPackage>>();
         }
 
@@ -186,7 +186,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public string? Rank7 { get; set; }
 
         [Reference("bar squads")]
-        public IEnumerable<ItemReference<SquadTemplate>> BarSquads { get; set; }
+        public IEnumerable<ItemReference<Squad>> BarSquads { get; set; }
 
         [Reference("biomes")]
         public IEnumerable<ItemReference<BiomeGroup>> Biomes { get; set; }
@@ -201,7 +201,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<ColorData>> Color { get; set; }
 
         [Reference("default resident")]
-        public IEnumerable<ItemReference<SquadTemplate>> DefaultResident { get; set; }
+        public IEnumerable<ItemReference<Squad>> DefaultResident { get; set; }
 
         [Reference("dialog default")]
         public IEnumerable<ItemReference<DialoguePackage>> DialogDefault { get; set; }
@@ -222,16 +222,16 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<Faction>> Relations { get; set; }
 
         [Reference("residents")]
-        public IEnumerable<ItemReference<SquadTemplate>> Residents { get; set; }
+        public IEnumerable<ItemReference<Squad>> Residents { get; set; }
 
         [Reference("slave clothing")]
         public IEnumerable<ItemReference<Armour>> SlaveClothing { get; set; }
 
         [Reference("squad default")]
-        public IEnumerable<ItemReference<SquadTemplate>> SquadDefault { get; set; }
+        public IEnumerable<ItemReference<Squad>> SquadDefault { get; set; }
 
         [Reference("squads")]
-        public IEnumerable<ItemReference<SquadTemplate>> Squads { get; set; }
+        public IEnumerable<ItemReference<Squad>> Squads { get; set; }
 
         [Reference("trade culture")]
         public IEnumerable<ItemReference<ItemsCulture>> TradeCulture { get; set; }
@@ -270,7 +270,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<VendorList>> ItemSpawnsBar { get; set; }
 
         [Reference("roaming squads")]
-        public IEnumerable<ItemReference<SquadTemplate>> RoamingSquads { get; set; }
+        public IEnumerable<ItemReference<Squad>> RoamingSquads { get; set; }
 
         [Reference("AI fallback")]
         public IEnumerable<ItemReference<AiPackage>> AiFallback { get; set; }

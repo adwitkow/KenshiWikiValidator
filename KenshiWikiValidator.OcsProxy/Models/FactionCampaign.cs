@@ -17,7 +17,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
             this.LossTrigger = Enumerable.Empty<ItemReference<FactionCampaign>>();
             this.WorldState = Enumerable.Empty<ItemReference<WorldEventState>>();
             this.FactionOverride = Enumerable.Empty<ItemReference<Faction>>();
-            this.SquadsToUse = Enumerable.Empty<ItemReference<SquadTemplate>>();
+            this.SquadsToUse = Enumerable.Empty<ItemReference<Squad>>();
             this.VictoryTrigger = Enumerable.Empty<ItemReference<FactionCampaign>>();
             this.TriggerPlayerAlly = Enumerable.Empty<ItemReference<FactionCampaign>>();
             this.SpecialLeader = Enumerable.Empty<ItemReference<Character>>();
@@ -112,7 +112,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<Faction>> FactionOverride { get; set; }
 
         [Reference("squads to use")]
-        public IEnumerable<ItemReference<SquadTemplate>> SquadsToUse { get; set; }
+        public IEnumerable<ItemReference<Squad>> SquadsToUse { get; set; }
 
         [Reference("victory trigger")]
         public IEnumerable<ItemReference<FactionCampaign>> VictoryTrigger { get; set; }

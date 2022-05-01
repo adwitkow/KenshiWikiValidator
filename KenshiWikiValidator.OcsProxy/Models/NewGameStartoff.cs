@@ -8,7 +8,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
             : base(stringId, name)
         {
             this.ForcedRaces = Enumerable.Empty<ItemReference<Race>>();
-            this.Squads = Enumerable.Empty<ItemReference<SquadTemplate>>();
+            this.Squads = Enumerable.Empty<ItemReference<Squad>>();
             this.Characters = Enumerable.Empty<ItemReference<Character>>();
             this.Towns = Enumerable.Empty<ItemReference<Town>>();
             this.FactionRelations = Enumerable.Empty<ItemReference<Faction>>();
@@ -42,7 +42,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<Race>> ForcedRaces { get; set; }
 
         [Reference("squad")]
-        public IEnumerable<ItemReference<SquadTemplate>> Squads { get; set; }
+        public IEnumerable<ItemReference<Squad>> Squads { get; set; }
 
         [Reference("squad")]
         public IEnumerable<ItemReference<Character>> Characters { get; set; }

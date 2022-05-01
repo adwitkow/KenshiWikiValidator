@@ -8,7 +8,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
             : base(stringId, name)
         {
             this.Parts = Enumerable.Empty<ItemReference<BuildingPart>>();
-            this.Spawns = Enumerable.Empty<ItemReference<SquadTemplate>>();
+            this.Spawns = Enumerable.Empty<ItemReference<Squad>>();
             this.Construction = Enumerable.Empty<ItemReference<Item>>();
             this.Doors = Enumerable.Empty<ItemReference<Building>>();
             this.Interior = Enumerable.Empty<ItemReference<BuildingPart>>();
@@ -311,7 +311,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<BuildingPart>> Parts { get; set; }
 
         [Reference("spawns")]
-        public IEnumerable<ItemReference<SquadTemplate>> Spawns { get; set; }
+        public IEnumerable<ItemReference<Squad>> Spawns { get; set; }
 
         [Reference("construction")]
         public IEnumerable<ItemReference<Item>> Construction { get; set; }

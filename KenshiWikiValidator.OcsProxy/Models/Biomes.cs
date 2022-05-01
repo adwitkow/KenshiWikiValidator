@@ -10,7 +10,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
             this.Foliage = Enumerable.Empty<ItemReference<FoliageLayer>>();
             this.GroundEffects = Enumerable.Empty<ItemReference<Effect>>();
             this.WaterEffects = Enumerable.Empty<ItemReference<Effect>>();
-            this.HomelessSpawns = Enumerable.Empty<ItemReference<SquadTemplate>>();
+            this.HomelessSpawns = Enumerable.Empty<ItemReference<Squad>>();
             this.Nests = Enumerable.Empty<ItemReference<Town>>();
             this.GroundEffect = Enumerable.Empty<ItemReference<Effect>>();
         }
@@ -240,7 +240,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<Effect>> WaterEffects { get; set; }
 
         [Reference("homeless spawns")]
-        public IEnumerable<ItemReference<SquadTemplate>> HomelessSpawns { get; set; }
+        public IEnumerable<ItemReference<Squad>> HomelessSpawns { get; set; }
 
         [Reference("nests")]
         public IEnumerable<ItemReference<Town>> Nests { get; set; }

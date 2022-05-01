@@ -2,9 +2,9 @@ using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
-    public class SquadTemplate : ItemBase
+    public class Squad : ItemBase
     {
-        public SquadTemplate(string stringId, string name)
+        public Squad(string stringId, string name)
             : base(stringId, name)
         {
             this.AiPackages = Enumerable.Empty<ItemReference<AiPackage>>();
@@ -13,23 +13,23 @@ namespace KenshiWikiValidator.OcsProxy.Models
             this.Personality = Enumerable.Empty<ItemReference<Personality>>();
             this.Vendors = Enumerable.Empty<ItemReference<VendorList>>();
             this.Faction = Enumerable.Empty<ItemReference<Faction>>();
-            this.Squad = Enumerable.Empty<ItemReference<Character>>();
+            this.Characters = Enumerable.Empty<ItemReference<Character>>();
             this.Animals = Enumerable.Empty<ItemReference<AnimalCharacter>>();
             this.DialogLeader = Enumerable.Empty<ItemReference<DialoguePackage>>();
             this.Building = Enumerable.Empty<ItemReference<Building>>();
             this.Squad2 = Enumerable.Empty<ItemReference<Character>>();
             this.DialogSquad = Enumerable.Empty<ItemReference<DialoguePackage>>();
             this.WorldState = Enumerable.Empty<ItemReference<WorldEventState>>();
-            this.Housemates = Enumerable.Empty<ItemReference<SquadTemplate>>();
+            this.Housemates = Enumerable.Empty<ItemReference<Squad>>();
             this.BuildingDislike = Enumerable.Empty<ItemReference<Building>>();
             this.ChoosefromList = Enumerable.Empty<ItemReference<Character>>();
             this.Nest = Enumerable.Empty<ItemReference<Town>>();
             this.RaceOverride = Enumerable.Empty<ItemReference<Race>>();
-            this.Slaves = Enumerable.Empty<ItemReference<SquadTemplate>>();
+            this.Slaves = Enumerable.Empty<ItemReference<Squad>>();
             this.SpecialItems = Enumerable.Empty<ItemReference<Item>>();
             this.SpecialMapItems = Enumerable.Empty<ItemReference<MapItem>>();
             this.DialogAnimal = Enumerable.Empty<ItemReference<DialoguePackage>>();
-            this.Prisoners = Enumerable.Empty<ItemReference<SquadTemplate>>();
+            this.Prisoners = Enumerable.Empty<ItemReference<Squad>>();
         }
 
         public override ItemType Type => ItemType.SquadTemplate;
@@ -158,7 +158,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<Faction>> Faction { get; set; }
 
         [Reference("squad")]
-        public IEnumerable<ItemReference<Character>> Squad { get; set; }
+        public IEnumerable<ItemReference<Character>> Characters { get; set; }
 
         [Reference("animals")]
         public IEnumerable<ItemReference<AnimalCharacter>> Animals { get; set; }
@@ -179,7 +179,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<WorldEventState>> WorldState { get; set; }
 
         [Reference("housemates")]
-        public IEnumerable<ItemReference<SquadTemplate>> Housemates { get; set; }
+        public IEnumerable<ItemReference<Squad>> Housemates { get; set; }
 
         [Reference("building dislike")]
         public IEnumerable<ItemReference<Building>> BuildingDislike { get; set; }
@@ -194,7 +194,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<Race>> RaceOverride { get; set; }
 
         [Reference("slaves")]
-        public IEnumerable<ItemReference<SquadTemplate>> Slaves { get; set; }
+        public IEnumerable<ItemReference<Squad>> Slaves { get; set; }
 
         [Reference("special items")]
         public IEnumerable<ItemReference<Item>> SpecialItems { get; set; }
@@ -206,7 +206,17 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<DialoguePackage>> DialogAnimal { get; set; }
 
         [Reference("prisoners")]
-        public IEnumerable<ItemReference<SquadTemplate>> Prisoners { get; set; }
+        public IEnumerable<ItemReference<Squad>> Prisoners { get; set; }
 
+        public bool IsShop => this.AiPackages
+            .Any(package => package.Item.LeaderAiGoals
+                .Any(goal => "Shopkeeper".Equals(goal.Item.Name)));
+
+        public IEnumerable<Town> GetLocations(IItemRepository repository)
+        {
+            return repository.GetItems<Town>()
+                .Where(town => town.Residents
+                    .Any(resident => resident.Item == this));
+        }
     }
 }

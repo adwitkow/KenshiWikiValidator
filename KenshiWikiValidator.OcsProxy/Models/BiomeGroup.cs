@@ -9,7 +9,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         {
             this.ArrivalDialog = Enumerable.Empty<ItemReference<Dialogue>>();
             this.Resources = Enumerable.Empty<ItemReference<EnvironmentResources>>();
-            this.HomelessSpawns = Enumerable.Empty<ItemReference<SquadTemplate>>();
+            this.HomelessSpawns = Enumerable.Empty<ItemReference<Squad>>();
             this.Nests = Enumerable.Empty<ItemReference<Town>>();
             this.Seasons = Enumerable.Empty<ItemReference<Season>>();
             this.Birds = Enumerable.Empty<ItemReference<WildlifeBirds>>();
@@ -57,7 +57,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<EnvironmentResources>> Resources { get; set; }
 
         [Reference("homeless spawns")]
-        public IEnumerable<ItemReference<SquadTemplate>> HomelessSpawns { get; set; }
+        public IEnumerable<ItemReference<Squad>> HomelessSpawns { get; set; }
 
         [Reference("nests")]
         public IEnumerable<ItemReference<Town>> Nests { get; set; }
