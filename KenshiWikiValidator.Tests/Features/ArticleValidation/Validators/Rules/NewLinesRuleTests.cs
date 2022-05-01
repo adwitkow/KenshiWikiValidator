@@ -1,30 +1,17 @@
 ﻿using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.WikiCategories.SharedRules;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.IO;
-using System.Linq;
 
 namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
 {
     [TestClass]
     public class NewLinesRuleTests
     {
-        private string? incorrectResourceContent;
-        private string? correctResourceContent;
-
-        [TestInitialize]
-        public void Initialize()
-        {
-            this.incorrectResourceContent = File.ReadAllText(@"TestResources\WeaponArticleValidatorIncorrectResource.txt");
-            this.correctResourceContent = File.ReadAllText(@"TestResources\WeaponArticleValidatorCorrectResource.txt");
-        }
-
         [TestMethod]
         public void ShouldCatchSingleLineTemplateSharingLineWithParagraph()
         {
             var rule = new NewLinesRule();
-            var line = this.incorrectResourceContent!.Split(Environment.NewLine).First();
+            var line = "{{Template}}'''Text''' is a description that lorem ipsum why am still writing";
 
             var result = rule.Execute("Wakizashi", line, new ArticleData());
 
@@ -120,28 +107,6 @@ And another line of text";
             var result = rule.Execute("Wakizashi", line, new ArticleData());
 
             Assert.IsFalse(result.Success);
-        }
-
-        [TestMethod]
-        public void ShouldNotSucceedForIncorrectResource()
-        {
-            var rule = new NewLinesRule();
-            var content = this.incorrectResourceContent;
-
-            var result = rule.Execute("Wakizashi", content!, new ArticleData());
-
-            Assert.IsFalse(result.Success);
-        }
-
-        [TestMethod]
-        public void ShouldSucceedForCorrectResource()
-        {
-            var rule = new NewLinesRule();
-            var content = this.correctResourceContent;
-
-            var result = rule.Execute("Wakizashi", content!, new ArticleData());
-
-            Assert.IsTrue(result.Success);
         }
     }
 }
