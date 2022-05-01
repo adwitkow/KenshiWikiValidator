@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using OpenConstructionSet.Data.Models;
 using OpenConstructionSet.Models;
+using System.Collections.Generic;
 using System.IO;
 
 namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
@@ -13,20 +14,11 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
     [TestClass]
     public class StringIdRuleTests
     {
-        private string? incorrectResourceContent;
-        private string? correctResourceContent;
-
-        [TestInitialize]
-        public void Initialize()
-        {
-            this.incorrectResourceContent = File.ReadAllText(@"TestResources\WeaponArticleValidatorIncorrectResource.txt");
-            this.correctResourceContent = File.ReadAllText(@"TestResources\WeaponArticleValidatorCorrectResource.txt");
-        }
-
         [TestMethod]
         public void ShouldSucceedIfArticleContainsCorrectStringId()
         {
             var wakizashi = new DataItem(ItemType.Weapon, 0, "Wakizashi", "1020-gamedata.base");
+            var textToValidate = "{{Weapon|string id = 1020-gamedata.base}}";
 
             var itemRepository = new Mock<IItemRepository>();
             itemRepository
@@ -38,7 +30,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
                 .Setup(v => v.Rules)
                 .Returns(new[] { new StringIdRule(itemRepository.Object, new WikiTitleCache()) });
 
-            var result = validator.Object.Validate("Wakizashi", this.correctResourceContent!);
+            var result = validator.Object.Validate("Wakizashi", textToValidate);
 
             Assert.IsTrue(result.Success);
         }
@@ -47,6 +39,29 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
         public void ShouldFailIfArticleContainsIncorrectStringId()
         {
             var wakizashi = new Weapon("1020-gamedata.base", "Wakizashi");
+            var textToValidate = "{{Weapon|string id = invalidStringId}}";
+
+            var itemRepository = new Mock<IItemRepository>();
+            itemRepository
+                .Setup(repo => repo.GetItems())
+                .Returns(new[] { wakizashi });
+            itemRepository
+                .Setup(repo => repo.GetDataItemByStringId("invalidStringId"))
+                .Throws<KeyNotFoundException>();
+
+            var validator = new Mock<ArticleValidatorBase>();
+            validator
+                .Setup(v => v.Rules)
+                .Returns(new[] { new StringIdRule(itemRepository.Object, new WikiTitleCache()) });
+
+            Assert.ThrowsException<KeyNotFoundException>(() => validator.Object.Validate("Wakizashi", textToValidate));
+        }
+
+        [TestMethod]
+        public void ShouldFailIfStringIdIsMissing()
+        {
+            var wakizashi = new Weapon("1020-gamedata.base", "Wakizashi");
+            var textToValidate = "{{Weapon}}";
 
             var itemRepository = new Mock<IItemRepository>();
             itemRepository
@@ -58,7 +73,7 @@ namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
                 .Setup(v => v.Rules)
                 .Returns(new[] { new StringIdRule(itemRepository.Object, new WikiTitleCache()) });
 
-            var result = validator.Object.Validate("Wakizashi", this.incorrectResourceContent!);
+            var result = validator.Object.Validate("Wakizashi", textToValidate);
 
             Assert.IsFalse(result.Success);
         }
