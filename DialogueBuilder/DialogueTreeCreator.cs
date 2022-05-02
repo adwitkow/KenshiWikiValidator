@@ -9,6 +9,7 @@ namespace DialogueDumper
 {
     internal class DialogueTreeCreator
     {
+        private readonly Stack<DialogueLine> dialogueStack;
         private readonly IItemRepository itemRepository;
         private readonly DialogueNodeFactory dialogueNodeFactory;
 
@@ -17,11 +18,13 @@ namespace DialogueDumper
             this.itemRepository = itemRepository;
 
             this.dialogueNodeFactory = new DialogueNodeFactory();
+            this.dialogueStack = new Stack<DialogueLine>();
         }
 
         public string Create(Character character)
         {
             var results = new List<string>();
+            this.dialogueStack.Clear();
 
             var packages = character.DialoguePackage.Concat(character.DialoguePackagePlayer)
                 .Select(packageRef => packageRef.Item);
@@ -64,7 +67,7 @@ namespace DialogueDumper
 
                 var allLines = new List<DialogueNode>();
                 var lines = dialogue.Lines.Select(lineRef => lineRef.Item);
-                this.AddDialogueLines(allLines, null, 1, lines, speakers, new Stack<DialogueLine>(), character.Name, false);
+                this.AddDialogueLines(allLines, null, 1, lines, speakers, character.Name, false);
 
                 var roots = allLines
                     .Where(node => !allLines
@@ -235,18 +238,18 @@ namespace DialogueDumper
             }
         }
 
-        private bool AddDialogueLines(IList<DialogueNode> allLines, DialogueNode? previousNode, int level, IEnumerable<DialogueLine> dialogueLines, Dictionary<DialogueSpeaker, IEnumerable<string>> speakersMap, Stack<DialogueLine> dialogueStack, string characterName, bool isSearchedCharactersLine)
+        private bool AddDialogueLines(IList<DialogueNode> allLines, DialogueNode? previousNode, int level, IEnumerable<DialogueLine> dialogueLines, Dictionary<DialogueSpeaker, IEnumerable<string>> speakersMap, string characterName, bool isSearchedCharactersLine)
         {
             var isSearchedCharactersLineResult = false;
             foreach (var line in dialogueLines)
             {
                 var isSearchedCharactersLineInternal = false;
-                if (dialogueStack.Contains(line))
+                if (this.dialogueStack.Contains(line))
                 {
                     continue;
                 }
 
-                dialogueStack.Push(line);
+                this.dialogueStack.Push(line);
 
                 var newSpeakersMap = RecreateSpeakersMap(speakersMap, line);
 
@@ -262,7 +265,7 @@ namespace DialogueDumper
                 var currentNode = GetCurrentNode(allLines, previousNode, level, line, newSpeakersMap, isInterjection);
 
                 var lines = line.Lines.Select(lineRef => lineRef.Item);
-                var stackContainsCharacter = this.AddDialogueLines(allLines, currentNode, level + 1, lines, newSpeakersMap, dialogueStack, characterName, isSearchedCharactersLineInternal);
+                var stackContainsCharacter = this.AddDialogueLines(allLines, currentNode, level + 1, lines, newSpeakersMap, characterName, isSearchedCharactersLineInternal);
 
                 if (stackContainsCharacter || isSearchedCharactersLineInternal)
                 {
@@ -274,7 +277,7 @@ namespace DialogueDumper
                     RemoveCurrentNode(allLines, previousNode, lineIdToRemove, currentNode);
                 }
 
-                dialogueStack.Pop();
+                this.dialogueStack.Pop();
             }
 
             return isSearchedCharactersLineResult;
