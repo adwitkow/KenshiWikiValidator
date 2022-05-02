@@ -73,17 +73,17 @@ namespace KenshiWikiValidator.OcsProxy
 
             foreach (var item in contextItems)
             {
-                foreach (var reference in item.ReferenceCategories
+                foreach (var targetId in item.ReferenceCategories
                     .SelectMany(cat => cat.Value)
-                    .Select(pair => pair.Value))
+                    .Select(pair => pair.Value.TargetId))
                 {
-                    if (this.referenceCache.ContainsKey(reference.TargetId))
+                    if (this.referenceCache.ContainsKey(targetId))
                     {
-                        this.referenceCache[reference.TargetId].Add(item);
+                        this.referenceCache[targetId].Add(item);
                     }
                     else
                     {
-                        this.referenceCache.Add(reference.TargetId, new List<DataItem>() { item });
+                        this.referenceCache.Add(targetId, new List<DataItem>() { item });
                     }
                 }
             }
