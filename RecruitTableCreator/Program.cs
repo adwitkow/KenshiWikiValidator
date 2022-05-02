@@ -2,6 +2,7 @@
 
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.DialogueComponents;
+using KenshiWikiValidator.OcsProxy.Models;
 using OpenConstructionSet.Models;
 
 var repository = new ItemRepository();
@@ -12,7 +13,9 @@ var characterNames = new List<string>();
 var packages = repository.GetItems().OfType<DialoguePackage>();
 var dialogueToPackage = MapDialoguesToPackages(packages);
 
-var dialogues = packages.SelectMany(package => package.Dialogues)
+var dialogues = packages
+    .SelectMany(package => package.Dialogs
+        .Select(dialogueRef => dialogueRef.Item))
     .DistinctBy(dialogue => dialogue.StringId);
 
 foreach (var dialogue in dialogues)
@@ -20,7 +23,7 @@ foreach (var dialogue in dialogues)
     var allLines = dialogue.GetAllLines();
     foreach (var line in allLines)
     {
-        if (line.Effects.Any(effect => effect.EffectName == DialogueEffectName.DA_JOIN_SQUAD_WITH_EDIT || effect.EffectName == DialogueEffectName.DA_JOIN_SQUAD_FAST))
+        if (line.Effects.Any(effect => effect.Item.ActionName == DialogueEffect.DA_JOIN_SQUAD_WITH_EDIT || effect.Item.ActionName == DialogueEffect.DA_JOIN_SQUAD_FAST))
         {
             var usedPackages = dialogueToPackage[dialogue.StringId];
 
@@ -51,15 +54,15 @@ static Dictionary<string, ICollection<DialoguePackage>> MapDialoguesToPackages(I
     var result = new Dictionary<string, ICollection<DialoguePackage>>();
     foreach (var package in packages)
     {
-        foreach (var dialogue in package.Dialogues)
+        foreach (var dialogue in package.Dialogs)
         {
-            if (result.ContainsKey(dialogue.StringId))
+            if (result.ContainsKey(dialogue.Item.StringId))
             {
-                result[dialogue.StringId].Add(package);
+                result[dialogue.Item.StringId].Add(package);
             }
             else
             {
-                result.Add(dialogue.StringId, new List<DialoguePackage>()
+                result.Add(dialogue.Item.StringId, new List<DialoguePackage>()
                 {
                     package
                 });
