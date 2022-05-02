@@ -4,6 +4,7 @@ using KenshiWikiValidator.OcsProxy.Models;
 using KenshiWikiValidator.WikiSections;
 using OpenConstructionSet.Data.Models;
 using OpenConstructionSet.Models;
+using System.Linq;
 
 namespace DialogueDumper
 {
@@ -221,12 +222,10 @@ namespace DialogueDumper
             var processedLines = new HashSet<string>();
             while (linesQueue.TryDequeue(out var dequeued))
             {
-                foreach (var line in dequeued.Lines)
+                var dequeuedLines = dequeued.Lines.Where(line => !processedLines.Contains(line.Item.StringId) && !linesQueue.Contains(line.Item));
+                foreach (var line in dequeuedLines)
                 {
-                    if (!processedLines.Contains(line.Item.StringId) && !linesQueue.Contains(line.Item))
-                    {
-                        linesQueue.Enqueue(line.Item);
-                    }
+                    linesQueue.Enqueue(line.Item);
                 }
 
                 processedLines.Add(dequeued.StringId);
