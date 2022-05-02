@@ -21,17 +21,17 @@ using KenshiWikiValidator.WikiCategories.Characters;
 using KenshiWikiValidator.WikiCategories.Locations;
 using KenshiWikiValidator.WikiCategories.TownResidents;
 using KenshiWikiValidator.WikiCategories.Weapons;
-using KenshiWikiValidator.WikiTemplates;
 using WikiClientLibrary.Client;
 using WikiClientLibrary.Generators;
 using WikiClientLibrary.Pages;
 using WikiClientLibrary.Wikia.Sites;
 
+const string WikiApiUrl = "https://kenshi.fandom.com/api.php";
+
 var zoneDataProvider = new ZoneDataProvider();
 await zoneDataProvider.Load();
 
 var itemRepository = new ItemRepository();
-var templateParser = new TemplateParser();
 var wikiTitles = new WikiTitleCache();
 var townResidentValidator = new TownResidentArticleValidator(itemRepository, wikiTitles);
 var validators = new List<IArticleValidator>()
@@ -140,7 +140,7 @@ static void ValidateArticle(WikiPage page, IArticleValidator articleValidator)
 
 static async Task<IEnumerable<WikiPage>> RetrieveArticles(WikiClient client, string category)
 {
-    var site = new WikiaSite(client, "https://kenshi.fandom.com/api.php");
+    var site = new WikiaSite(client, WikiApiUrl);
     await site.Initialization;
 
     var generator = new CategoryMembersGenerator(site)

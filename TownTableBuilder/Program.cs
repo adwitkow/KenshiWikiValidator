@@ -4,7 +4,6 @@ using KenshiWikiValidator.OcsProxy;
 using OpenConstructionSet.Data.Models;
 using OpenConstructionSet.Models;
 
-#pragma warning disable S3776 // Cognitive Complexity of methods should not be too high
 var states = new List<string>() { "dead", "alive", "imprisoned" };
 
 var repository = new ItemRepository();
@@ -161,18 +160,15 @@ string UnwrapWorldStates(DataItem town)
             }
         }
 
-        foreach (var itemPair in playerAllyItems)
+        foreach (var faction in playerAllyItems.Select(itemPair => itemPair.Key.Name))
         {
-            var faction = itemPair.Key;
-            var value = itemPair.Value;
-
             if (stateValue)
             {
-                results.Add($"[[{faction.Name}]] faction is allied to the player");
+                results.Add($"[[{faction}]] faction is allied to the player");
             }
             else
             {
-                results.Add($"[[{faction.Name}]] faction is not allied to the player");
+                results.Add($"[[{faction}]] faction is not allied to the player");
             }
         }
     }
@@ -185,4 +181,3 @@ bool IsBaseTown(DataItem item)
     return !repository.GetReferencingDataItemsFor(item)
         .Any(item => item.Type == ItemType.Town);
 }
-#pragma warning restore S3776 // Cognitive Complexity of methods should not be too high
