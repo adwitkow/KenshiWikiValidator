@@ -6,6 +6,8 @@ using WikiClientLibrary.Generators;
 using WikiClientLibrary.Pages;
 using WikiClientLibrary.Wikia.Sites;
 
+const string WikiApiUrl = "https://kenshi.fandom.com/api.php";
+
 #pragma warning disable S3776 // Cognitive Complexity of methods should not be too high
 var categoriesToIgnore = new string[] { "[[Category:Weapon Types]]", "[[Category:Unique]]" };
 
@@ -32,7 +34,7 @@ if (Directory.Exists("Weapons"))
 Directory.CreateDirectory("Weapons");
 
 using var client = new WikiClient();
-var site = new WikiaSite(client, "https://kenshi.fandom.com/api.php");
+var site = new WikiaSite(client, WikiApiUrl);
 await site.Initialization;
 
 // set both limits to 1 to allow the bug manifest more easily
