@@ -63,7 +63,7 @@ namespace KenshiWikiValidator.WikiCategories.Weapons.Rules
             var costsDictionary = research.Costs.ToDictionary(costRef => costRef.Item, costRef => costRef.Value0);
 
             var buildings = research.EnableBuildings
-                .Select(building => building.Item.Name.Equals("Weapon Smith") ? "Weapon Smithing Bench" : building.Item.Name); // TODO: Apply ArticleData
+                .Select(building => building.Item.Name.Equals("Weapon Smith") ? "Weapon Smithing Bench" : building.Item.Name);
             var items = research.EnableWeaponTypes.Select(weapon => weapon.Item.Name);
             var prerequisites = research.Requirements.Select(tech => $"{tech.Item.Name} (Tech)");
             var requiredFor = this.itemRepository.GetItems<Research>()
