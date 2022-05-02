@@ -4,7 +4,7 @@ namespace KenshiWikiValidator.OcsProxy
 {
     public abstract class ItemBase : IItem
     {
-        public ItemBase(string stringId, string name)
+        protected ItemBase(string stringId, string name)
         {
             this.StringId = stringId;
             this.Name = name;
