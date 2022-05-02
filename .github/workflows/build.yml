@@ -18,6 +18,8 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
+    - name: Install dotnet-coverage tool
+      run: dotnet tool install --global dotnet-coverage
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -56,7 +58,12 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       shell: powershell
       run: |
-        .\.sonar\scanner\dotnet-sonarscanner begin /k:"adwitkow_KenshiWikiValidator" /o:"adwitkow" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+        .\.sonar\scanner\dotnet-sonarscanner begin /k:"adwitkow_KenshiWikiValidator"
+            /o:"adwitkow"
+            /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+            /d:sonar.host.url="https://sonarcloud.io"
+            /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
         dotnet clean
         dotnet build
+        dotnet-coverage collect 'dotnet test' -f xml -o 'coverage.xml'
         .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
