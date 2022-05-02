@@ -6,6 +6,7 @@
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=adwitkow_KenshiWikiValidator&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=adwitkow_KenshiWikiValidator)
 
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=adwitkow_KenshiWikiValidator&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=adwitkow_KenshiWikiValidator)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=adwitkow_KenshiWikiValidator&metric=coverage)](https://sonarcloud.io/summary/new_code?id=adwitkow_KenshiWikiValidator)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=adwitkow_KenshiWikiValidator&metric=bugs)](https://sonarcloud.io/summary/new_code?id=adwitkow_KenshiWikiValidator)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=adwitkow_KenshiWikiValidator&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=adwitkow_KenshiWikiValidator)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=adwitkow_KenshiWikiValidator&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=adwitkow_KenshiWikiValidator)
