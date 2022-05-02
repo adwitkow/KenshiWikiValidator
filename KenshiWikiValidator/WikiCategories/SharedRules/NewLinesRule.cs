@@ -147,7 +147,6 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
                     }
 
                     line = reader.ReadLine();
-                    continue;
                 }
 
                 if (line == null)
