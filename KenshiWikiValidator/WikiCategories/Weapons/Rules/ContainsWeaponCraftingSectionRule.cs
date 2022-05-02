@@ -141,8 +141,8 @@ namespace KenshiWikiValidator.WikiCategories.Weapons.Rules
         private Research? GetUnlockingResearch(Weapon weapon)
         {
             return this.itemRepository.GetItems<Research>()
-                .Where(research => research.EnableWeaponTypes.Any(weaponTypeRef => weaponTypeRef.Item == weapon))
-                .SingleOrDefault();
+                .SingleOrDefault(research => research.EnableWeaponTypes
+                    .Any(weaponTypeRef => weaponTypeRef.Item == weapon));
         }
     }
 }

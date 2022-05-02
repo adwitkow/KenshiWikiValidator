@@ -142,8 +142,8 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
         {
             var items = this.itemRepository.GetItems<Research>();
             return items
-                .Where(research => research.EnableWeaponTypes.Any(weaponTypeRef => weaponTypeRef.Item == item))
-                .SingleOrDefault();
+                .SingleOrDefault(research => research.EnableWeaponTypes
+                    .Any(weaponTypeRef => weaponTypeRef.Item == item));
         }
     }
 }

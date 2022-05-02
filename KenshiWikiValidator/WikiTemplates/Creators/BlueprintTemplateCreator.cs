@@ -126,8 +126,8 @@ public class BlueprintTemplateCreator : ITemplateCreator
     {
         var items = this.itemRepository.GetItems<Research>();
         return items
-            .Where(research => research.EnableWeaponTypes.Any(weaponTypeRef => weaponTypeRef.Item == item))
-            .SingleOrDefault();
+            .SingleOrDefault(research => research.EnableWeaponTypes
+                .Any(weaponTypeRef => weaponTypeRef.Item == item));
     }
 
     private bool HasBlueprints(IItem item)
