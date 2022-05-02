@@ -23,7 +23,7 @@ namespace KenshiWikiValidator.BaseComponents
     {
         private readonly TemplateBuilder templateBuilder;
 
-        public ContainsDetailedTemplateRuleBase()
+        protected ContainsDetailedTemplateRuleBase()
         {
             this.templateBuilder = new TemplateBuilder();
         }

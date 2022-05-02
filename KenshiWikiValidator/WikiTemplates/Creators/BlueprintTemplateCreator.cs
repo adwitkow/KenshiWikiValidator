@@ -16,6 +16,8 @@
 
 using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.OcsProxy;
+using KenshiWikiValidator.OcsProxy.Models;
+using KenshiWikiValidator.OcsProxy.Models.Interfaces;
 using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.WikiTemplates.Creators;
@@ -41,10 +43,7 @@ public class BlueprintTemplateCreator : ITemplateCreator
 
         var item = this.itemRepository.GetItemByStringId(stringId);
 
-        if (item is not IResearchable researchable)
-        {
-            throw new InvalidOperationException($"{item.Name} is not researchable.");
-        }
+        var research = this.GetUnlockingResearch(item);
 
         var color = item.Type switch
         {
@@ -54,16 +53,21 @@ public class BlueprintTemplateCreator : ITemplateCreator
         };
 
         var templateProperties = new SortedList<string, string?>();
-        if (researchable.UnlockingResearch is null)
+        if (research is null)
         {
-            if (!researchable.BlueprintSquads.Any())
+            if (!this.HasBlueprints(item))
             {
                 return null!;
             }
 
+            if (item is not IDescriptive descriptive)
+            {
+                throw new InvalidOperationException("This creator should be called only for items that contain descriptions.");
+            }
+
             templateProperties.Add("name", item.Name!);
             templateProperties.Add("color", color);
-            templateProperties.Add("description", item.Properties["description"].ToString());
+            templateProperties.Add("description", descriptive.Description);
             templateProperties.Add("level", "1");
             templateProperties.Add("value", "???");
             templateProperties.Add("prerequisites", string.Empty);
@@ -72,25 +76,18 @@ public class BlueprintTemplateCreator : ITemplateCreator
         }
         else
         {
-            var research = this.itemRepository.GetDataItemByStringId(researchable.UnlockingResearch.StringId!);
-            int cost = (int)research.Values["money"];
-
-            var requirements = research.GetReferenceItems(this.itemRepository, "requirements");
-            var newItems = research.ReferenceCategories.Values
-                .Where(cat => cat.Key.StartsWith("enable"))
-                .SelectMany(cat => cat.Values)
-                .Select(reference => this.itemRepository.GetDataItemByStringId(reference.TargetId));
-            var costs = research.GetReferences("cost")
-                .ToDictionary(reference => reference, reference => this.itemRepository.GetDataItemByStringId(reference.TargetId));
+            var cost = research.Money;
+            var requirements = research.Requirements;
+            var newItems = this.JoinNewItems(research);
 
             if (cost != 0)
             {
                 templateProperties.Add("name", research.Name!);
                 templateProperties.Add("color", color);
-                templateProperties.Add("description", research.Values["description"].ToString());
-                templateProperties.Add("level", research.Values["level"].ToString());
+                templateProperties.Add("description", research.Description);
+                templateProperties.Add("level", research.Level.GetValueOrDefault().ToString());
                 templateProperties.Add("value", string.Format("{0:n0}", cost));
-                templateProperties.Add("prerequisites", string.Join(", ", requirements.Select(req => $"[[{req.Name} (Tech)]]")));
+                templateProperties.Add("prerequisites", string.Join(", ", requirements.Select(req => $"[[{req.Item.Name} (Tech)]]")));
                 templateProperties.Add("sell value", string.Format("{0:n0}", cost / 4));
                 templateProperties.Add("new items", string.Join(", ", newItems.Select(newItem => $"[[{newItem.Name}]]")));
             }
@@ -103,5 +100,44 @@ public class BlueprintTemplateCreator : ITemplateCreator
         var templateName = "Blueprint";
 
         return new WikiTemplate(templateName, templateProperties);
+    }
+
+    private IEnumerable<IItem> JoinNewItems(Research research)
+    {
+        // Holy crap, this is god damn ugly.
+        return research.EnableArmour
+            .Select(reference => (IItem)reference.Item)
+            .Concat(research.EnableBuildings
+                .Select(reference => (IItem)reference.Item))
+            .Concat(research.EnableCrossbow
+                .Select(reference => (IItem)reference.Item))
+            .Concat(research.EnableItem
+                .Select(reference => (IItem)reference.Item))
+            .Concat(research.EnableRobotics
+                .Select(reference => (IItem)reference.Item))
+            .Concat(research.EnableWeaponModel
+                .Select(reference => (IItem)reference.Item))
+            .Concat(research.EnableWeaponTypes
+                .Select(reference => (IItem)reference.Item));
+    }
+
+    private Research? GetUnlockingResearch(IItem item)
+    {
+        var items = this.itemRepository.GetItems<Research>();
+        return items
+            .SingleOrDefault(research => research.EnableWeaponTypes
+                .Any(weaponTypeRef => weaponTypeRef.Item == item));
+    }
+
+    private bool HasBlueprints(IItem item)
+    {
+        var vendorLists = this.itemRepository.GetItems<VendorList>()
+                .Where(vendor => vendor.ArmourBlueprints.Any(armourBlueprintRef => armourBlueprintRef.Item == item)
+                || vendor.Blueprints.Any(blueprintRef => blueprintRef.Item == item)
+                || vendor.CrossbowBlueprints.Any(crossbowBlueprintRef => crossbowBlueprintRef.Item == item));
+        var squads = this.itemRepository.GetItems<Squad>()
+            .Where(squad => squad.Vendors
+                .Any(vendorRef => vendorLists.Contains(vendorRef.Item)));
+        return squads.Any();
     }
 }

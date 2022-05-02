@@ -1,4 +1,4 @@
-﻿using KenshiWikiValidator.OcsProxy.Builder;
+﻿using KenshiWikiValidator.OcsProxy.Models;
 using OpenConstructionSet;
 using OpenConstructionSet.Data;
 using OpenConstructionSet.Data.Models;
@@ -8,21 +8,19 @@ namespace KenshiWikiValidator.OcsProxy
 {
     public class ItemRepository : IItemRepository
     {
-        private readonly ItemBuilder itemBuilder;
-
         private readonly Dictionary<string, ICollection<DataItem>> referenceCache;
 
         private Dictionary<string, DataItem> dataItemLookup;
-        private Dictionary<string, IItem> itemLookup;
+        private readonly Dictionary<string, IItem> itemLookup;
+        private readonly Dictionary<Type, IEnumerable<IItem>> itemsByType;
 
         public ItemRepository()
         {
             this.dataItemLookup = new Dictionary<string, DataItem>();
             this.itemLookup = new Dictionary<string, IItem>();
+            this.itemsByType = new Dictionary<Type, IEnumerable<IItem>>();
 
             this.referenceCache = new Dictionary<string, ICollection<DataItem>>();
-
-            this.itemBuilder = new ItemBuilder(this);
         }
 
         public string? GameDirectory { get; private set; }
@@ -35,6 +33,23 @@ namespace KenshiWikiValidator.OcsProxy
         public IEnumerable<IItem> GetItems()
         {
             return this.itemLookup.Values;
+        }
+
+        public IEnumerable<T> GetItems<T>() where T : IItem
+        {
+            var success = this.itemsByType.TryGetValue(typeof(T), out var items);
+
+            if (success)
+            {
+                return (IEnumerable<T>)items!;
+            }
+            else
+            {
+                var filtered = this.GetItems().OfType<T>().ToList();
+                this.itemsByType.Add(typeof(T), (IEnumerable<IItem>)filtered);
+
+                return filtered;
+            }
         }
 
         public IEnumerable<DataItem> GetDataItemsByType(ItemType type)
@@ -80,7 +95,6 @@ namespace KenshiWikiValidator.OcsProxy
         {
             var installations = OcsDiscoveryService.Default.DiscoverAllInstallations();
             var installation = installations.Values.First();
-            var baseMods = installation.Data.Mods;
 
             var options = new OcsDataContexOptions(
                 Name: Guid.NewGuid().ToString(),
@@ -93,17 +107,17 @@ namespace KenshiWikiValidator.OcsProxy
 
             foreach (var item in contextItems)
             {
-                foreach (var reference in item.ReferenceCategories
+                foreach (var targetId in item.ReferenceCategories
                     .SelectMany(cat => cat.Value)
-                    .Select(pair => pair.Value))
+                    .Select(pair => pair.Value.TargetId))
                 {
-                    if (this.referenceCache.ContainsKey(reference.TargetId))
+                    if (this.referenceCache.ContainsKey(targetId))
                     {
-                        this.referenceCache[reference.TargetId].Add(item);
+                        this.referenceCache[targetId].Add(item);
                     }
                     else
                     {
-                        this.referenceCache.Add(reference.TargetId, new List<DataItem>() { item });
+                        this.referenceCache.Add(targetId, new List<DataItem>() { item });
                     }
                 }
             }
@@ -112,8 +126,27 @@ namespace KenshiWikiValidator.OcsProxy
 
             this.dataItemLookup = contextItems.ToDictionary(item => item.StringId, item => item);
 
-            var builtItems = this.itemBuilder.BuildItems();
-            this.itemLookup = builtItems.ToDictionary(item => item.StringId!, item => item);
+            var modelConverter = new ItemModelConverter(this);
+            var convertedItems = modelConverter.Convert(contextItems).ToArray();
+
+            // First, we add all the newly created (not yet mapped) items to the lookup dictionary
+            foreach (var (Base, Result) in convertedItems)
+            {
+                this.itemLookup[Base.StringId] = Result;
+            }
+
+            // And now we are able to map all the properties
+            // (since we can resolve the references using the lookup dictionary)
+            // and unfortunately, we have to also update the dictionary with our
+            // mapped items (even though they are based on the same collection)
+            // because dictionaries contain shallow copies of
+            // added objects instead of their references
+            foreach (var convertedPair in convertedItems)
+            {
+                var item = modelConverter.MapProperties(convertedPair);
+
+                this.itemLookup[item.StringId] = item;
+            }
         }
     }
 }

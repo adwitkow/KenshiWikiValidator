@@ -16,7 +16,7 @@
 
 using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.OcsProxy;
-using KenshiWikiValidator.OcsProxy.WeaponComponents;
+using KenshiWikiValidator.OcsProxy.Models;
 using KenshiWikiValidator.WikiSections;
 using KenshiWikiValidator.WikiTemplates.Creators;
 
@@ -40,64 +40,54 @@ namespace KenshiWikiValidator.WikiCategories.Weapons.Rules
             }
 
             var item = this.itemRepository.GetItemByStringId(stringId);
-            var cost = (int)item.Properties["material cost"];
-
-            if (item is null || item is not Weapon weapon)
+            if (item is not Weapon weapon)
             {
                 return null!;
             }
 
+            var cost = weapon.MaterialCost;
+
             var builder = new WikiSectionBuilder()
                 .WithHeader("Crafting");
 
-            if (weapon.UnlockingResearch is null)
+            var research = this.GetUnlockingResearch(weapon);
+
+            if (research is null)
             {
                 builder.WithParagraph("This item cannot be crafted.");
                 return builder;
             }
 
-            var hasBlueprints = weapon.BlueprintSquads.Any();
+            var hasBlueprints = this.HasBlueprints(research);
 
-            if (!hasBlueprints)
+            var costsDictionary = research.Costs.ToDictionary(costRef => costRef.Item, costRef => costRef.Value0);
+
+            var buildings = research.EnableBuildings
+                .Select(building => building.Item.Name.Equals("Weapon Smith") ? "Weapon Smithing Bench" : building.Item.Name);
+            var items = research.EnableWeaponTypes.Select(weapon => weapon.Item.Name);
+            var prerequisites = research.Requirements.Select(tech => $"{tech.Item.Name} (Tech)");
+            var requiredFor = this.itemRepository.GetItems<Research>()
+                .Where(research => research.Requirements
+                    .Any(requirement => requirement.Item == research))
+                .Select(tech => $"{tech.Name} (Tech)");
+
+            var researchInfoTemplateCreator = new ResearchInfoTemplateCreator()
             {
-                var research = this.itemRepository.GetDataItemByStringId(weapon.UnlockingResearch.StringId);
+                Costs = costsDictionary.Select(pair => $"{pair.Value} [[{pair.Key}]]s"),
+                Description = research.Description,
+                NewBuildings = buildings,
+                NewItems = items,
+                Prerequisites = prerequisites,
+                RequiredFor = requiredFor,
+                ResearchName = research.Name,
+                TechLevel = research.Level.GetValueOrDefault(),
+                Time = research.Time.GetValueOrDefault(),
+            };
 
-                var costsDictionary = new Dictionary<string, int>();
-                foreach (var reference in research.GetReferences("cost"))
-                {
-                    var costItem = this.itemRepository.GetDataItemByStringId(reference.TargetId);
-                    costsDictionary.Add(costItem.Name, reference.Value0);
-                }
+            var template = researchInfoTemplateCreator.Generate();
 
-                var buildings = research.GetReferenceItems(this.itemRepository, "enable buildings")
-                    .Select(building => building.Name.Equals("Weapon Smith") ? "Weapon Smithing Bench" : building.Name); // TODO: Apply ArticleData
-                var items = research.GetReferenceItems(this.itemRepository, "enable weapon type")
-                    .Select(weapon => weapon.Name);
-                var prerequisites = research.GetReferenceItems(this.itemRepository, "requirements")
-                    .Select(tech => $"{tech.Name} (Tech)");
-                var requiredFor = this.itemRepository.GetReferencingDataItemsFor(research.StringId)
-                    .Where(tech => tech.GetReferences("requirements")
-                        .Any(reference => reference.TargetId.Equals(research.StringId)))
-                    .Select(tech => $"{tech.Name} (Tech)");
-
-                var researchInfoTemplateCreator = new ResearchInfoTemplateCreator()
-                {
-                    Costs = costsDictionary.Select(pair => $"{pair.Value} [[{pair.Key}]]s"),
-                    Description = research.Values["description"].ToString(),
-                    NewBuildings = buildings,
-                    NewItems = items,
-                    Prerequisites = prerequisites,
-                    RequiredFor = requiredFor,
-                    ResearchName = research.Name,
-                    TechLevel = research.GetInt("level"),
-                    Time = research.GetInt("time"),
-                };
-
-                var template = researchInfoTemplateCreator.Generate();
-
-                builder.WithTemplate(template)
-                    .WithNewline();
-            }
+            builder.WithTemplate(template)
+                .WithNewline();
 
             var craftingListIntro = "This item can be crafted in various qualities using different levels of [[Weapon Smithing Bench]]";
             if (hasBlueprints)
@@ -119,23 +109,40 @@ namespace KenshiWikiValidator.WikiCategories.Weapons.Rules
             };
 
             craftingTemplateCreator.BuildingName = "Weapon Smith I";
-            craftingTemplateCreator.Input1 = ("Iron Plates", cost);
+            craftingTemplateCreator.Input1 = ("Iron Plates", cost.GetValueOrDefault());
 
             builder.WithTemplate(craftingTemplateCreator.Generate());
 
             craftingTemplateCreator.BuildingName = "Weapon Smith II";
-            craftingTemplateCreator.Input1 = ("Iron Plates", cost);
-            craftingTemplateCreator.Input2 = ("Fabrics", cost);
+            craftingTemplateCreator.Input1 = ("Iron Plates", cost.GetValueOrDefault());
+            craftingTemplateCreator.Input2 = ("Fabrics", cost.GetValueOrDefault());
 
             builder.WithTemplate(craftingTemplateCreator.Generate());
 
             craftingTemplateCreator.BuildingName = "Weapon Smith III";
-            craftingTemplateCreator.Input1 = ("Steel Bars", cost);
-            craftingTemplateCreator.Input2 = ("Fabrics", cost);
+            craftingTemplateCreator.Input1 = ("Steel Bars", cost.GetValueOrDefault());
+            craftingTemplateCreator.Input2 = ("Fabrics", cost.GetValueOrDefault());
 
             builder.WithTemplate(craftingTemplateCreator.Generate());
 
             return builder;
+        }
+
+        private bool HasBlueprints(Research research)
+        {
+            var vendorLists = this.itemRepository.GetItems<VendorList>()
+                .Where(vendor => vendor.Blueprints.Any(blueprintRef => blueprintRef.Item == research));
+            var squads = this.itemRepository.GetItems<Squad>()
+                .Where(squad => squad.Vendors
+                    .Any(vendorRef => vendorLists.Contains(vendorRef.Item)));
+            return squads.Any();
+        }
+
+        private Research? GetUnlockingResearch(Weapon weapon)
+        {
+            return this.itemRepository.GetItems<Research>()
+                .SingleOrDefault(research => research.EnableWeaponTypes
+                    .Any(weaponTypeRef => weaponTypeRef.Item == weapon));
         }
     }
 }

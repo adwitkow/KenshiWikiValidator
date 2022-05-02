@@ -1,7 +1,9 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿#pragma warning disable S3776 // Cognitive Complexity of methods should not be too high
+// See https://aka.ms/new-console-template for more information
 
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.DialogueComponents;
+using KenshiWikiValidator.OcsProxy.Models;
 using OpenConstructionSet.Models;
 
 var repository = new ItemRepository();
@@ -12,7 +14,9 @@ var characterNames = new List<string>();
 var packages = repository.GetItems().OfType<DialoguePackage>();
 var dialogueToPackage = MapDialoguesToPackages(packages);
 
-var dialogues = packages.SelectMany(package => package.Dialogues)
+var dialogues = packages
+    .SelectMany(package => package.Dialogs
+        .Select(dialogueRef => dialogueRef.Item))
     .DistinctBy(dialogue => dialogue.StringId);
 
 foreach (var dialogue in dialogues)
@@ -20,21 +24,23 @@ foreach (var dialogue in dialogues)
     var allLines = dialogue.GetAllLines();
     foreach (var line in allLines)
     {
-        if (line.Effects.Any(effect => effect.EffectName == DialogueEffectName.DA_JOIN_SQUAD_WITH_EDIT || effect.EffectName == DialogueEffectName.DA_JOIN_SQUAD_FAST))
+        if (!line.Effects.Any(effect => effect.Item.ActionName == DialogueEffect.DA_JOIN_SQUAD_WITH_EDIT || effect.Item.ActionName == DialogueEffect.DA_JOIN_SQUAD_FAST))
         {
-            var usedPackages = dialogueToPackage[dialogue.StringId];
+            continue;
+        }
 
-            var characters = usedPackages.SelectMany(package => repository.GetReferencingDataItemsFor(package.StringId))
-                .Concat(repository.GetReferencingDataItemsFor(dialogue.StringId))
-                .Where(item => item.Type == ItemType.Character)
-                .Select(item => item.Name)
-                .Distinct()
-                .ToList();
+        var usedPackages = dialogueToPackage[dialogue.StringId];
 
-            foreach (var character in characters)
-            {
-                characterNames.Add($"{character} (Dialogue: {dialogue.Name})");
-            }
+        var characters = usedPackages.SelectMany(package => repository.GetReferencingDataItemsFor(package.StringId))
+            .Concat(repository.GetReferencingDataItemsFor(dialogue.StringId))
+            .Where(item => item.Type == ItemType.Character)
+            .Select(item => item.Name)
+            .Distinct()
+            .ToList();
+
+        foreach (var character in characters)
+        {
+            characterNames.Add($"{character} (Dialogue: {dialogue.Name})");
         }
     }
 }
@@ -51,15 +57,15 @@ static Dictionary<string, ICollection<DialoguePackage>> MapDialoguesToPackages(I
     var result = new Dictionary<string, ICollection<DialoguePackage>>();
     foreach (var package in packages)
     {
-        foreach (var dialogue in package.Dialogues)
+        foreach (var dialogueId in package.Dialogs.Select(dialogue => dialogue.Item.StringId))
         {
-            if (result.ContainsKey(dialogue.StringId))
+            if (result.ContainsKey(dialogueId))
             {
-                result[dialogue.StringId].Add(package);
+                result[dialogueId].Add(package);
             }
             else
             {
-                result.Add(dialogue.StringId, new List<DialoguePackage>()
+                result.Add(dialogueId, new List<DialoguePackage>()
                 {
                     package
                 });
@@ -68,3 +74,4 @@ static Dictionary<string, ICollection<DialoguePackage>> MapDialoguesToPackages(I
     }
     return result;
 }
+#pragma warning restore S3776 // Cognitive Complexity of methods should not be too high

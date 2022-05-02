@@ -55,6 +55,6 @@ namespace KenshiWikiValidator.WikiCategories.Locations
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1313:Parameter names should begin with lower-case letter", Justification = "This is correct for records, IMO.")]
-        private record LocationZoneItem(string Name, string Zone);
+        private sealed record LocationZoneItem(string Name, string Zone);
     }
 }
