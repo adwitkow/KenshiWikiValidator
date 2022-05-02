@@ -1,4 +1,5 @@
 ﻿using KenshiWikiValidator.OcsProxy.DialogueComponents;
+using KenshiWikiValidator.OcsProxy.Models;
 
 namespace DialogueDumper
 {
@@ -13,18 +14,18 @@ namespace DialogueDumper
 
         public DialogueNode Create(DialogueLine line, int level, IEnumerable<string> speakers, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap)
         {
-            var text = line.Properties["text0"].ToString()!;
+            var text = line.Text0;
 
             return new DialogueNode()
             {
                 Level = level,
                 Line = text,
                 Speakers = speakers,
-                Conditions = this.ConvertConditions(line.Conditions, speakerMap),
+                Conditions = this.ConvertConditions(line.Conditions.Select(conditionRef => conditionRef.Item), speakerMap),
             };
         }
 
-        private IEnumerable<string> ConvertConditions(IEnumerable<DialogueCondition> conditions, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap)
+        private IEnumerable<string> ConvertConditions(IEnumerable<DialogAction> conditions, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap)
         {
             var results = new List<string>();
 

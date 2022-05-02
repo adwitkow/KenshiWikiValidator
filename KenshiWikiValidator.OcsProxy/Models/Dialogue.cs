@@ -18,6 +18,31 @@ namespace KenshiWikiValidator.OcsProxy.Models
             this.MyRace = Enumerable.Empty<ItemReference<Race>>();
         }
 
+        public IEnumerable<DialogueLine> GetAllLines()
+        {
+            var lines = this.Lines.Select(lineRef => lineRef.Item);
+            var stack = new Stack<DialogueLine>(lines);
+            var results = new List<DialogueLine>();
+            while (stack.Any())
+            {
+                var next = stack.Pop();
+
+                if (results.Contains(next))
+                {
+                    continue;
+                }
+
+                results.Add(next);
+
+                foreach (var childRef in next.Lines)
+                {
+                    stack.Push(childRef.Item);
+                }
+            }
+
+            return results;
+        }
+
         public override ItemType Type => ItemType.Dialogue;
 
         [Value("for enemies")]
@@ -80,5 +105,9 @@ namespace KenshiWikiValidator.OcsProxy.Models
         [Reference("my race")]
         public IEnumerable<ItemReference<Race>> MyRace { get; set; }
 
+        public override string ToString()
+        {
+            return this.Name;
+        }
     }
 }

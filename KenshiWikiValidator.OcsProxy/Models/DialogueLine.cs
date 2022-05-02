@@ -1,3 +1,4 @@
+using KenshiWikiValidator.OcsProxy.DialogueComponents;
 using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.OcsProxy.Models
@@ -7,6 +8,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public DialogueLine(string stringId, string name)
             : base(stringId, name)
         {
+            this.Text0 = string.Empty;
             this.Unlocks = Enumerable.Empty<ItemReference<Dialogue>>();
             this.Effects = Enumerable.Empty<ItemReference<DialogAction>>();
             this.Lines = Enumerable.Empty<ItemReference<DialogueLine>>();
@@ -52,13 +54,13 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public int? ScoreBonus { get; set; }
 
         [Value("speaker")]
-        public int? Speaker { get; set; }
+        public DialogueSpeaker Speaker { get; set; }
 
         [Value("target is type")]
         public int? TargetIsType { get; set; }
 
         [Value("text0")]
-        public string? Text0 { get; set; }
+        public string Text0 { get; set; }
 
         [Value("text1")]
         public string? Text1 { get; set; }

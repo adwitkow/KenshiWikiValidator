@@ -1,3 +1,4 @@
+using KenshiWikiValidator.OcsProxy.DialogueComponents;
 using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.OcsProxy.Models
@@ -14,7 +15,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public override ItemType Type => ItemType.DialogAction;
 
         [Value("action name")]
-        public int? ActionName { get; set; }
+        public DialogueEffect ActionName { get; set; }
 
         [Value("tag")]
         public int? Tag { get; set; }
@@ -23,10 +24,10 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public object? CompareBy { get; set; }
 
         [Value("condition name")]
-        public int? ConditionName { get; set; }
+        public DialogueCondition ConditionName { get; set; }
 
         [Value("who")]
-        public int? Who { get; set; }
+        public DialogueSpeaker Who { get; set; }
 
         [Value("stringvar")]
         public string? Stringvar { get; set; }

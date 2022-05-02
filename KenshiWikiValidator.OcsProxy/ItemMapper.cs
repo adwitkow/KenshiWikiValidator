@@ -86,6 +86,11 @@ namespace KenshiWikiValidator.OcsProxy
                 conversion = Nullable.GetUnderlyingType(conversion)!;
             }
 
+            if (conversion.IsEnum)
+            {
+                return Enum.ToObject(conversion, value);
+            }
+
             return Convert.ChangeType(value, conversion);
         }
     }

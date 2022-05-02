@@ -1,5 +1,6 @@
 ﻿using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.DialogueComponents;
+using KenshiWikiValidator.OcsProxy.Models;
 using KenshiWikiValidator.WikiSections;
 using OpenConstructionSet.Data.Models;
 using OpenConstructionSet.Models;
@@ -10,37 +11,60 @@ namespace DialogueDumper
     {
         private readonly IItemRepository itemRepository;
         private readonly DialogueNodeFactory dialogueNodeFactory;
-        private readonly DialogueBuilder dialogueBuilder;
 
         public DialogueTreeCreator(IItemRepository itemRepository)
         {
             this.itemRepository = itemRepository;
 
             this.dialogueNodeFactory = new DialogueNodeFactory();
-            this.dialogueBuilder = new DialogueBuilder(itemRepository);
         }
 
-        public string Create(DataItem character)
+        public string Create(Character character)
         {
             var results = new List<string>();
 
-            var packages = character.GetReferenceItems(this.itemRepository, "dialogue package")
-                .Concat(character.GetReferenceItems(this.itemRepository, "dialogue package player"));
+            var packages = character.DialoguePackage.Concat(character.DialoguePackagePlayer)
+                .Select(packageRef => packageRef.Item);
 
-            var dialogues = packages.SelectMany(package => this.dialogueBuilder.Build(package).Dialogues).ToList();
+            var dialogueMap = this.itemRepository.GetItems<DialoguePackage>()
+                .SelectMany(package => package.Dialogs)
+                .ToLookup(dialogueRef => dialogueRef.Item, dialogueRef => dialogueRef);
+
+            var dialogues = packages
+                .SelectMany(package => package.Dialogs
+                    .Select(dialogueRef => dialogueRef.Item))
+                .ToList();
 
             var dialogueIdTocharacter = this.MapAllDialogues(character, ref dialogues);
 
             foreach (var dialogue in dialogues)
             {
+                var dialogueRefs = dialogueMap[dialogue];
+
+                var allEvents = new List<DialogueEvent>();
+                foreach (var dialogueRef in dialogueRefs)
+                {
+                    allEvents.Add((DialogueEvent)dialogueRef.Value0);
+                    allEvents.Add((DialogueEvent)dialogueRef.Value1);
+                    allEvents.Add((DialogueEvent)dialogueRef.Value2);
+                }
+
+                var events = allEvents.Distinct().Except(new[] { DialogueEvent.EV_NONE });
+
+                if (!events.Any())
+                {
+                    events = new[] { DialogueEvent.EV_NONE };
+                }
+
                 var sectionBuilder = new WikiSectionBuilder();
-                sectionBuilder.WithHeader($"{dialogue.Name} ({string.Join(", ", dialogue.Events)})");
+                sectionBuilder.WithHeader($"{dialogue.Name} ({string.Join(", ", events)})");
 
                 var validCharacters = dialogueIdTocharacter[dialogue.StringId];
-                var speakers = CreateSpeakersDictionary(dialogue, validCharacters);
+                var speakers = CreateSpeakersDictionary(events, validCharacters);
 
                 var allLines = new List<DialogueNode>();
-                this.AddDialogueLines(allLines, null, 1, dialogue.Lines, speakers, new Stack<DialogueLine>(), character.Name, false);
+                var lines = dialogue.Lines.Select(lineRef => lineRef.Item);
+                this.AddDialogueLines(allLines, null, 1, lines, speakers, new Stack<DialogueLine>(), character.Name, false);
 
                 var roots = allLines
                     .Where(node => !allLines
@@ -75,7 +99,7 @@ namespace DialogueDumper
             }
         }
 
-        private static Dictionary<DialogueSpeaker, IEnumerable<string>> CreateSpeakersDictionary(Dialogue dialogue, List<string> validCharacters)
+        private static Dictionary<DialogueSpeaker, IEnumerable<string>> CreateSpeakersDictionary(IEnumerable<DialogueEvent> events, List<string> validCharacters)
         {
             IEnumerable<string> mainSpeakers;
             if (validCharacters.Any())
@@ -99,7 +123,7 @@ namespace DialogueDumper
                     { DialogueSpeaker.WholeSquad, new[] { "Whole Squad" } },
                 };
 
-            if (dialogue.Events.Count() == 1 && dialogue.Events.First() == DialogueEvent.EV_PLAYER_TALK_TO_ME)
+            if (events.Count() == 1 && events.First() == DialogueEvent.EV_PLAYER_TALK_TO_ME)
             {
                 speakers[DialogueSpeaker.Target] = new[] { "Player" };
             }
@@ -107,7 +131,7 @@ namespace DialogueDumper
             return speakers;
         }
 
-        private Dictionary<string, List<string>> MapAllDialogues(DataItem character, ref List<Dialogue> dialogues)
+        private Dictionary<string, List<string>> MapAllDialogues(Character character, ref List<Dialogue> dialogues)
         {
             var dialogueIdTocharacter = dialogues
                 .Distinct()
@@ -132,7 +156,8 @@ namespace DialogueDumper
                     packageOwnerName = referencingItems.SingleOrDefault(item => item.Type == ItemType.Character)?.Name;
                 }
 
-                var externalDialogues = package.Dialogues;
+                var externalDialogues = package.Dialogs
+                    .Select(dialogue => dialogue.Item);
                 foreach (var dialogue in externalDialogues)
                 {
                     if (!dialogueIdTocharacter.TryGetValue(dialogue.StringId, out var list))
@@ -146,12 +171,12 @@ namespace DialogueDumper
                         list.Add(packageOwnerName);
                     }
 
-                    if (dialogue.SpeakerIsCharacter.Any())
+                    if (dialogue.IsCharacter.Any())
                     {
-                        dialogueIdTocharacter[dialogue.StringId].Add(dialogue.SpeakerIsCharacter.Single().Name);
+                        dialogueIdTocharacter[dialogue.StringId].Add(dialogue.IsCharacter.Single().Item.Name);
                     }
 
-                    if (dialogue.SpeakerIsCharacter.Any(speaker => speaker.StringId == character.StringId))
+                    if (dialogue.IsCharacter.Any(speaker => speaker.Item.StringId == character.StringId))
                     {
                         dialogues.Add(dialogue);
                         continue;
@@ -161,28 +186,54 @@ namespace DialogueDumper
                 }
             }
 
+            var parentlessDialogues = this.itemRepository
+                .GetItems<Dialogue>()
+                .Except(dialogues);
+            foreach (var dialogue in parentlessDialogues)
+            {
+                if (!dialogueIdTocharacter.TryGetValue(dialogue.StringId, out var list))
+                {
+                    list = new List<string>();
+                    dialogueIdTocharacter.Add(dialogue.StringId, list);
+                }
+
+                if (dialogue.IsCharacter.Any())
+                {
+                    dialogueIdTocharacter[dialogue.StringId].Add(dialogue.IsCharacter.Single().Item.Name);
+                }
+
+                if (dialogue.IsCharacter.Any(speaker => speaker.Item.StringId == character.StringId))
+                {
+                    dialogues.Add(dialogue);
+                    continue;
+                }
+
+                FindSpeakerDialoguesFromLines(character, dialogues, dialogue);
+            }
+
             dialogues = dialogues.Distinct().ToList();
 
             return dialogueIdTocharacter;
         }
 
-        private static void FindSpeakerDialoguesFromLines(DataItem character, List<Dialogue> dialogues, Dialogue dialogue)
+        private static void FindSpeakerDialoguesFromLines(Character character, List<Dialogue> dialogues, Dialogue dialogue)
         {
-            var linesQueue = new Queue<DialogueLine>(dialogue.Lines);
+            var startingLines = dialogue.Lines.Select(lineRef => lineRef.Item);
+            var linesQueue = new Queue<DialogueLine>(startingLines);
             var processedLines = new HashSet<string>();
             while (linesQueue.TryDequeue(out var dequeued))
             {
                 foreach (var line in dequeued.Lines)
                 {
-                    if (!processedLines.Contains(line.StringId) && !linesQueue.Contains(line))
+                    if (!processedLines.Contains(line.Item.StringId) && !linesQueue.Contains(line.Item))
                     {
-                        linesQueue.Enqueue(line);
+                        linesQueue.Enqueue(line.Item);
                     }
                 }
 
                 processedLines.Add(dequeued.StringId);
 
-                if (dequeued.SpeakerIsCharacter.Any(speaker => speaker.StringId == character.StringId))
+                if (dequeued.IsCharacter.Any(speaker => speaker.Item.StringId == character.StringId))
                 {
                     dialogues.Add(dialogue);
                 }
@@ -209,7 +260,7 @@ namespace DialogueDumper
                     isSearchedCharactersLineInternal = true;
                 }
 
-                var text = (string)line.Properties["text0"];
+                var text = line.Text0;
                 var isInterjection = false;
                 var lineIdToRemove = -1;
                 DialogueNode? currentNode;
@@ -233,7 +284,8 @@ namespace DialogueDumper
                     allLines.Add(currentNode);
                 }
 
-                var stackContainsCharacter = this.AddDialogueLines(allLines, currentNode, level + 1, line.Lines, newSpeakersMap, dialogueStack, characterName, isSearchedCharactersLineInternal);
+                var lines = line.Lines.Select(lineRef => lineRef.Item);
+                var stackContainsCharacter = this.AddDialogueLines(allLines, currentNode, level + 1, lines, newSpeakersMap, dialogueStack, characterName, isSearchedCharactersLineInternal);
 
                 if (stackContainsCharacter || isSearchedCharactersLineInternal)
                 {
@@ -259,9 +311,9 @@ namespace DialogueDumper
         private static Dictionary<DialogueSpeaker, IEnumerable<string>> RecreateSpeakersMap(Dictionary<DialogueSpeaker, IEnumerable<string>> speakersMap, DialogueLine line)
         {
             var newSpeakersMap = speakersMap;
-            if (line.SpeakerIsCharacter.Any())
+            if (line.IsCharacter.Any())
             {
-                var characterNames = line.SpeakerIsCharacter.Select(character => character.Name);
+                var characterNames = line.IsCharacter.Select(character => character.Item.Name);
                 newSpeakersMap = new Dictionary<DialogueSpeaker, IEnumerable<string>>(speakersMap)
                 {
                     [line.Speaker] = characterNames

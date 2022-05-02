@@ -2,8 +2,7 @@
 
 using DialogueDumper;
 using KenshiWikiValidator.OcsProxy;
-using KenshiWikiValidator.OcsProxy.DialogueComponents;
-using OpenConstructionSet.Models;
+using KenshiWikiValidator.OcsProxy.Models;
 
 if (Directory.Exists("characters"))
 {
@@ -13,8 +12,7 @@ if (Directory.Exists("characters"))
 var repository = new ItemRepository();
 repository.Load();
 
-var dialogueBuilder = new DialogueBuilder(repository);
-var characters = repository.GetDataItemsByType(ItemType.Character);
+var characters = repository.GetItems<Character>();
 var beep = characters.Single(character => character.Name == "Beep");
 
 var dialogueTreeCreator = new DialogueTreeCreator(repository);
