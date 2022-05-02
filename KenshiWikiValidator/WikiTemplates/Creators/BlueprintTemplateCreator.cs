@@ -79,7 +79,6 @@ public class BlueprintTemplateCreator : ITemplateCreator
             var cost = research.Money;
             var requirements = research.Requirements;
             var newItems = this.JoinNewItems(research);
-            var costs = research.Costs;
 
             if (cost != 0)
             {
