@@ -1,6 +1,4 @@
-﻿#pragma warning disable S3776 // Cognitive Complexity of methods should not be too high
-// See https://aka.ms/new-console-template for more information
-
+﻿// See https://aka.ms/new-console-template for more information
 using KenshiWikiValidator.OcsProxy;
 using OpenConstructionSet.Data.Models;
 using System.Text;
@@ -114,4 +112,3 @@ string ConvertPrimitive(KeyValuePair<string, object> prop)
 {
     return primitives[prop.Value.GetType().Name];
 }
-#pragma warning restore S3776 // Cognitive Complexity of methods should not be too high
