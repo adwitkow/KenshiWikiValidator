@@ -19,6 +19,8 @@ namespace KenshiWikiValidator.OcsProxy
 
         IEnumerable<IItem> GetItems();
 
+        IEnumerable<T> GetItems<T>() where T : IItem;
+
         IEnumerable<DataItem> GetReferencingDataItemsFor(DataItem reference);
 
         IEnumerable<DataItem> GetReferencingDataItemsFor(string itemId);
