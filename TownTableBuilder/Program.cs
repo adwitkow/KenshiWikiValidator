@@ -4,6 +4,7 @@ using KenshiWikiValidator.OcsProxy;
 using OpenConstructionSet.Data.Models;
 using OpenConstructionSet.Models;
 
+#pragma warning disable S3776 // Cognitive Complexity of methods should not be too high
 var states = new List<string>() { "dead", "alive", "imprisoned" };
 
 var repository = new ItemRepository();
@@ -184,3 +185,4 @@ bool IsBaseTown(DataItem item)
     return !repository.GetReferencingDataItemsFor(item)
         .Any(item => item.Type == ItemType.Town);
 }
+#pragma warning restore S3776 // Cognitive Complexity of methods should not be too high

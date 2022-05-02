@@ -6,6 +6,7 @@ using WikiClientLibrary.Generators;
 using WikiClientLibrary.Pages;
 using WikiClientLibrary.Wikia.Sites;
 
+#pragma warning disable S3776 // Cognitive Complexity of methods should not be too high
 var categoriesToIgnore = new string[] { "[[Category:Weapon Types]]", "[[Category:Unique]]" };
 
 var classRegex = new Regex(@"\| ?class ?= ?(?<class>\w+)");
@@ -287,3 +288,4 @@ bool IsIgnoredCategory(string content)
 {
     return categoriesToIgnore.Any(toIgnore => content.Contains(toIgnore));
 }
+#pragma warning restore S3776 // Cognitive Complexity of methods should not be too high
