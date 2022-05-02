@@ -26,6 +26,8 @@ using WikiClientLibrary.Generators;
 using WikiClientLibrary.Pages;
 using WikiClientLibrary.Wikia.Sites;
 
+const string WikiApiUrl = "https://kenshi.fandom.com/api.php";
+
 var zoneDataProvider = new ZoneDataProvider();
 await zoneDataProvider.Load();
 
@@ -138,7 +140,7 @@ static void ValidateArticle(WikiPage page, IArticleValidator articleValidator)
 
 static async Task<IEnumerable<WikiPage>> RetrieveArticles(WikiClient client, string category)
 {
-    var site = new WikiaSite(client, "https://kenshi.fandom.com/api.php");
+    var site = new WikiaSite(client, WikiApiUrl);
     await site.Initialization;
 
     var generator = new CategoryMembersGenerator(site)
