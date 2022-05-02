@@ -160,17 +160,15 @@ string UnwrapWorldStates(DataItem town)
             }
         }
 
-        foreach (var itemPair in playerAllyItems)
+        foreach (var faction in playerAllyItems.Select(itemPair => itemPair.Key.Name))
         {
-            var faction = itemPair.Key;
-
             if (stateValue)
             {
-                results.Add($"[[{faction.Name}]] faction is allied to the player");
+                results.Add($"[[{faction}]] faction is allied to the player");
             }
             else
             {
-                results.Add($"[[{faction.Name}]] faction is not allied to the player");
+                results.Add($"[[{faction}]] faction is not allied to the player");
             }
         }
     }
