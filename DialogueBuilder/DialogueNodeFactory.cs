@@ -51,7 +51,7 @@ namespace DialogueDumper
             return results;
         }
 
-        private class ConditionMap
+        private sealed class ConditionMap
         {
             private static readonly Dictionary<DialogueCondition, string> map = new()
             {
