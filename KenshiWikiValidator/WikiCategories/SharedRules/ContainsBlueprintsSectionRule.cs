@@ -16,8 +16,7 @@
 
 using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.OcsProxy;
-using KenshiWikiValidator.OcsProxy.SharedComponents;
-using KenshiWikiValidator.OcsProxy.SquadComponents;
+using KenshiWikiValidator.OcsProxy.Models;
 using KenshiWikiValidator.WikiSections;
 using KenshiWikiValidator.WikiTemplates;
 using KenshiWikiValidator.WikiTemplates.Creators;
@@ -28,7 +27,6 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
     {
         private readonly IItemRepository itemRepository;
         private readonly WikiTitleCache wikiTitleCache;
-        private readonly BlueprintSquadsConverter blueprintSquadsConverter;
 
         public ContainsBlueprintsSectionRule(
             IItemRepository itemRepository,
@@ -36,8 +34,6 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
         {
             this.itemRepository = itemRepository;
             this.wikiTitleCache = wikiTitleCache;
-
-            this.blueprintSquadsConverter = new BlueprintSquadsConverter(itemRepository);
         }
 
         protected override WikiSectionBuilder CreateSectionBuilder(ArticleData data)
@@ -59,13 +55,9 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
             }
 
             var item = this.itemRepository.GetItemByStringId(stringId);
+            var research = this.GetUnlockingResearch(item);
 
-            if (item is not IResearchable researchable)
-            {
-                throw new InvalidOperationException($"{item.Name} is not researchable.");
-            }
-
-            IEnumerable<Squad> blueprintSquads = this.GetBlueprintSquads(researchable);
+            IEnumerable<Squad> blueprintSquads = this.GetBlueprintSquads(research);
 
             var shopSquads = blueprintSquads.Where(squad => squad.IsShop && this.wikiTitleCache.HasArticle(squad));
             var lootSquads = blueprintSquads.Where(squad => !squad.IsShop);
@@ -109,27 +101,22 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
             return builder;
         }
 
-        private IEnumerable<Squad> GetBlueprintSquads(IResearchable researchable)
+        private IEnumerable<Squad> GetBlueprintSquads(IItem? item)
         {
-            IEnumerable<ItemReference> blueprintSquadReferences;
-            if (researchable.UnlockingResearch is null)
+            if (item is null)
             {
-                if (!researchable.BlueprintSquads.Any())
-                {
-                    return Enumerable.Empty<Squad>();
-                }
-
-                blueprintSquadReferences = researchable.BlueprintSquads;
-            }
-            else
-            {
-                var research = this.itemRepository.GetDataItemByStringId(researchable.UnlockingResearch.StringId!);
-                blueprintSquadReferences = this.blueprintSquadsConverter.Convert(research, "blueprints");
+                return Enumerable.Empty<Squad>();
             }
 
-            return blueprintSquadReferences
-                   .Select(reference => this.itemRepository.GetItemByStringId(reference.StringId))
-                   .Cast<Squad>();
+            var vendorLists = this.itemRepository.GetItems<VendorList>()
+                .Where(vendor => vendor.ArmourBlueprints.Any(armourBlueprintRef => armourBlueprintRef.Item == item)
+                || vendor.Blueprints.Any(blueprintRef => blueprintRef.Item == item)
+                || vendor.CrossbowBlueprints.Any(crossbowBlueprintRef => crossbowBlueprintRef.Item == item));
+            var squads = this.itemRepository.GetItems<Squad>()
+                .Where(squad => squad.Vendors
+                    .Any(vendorRef => vendorLists.Contains(vendorRef.Item)));
+
+            return squads;
         }
 
         private IEnumerable<string> ConvertLocationLinks(IEnumerable<Squad> squads)
@@ -140,7 +127,7 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
 
             var locationReferences = squads
                 .Except(articleSquads)
-                .SelectMany(squad => squad.Locations);
+                .SelectMany(squad => squad.GetLocations(this.itemRepository));
 
             var results = locationReferences
                 .Select(reference => this.wikiTitleCache.HasArticle(reference.StringId)
@@ -149,6 +136,14 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
                 .Concat(squadArticles)
                 .Distinct();
             return results.OrderBy(loc => loc);
+        }
+
+        private Research? GetUnlockingResearch(IItem item)
+        {
+            var items = this.itemRepository.GetItems<Research>();
+            return items
+                .Where(research => research.EnableWeaponTypes.Any(weaponTypeRef => weaponTypeRef.Item == item))
+                .SingleOrDefault();
         }
     }
 }

@@ -33,12 +33,13 @@ await zoneDataProvider.Load();
 var itemRepository = new ItemRepository();
 var templateParser = new TemplateParser();
 var wikiTitles = new WikiTitleCache();
+var townResidentValidator = new TownResidentArticleValidator(itemRepository, wikiTitles);
 var validators = new List<IArticleValidator>()
 {
     new CharactersArticleValidator(itemRepository, wikiTitles),
-    new TownResidentArticleValidator(itemRepository, wikiTitles),
+    townResidentValidator,
     new LocationsArticleValidator(itemRepository, zoneDataProvider, wikiTitles),
-    new WeaponArticleValidator(itemRepository, wikiTitles),
+    new WeaponArticleValidator(itemRepository, wikiTitles, townResidentValidator),
 };
 
 var output = "output";
@@ -71,28 +72,42 @@ if (response < 1 || response > validators.Count)
     return 1;
 }
 
-var validator = validators[response - 1];
-
 using var client = new WikiClient();
+
+var validator = validators[response - 1];
 
 Console.WriteLine();
 Console.ForegroundColor = ConsoleColor.White;
-Console.WriteLine("Retrieving the articles for category: " + validator.CategoryName + "...");
-
-var pages = await RetrieveArticles(client, validator.CategoryName);
-
-Console.WriteLine("Retrieved. Beginning to validate.");
-
-Console.ResetColor();
-
-foreach (var page in pages)
+if (validator.Dependencies.Any())
 {
-    await page.RefreshAsync(PageQueryOptions.FetchContent);
-
-    ValidateArticle(page, validator);
+    Console.WriteLine($"This validator depends on the following categories: {string.Join(", ", validator.Dependencies.Select(dependency => dependency.CategoryName))}");
+    foreach (var dependency in validator.Dependencies)
+    {
+        await RetrieveAndValidate(dependency, client);
+    }
 }
 
+await RetrieveAndValidate(validator, client);
+
 return 0;
+
+static async Task RetrieveAndValidate(IArticleValidator validator, WikiClient client)
+{
+    Console.WriteLine("Retrieving the articles for category: " + validator.CategoryName + "...");
+
+    var pages = await RetrieveArticles(client, validator.CategoryName);
+
+    Console.WriteLine("Retrieved. Beginning to validate.");
+
+    Console.ResetColor();
+
+    foreach (var page in pages)
+    {
+        await page.RefreshAsync(PageQueryOptions.FetchContent);
+
+        ValidateArticle(page, validator);
+    }
+}
 
 static void ValidateArticle(WikiPage page, IArticleValidator articleValidator)
 {

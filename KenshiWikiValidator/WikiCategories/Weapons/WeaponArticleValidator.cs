@@ -17,16 +17,19 @@
 using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.WikiCategories.SharedRules;
+using KenshiWikiValidator.WikiCategories.TownResidents;
 using KenshiWikiValidator.WikiCategories.Weapons.Rules;
 
 namespace KenshiWikiValidator.WikiCategories.Weapons
 {
     public class WeaponArticleValidator : ArticleValidatorBase
     {
+        private readonly List<IArticleValidator> dependencies;
         private readonly IEnumerable<IValidationRule> rules;
 
-        public WeaponArticleValidator(IItemRepository itemRepository, WikiTitleCache wikiTitles)
+        public WeaponArticleValidator(IItemRepository itemRepository, WikiTitleCache wikiTitles, TownResidentArticleValidator townResidentValidator)
         {
+            this.dependencies = new List<IArticleValidator>() { townResidentValidator };
             this.rules = new List<IValidationRule>()
             {
                 new StringIdRule(itemRepository, wikiTitles),
@@ -42,5 +45,7 @@ namespace KenshiWikiValidator.WikiCategories.Weapons
         public override string CategoryName => "Weapons"; // TODO: Should be melee weapons, actually
 
         public override IEnumerable<IValidationRule> Rules => this.rules;
+
+        public override IEnumerable<IArticleValidator> Dependencies => this.dependencies;
     }
 }

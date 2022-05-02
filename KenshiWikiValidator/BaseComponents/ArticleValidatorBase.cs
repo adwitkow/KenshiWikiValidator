@@ -27,6 +27,8 @@ namespace KenshiWikiValidator.BaseComponents
 
         public abstract IEnumerable<IValidationRule> Rules { get; }
 
+        public virtual IEnumerable<IArticleValidator> Dependencies => Enumerable.Empty<IArticleValidator>();
+
         public ArticleValidationResult Validate(string title, string content)
         {
             var result = new ArticleValidationResult();

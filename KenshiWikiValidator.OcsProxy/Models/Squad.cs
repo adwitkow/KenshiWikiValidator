@@ -214,9 +214,19 @@ namespace KenshiWikiValidator.OcsProxy.Models
 
         public IEnumerable<Town> GetLocations(IItemRepository repository)
         {
+            var residentFactions = repository.GetItems<Faction>()
+                .Where(faction => faction.Residents
+                    .Any(resident => resident.Item == this));
+
+            var factionLocations = repository.GetItems<Town>()
+                .Where(town => town.Faction
+                    .Any(factionRef => residentFactions.Contains(factionRef.Item)));
+
             return repository.GetItems<Town>()
                 .Where(town => town.Residents
-                    .Any(resident => resident.Item == this));
+                    .Any(resident => resident.Item == this))
+                .Concat(factionLocations)
+                .ToList();
         }
     }
 }
