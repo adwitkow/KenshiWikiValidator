@@ -1,8 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using System.Text;
 using KenshiWikiValidator.OcsProxy;
 using OpenConstructionSet.Data.Models;
 using OpenConstructionSet.Models;
-using System.Text;
 
 var states = new List<string>() { "dead", "alive", "imprisoned" };
 
