@@ -163,7 +163,6 @@ string UnwrapWorldStates(DataItem town)
         foreach (var itemPair in playerAllyItems)
         {
             var faction = itemPair.Key;
-            var value = itemPair.Value;
 
             if (stateValue)
             {

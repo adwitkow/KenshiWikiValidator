@@ -21,7 +21,6 @@ using KenshiWikiValidator.WikiCategories.Characters;
 using KenshiWikiValidator.WikiCategories.Locations;
 using KenshiWikiValidator.WikiCategories.TownResidents;
 using KenshiWikiValidator.WikiCategories.Weapons;
-using KenshiWikiValidator.WikiTemplates;
 using WikiClientLibrary.Client;
 using WikiClientLibrary.Generators;
 using WikiClientLibrary.Pages;
@@ -31,7 +30,6 @@ var zoneDataProvider = new ZoneDataProvider();
 await zoneDataProvider.Load();
 
 var itemRepository = new ItemRepository();
-var templateParser = new TemplateParser();
 var wikiTitles = new WikiTitleCache();
 var townResidentValidator = new TownResidentArticleValidator(itemRepository, wikiTitles);
 var validators = new List<IArticleValidator>()

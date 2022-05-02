@@ -61,7 +61,6 @@ namespace KenshiWikiValidator.OcsProxy
         {
             var installations = OcsDiscoveryService.Default.DiscoverAllInstallations();
             var installation = installations.Values.First();
-            var baseMods = installation.Data.Mods;
 
             var options = new OcsDataContexOptions(
                 Name: Guid.NewGuid().ToString(),
