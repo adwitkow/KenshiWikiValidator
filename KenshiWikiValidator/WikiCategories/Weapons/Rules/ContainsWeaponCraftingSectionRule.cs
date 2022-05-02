@@ -40,7 +40,7 @@ namespace KenshiWikiValidator.WikiCategories.Weapons.Rules
             }
 
             var item = this.itemRepository.GetItemByStringId(stringId);
-            if (item is null || item is not Weapon weapon)
+            if (item is not Weapon weapon)
             {
                 return null!;
             }
