@@ -75,35 +75,7 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
             var stringIdValue = this.SelectSingleParameter(validTemplates, "string id");
             if (!string.IsNullOrEmpty(stringIdValue))
             {
-                var stringIds = stringIdValue.Split(',')
-                    .Select(id => id.Trim());
-
-                if (!matchingItems.Any())
-                {
-                    matchingItems = stringIds.Select(id => this.itemRepository.GetItemByStringId(id)).ToList();
-                }
-
-                foreach (var stringId in stringIds)
-                {
-                    var matchingItem = matchingItems.FirstOrDefault(item => item.StringId == stringId);
-
-                    if (matchingItem is null)
-                    {
-                        if (matchingItems.Any())
-                        {
-                            result.AddIssue($"String id '{stringId}' is incorrect in the article. Should be corrected to one of the following: [{string.Join(", ", matchingItems.Select(item => item.StringId))}]");
-                        }
-                        else
-                        {
-                            result.AddIssue($"String id '{stringId}' could not be found in the game files.");
-                        }
-                    }
-                    else
-                    {
-                        data.StringIds.Add(stringId);
-                        this.wikiTitleCache.AddTitle(stringId, title);
-                    }
-                }
+                matchingItems = this.CheckStringIds(title, data, result, matchingItems, stringIdValue);
             }
             else
             {
@@ -117,6 +89,41 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
             }
 
             return result;
+        }
+
+        private List<IItem> CheckStringIds(string title, ArticleData data, RuleResult result, List<IItem> matchingItems, string stringIdValue)
+        {
+            var stringIds = stringIdValue.Split(',')
+                .Select(id => id.Trim());
+
+            if (!matchingItems.Any())
+            {
+                matchingItems = stringIds.Select(id => this.itemRepository.GetItemByStringId(id)).ToList();
+            }
+
+            foreach (var stringId in stringIds)
+            {
+                var matchingItem = matchingItems.FirstOrDefault(item => item.StringId == stringId);
+
+                if (matchingItem is null)
+                {
+                    if (matchingItems.Any())
+                    {
+                        result.AddIssue($"String id '{stringId}' is incorrect in the article. Should be corrected to one of the following: [{string.Join(", ", matchingItems.Select(item => item.StringId))}]");
+                    }
+                    else
+                    {
+                        result.AddIssue($"String id '{stringId}' could not be found in the game files.");
+                    }
+                }
+                else
+                {
+                    data.StringIds.Add(stringId);
+                    this.wikiTitleCache.AddTitle(stringId, title);
+                }
+            }
+
+            return matchingItems;
         }
 
         private string? SelectSingleParameter(IEnumerable<WikiTemplate> validTemplates, string parameterName)

@@ -146,43 +146,13 @@ namespace DialogueDumper
                 var referencingItems = this.itemRepository
                     .GetReferencingDataItemsFor(package.StringId);
 
-                string? packageOwnerName;
-                if (referencingItems.Count() > 1)
-                {
-                    packageOwnerName = null;
-                }
-                else
-                {
-                    packageOwnerName = referencingItems.SingleOrDefault(item => item.Type == ItemType.Character)?.Name;
-                }
+                string? packageOwnerName = GetPackageOwnerName(referencingItems);
 
                 var externalDialogues = package.Dialogs
                     .Select(dialogue => dialogue.Item);
                 foreach (var dialogue in externalDialogues)
                 {
-                    if (!dialogueIdTocharacter.TryGetValue(dialogue.StringId, out var list))
-                    {
-                        list = new List<string>();
-                        dialogueIdTocharacter.Add(dialogue.StringId, list);
-                    }
-
-                    if (!string.IsNullOrEmpty(packageOwnerName) && !list.Contains(packageOwnerName))
-                    {
-                        list.Add(packageOwnerName);
-                    }
-
-                    if (dialogue.IsCharacter.Any())
-                    {
-                        dialogueIdTocharacter[dialogue.StringId].Add(dialogue.IsCharacter.Single().Item.Name);
-                    }
-
-                    if (dialogue.IsCharacter.Any(speaker => speaker.Item.StringId == character.StringId))
-                    {
-                        dialogues.Add(dialogue);
-                        continue;
-                    }
-
-                    FindSpeakerDialoguesFromLines(character, dialogues, dialogue);
+                    MapDialogueItem(character, dialogues, dialogueIdTocharacter, dialogue, packageOwnerName);
                 }
             }
 
@@ -191,29 +161,54 @@ namespace DialogueDumper
                 .Except(dialogues);
             foreach (var dialogue in parentlessDialogues)
             {
-                if (!dialogueIdTocharacter.TryGetValue(dialogue.StringId, out var list))
-                {
-                    list = new List<string>();
-                    dialogueIdTocharacter.Add(dialogue.StringId, list);
-                }
-
-                if (dialogue.IsCharacter.Any())
-                {
-                    dialogueIdTocharacter[dialogue.StringId].Add(dialogue.IsCharacter.Single().Item.Name);
-                }
-
-                if (dialogue.IsCharacter.Any(speaker => speaker.Item.StringId == character.StringId))
-                {
-                    dialogues.Add(dialogue);
-                    continue;
-                }
-
-                FindSpeakerDialoguesFromLines(character, dialogues, dialogue);
+                MapDialogueItem(character, dialogues, dialogueIdTocharacter, dialogue, null);
             }
 
             dialogues = dialogues.Distinct().ToList();
 
             return dialogueIdTocharacter;
+        }
+
+        private static string? GetPackageOwnerName(IEnumerable<DataItem> referencingItems)
+        {
+            string? packageOwnerName;
+            if (referencingItems.Count() > 1)
+            {
+                packageOwnerName = null;
+            }
+            else
+            {
+                packageOwnerName = referencingItems.SingleOrDefault(item => item.Type == ItemType.Character)?.Name;
+            }
+
+            return packageOwnerName;
+        }
+
+        private static void MapDialogueItem(Character character, List<Dialogue> dialogues, Dictionary<string, List<string>> dialogueIdTocharacter, Dialogue dialogue, string? packageOwnerName)
+        {
+            if (!dialogueIdTocharacter.TryGetValue(dialogue.StringId, out var list))
+            {
+                list = new List<string>();
+                dialogueIdTocharacter.Add(dialogue.StringId, list);
+            }
+
+            if (!string.IsNullOrEmpty(packageOwnerName) && !list.Contains(packageOwnerName))
+            {
+                list.Add(packageOwnerName);
+            }
+
+            if (dialogue.IsCharacter.Any())
+            {
+                dialogueIdTocharacter[dialogue.StringId].Add(dialogue.IsCharacter.Single().Item.Name);
+            }
+
+            if (dialogue.IsCharacter.Any(speaker => speaker.Item.StringId == character.StringId))
+            {
+                dialogues.Add(dialogue);
+                return;
+            }
+
+            FindSpeakerDialoguesFromLines(character, dialogues, dialogue);
         }
 
         private static void FindSpeakerDialoguesFromLines(Character character, List<Dialogue> dialogues, Dialogue dialogue)
@@ -261,28 +256,10 @@ namespace DialogueDumper
                 }
 
                 var text = line.Text0;
-                var isInterjection = false;
-                var lineIdToRemove = -1;
-                DialogueNode? currentNode;
-                if (string.IsNullOrEmpty(text))
-                {
-                    isInterjection = true;
-                    currentNode = previousNode;
-                }
-                else
-                {
-                    var validSpeakers = newSpeakersMap[line.Speaker];
+                var isInterjection = string.IsNullOrEmpty(text);
+                var lineIdToRemove = isInterjection ? -1 : allLines.Count;
 
-                    lineIdToRemove = allLines.Count;
-                    currentNode = this.dialogueNodeFactory.Create(line, level, validSpeakers, newSpeakersMap);
-
-                    if (previousNode != null)
-                    {
-                        previousNode.Children.Add(currentNode);
-                    }
-
-                    allLines.Add(currentNode);
-                }
+                var currentNode = GetCurrentNode(allLines, previousNode, level, line, newSpeakersMap, isInterjection);
 
                 var lines = line.Lines.Select(lineRef => lineRef.Item);
                 var stackContainsCharacter = this.AddDialogueLines(allLines, currentNode, level + 1, lines, newSpeakersMap, dialogueStack, characterName, isSearchedCharactersLineInternal);
@@ -294,18 +271,53 @@ namespace DialogueDumper
 
                 if (!stackContainsCharacter && !isSearchedCharactersLineInternal && !isInterjection && allLines.Any())
                 {
-                    allLines.RemoveAt(lineIdToRemove);
-
-                    if (previousNode is not null && currentNode is not null)
-                    {
-                        previousNode.Children.Remove(currentNode);
-                    }
+                    RemoveCurrentNode(allLines, previousNode, lineIdToRemove, currentNode);
                 }
 
                 dialogueStack.Pop();
             }
 
             return isSearchedCharactersLineResult;
+        }
+
+        private static void RemoveCurrentNode(IList<DialogueNode> allLines, DialogueNode? previousNode, int lineIdToRemove, DialogueNode? currentNode)
+        {
+            allLines.RemoveAt(lineIdToRemove);
+
+            if (previousNode is not null && currentNode is not null)
+            {
+                previousNode.Children.Remove(currentNode);
+            }
+        }
+
+        private DialogueNode? GetCurrentNode(IList<DialogueNode> allLines, DialogueNode? previousNode, int level, DialogueLine line, Dictionary<DialogueSpeaker, IEnumerable<string>> newSpeakersMap, bool isInterjection)
+        {
+            DialogueNode? currentNode;
+            if (isInterjection)
+            {
+                currentNode = previousNode;
+            }
+            else
+            {
+                currentNode = this.CreateNewNode(allLines, previousNode, level, line, newSpeakersMap);
+            }
+
+            return currentNode;
+        }
+
+        private DialogueNode CreateNewNode(IList<DialogueNode> allLines, DialogueNode? previousNode, int level, DialogueLine line, Dictionary<DialogueSpeaker, IEnumerable<string>> newSpeakersMap)
+        {
+            var validSpeakers = newSpeakersMap[line.Speaker];
+            var currentNode = this.dialogueNodeFactory.Create(line, level, validSpeakers, newSpeakersMap);
+
+            if (previousNode != null)
+            {
+                previousNode.Children.Add(currentNode);
+            }
+
+            allLines.Add(currentNode);
+
+            return currentNode;
         }
 
         private static Dictionary<DialogueSpeaker, IEnumerable<string>> RecreateSpeakersMap(Dictionary<DialogueSpeaker, IEnumerable<string>> speakersMap, DialogueLine line)

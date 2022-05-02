@@ -136,15 +136,7 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
             {
                 while (line != null && !line.Contains(ending))
                 {
-                    if (string.IsNullOrEmpty(line.Trim()))
-                    {
-                        if (wasPreviousLineEmpty)
-                        {
-                            result.AddIssue("There is a double newline");
-                        }
-
-                        wasPreviousLineEmpty = true;
-                    }
+                    wasPreviousLineEmpty = CheckDoubleNewlines(result, line, wasPreviousLineEmpty);
 
                     line = reader.ReadLine();
                 }
@@ -163,6 +155,21 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
             }
 
             return line;
+        }
+
+        private static bool CheckDoubleNewlines(RuleResult result, string line, bool wasPreviousLineEmpty)
+        {
+            if (string.IsNullOrEmpty(line.Trim()))
+            {
+                if (wasPreviousLineEmpty)
+                {
+                    result.AddIssue("There is a double newline");
+                }
+
+                wasPreviousLineEmpty = true;
+            }
+
+            return wasPreviousLineEmpty;
         }
 
         private static bool IsFooter(string line)
