@@ -100,7 +100,7 @@ namespace KenshiWikiValidator.OcsProxy
                 Name: Guid.NewGuid().ToString(),
                 Installation: installation,
                 LoadGameFiles: ModLoadType.Base,
-                LoadEnabledMods: ModLoadType.Base,
+                LoadEnabledMods: ModLoadType.None,
                 ThrowIfMissing: false);
 
             var contextItems = OcsDataContextBuilder.Default.Build(options).Items.Values.ToList();
