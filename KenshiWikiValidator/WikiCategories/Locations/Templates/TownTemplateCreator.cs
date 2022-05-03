@@ -85,7 +85,7 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
             var zones = this.ExtractZones(items, baseArticleTitle);
 
             var regions = string.Join(", ", zones
-                .Select(region => region.Equals("Bast") ? $"[[Bast (Zone)|Bast]]" : $"[[{region}]]")
+                    .Select(region => this.ConvertRegion(region))
                 .Distinct());
             var fcsNames = items
                 .Select(item => item.Name)
@@ -115,6 +115,13 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
             }
 
             return new WikiTemplate(WikiTemplateName, properties);
+        }
+
+        private string ConvertRegion(string region)
+        {
+            var regionExceptions = new[] { "Bast", "Flats Lagoon", "Rebirth" };
+
+            return regionExceptions.Contains(region) ? $"[[{region} (Zone)|{region}]]" : $"[[{region}]]";
         }
 
         private IEnumerable<string> ExtractZones(IEnumerable<OpenConstructionSet.Data.Models.DataItem> items, string baseArticleTitle)
