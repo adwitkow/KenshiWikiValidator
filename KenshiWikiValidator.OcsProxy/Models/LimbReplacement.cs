@@ -3,7 +3,7 @@ using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
-    public class LimbReplacement : ItemBase, IDescriptive
+    public class LimbReplacement : ItemBase, IDescriptive, IAllow2DIconOffset, IAllow3DIconOffset
     {
         public LimbReplacement(string stringId, string name)
             : base(stringId, name)

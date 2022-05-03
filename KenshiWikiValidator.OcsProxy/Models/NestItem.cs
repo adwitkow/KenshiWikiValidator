@@ -3,7 +3,7 @@ using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
-    public class NestItem : ItemBase, IDescriptive
+    public class NestItem : ItemBase, IDescriptive, IAllow2DIconOffset, IAllow3DIconOffset
     {
         public NestItem(string stringId, string name)
             : base(stringId, name)
