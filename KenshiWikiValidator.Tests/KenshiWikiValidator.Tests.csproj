@@ -23,4 +23,8 @@
     <Resource Include="WeaponArticleValidatorTests.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="BaseComponents\" />
+  </ItemGroup>
+
 </Project>

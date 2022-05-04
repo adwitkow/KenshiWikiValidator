@@ -1,8 +1,9 @@
-﻿using KenshiWikiValidator.BaseComponents;
+﻿using System;
+using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.WikiCategories.SharedRules;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
+namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
 {
     [TestClass]
     public class NewLinesRuleTests
@@ -103,6 +104,99 @@ And another line of text";
             var rule = new NewLinesRule();
             var line = @"[[item2]]
 == section ==";
+
+            var result = rule.Execute("Wakizashi", line, new ArticleData());
+
+            Assert.IsFalse(result.Success);
+        }
+
+        [TestMethod]
+        public void ShouldNotSucceedOnNewLineMissingInFooter()
+        {
+            var rule = new NewLinesRule();
+            var line = @"[[Category:Test1]][[Category:Test2]]";
+
+            var result = rule.Execute("Wakizashi", line, new ArticleData());
+
+            Assert.IsFalse(result.Success);
+        }
+
+        [TestMethod]
+        public void ShouldNotSucceedOnTooManyNewLinesInFooter()
+        {
+            var rule = new NewLinesRule();
+            var line = @"[[Category:Test1]]
+
+[[Category:Test2]]";
+
+            var result = rule.Execute("Wakizashi", line, new ArticleData());
+
+            Assert.IsFalse(result.Success);
+        }
+
+        [TestMethod]
+        public void ShouldNotSucceedOnNewlinesInsideTabview()
+        {
+            var rule = new NewLinesRule();
+            var line = @"<tabview>
+content1
+
+content2
+content3
+</tabview>";
+
+            var result = rule.Execute("Wakizashi", line, new ArticleData());
+
+            Assert.IsFalse(result.Success);
+        }
+
+        [TestMethod]
+        public void ShouldThrowOnUnclosedTabview()
+        {
+            var rule = new NewLinesRule();
+            var line = @"<tabview>
+content
+
+content";
+
+            Assert.ThrowsException<InvalidOperationException>(() => rule.Execute("Wakizashi", line, new ArticleData()));
+        }
+
+        [TestMethod]
+        public void ShouldThrowOnUnclosedStructure()
+        {
+            var rule = new NewLinesRule();
+            var line = @"{{Template
+| Content = content
+| test2 = test";
+
+            Assert.ThrowsException<InvalidOperationException>(() => rule.Execute("Wakizashi", line, new ArticleData()));
+        }
+
+        [TestMethod]
+        public void ShouldNotSucceedWhenFooterIncludesUnrelatedThings()
+        {
+            var rule = new NewLinesRule();
+            var line = @"[[Category:Test1]]
+[[Category:Test2]]
+Some content for it to fail
+[[ru:russian nonsense]]";
+
+            var result = rule.Execute("Wakizashi", line, new ArticleData());
+
+            Assert.IsFalse(result.Success);
+        }
+
+        [TestMethod]
+        public void ShouldNotSucceedOnDoubleEmptyLineInStructure()
+        {
+            var rule = new NewLinesRule();
+            var line = @"{{Template
+| Content = content
+
+
+| test2 = test
+}}";
 
             var result = rule.Execute("Wakizashi", line, new ArticleData());
 

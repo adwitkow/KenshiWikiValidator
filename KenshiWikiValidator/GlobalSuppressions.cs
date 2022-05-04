@@ -21,3 +21,4 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "Regex won't get the colours without the oldschool constructor", Scope = "member", Target = "~F:KenshiWikiValidator.BaseComponents.ArticleValidatorBase.CategoryRegex")]
+[assembly: SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "Regex won't get the colours without the oldschool constructor", Scope = "member", Target = "~F:KenshiWikiValidator.WikiCategories.SharedRules.NewLinesRule.FooterRegex")]

@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace KenshiWikiValidator.Tests.Features.WikiTemplates
+namespace KenshiWikiValidator.Tests.WikiTemplates
 {
     [TestClass]
     public class TemplateParserTests

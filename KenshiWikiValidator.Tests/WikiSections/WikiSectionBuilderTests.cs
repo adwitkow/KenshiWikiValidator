@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 
-namespace KenshiWikiValidator.Tests.Features.WikiSections
+namespace KenshiWikiValidator.Tests.WikiSections
 {
     [TestClass]
     public class WikiSectionBuilderTests
