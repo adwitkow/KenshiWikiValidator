@@ -186,5 +186,19 @@ test";
 
             Assert.IsFalse(result.Success);
         }
+
+        [TestMethod]
+        public void ShouldNotSucceedWhenFooterIncludesUnrelatedThings()
+        {
+            var rule = new NewLinesRule();
+            var line = @"[[Category:Test1]]
+[[Category:Test2]]
+Some content for it to fail
+[[ru:russian nonsense]]";
+
+            var result = rule.Execute("Wakizashi", line, new ArticleData());
+
+            Assert.IsFalse(result.Success);
+        }
     }
 }
