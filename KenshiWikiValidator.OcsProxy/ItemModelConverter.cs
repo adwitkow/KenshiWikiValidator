@@ -4,7 +4,7 @@ using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.OcsProxy
 {
-    internal class ItemModelConverter
+    public class ItemModelConverter
     {
         private readonly Dictionary<ItemType, Func<DataItem, IItem>> conversionMap;
         private readonly ItemMapper mapper;
@@ -15,19 +15,19 @@ namespace KenshiWikiValidator.OcsProxy
             this.mapper = new ItemMapper(itemRepository);
         }
 
-        internal IItem Convert(DataItem item)
+        public IItem Convert(DataItem item)
         {
             var result = this.conversionMap[item.Type].Invoke(item);
 
             return result;
         }
 
-        internal IEnumerable<(DataItem Base, IItem Result)> Convert(IEnumerable<DataItem> contextItems)
+        public IEnumerable<(DataItem Base, IItem Result)> Convert(IEnumerable<DataItem> contextItems)
         {
-            return contextItems.Select(baseItem => (baseItem, this.conversionMap[baseItem.Type].Invoke(baseItem)));
+            return contextItems.Select(baseItem => (baseItem, this.Convert(baseItem)));
         }
 
-        internal IItem MapProperties((DataItem Base, IItem Result) convertedPair)
+        public IItem MapProperties((DataItem Base, IItem Result) convertedPair)
         {
             return mapper.Map(convertedPair.Base, convertedPair.Result);
         }
