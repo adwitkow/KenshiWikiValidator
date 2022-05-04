@@ -174,20 +174,6 @@ content";
         }
 
         [TestMethod]
-        public void ShouldNotSucceedOnDoubleNewlines()
-        {
-            var rule = new NewLinesRule();
-            var line = @"Test
-
-
-test";
-
-            var result = rule.Execute("Wakizashi", line, new ArticleData());
-
-            Assert.IsFalse(result.Success);
-        }
-
-        [TestMethod]
         public void ShouldNotSucceedWhenFooterIncludesUnrelatedThings()
         {
             var rule = new NewLinesRule();
