@@ -1,7 +1,7 @@
 ﻿using KenshiWikiValidator.WikiTemplates.Creators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace KenshiWikiValidator.Tests.Features.WikiTemplates.Creators
+namespace KenshiWikiValidator.Tests.WikiTemplates.Creators
 {
     [TestClass]
     public class CraftingWikiTemplateCreatorTests

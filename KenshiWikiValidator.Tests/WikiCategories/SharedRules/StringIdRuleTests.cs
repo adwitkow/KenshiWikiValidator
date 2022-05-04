@@ -8,7 +8,7 @@ using OpenConstructionSet.Data.Models;
 using OpenConstructionSet.Models;
 using System.Collections.Generic;
 
-namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
+namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
 {
     [TestClass]
     public class StringIdRuleTests

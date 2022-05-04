@@ -2,7 +2,7 @@
 using KenshiWikiValidator.WikiCategories.SharedRules;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace KenshiWikiValidator.Tests.Features.ArticleValidation.Validators.Rules
+namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
 {
     [TestClass]
     public class NewLinesRuleTests

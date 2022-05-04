@@ -24,7 +24,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecruitTableCreator", "Recr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KenshiWikiValidator.OcsProxy", "KenshiWikiValidator.OcsProxy\KenshiWikiValidator.OcsProxy.csproj", "{68E101CF-C322-422D-992F-27AEA43F0469}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelGenerator", "ModelGenerator\ModelGenerator.csproj", "{5316269B-5823-464C-974E-D2868A0B57A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelGenerator", "ModelGenerator\ModelGenerator.csproj", "{5316269B-5823-464C-974E-D2868A0B57A6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C1A86232-3B51-4871-9E67-F30E1273DF64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
