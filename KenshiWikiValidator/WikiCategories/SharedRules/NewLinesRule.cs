@@ -157,7 +157,7 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
             {
                 while (line != null && !line.Contains(ending))
                 {
-                    wasPreviousLineEmpty = CheckDoubleNewlines(result, line, wasPreviousLineEmpty);
+                    wasPreviousLineEmpty = CheckDoubleNewlinesInStructure(result, line, wasPreviousLineEmpty);
 
                     line = reader.ReadLine();
                 }
@@ -178,7 +178,7 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
             return line;
         }
 
-        private static bool CheckDoubleNewlines(RuleResult result, string line, bool wasPreviousLineEmpty)
+        private static bool CheckDoubleNewlinesInStructure(RuleResult result, string line, bool wasPreviousLineEmpty)
         {
             if (string.IsNullOrEmpty(line.Trim()))
             {

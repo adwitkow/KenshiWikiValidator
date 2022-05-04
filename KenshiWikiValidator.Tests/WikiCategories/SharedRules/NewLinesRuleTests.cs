@@ -186,5 +186,21 @@ Some content for it to fail
 
             Assert.IsFalse(result.Success);
         }
+
+        [TestMethod]
+        public void ShouldNotSucceedOnDoubleEmptyLineInStructure()
+        {
+            var rule = new NewLinesRule();
+            var line = @"{{Template
+| Content = content
+
+
+| test2 = test
+}}";
+
+            var result = rule.Execute("Wakizashi", line, new ArticleData());
+
+            Assert.IsFalse(result.Success);
+        }
     }
 }
