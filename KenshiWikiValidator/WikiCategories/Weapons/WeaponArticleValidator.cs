@@ -42,7 +42,7 @@ namespace KenshiWikiValidator.WikiCategories.Weapons
             };
         }
 
-        public override string CategoryName => "Weapons"; // TODO: Should be melee weapons, actually
+        public override string CategoryName => "Weapons";
 
         public override IEnumerable<IValidationRule> Rules => this.rules;
 
