@@ -14,12 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Text.RegularExpressions;
 using KenshiWikiValidator.BaseComponents;
 
 namespace KenshiWikiValidator.WikiCategories.SharedRules
 {
     public class NewLinesRule : IValidationRule
     {
+        private static readonly Regex FooterRegex = new Regex(@"\[\[(Category|ru):(.*?)\]\]");
+
         public RuleResult Execute(string title, string content, ArticleData data)
         {
             var result = new RuleResult();
@@ -31,6 +34,12 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
             while (line != null)
             {
                 line = HandleIgnores(result, reader, line);
+
+                if (line is null)
+                {
+                    break;
+                }
+
                 line = HandleTemplates(result, reader, line);
                 line = HandleTables(result, reader, line);
 
@@ -47,25 +56,38 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
             return result;
         }
 
-        private static string HandleIgnores(RuleResult result, StringReader reader, string line)
+        private static string? HandleIgnores(RuleResult result, StringReader reader, string? line)
         {
-            line = HandleMarkup("gallery", result, reader, line);
-            line = HandleMarkup("tabview", result, reader, line);
+            line = HandleMarkup("gallery", result, reader, line!);
+            line = HandleMarkup("tabview", result, reader, line!);
 
-            if (IsFooter(line))
+            var matches = FooterRegex.Matches(line.Trim());
+
+            if (matches.Any())
             {
-                if (!(line.StartsWith("[[") && line.EndsWith("]]")))
+                while (line is not null)
                 {
-                    result.AddIssue("Not enough newlines among categories/language links");
-                }
+                    matches = FooterRegex.Matches(line.Trim());
 
-                if (string.IsNullOrEmpty(line))
-                {
-                    result.AddIssue("Empty lines among categories/language links");
+                    if (matches.Count > 1)
+                    {
+                        result.AddIssue("Not enough newlines among categories/language links");
+                    }
+
+                    if (string.IsNullOrEmpty(line))
+                    {
+                        result.AddIssue("Empty lines among categories/language links");
+                    }
+                    else if (!matches.Any())
+                    {
+                        result.AddIssue("Footer consists of things that are not only categories and language links");
+                    }
+
+                    line = reader.ReadLine();
                 }
             }
 
-            return line!;
+            return line;
         }
 
         private static string HandleMarkup(string markupName, RuleResult result, StringReader reader, string line)
@@ -83,7 +105,7 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
 
                     if (nextLine is null)
                     {
-                        throw new InvalidDataException("Article content has ended abruptly during markup reading.");
+                        throw new InvalidOperationException("Article content has ended abruptly during markup reading.");
                     }
 
                     line = nextLine;
@@ -106,7 +128,6 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
             else
             {
                 if (!wasPreviousLineEmpty
-                    && !IsFooter(previousLine)
                     && !(line.StartsWith("*")
                     || line.StartsWith("__")
                     || previousLine.StartsWith("=")
@@ -143,7 +164,7 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
 
                 if (line == null)
                 {
-                    return line!;
+                    throw new InvalidOperationException("Article content has ended abruptly during structure reading.");
                 }
 
                 var indexOfTemplateStart = line.IndexOf(opening);
@@ -170,12 +191,6 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
             }
 
             return wasPreviousLineEmpty;
-        }
-
-        private static bool IsFooter(string line)
-        {
-            var trimmed = line.Trim();
-            return trimmed.StartsWith("[[Category") || line.StartsWith("[[ru:");
         }
     }
 }
