@@ -127,5 +127,27 @@ and this is another line"
 
             Assert.ThrowsException<InvalidOperationException>(() => creator.Generate());
         }
+
+        [TestMethod]
+        public void BleedMultiplierShouldFormatCorrectly()
+        {
+            var weapon = new Weapon("stringid", "weapon name")
+            {
+                BleedMultiplier = 1.2f
+            };
+            var repository = new Mock<IItemRepository>();
+            repository
+                .Setup(repo => repo.GetItemByStringId<Weapon>("stringid"))
+                .Returns(weapon);
+            var articleData = new ArticleData();
+            articleData.StringIds.Add("stringid");
+
+            var creator = new WeaponTemplateCreator(repository.Object, articleData);
+
+            var template = creator.Generate();
+
+            Assert.IsNotNull(template);
+            Assert.AreEqual("1.20", template.Parameters["blood loss"]);
+        }
     }
 }
