@@ -23,11 +23,18 @@ namespace KenshiWikiValidator.BaseComponents
     {
         private static readonly Regex CategoryRegex = new Regex(@"\[\[Category:(?<name>.*?)(\|#)?]]");
 
+        protected ArticleValidatorBase()
+        {
+            this.Data = new ArticleData();
+        }
+
         public abstract string CategoryName { get; }
 
         public abstract IEnumerable<IValidationRule> Rules { get; }
 
         public virtual IEnumerable<IArticleValidator> Dependencies => Enumerable.Empty<IArticleValidator>();
+
+        public ArticleData Data { get; private set; }
 
         public ArticleValidationResult Validate(string title, string content)
         {
@@ -41,7 +48,7 @@ namespace KenshiWikiValidator.BaseComponents
                 categories.Add(category);
             }
 
-            var data = new ArticleData
+            this.Data = new ArticleData
             {
                 WikiTemplates = this.ParseTemplates(content),
                 Categories = categories,
@@ -49,7 +56,7 @@ namespace KenshiWikiValidator.BaseComponents
 
             foreach (IValidationRule? rule in this.Rules)
             {
-                results.Add(rule.Execute(title, content, data));
+                results.Add(rule.Execute(title, content, this.Data));
             }
 
             var success = !results.Any(result => !result.Success);

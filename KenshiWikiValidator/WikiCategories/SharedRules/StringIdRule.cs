@@ -43,13 +43,22 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
         {
             var result = new RuleResult();
 
-            var validTemplates = data.WikiTemplates.Where(template => ValidTemplateNames.Any(valid => template.Name.Equals(valid)));
+            var validTemplates = data.WikiTemplates
+                .Where(template => ValidTemplateNames
+                    .Any(valid => template.Name.Equals(valid)));
+            var matchingItems = this.GetMatchingItems(title);
+
             if (!validTemplates.Any())
             {
+                if (matchingItems.Count == 1)
+                {
+                    var matchingItem = matchingItems.Single();
+                    data.PotentialStringId = matchingItem.StringId;
+                }
+
                 return result;
             }
 
-            var matchingItems = this.GetMatchingItems(title);
             var fcsNameValue = this.SelectSingleParameter(validTemplates, "fcs_name");
 
             if (string.IsNullOrEmpty(fcsNameValue))
