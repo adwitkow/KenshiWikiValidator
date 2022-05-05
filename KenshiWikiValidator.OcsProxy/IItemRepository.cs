@@ -17,6 +17,8 @@ namespace KenshiWikiValidator.OcsProxy
 
         IItem GetItemByStringId(string id);
 
+        T GetItemByStringId<T>(string id) where T : IItem;
+
         IEnumerable<IItem> GetItems();
 
         IEnumerable<T> GetItems<T>() where T : IItem;

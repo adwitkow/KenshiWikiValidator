@@ -72,6 +72,11 @@ namespace KenshiWikiValidator.OcsProxy
             return this.itemLookup[id];
         }
 
+        public T GetItemByStringId<T>(string id) where T : IItem
+        {
+            return (T)GetItemByStringId(id);
+        }
+
         public IEnumerable<DataItem> GetReferencingDataItemsFor(string itemId)
         {
             var isItemCached = this.referenceCache.TryGetValue(itemId, out var cached);

@@ -17,10 +17,11 @@
 using System.Text.RegularExpressions;
 using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.OcsProxy;
+using KenshiWikiValidator.OcsProxy.Models;
 
 namespace KenshiWikiValidator.WikiTemplates.Creators
 {
-    internal class WeaponTemplateCreator : ITemplateCreator
+    public class WeaponTemplateCreator : ITemplateCreator
     {
         private const string WikiTemplateName = "Weapon";
 
@@ -45,34 +46,34 @@ namespace KenshiWikiValidator.WikiTemplates.Creators
             };
         }
 
-        public WikiTemplate Generate()
+        public WikiTemplate? Generate()
         {
             var stringId = this.data.StringIds.SingleOrDefault();
             if (string.IsNullOrEmpty(stringId))
             {
-                return null!;
+                return null;
             }
 
-            var item = this.itemRepository.GetDataItemByStringId(stringId);
+            var item = this.itemRepository.GetItemByStringId<Weapon>(stringId);
 
-            var armourPenetration = FormatArmourPenetration(item.GetDecimal("armour penetration"));
-            var bloodLoss = FormatMultiplier(item.GetDecimal("bleed mult"));
-            var attack = FormatIntStat(item.GetInt("attack mod"));
-            var defence = FormatIntStat(item.GetInt("defence mod"));
-            var indoors = FormatIntStat(item.GetInt("indoors mod"));
-            var robotDamage = FormatMultiplier(item.GetDecimal("robot damage mult"), true);
-            var humanDamage = FormatMultiplier(item.GetDecimal("human damage mult"), true);
-            var animalDamage = FormatMultiplier(item.GetDecimal("animal damage mult"), true);
+            var armourPenetration = FormatArmourPenetration(item.ArmourPenetration);
+            var bloodLoss = FormatMultiplier(item.BleedMultiplier);
+            var attack = FormatIntStat(item.AttackModifier);
+            var defence = FormatIntStat(item.DefenceModifier);
+            var indoors = FormatIntStat(item.IndoorsModifier);
+            var robotDamage = FormatMultiplier(item.RobotDamageMultiplier, true);
+            var humanDamage = FormatMultiplier(item.HumanDamageMulitplier, true);
+            var animalDamage = FormatMultiplier(item.AnimalDamageMultiplier, true);
 
-            var reach = item.Values["length"].ToString();
-            var description = item.Values["description"].ToString();
+            var reach = item.Length.ToString();
+            var description = item.Description;
 
             if (!string.IsNullOrEmpty(description))
             {
                 description = Regex.Replace(description, @"\r\n|\r|\n", "<br />");
             }
 
-            var skillCategory = (int)item.Values["skill category"];
+            var skillCategory = item.SkillCategory.GetValueOrDefault();
             var weaponClass = this.skillToClassMap[skillCategory];
 
             string? spiderDamage = null;
@@ -83,10 +84,10 @@ namespace KenshiWikiValidator.WikiTemplates.Creators
             string? gorilloDamage = null;
             string? leviathanDamage = null;
 
-            var raceDamageReferences = item.GetReferences("race damage");
+            var raceDamageReferences = item.RaceDamage;
             foreach (var reference in raceDamageReferences)
             {
-                var name = this.itemRepository.GetDataItemByStringId(reference.TargetId).Name;
+                var name = reference.Item.Name;
 
                 var damage = FormatIntStat(reference.Value0 - 100);
 
@@ -144,30 +145,30 @@ namespace KenshiWikiValidator.WikiTemplates.Creators
             return new WikiTemplate(WikiTemplateName, properties);
         }
 
-        private static string? FormatArmourPenetration(decimal input)
+        private static string? FormatArmourPenetration(float? input)
         {
             return FormatMultiplier(input + 1, true);
         }
 
-        private static string? FormatMultiplier(decimal input, bool isPercentage = false)
+        private static string? FormatMultiplier(float? input, bool isPercentage = false)
         {
-            if (input == 1m)
+            if (!input.HasValue || input == 1f)
             {
                 return null;
             }
 
             if (isPercentage)
             {
-                input = (input - 1) * 100m;
+                input = (input - 1) * 100f;
                 return FormatIntStat((int)input);
             }
 
-            return input.ToString("F2");
+            return input.Value.ToString("F2");
         }
 
-        private static string? FormatIntStat(int input)
+        private static string? FormatIntStat(int? input)
         {
-            if (input == 0)
+            if (!input.HasValue || input == 0)
             {
                 return null;
             }
@@ -179,7 +180,7 @@ namespace KenshiWikiValidator.WikiTemplates.Creators
             }
             else
             {
-                result = input.ToString();
+                result = input.Value.ToString();
             }
 
             return result;
