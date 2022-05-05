@@ -4,8 +4,6 @@ using KenshiWikiValidator.OcsProxy.Models;
 using KenshiWikiValidator.WikiCategories.SharedRules;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
 using System.Collections.Generic;
 
 namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
@@ -75,6 +73,27 @@ namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
             var result = validator.Object.Validate("Wakizashi", textToValidate);
 
             Assert.IsFalse(result.Success);
+        }
+
+        [TestMethod]
+        public void PotentialStringIdShouldMatchIfTitleMatches()
+        {
+            var lostArmoury = new Town("49935-rebirth.mod", "Lost Armoury");
+            var textToValidate = "Content without a template";
+
+            var itemRepository = new Mock<IItemRepository>();
+            itemRepository
+                .Setup(repo => repo.GetItems())
+                .Returns(new[] { lostArmoury });
+
+            var validator = new Mock<ArticleValidatorBase>();
+            validator
+                .Setup(v => v.Rules)
+                .Returns(new[] { new StringIdRule(itemRepository.Object, new WikiTitleCache()) });
+
+            validator.Object.Validate("Lost Armoury", textToValidate);
+            
+            Assert.AreEqual("49935-rebirth.mod", validator.Object.Data.PotentialStringId);
         }
     }
 }
