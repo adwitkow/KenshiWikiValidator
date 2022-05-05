@@ -23,13 +23,13 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public bool? HasCollision { get; set; }
 
         [Value("animal damage mult")]
-        public float? AnimalDamageMult { get; set; }
+        public float? AnimalDamageMultiplier { get; set; }
 
         [Value("armour penetration")]
         public float? ArmourPenetration { get; set; }
 
         [Value("bleed mult")]
-        public float? BleedMult { get; set; }
+        public float? BleedMultiplier { get; set; }
 
         [Value("blunt damage multiplier")]
         public float? BluntDamageMultiplier { get; set; }
@@ -38,7 +38,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public float? CutDamageMultiplier { get; set; }
 
         [Value("human damage mult")]
-        public float? HumanDamageMult { get; set; }
+        public float? HumanDamageMulitplier { get; set; }
 
         [Value("icon offset H")]
         public float? IconOffsetH { get; set; }
@@ -59,7 +59,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public float? PierceDamageMultiplier { get; set; }
 
         [Value("robot damage mult")]
-        public float? RobotDamageMult { get; set; }
+        public float? RobotDamageMultiplier { get; set; }
 
         [Value("scale length")]
         public float? ScaleLength { get; set; }
@@ -77,13 +77,13 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public float? WeightMult { get; set; }
 
         [Value("attack mod")]
-        public int? AttackMod { get; set; }
+        public int? AttackModifier { get; set; }
 
         [Value("defence mod")]
-        public int? DefenceMod { get; set; }
+        public int? DefenceModifier { get; set; }
 
         [Value("indoors mod")]
-        public int? IndoorsMod { get; set; }
+        public int? IndoorsModifier { get; set; }
 
         [Value("inventory footprint height")]
         public int? InventoryFootprintHeight { get; set; }
