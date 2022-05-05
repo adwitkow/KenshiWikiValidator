@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.Models;
@@ -101,6 +102,30 @@ and this is another line"
 
             Assert.IsNotNull(template);
             Assert.AreEqual("this is a line<br /><br />and this is another line", template.Parameters["description"]);
+        }
+
+        [TestMethod]
+        public void ShouldThrowOnUnknownRace()
+        {
+            var races = new[]
+            {
+                (new Race("humanid", "Human"), 50)
+            };
+            var raceReferences = races.Select(race => new ItemReference<Race>(race.Item1, race.Item2, 0, 0));
+            var weapon = new Weapon("stringid", "weapon name")
+            {
+                RaceDamage = raceReferences,
+            };
+            var repository = new Mock<IItemRepository>();
+            repository
+                .Setup(repo => repo.GetItemByStringId<Weapon>("stringid"))
+                .Returns(weapon);
+            var articleData = new ArticleData();
+            articleData.StringIds.Add("stringid");
+
+            var creator = new WeaponTemplateCreator(repository.Object, articleData);
+
+            Assert.ThrowsException<InvalidOperationException>(() => creator.Generate());
         }
     }
 }
