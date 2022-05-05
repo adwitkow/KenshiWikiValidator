@@ -16,23 +16,23 @@
 
 using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.OcsProxy;
+using KenshiWikiValidator.OcsProxy.Models;
 using KenshiWikiValidator.WikiTemplates;
 using KenshiWikiValidator.WikiTemplates.Creators;
-using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.WikiCategories.Locations.Templates
 {
-    internal class TownTemplateCreator : ITemplateCreator
+    public class TownTemplateCreator : ITemplateCreator
     {
         private const string WikiTemplateName = "Town";
 
         private readonly IItemRepository itemRepository;
-        private readonly ZoneDataProvider zoneDataProvider;
+        private readonly IZoneDataProvider zoneDataProvider;
         private readonly WikiTitleCache wikiTitles;
         private readonly ArticleData data;
         private readonly string[] townTypes;
 
-        public TownTemplateCreator(IItemRepository itemRepository, ZoneDataProvider zoneDataProvider, WikiTitleCache wikiTitles, ArticleData data)
+        public TownTemplateCreator(IItemRepository itemRepository, IZoneDataProvider zoneDataProvider, WikiTitleCache wikiTitles, ArticleData data)
         {
             this.itemRepository = itemRepository;
             this.zoneDataProvider = zoneDataProvider;
@@ -70,7 +70,7 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
                 }
             }
 
-            var items = stringIds.Select(stringId => this.itemRepository.GetDataItemByStringId(stringId));
+            var items = stringIds.Select(stringId => this.itemRepository.GetItemByStringId<Town>(stringId));
             var articleTitle = this.wikiTitles.GetTitle(stringIds.First(), items.First().Name);
             var baseArticleTitle = articleTitle.Split('/').First();
 
@@ -78,8 +78,8 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
                 .SingleOrDefault(template => template.Name.ToLower().Equals("town"));
 
             var factions = items
-                .SelectMany(item => item.GetReferenceItems(this.itemRepository, "faction")
-                    .Select(faction => $"[[{faction.Name}]]"))
+                .SelectMany(item => item.Faction
+                    .Select(factionRef => $"[[{factionRef.Item.Name}]]"))
                 .Distinct();
 
             var zones = this.ExtractZones(items, baseArticleTitle);
@@ -100,7 +100,7 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
             {
                 { "string id", string.Join(", ", stringIds) },
                 { "fcs_name", string.Join(", ", fcsNames) },
-                { "type", this.townTypes[items.Min(item => (int)item.Values["type"])] },
+                { "type", this.townTypes[items.Min(item => item.TownType.GetValueOrDefault())] },
                 { "biome", regions },
                 { "image1", this.GetExistingParameter(existingTemplate, "image1") },
                 { "caption1", this.GetExistingParameter(existingTemplate, "caption1") },
@@ -124,7 +124,7 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
             return regionExceptions.Contains(region) ? $"[[{region} (Zone)|{region}]]" : $"[[{region}]]";
         }
 
-        private IEnumerable<string> ExtractZones(IEnumerable<OpenConstructionSet.Data.Models.DataItem> items, string baseArticleTitle)
+        private IEnumerable<string> ExtractZones(IEnumerable<Town> items, string baseArticleTitle)
         {
             var zones = this.zoneDataProvider.GetZones(baseArticleTitle);
             if (zones.Any())
@@ -151,7 +151,7 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
             return zones;
         }
 
-        private IEnumerable<OpenConstructionSet.Data.Models.DataItem> FindBaseItems(IEnumerable<OpenConstructionSet.Data.Models.DataItem> items)
+        private IEnumerable<Town> FindBaseItems(IEnumerable<Town> items)
         {
             var baseItems = items;
             var previousBaseItems = items;
@@ -159,8 +159,9 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
             {
                 previousBaseItems = baseItems;
                 baseItems = baseItems
-                    .SelectMany(item => this.itemRepository.GetReferencingDataItemsFor(item))
-                    .Where(item => item.Type == ItemType.Town)
+                    .SelectMany(item => this.itemRepository.GetItems<Town>()
+                        .Where(town => town.OverrideTown
+                            .Any(overrideRef => overrideRef.Item == item)))
                     .Distinct()
                     .ToList();
             }
