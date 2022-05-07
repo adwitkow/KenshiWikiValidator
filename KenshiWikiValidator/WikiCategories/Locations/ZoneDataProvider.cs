@@ -18,7 +18,7 @@ using System.Text.Json;
 
 namespace KenshiWikiValidator.WikiCategories.Locations
 {
-    public class ZoneDataProvider
+    public class ZoneDataProvider : IZoneDataProvider
     {
         private const string FilePath = "ZoneData.json";
 
