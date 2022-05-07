@@ -140,12 +140,6 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
 
             var baseTowns = this.FindBaseItems(items);
 
-            if (!baseTowns.Any())
-            {
-                var joinedItems = string.Join(", ", items.Select(item => $"'{item.Name}'"));
-                throw new InvalidOperationException($"Cannot find any zones for base article '{baseArticleTitle}' or items '{joinedItems}'");
-            }
-
             zones = this.zoneDataProvider.GetZones(baseTowns.Single().Name);
 
             return zones;
