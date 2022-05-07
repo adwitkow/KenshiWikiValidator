@@ -21,9 +21,13 @@ namespace KenshiWikiValidator.BaseComponents
     public interface IWikiTitleCache
     {
         void AddTitle(string stringId, string title);
+
         string GetTitle(IItem item);
+
         string GetTitle(string stringId, string itemName);
+
         bool HasArticle(IItem item);
+
         bool HasArticle(string stringId);
     }
 }
