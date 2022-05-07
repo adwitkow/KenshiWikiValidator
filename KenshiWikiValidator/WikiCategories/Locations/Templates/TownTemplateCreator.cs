@@ -119,7 +119,7 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
 
         private string ConvertRegion(string region)
         {
-            var regionExceptions = new[] { "Bast", "Flats Lagoon", "Rebirth" };
+            var regionExceptions = new[] { "Bast", "Flats Lagoon", "Rebirth", "Heng" };
 
             return regionExceptions.Contains(region) ? $"[[{region} (Zone)|{region}]]" : $"[[{region}]]";
         }
