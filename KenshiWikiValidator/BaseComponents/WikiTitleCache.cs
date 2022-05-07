@@ -18,7 +18,7 @@ using KenshiWikiValidator.OcsProxy;
 
 namespace KenshiWikiValidator.BaseComponents
 {
-    public class WikiTitleCache
+    public class WikiTitleCache : IWikiTitleCache
     {
         private readonly Dictionary<string, string> data;
 

@@ -8,6 +8,7 @@ using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.Models;
 using KenshiWikiValidator.WikiCategories.Locations;
 using KenshiWikiValidator.WikiCategories.Locations.Templates;
+using KenshiWikiValidator.WikiTemplates;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -56,8 +57,10 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations.Templates
                 .Setup(repo => repo.GetItemByStringId<Town>("stringid"))
                 .Returns(town);
             var zoneDataProvider = new Mock<IZoneDataProvider>();
-            var articleData = new ArticleData();
-            articleData.PotentialStringId = "stringid";
+            var articleData = new ArticleData
+            {
+                PotentialStringId = "stringid"
+            };
 
             var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache(), articleData);
 
@@ -111,6 +114,91 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations.Templates
 
             Assert.IsNotNull(template);
             Assert.AreEqual("[[zone name]]", template.Parameters["biome"]);
+        }
+
+
+        [TestMethod]
+        public void ShouldCopyExistingPropertiesCorrectly()
+        {
+            var town = new Town("stringid", "town name");
+            var repository = new Mock<IItemRepository>();
+            repository
+                .Setup(repo => repo.GetItemByStringId<Town>("stringid"))
+                .Returns(town);
+            var zoneDataProvider = new Mock<IZoneDataProvider>();
+            var articleData = new ArticleData();
+            articleData.StringIds.Add("stringid");
+            articleData.WikiTemplates = new[]
+            {
+                new WikiTemplate("Town", new SortedList<string, string?>()
+                {
+                    { "image1", "old image" }
+                })
+            };
+
+            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache(), articleData);
+
+            var template = creator.Generate();
+
+            Assert.IsNotNull(template);
+            Assert.AreEqual("old image", template.Parameters["image1"]);
+        }
+
+        [TestMethod]
+        public void ShouldFindBaseTownZoneEvenIfNameDoesNotMatch()
+        {
+            var town = new Town("subpagetownstringid", "completely different town name");
+            var baseTown = new Town("basetownstringid", "base town")
+            {
+                OverrideTown = new[] { new ItemReference<Town>(town, 0, 0, 0) }
+            };
+            var repository = new Mock<IItemRepository>();
+            repository
+                .Setup(repo => repo.GetItemByStringId<Town>(town.StringId))
+                .Returns(town);
+            repository
+                .Setup(repo => repo.GetItemByStringId<Town>(baseTown.StringId))
+                .Returns(baseTown);
+            repository
+                .Setup(repo => repo.GetItems<Town>())
+                .Returns(new[] { baseTown, town });
+            var zoneDataProvider = new Mock<IZoneDataProvider>();
+            zoneDataProvider
+                .Setup(provider => provider.GetZones(baseTown.Name))
+                .Returns(new[] { "zone name" });
+            var articleData = new ArticleData();
+            articleData.StringIds.Add(town.StringId);
+
+            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache(), articleData);
+
+            var template = creator.Generate();
+
+            Assert.IsNotNull(template);
+            Assert.AreEqual("[[zone name]]", template.Parameters["biome"]);
+        }
+
+        [TestMethod]
+        public void ShouldAddFcsNameIfArticleTitleDoesNotMatch()
+        {
+            var town = new Town("stringid", "town name");
+            var repository = new Mock<IItemRepository>();
+            repository
+                .Setup(repo => repo.GetItemByStringId<Town>("stringid"))
+                .Returns(town);
+            var zoneDataProvider = new Mock<IZoneDataProvider>();
+            var articleData = new ArticleData();
+            articleData.StringIds.Add("stringid");
+            var wikiTitleCache = new Mock<IWikiTitleCache>();
+            wikiTitleCache
+                .Setup(cache => cache.GetTitle("stringid", "town name"))
+                .Returns("article title");
+
+            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, wikiTitleCache.Object, articleData);
+
+            var template = creator.Generate();
+
+            Assert.IsNotNull(template);
+            Assert.AreEqual("article title", template.Parameters["title1"]);
         }
     }
 }

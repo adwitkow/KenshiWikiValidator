@@ -28,11 +28,11 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
 
         private readonly IItemRepository itemRepository;
         private readonly IZoneDataProvider zoneDataProvider;
-        private readonly WikiTitleCache wikiTitles;
+        private readonly IWikiTitleCache wikiTitles;
         private readonly ArticleData data;
         private readonly string[] townTypes;
 
-        public TownTemplateCreator(IItemRepository itemRepository, IZoneDataProvider zoneDataProvider, WikiTitleCache wikiTitles, ArticleData data)
+        public TownTemplateCreator(IItemRepository itemRepository, IZoneDataProvider zoneDataProvider, IWikiTitleCache wikiTitles, ArticleData data)
         {
             this.itemRepository = itemRepository;
             this.zoneDataProvider = zoneDataProvider;
