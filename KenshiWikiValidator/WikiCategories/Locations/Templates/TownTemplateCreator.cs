@@ -74,9 +74,6 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
             var articleTitle = this.wikiTitles.GetTitle(stringIds.First(), items.First().Name);
             var baseArticleTitle = articleTitle.Split('/').First();
 
-            var existingTemplate = this.data.WikiTemplates
-                .SingleOrDefault(template => template.Name.ToLower().Equals("town"));
-
             var factions = items
                 .SelectMany(item => item.Faction
                     .Select(factionRef => $"[[{factionRef.Item.Name}]]"))
@@ -95,6 +92,9 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
             {
                 fcsNames = Enumerable.Empty<string>();
             }
+
+            var existingTemplate = this.data.WikiTemplates
+                .SingleOrDefault(template => template.Name.ToLower().Equals("town"));
 
             var properties = new SortedList<string, string?>
             {

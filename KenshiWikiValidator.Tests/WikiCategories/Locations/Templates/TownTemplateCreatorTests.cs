@@ -46,5 +46,71 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations.Templates
 
             Assert.IsNotNull(template);
         }
+
+        [TestMethod]
+        public void ShouldNotReturnNullForPotentialStringId()
+        {
+            var town = new Town("stringid", "town name");
+            var repository = new Mock<IItemRepository>();
+            repository
+                .Setup(repo => repo.GetItemByStringId<Town>("stringid"))
+                .Returns(town);
+            var zoneDataProvider = new Mock<IZoneDataProvider>();
+            var articleData = new ArticleData();
+            articleData.PotentialStringId = "stringid";
+
+            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache(), articleData);
+
+            var template = creator.Generate();
+
+            Assert.IsNotNull(template);
+        }
+
+        [TestMethod]
+        public void ShouldConvertFaction()
+        {
+            var faction = new Faction("factionid", "faction name");
+            var town = new Town("stringid", "town name")
+            {
+                Faction = new[] { new ItemReference<Faction>(faction, 0, 0, 0) }
+            };
+            var repository = new Mock<IItemRepository>();
+            repository
+                .Setup(repo => repo.GetItemByStringId<Town>("stringid"))
+                .Returns(town);
+            var zoneDataProvider = new Mock<IZoneDataProvider>();
+            var articleData = new ArticleData();
+            articleData.StringIds.Add("stringid");
+
+            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache(), articleData);
+
+            var template = creator.Generate();
+
+            Assert.IsNotNull(template);
+            Assert.AreEqual("[[faction name]]", template.Parameters["factions"]);
+        }
+
+        [TestMethod]
+        public void ShouldConvertRegion()
+        {
+            var town = new Town("stringid", "town name");
+            var repository = new Mock<IItemRepository>();
+            repository
+                .Setup(repo => repo.GetItemByStringId<Town>("stringid"))
+                .Returns(town);
+            var zoneDataProvider = new Mock<IZoneDataProvider>();
+            zoneDataProvider
+                .Setup(provider => provider.GetZones("town name"))
+                .Returns(new[] {"zone name"});
+            var articleData = new ArticleData();
+            articleData.StringIds.Add("stringid");
+
+            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache(), articleData);
+
+            var template = creator.Generate();
+
+            Assert.IsNotNull(template);
+            Assert.AreEqual("[[zone name]]", template.Parameters["biome"]);
+        }
     }
 }
