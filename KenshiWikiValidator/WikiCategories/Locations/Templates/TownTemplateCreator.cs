@@ -75,7 +75,7 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
             var baseArticleTitle = articleTitle.Split('/').First();
 
             var factions = items
-                .SelectMany(item => item.Faction
+                .SelectMany(item => item.Factions
                     .Select(factionRef => $"[[{factionRef.Item.Name}]]"))
                 .Distinct();
 

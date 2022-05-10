@@ -8,7 +8,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
             : base(stringId, name)
         {
             this.BarSquads = Enumerable.Empty<ItemReference<Squad>>();
-            this.Faction = Enumerable.Empty<ItemReference<Faction>>();
+            this.Factions = Enumerable.Empty<ItemReference<Faction>>();
             this.OverrideTown = Enumerable.Empty<ItemReference<Town>>();
             this.Residents = Enumerable.Empty<ItemReference<Squad>>();
             this.TradeCulture = Enumerable.Empty<ItemReference<ItemsCulture>>();
@@ -76,7 +76,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<Squad>> BarSquads { get; set; }
 
         [Reference("faction")]
-        public IEnumerable<ItemReference<Faction>> Faction { get; set; }
+        public IEnumerable<ItemReference<Faction>> Factions { get; set; }
 
         [Reference("override town")]
         public IEnumerable<ItemReference<Town>> OverrideTown { get; set; }
