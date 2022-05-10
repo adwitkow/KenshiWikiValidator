@@ -30,9 +30,18 @@ foreach (var dialogue in dialogues)
 
         var usedPackages = dialogueToPackage[dialogue.StringId];
 
-        var characters = usedPackages.SelectMany(package => repository.GetReferencingDataItemsFor(package.StringId))
-            .Concat(repository.GetReferencingDataItemsFor(dialogue.StringId))
-            .Where(item => item.Type == ItemType.Character)
+        var characters = usedPackages.SelectMany(package => repository.GetItems<Character>()
+            .Where(character => character.DialoguePackage
+                .Any(characterPackage => characterPackage.Item == package))
+            .Concat(repository.GetItems<Character>()
+                .Where(character => character.DialoguePackagePlayer
+                    .Any(characterPackage => characterPackage.Item == package))))
+            .Concat(repository.GetItems<Character>()
+                .Where(character => character.Dialogue
+                    .Any(characterPackage => characterPackage.Item == dialogue)))
+            .Concat(repository.GetItems<Character>()
+                .Where(character => character.AnnouncementDialogue
+                    .Any(characterPackage => characterPackage.Item == dialogue)))
             .Select(item => item.Name)
             .Distinct()
             .ToList();

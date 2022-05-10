@@ -42,9 +42,6 @@ namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
             itemRepository
                 .Setup(repo => repo.GetItems())
                 .Returns(new[] { wakizashi });
-            itemRepository
-                .Setup(repo => repo.GetDataItemByStringId("invalidStringId"))
-                .Throws<KeyNotFoundException>();
 
             var validator = new Mock<ArticleValidatorBase>();
             validator
