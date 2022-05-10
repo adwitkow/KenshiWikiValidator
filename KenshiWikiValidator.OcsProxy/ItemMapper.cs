@@ -6,7 +6,7 @@ using OpenConstructionSet.Data.Models;
 
 namespace KenshiWikiValidator.OcsProxy
 {
-    internal class ItemMapper
+    public class ItemMapper
     {
         private readonly IItemRepository itemRepository;
         private readonly Dictionary<Type, PropertyContainer> propertyMap;
@@ -80,11 +80,6 @@ namespace KenshiWikiValidator.OcsProxy
 
             if (conversion.IsGenericType && conversion.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
             {
-                if (value == null)
-                {
-                    return null;
-                }
-
                 conversion = Nullable.GetUnderlyingType(conversion)!;
             }
 
