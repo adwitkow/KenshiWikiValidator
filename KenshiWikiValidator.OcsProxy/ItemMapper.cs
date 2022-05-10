@@ -1,7 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿// This file is part of KenshiWikiValidator project <https://github.com/adwitkow/KenshiWikiValidator>
+// Copyright (C) 2021  Adam Witkowski <https://github.com/adwitkow/>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using System.Collections;
 using System.Reflection;
-using KenshiWikiValidator.OcsProxy.Models;
 using OpenConstructionSet.Data.Models;
 
 namespace KenshiWikiValidator.OcsProxy
@@ -43,7 +57,11 @@ namespace KenshiWikiValidator.OcsProxy
 
                     var propertyGenericType = prop.PropertyType.GenericTypeArguments[0];
                     var listType = typeof(List<>).MakeGenericType(propertyGenericType);
-                    var instance = (IList)Activator.CreateInstance(listType)!;
+
+                    if (Activator.CreateInstance(listType) is not IList list)
+                    {
+                        break;
+                    }
 
                     var elementGenericType = propertyGenericType.GenericTypeArguments[0];
                     var elementType = typeof(ItemReference<>).MakeGenericType(elementGenericType);
@@ -56,7 +74,7 @@ namespace KenshiWikiValidator.OcsProxy
                         try
                         {
                             var properReference = Activator.CreateInstance(elementType, args);
-                            instance.Add(properReference);
+                            list.Add(properReference);
                         }
                         catch (MissingMethodException)
                         {
@@ -64,7 +82,7 @@ namespace KenshiWikiValidator.OcsProxy
                         }
                     }
 
-                    prop.SetValue(builtItem, instance);
+                    prop.SetValue(builtItem, list);
                 }
             }
 
@@ -80,7 +98,9 @@ namespace KenshiWikiValidator.OcsProxy
 
             if (conversion.IsGenericType && conversion.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
             {
-                conversion = Nullable.GetUnderlyingType(conversion)!;
+                var underlyingType = Nullable.GetUnderlyingType(conversion);
+
+                conversion = underlyingType!;
             }
 
             if (conversion.IsEnum)
@@ -93,28 +113,28 @@ namespace KenshiWikiValidator.OcsProxy
 
         private sealed class PropertyContainer
         {
-            private readonly IDictionary<string, PropertyInfo> Values;
-            private readonly ILookup<string, PropertyInfo> References;
+            private readonly IDictionary<string, PropertyInfo> values;
+            private readonly ILookup<string, PropertyInfo> references;
 
             public PropertyContainer(Type type)
             {
                 var properties = type.GetProperties();
-                this.Values = properties
+                this.values = properties
                     .Where(prop => prop.IsDefined(typeof(ValueAttribute), false))
                     .ToDictionary(prop => GetCustomAttribute<ValueAttribute>(prop).Name, prop => prop);
-                this.References = properties
+                this.references = properties
                     .Where(prop => prop.IsDefined(typeof(ReferenceAttribute), false))
                     .ToLookup(prop => GetCustomAttribute<ReferenceAttribute>(prop).Category, prop => prop);
             }
 
             public PropertyInfo GetValueProperty(string propertyName)
             {
-                return this.Values[propertyName];
+                return this.values[propertyName];
             }
 
             public IEnumerable<PropertyInfo> GetReferenceProperties(string propertyName)
             {
-                return this.References[propertyName];
+                return this.references[propertyName];
             }
 
             private static T GetCustomAttribute<T>(PropertyInfo property)
