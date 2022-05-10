@@ -219,7 +219,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
                     .Any(resident => resident.Item == this));
 
             var factionLocations = repository.GetItems<Town>()
-                .Where(town => town.Faction
+                .Where(town => town.Factions
                     .Any(factionRef => residentFactions.Contains(factionRef.Item)));
 
             return repository.GetItems<Town>()

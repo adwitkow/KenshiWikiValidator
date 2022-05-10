@@ -75,7 +75,7 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations.Templates
             var faction = new Faction("factionid", "faction name");
             var town = new Town("stringid", "town name")
             {
-                Faction = new[] { new ItemReference<Faction>(faction, 0, 0, 0) }
+                Factions = new[] { new ItemReference<Faction>(faction, 0, 0, 0) }
             };
             var repository = new Mock<IItemRepository>();
             repository
