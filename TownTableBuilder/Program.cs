@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System.Text;
 using KenshiWikiValidator.OcsProxy;
+using KenshiWikiValidator.OcsProxy.Models;
 using OpenConstructionSet.Data.Models;
 using OpenConstructionSet.Models;
 
@@ -9,7 +10,7 @@ var states = new List<string>() { "dead", "alive", "imprisoned" };
 var repository = new ItemRepository();
 repository.Load();
 
-var towns = repository.GetDataItemsByType(ItemType.Town);
+var towns = repository.GetItems<Town>();
 
 var builder = new StringBuilder();
 builder.AppendLine("{| class=\"article-table\"");
@@ -29,10 +30,10 @@ builder.AppendLine("|}");
 
 Console.WriteLine(builder.ToString());
 
-void AppendTown(StringBuilder builder, DataItem town)
+void AppendTown(StringBuilder builder, Town town)
 {
-    var factions = town.GetReferenceItems(repository, "faction");
-    var newFactionName = factions.FirstOrDefault()?.Name;
+    var factions = town.Factions;
+    var newFactionName = factions.FirstOrDefault().Item?.Name;
     var isBase = IsBaseTown(town);
 
     builder.AppendLine($"| {town.Name} ({town.StringId})");
@@ -43,19 +44,13 @@ void AppendTown(StringBuilder builder, DataItem town)
     }
     else
     {
-        var townReferences = repository.GetReferencingDataItemsFor(town).ToList();
-        var baseTown = townReferences.FirstOrDefault(reference => IsBaseTown(reference));
+        var baseTowns = FindBaseItems(town);
+        var baseTown = baseTowns.Single();
 
-        while (baseTown is null && townReferences.Any())
-        {
-            townReferences = townReferences.SelectMany(reference => repository.GetReferencingDataItemsFor(reference)).ToList();
-            baseTown = townReferences.FirstOrDefault(reference => IsBaseTown(reference));
-        }
+        var oldFactionNames = baseTown.Factions.Select(factionRef => factionRef.Item.Name);
 
-        var oldFactionName = baseTown?.GetReferenceItems(repository, "faction").SingleOrDefault()?.Name;
-
-        string subTitle;
-        if (!string.IsNullOrEmpty(oldFactionName) && oldFactionName.Equals(newFactionName))
+        string? subTitle;
+        if (oldFactionNames.Any(oldFactionName => oldFactionName.Equals(newFactionName)))
         {
             if (town.Name.ToLower().Contains("half destroyed"))
             {
@@ -76,29 +71,29 @@ void AppendTown(StringBuilder builder, DataItem town)
         }
         else
         {
-            subTitle = factions.Any() ? factions.Single().Name : "Destroyed";
+            subTitle = factions.Any() ? factions.Single().Item.Name : "Destroyed";
         }
 
         builder.AppendLine($"| [[{baseTown?.Name}/{subTitle}]]");
     }
 
-    var faction = factions.Any() ? string.Join(", ", factions.Select(f => $"[[{f.Name}]]")) : "None";
+    var faction = factions.Any() ? string.Join(", ", factions.Select(f => $"[[{f.Item.Name}]]")) : "None";
     builder.AppendLine($"| {faction}");
 
     var states = UnwrapWorldStates(town);
     builder.AppendLine($"| {states}");
 
-    var overrides = town.GetReferenceItems(repository, "override town");
+    var overrides = town.OverrideTown.Select(overrideRef => overrideRef.Item);
     var furtherOverrides = overrides.Any() ? string.Join(", ", overrides.Select(item => $"{item.Name} ({item.StringId})")) : "None";
     builder.AppendLine($"| {furtherOverrides}");
 }
 
-string UnwrapWorldStates(DataItem town)
+string UnwrapWorldStates(Town town)
 {
     var results = new List<string>();
-    var worldStates = town.GetReferences("world state")
+    var worldStates = town.WorldState
         .ToDictionary(
-            reference => repository.GetDataItemByStringId(reference.TargetId),
+            reference => reference.Item,
             reference => Convert.ToBoolean(reference.Value0));
 
     if (!worldStates.Any())
@@ -111,17 +106,17 @@ string UnwrapWorldStates(DataItem town)
         var state = pair.Key;
         var stateValue = pair.Value;
 
-        var npcIsItems = state.GetReferences("NPC is")
+        var npcIsItems = state.NpcIs
             .ToDictionary(
-                reference => repository.GetDataItemByStringId(reference.TargetId),
+                reference => reference.Item,
                 reference => reference.Value0);
-        var npcIsNotItems= state.GetReferences("NPC is NOT")
+        var npcIsNotItems = state.NpcIsNot
             .ToDictionary(
-                reference => repository.GetDataItemByStringId(reference.TargetId),
+                reference => reference.Item,
                 reference => reference.Value0);
-        var playerAllyItems = state.GetReferences("player ally")
+        var playerAllyItems = state.PlayerAlly
             .ToDictionary(
-                reference => repository.GetDataItemByStringId(reference.TargetId),
+                reference => reference.Item,
                 reference => Convert.ToBoolean(reference.Value0));
 
         foreach (var itemPair in npcIsItems)
@@ -176,8 +171,35 @@ string UnwrapWorldStates(DataItem town)
     return string.Join(", ", results);
 }
 
-bool IsBaseTown(DataItem item)
+bool IsBaseTown(Town item)
 {
-    return !repository.GetReferencingDataItemsFor(item)
-        .Any(item => item.Type == ItemType.Town);
+    return FindBaseItems(item).Any(baseItem => baseItem.StringId == item.StringId);
+}
+
+IEnumerable<Town> FindBaseItems(Town town)
+{
+    var baseItems = new[] { town }.AsEnumerable();
+    var previousBaseItems = baseItems;
+    while (baseItems is not null && baseItems.Any())
+    {
+        previousBaseItems = baseItems;
+
+        foreach (var baseItem in baseItems)
+        {
+            var newBaseItems = repository.GetItems<Town>()
+                .Where(item => item.OverrideTown
+                    .Any(overrideRef => overrideRef.Item == baseItem))
+                .Distinct()
+                .ToList();
+
+            if (!newBaseItems.Any())
+            {
+                return new[] { baseItem };
+            }
+
+            baseItems = newBaseItems;
+        }
+    }
+
+    return previousBaseItems;
 }

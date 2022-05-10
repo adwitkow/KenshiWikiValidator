@@ -147,10 +147,14 @@ namespace DialogueDumper
 
             foreach (var package in externalPackages)
             {
-                var referencingItems = this.itemRepository
-                    .GetReferencingDataItemsFor(package.StringId);
+                var characters = this.itemRepository.GetItems<Character>()
+                    .Where(character => character.DialoguePackage
+                        .Any(characterPackage => characterPackage.Item == package))
+                    .Concat(this.itemRepository.GetItems<Character>()
+                        .Where(character => character.DialoguePackagePlayer
+                            .Any(characterPackage => characterPackage.Item == package)));
 
-                string? packageOwnerName = GetPackageOwnerName(referencingItems);
+                string? packageOwnerName = GetPackageOwnerName(characters);
 
                 var externalDialogues = package.Dialogs
                     .Select(dialogue => dialogue.Item);
@@ -173,7 +177,7 @@ namespace DialogueDumper
             return dialogueIdTocharacter;
         }
 
-        private static string? GetPackageOwnerName(IEnumerable<DataItem> referencingItems)
+        private static string? GetPackageOwnerName(IEnumerable<Character> referencingItems)
         {
             string? packageOwnerName;
             if (referencingItems.Count() > 1)
@@ -182,7 +186,7 @@ namespace DialogueDumper
             }
             else
             {
-                packageOwnerName = referencingItems.SingleOrDefault(item => item.Type == ItemType.Character)?.Name;
+                packageOwnerName = referencingItems.SingleOrDefault()?.Name;
             }
 
             return packageOwnerName;

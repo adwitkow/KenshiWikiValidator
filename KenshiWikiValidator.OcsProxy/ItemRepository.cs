@@ -8,27 +8,16 @@ namespace KenshiWikiValidator.OcsProxy
 {
     public class ItemRepository : IItemRepository
     {
-        private readonly Dictionary<string, ICollection<DataItem>> referenceCache;
-
-        private Dictionary<string, DataItem> dataItemLookup;
         private readonly Dictionary<string, IItem> itemLookup;
         private readonly Dictionary<Type, IEnumerable<IItem>> itemsByType;
 
         public ItemRepository()
         {
-            this.dataItemLookup = new Dictionary<string, DataItem>();
             this.itemLookup = new Dictionary<string, IItem>();
             this.itemsByType = new Dictionary<Type, IEnumerable<IItem>>();
-
-            this.referenceCache = new Dictionary<string, ICollection<DataItem>>();
         }
 
         public string? GameDirectory { get; private set; }
-
-        public IEnumerable<DataItem> GetDataItems()
-        {
-            return this.dataItemLookup.Values;
-        }
 
         public IEnumerable<IItem> GetItems()
         {
@@ -52,21 +41,6 @@ namespace KenshiWikiValidator.OcsProxy
             }
         }
 
-        public IEnumerable<DataItem> GetDataItemsByType(ItemType type)
-        {
-            return this.GetDataItems().Where(item => item.Type == type);
-        }
-
-        public IEnumerable<DataItem> GetDataItemsByTypes(params ItemType[] types)
-        {
-            return this.GetDataItems().Where(item => types.Contains(item.Type));
-        }
-
-        public DataItem GetDataItemByStringId(string id)
-        {
-            return this.dataItemLookup[id];
-        }
-
         public IItem GetItemByStringId(string id)
         {
             return this.itemLookup[id];
@@ -75,25 +49,6 @@ namespace KenshiWikiValidator.OcsProxy
         public T GetItemByStringId<T>(string id) where T : IItem
         {
             return (T)GetItemByStringId(id);
-        }
-
-        public IEnumerable<DataItem> GetReferencingDataItemsFor(string itemId)
-        {
-            var isItemCached = this.referenceCache.TryGetValue(itemId, out var cached);
-
-            if (isItemCached)
-            {
-                return cached!;
-            }
-            else
-            {
-                return Enumerable.Empty<DataItem>();
-            }
-        }
-
-        public IEnumerable<DataItem> GetReferencingDataItemsFor(DataItem reference)
-        {
-            return this.GetReferencingDataItemsFor(reference.StringId);
         }
 
         public void Load()
@@ -110,26 +65,7 @@ namespace KenshiWikiValidator.OcsProxy
 
             var contextItems = OcsDataContextBuilder.Default.Build(options).Items.Values.ToList();
 
-            foreach (var item in contextItems)
-            {
-                foreach (var targetId in item.ReferenceCategories
-                    .SelectMany(cat => cat.Value)
-                    .Select(pair => pair.Value.TargetId))
-                {
-                    if (this.referenceCache.ContainsKey(targetId))
-                    {
-                        this.referenceCache[targetId].Add(item);
-                    }
-                    else
-                    {
-                        this.referenceCache.Add(targetId, new List<DataItem>() { item });
-                    }
-                }
-            }
-
             this.GameDirectory = installation.Game;
-
-            this.dataItemLookup = contextItems.ToDictionary(item => item.StringId, item => item);
 
             var modelConverter = new ItemModelConverter(this);
             var convertedItems = modelConverter.Convert(contextItems).ToArray();
