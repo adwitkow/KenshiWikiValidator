@@ -9,33 +9,35 @@ namespace KenshiWikiValidator.OcsProxy
     internal class ItemMapper
     {
         private readonly IItemRepository itemRepository;
+        private readonly Dictionary<Type, PropertyContainer> propertyMap;
 
         public ItemMapper(IItemRepository itemRepository)
         {
             this.itemRepository = itemRepository;
+            this.propertyMap = new Dictionary<Type, PropertyContainer>();
         }
 
         public IItem Map(DataItem baseItem, IItem builtItem)
         {
-            var properties = builtItem.GetType().GetProperties();
-            var valueProperties = properties
-                .Where(prop => prop.IsDefined(typeof(ValueAttribute), false))
-                .ToDictionary(prop => ((ValueAttribute)prop.GetCustomAttributes(typeof(ValueAttribute), false).Single()).Name, prop => prop);
+            var type = builtItem.GetType();
+            if (!this.propertyMap.TryGetValue(type, out var propertyContainer))
+            {
+                propertyContainer = new PropertyContainer(type);
+                this.propertyMap.Add(type, propertyContainer);
+            }
 
             foreach (var pair in baseItem.Values)
             {
-                var prop = valueProperties[pair.Key];
+                var prop = propertyContainer.GetValueProperty(pair.Key);
                 var convertedValue = ChangeType(pair.Value, prop.PropertyType);
                 prop.SetValue(builtItem, convertedValue);
             }
 
-            var referenceProperties = properties
-                .Where(prop => prop.IsDefined(typeof(ReferenceAttribute), false))
-                .ToLookup(prop => ((ReferenceAttribute)prop.GetCustomAttributes(typeof(ReferenceAttribute), false).Single()).Category, prop => prop);
-
             foreach (var refCategory in baseItem.ReferenceCategories)
             {
-                foreach (var prop in referenceProperties[refCategory.Key])
+                var referenceProperties = propertyContainer.GetReferenceProperties(refCategory.Key);
+
+                foreach (var prop in referenceProperties)
                 {
                     var baseReferences = refCategory.Value.Values;
 
@@ -92,6 +94,38 @@ namespace KenshiWikiValidator.OcsProxy
             }
 
             return Convert.ChangeType(value, conversion);
+        }
+
+        private sealed class PropertyContainer
+        {
+            private readonly IDictionary<string, PropertyInfo> Values;
+            private readonly ILookup<string, PropertyInfo> References;
+
+            public PropertyContainer(Type type)
+            {
+                var properties = type.GetProperties();
+                this.Values = properties
+                    .Where(prop => prop.IsDefined(typeof(ValueAttribute), false))
+                    .ToDictionary(prop => GetCustomAttribute<ValueAttribute>(prop).Name, prop => prop);
+                this.References = properties
+                    .Where(prop => prop.IsDefined(typeof(ReferenceAttribute), false))
+                    .ToLookup(prop => GetCustomAttribute<ReferenceAttribute>(prop).Category, prop => prop);
+            }
+
+            public PropertyInfo GetValueProperty(string propertyName)
+            {
+                return this.Values[propertyName];
+            }
+
+            public IEnumerable<PropertyInfo> GetReferenceProperties(string propertyName)
+            {
+                return this.References[propertyName];
+            }
+
+            private static T GetCustomAttribute<T>(PropertyInfo property)
+            {
+                return (T)property.GetCustomAttributes(typeof(T), false).Single();
+            }
         }
     }
 }
