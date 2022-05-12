@@ -69,32 +69,32 @@ namespace KenshiWikiValidator.WikiCategories.Weapons.Rules
                 .Select(tech => $"{tech.Name} (Tech)")
                 .ToArray();
 
-            var researchInfoTemplateCreator = new ResearchInfoTemplateCreator()
-            {
-                Costs = research.Costs.Select(costRef => $"{costRef.Value0} [[{costRef.Item.Name}]]s"),
-                Description = research.Description,
-                NewBuildings = buildings,
-                NewItems = items,
-                Prerequisites = prerequisites,
-                RequiredFor = requiredFor,
-                ResearchName = research.Name,
-                TechLevel = research.Level.GetValueOrDefault(),
-                Time = research.Time.GetValueOrDefault(),
-            };
-
-            var template = researchInfoTemplateCreator.Generate();
-
-            builder.WithTemplate(template)
-                .WithNewline();
-
-            var hasBlueprints = this.HasBlueprints(research);
             var craftingListIntro = "This item can be crafted in various qualities using different levels of [[Weapon Smithing Bench]]";
+            var hasBlueprints = this.HasBlueprints(research);
             if (hasBlueprints)
             {
                 craftingListIntro += " after learning the appropriate [[Blueprints|blueprint]].";
             }
             else
             {
+                var researchInfoTemplateCreator = new ResearchInfoTemplateCreator()
+                {
+                    Costs = research.Costs.Select(costRef => $"{costRef.Value0} [[{costRef.Item.Name}]]s"),
+                    Description = research.Description,
+                    NewBuildings = buildings,
+                    NewItems = items,
+                    Prerequisites = prerequisites,
+                    RequiredFor = requiredFor,
+                    ResearchName = research.Name,
+                    TechLevel = research.Level.GetValueOrDefault(),
+                    Time = research.Time.GetValueOrDefault(),
+                };
+
+                var template = researchInfoTemplateCreator.Generate();
+
+                builder.WithTemplate(template)
+                    .WithNewline();
+
                 craftingListIntro += ".";
             }
 
@@ -130,7 +130,7 @@ namespace KenshiWikiValidator.WikiCategories.Weapons.Rules
         private bool HasBlueprints(Research research)
         {
             var vendorLists = this.itemRepository.GetItems<VendorList>()
-                .Where(vendor => vendor.Blueprints.Any(blueprintRef => blueprintRef.Item == research));
+                .Where(vendor => vendor.Blueprints.ContainsItem(research));
             var squads = this.itemRepository.GetItems<Squad>()
                 .Where(squad => squad.Vendors
                     .Any(vendorRef => vendorLists.Contains(vendorRef.Item)));
@@ -140,8 +140,7 @@ namespace KenshiWikiValidator.WikiCategories.Weapons.Rules
         private Research? GetUnlockingResearch(Weapon weapon)
         {
             return this.itemRepository.GetItems<Research>()
-                .SingleOrDefault(research => research.EnableWeaponTypes
-                    .Any(weaponTypeRef => weaponTypeRef.Item == weapon));
+                .SingleOrDefault(research => research.EnableWeaponTypes.ContainsItem(weapon));
         }
     }
 }

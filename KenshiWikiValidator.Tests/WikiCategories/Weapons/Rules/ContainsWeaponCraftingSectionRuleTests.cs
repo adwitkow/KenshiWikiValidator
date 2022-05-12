@@ -238,13 +238,6 @@ This item can be crafted in various qualities using different levels of [[Weapon
             var rule = new ContainsWeaponCraftingSectionRule(repositoryMock.Object);
 
             var result = rule.Execute("weapon title", $@"== Crafting ==
-{{{{Research info
-| level     = 0
-| name      = research
-| new_items = [[{weapon.Name}]]
-| time      = 0
-}}}}
-
 This item can be crafted in various qualities using different levels of [[Weapon Smithing Bench]] after learning the appropriate [[Blueprints|blueprint]].
 
 {{{{Crafting | collapsed
