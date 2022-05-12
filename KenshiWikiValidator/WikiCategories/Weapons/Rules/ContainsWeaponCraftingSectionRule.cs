@@ -39,10 +39,11 @@ namespace KenshiWikiValidator.WikiCategories.Weapons.Rules
                 return null!;
             }
 
-            var item = this.itemRepository.GetItemByStringId(stringId);
-            if (item is not Weapon weapon)
+            var weapon = this.itemRepository.GetItemByStringId<Weapon>(stringId);
+
+            if (weapon is null)
             {
-                return null!;
+                throw new InvalidOperationException($"Could not find a weapon with string id '{stringId}'");
             }
 
             var cost = weapon.MaterialCost;
@@ -58,22 +59,19 @@ namespace KenshiWikiValidator.WikiCategories.Weapons.Rules
                 return builder;
             }
 
-            var hasBlueprints = this.HasBlueprints(research);
-
-            var costsDictionary = research.Costs.ToDictionary(costRef => costRef.Item, costRef => costRef.Value0);
-
             var buildings = research.EnableBuildings
                 .Select(building => building.Item.Name.Equals("Weapon Smith") ? "Weapon Smithing Bench" : building.Item.Name);
             var items = research.EnableWeaponTypes.Select(weapon => weapon.Item.Name);
             var prerequisites = research.Requirements.Select(tech => $"{tech.Item.Name} (Tech)");
             var requiredFor = this.itemRepository.GetItems<Research>()
-                .Where(research => research.Requirements
+                .Where(r => r.Requirements
                     .Any(requirement => requirement.Item == research))
-                .Select(tech => $"{tech.Name} (Tech)");
+                .Select(tech => $"{tech.Name} (Tech)")
+                .ToArray();
 
             var researchInfoTemplateCreator = new ResearchInfoTemplateCreator()
             {
-                Costs = costsDictionary.Select(pair => $"{pair.Value} [[{pair.Key}]]s"),
+                Costs = research.Costs.Select(costRef => $"{costRef.Value0} [[{costRef.Item.Name}]]s"),
                 Description = research.Description,
                 NewBuildings = buildings,
                 NewItems = items,
@@ -89,6 +87,7 @@ namespace KenshiWikiValidator.WikiCategories.Weapons.Rules
             builder.WithTemplate(template)
                 .WithNewline();
 
+            var hasBlueprints = this.HasBlueprints(research);
             var craftingListIntro = "This item can be crafted in various qualities using different levels of [[Weapon Smithing Bench]]";
             if (hasBlueprints)
             {
