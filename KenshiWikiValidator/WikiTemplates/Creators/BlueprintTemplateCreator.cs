@@ -123,18 +123,17 @@ public class BlueprintTemplateCreator : ITemplateCreator
 
     private Research? GetUnlockingResearch(IItem item)
     {
-        var items = this.itemRepository.GetItems<Research>();
-        return items
-            .SingleOrDefault(research => research.EnableWeaponTypes
-                .Any(weaponTypeRef => weaponTypeRef.Item == item));
+        return this.itemRepository
+            .GetItems<Research>()
+            .SingleOrDefault(research => research.EnableWeaponTypes.ContainsItem(item));
     }
 
     private bool HasBlueprints(IItem item)
     {
         var vendorLists = this.itemRepository.GetItems<VendorList>()
-                .Where(vendor => vendor.ArmourBlueprints.Any(armourBlueprintRef => armourBlueprintRef.Item == item)
-                || vendor.Blueprints.Any(blueprintRef => blueprintRef.Item == item)
-                || vendor.CrossbowBlueprints.Any(crossbowBlueprintRef => crossbowBlueprintRef.Item == item));
+                .Where(vendor => vendor.ArmourBlueprints.ContainsItem(item)
+                || vendor.Blueprints.ContainsItem(item)
+                || vendor.CrossbowBlueprints.ContainsItem(item));
         var squads = this.itemRepository.GetItems<Squad>()
             .Where(squad => squad.Vendors
                 .Any(vendorRef => vendorLists.Contains(vendorRef.Item)));

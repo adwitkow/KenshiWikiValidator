@@ -64,8 +64,7 @@ namespace KenshiWikiValidator.WikiCategories.Weapons.Rules
             var items = research.EnableWeaponTypes.Select(weapon => weapon.Item.Name);
             var prerequisites = research.Requirements.Select(tech => $"{tech.Item.Name} (Tech)");
             var requiredFor = this.itemRepository.GetItems<Research>()
-                .Where(r => r.Requirements
-                    .Any(requirement => requirement.Item == research))
+                .Where(r => r.Requirements.ContainsItem(research))
                 .Select(tech => $"{tech.Name} (Tech)")
                 .ToArray();
 
