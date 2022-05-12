@@ -16,15 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KenshiWikiValidator\KenshiWikiValidator.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="WeaponArticleValidatorTests.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="BaseComponents\" />
+    <ProjectReference Include="..\..\src\KenshiWikiValidator.OcsProxy\KenshiWikiValidator.OcsProxy.csproj" />
   </ItemGroup>
 
 </Project>
