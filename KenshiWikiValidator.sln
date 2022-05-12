@@ -8,27 +8,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeaponStatsConverter", "WeaponStatsConverter\WeaponStatsConverter.csproj", "{B299359C-BECE-4ABD-9391-E2B1414F3916}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeaponStatsConverter", "src\additionals\WeaponStatsConverter\WeaponStatsConverter.csproj", "{B299359C-BECE-4ABD-9391-E2B1414F3916}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KenshiWikiValidator", "KenshiWikiValidator\KenshiWikiValidator.csproj", "{7B47EC9B-7BF1-4313-AA59-EBE307FFCBFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KenshiWikiValidator", "src\KenshiWikiValidator\KenshiWikiValidator.csproj", "{7B47EC9B-7BF1-4313-AA59-EBE307FFCBFA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KenshiWikiValidator.Tests", "KenshiWikiValidator.Tests\KenshiWikiValidator.Tests.csproj", "{7AAC143C-7F7A-4F11-8CBB-D6FA5C58B300}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KenshiWikiValidator.Tests", "tests\KenshiWikiValidator.Tests\KenshiWikiValidator.Tests.csproj", "{7AAC143C-7F7A-4F11-8CBB-D6FA5C58B300}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TownTableBuilder", "TownTableBuilder\TownTableBuilder.csproj", "{6FB2F975-D714-4541-BE1D-966B6A34B07F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TownTableBuilder", "src\additionals\TownTableBuilder\TownTableBuilder.csproj", "{6FB2F975-D714-4541-BE1D-966B6A34B07F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Additionals", "Additionals", "{A17CD540-08B1-48A3-B977-96A35667CAC2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DialogueDumper", "DialogueBuilder\DialogueDumper.csproj", "{20A3863B-5354-41E1-A49D-C34F29423CEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DialogueDumper", "src\additionals\DialogueBuilder\DialogueDumper.csproj", "{20A3863B-5354-41E1-A49D-C34F29423CEF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecruitTableCreator", "RecruitTableCreator\RecruitTableCreator.csproj", "{737E82F4-EE90-4167-8BE8-D260740DBC27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecruitTableCreator", "src\additionals\RecruitTableCreator\RecruitTableCreator.csproj", "{737E82F4-EE90-4167-8BE8-D260740DBC27}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KenshiWikiValidator.OcsProxy", "KenshiWikiValidator.OcsProxy\KenshiWikiValidator.OcsProxy.csproj", "{68E101CF-C322-422D-992F-27AEA43F0469}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KenshiWikiValidator.OcsProxy", "src\KenshiWikiValidator.OcsProxy\KenshiWikiValidator.OcsProxy.csproj", "{68E101CF-C322-422D-992F-27AEA43F0469}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelGenerator", "ModelGenerator\ModelGenerator.csproj", "{5316269B-5823-464C-974E-D2868A0B57A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelGenerator", "src\additionals\ModelGenerator\ModelGenerator.csproj", "{5316269B-5823-464C-974E-D2868A0B57A6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C1A86232-3B51-4871-9E67-F30E1273DF64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KenshiWikiValidator.OcsProxy.Tests", "KenshiWikiValidator.OcsProxy.Tests\KenshiWikiValidator.OcsProxy.Tests.csproj", "{80A365E4-62A1-4D97-BDE1-969085F8AA7B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KenshiWikiValidator.OcsProxy.Tests", "tests\KenshiWikiValidator.OcsProxy.Tests\KenshiWikiValidator.OcsProxy.Tests.csproj", "{80A365E4-62A1-4D97-BDE1-969085F8AA7B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

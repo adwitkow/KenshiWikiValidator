@@ -5,11 +5,11 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <CodeAnalysisRuleSet>..\.sonarlint\adwitkow_kenshiwikivalidatorcsharp.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\..\..\.sonarlint\adwitkow_kenshiwikivalidatorcsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="..\.sonarlint\adwitkow_kenshiwikivalidator\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+    <AdditionalFiles Include="..\..\..\.sonarlint\adwitkow_kenshiwikivalidator\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
 
   <ItemGroup>
