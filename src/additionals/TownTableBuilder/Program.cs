@@ -2,8 +2,6 @@
 using System.Text;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.Models;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
 
 var states = new List<string>() { "dead", "alive", "imprisoned" };
 

@@ -17,8 +17,6 @@
 using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.WikiTemplates;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.WikiCategories.SharedRules
 {
@@ -26,18 +24,17 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
     {
         private static readonly string[] ValidTemplateNames = { "Weapon", "Armour", "Traders", "Town" };
 
-        private readonly IItemRepository itemRepository;
         private readonly WikiTitleCache wikiTitleCache;
         private readonly bool shouldCheckFcsName;
-        private readonly ItemType? itemType;
 
-        public StringIdRule(IItemRepository itemRepository, WikiTitleCache wikiTitleCache, bool shouldCheckFcsName = false, ItemType? itemType = null)
+        public StringIdRule(IItemRepository itemRepository, WikiTitleCache wikiTitleCache, bool shouldCheckFcsName = false)
         {
-            this.itemRepository = itemRepository;
+            this.ItemRepository = itemRepository;
             this.wikiTitleCache = wikiTitleCache;
             this.shouldCheckFcsName = shouldCheckFcsName;
-            this.itemType = itemType;
         }
+
+        protected IItemRepository ItemRepository { get; }
 
         public RuleResult Execute(string title, string content, ArticleData data)
         {
@@ -100,6 +97,11 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
             return result;
         }
 
+        protected virtual IEnumerable<IItem> GetRelevantItems()
+        {
+            return this.ItemRepository.GetItems();
+        }
+
         private List<IItem> CheckStringIds(string title, ArticleData data, RuleResult result, List<IItem> matchingItems, string stringIdValue)
         {
             var stringIds = stringIdValue.Split(',')
@@ -107,7 +109,7 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
 
             if (!matchingItems.Any())
             {
-                matchingItems = stringIds.Select(id => this.itemRepository.GetItemByStringId(id)).ToList();
+                matchingItems = stringIds.Select(id => this.ItemRepository.GetItemByStringId(id)).ToList();
             }
 
             foreach (var stringId in stringIds)
@@ -145,19 +147,25 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
 
         private List<IItem> GetMatchingItems(string name)
         {
-            IEnumerable<IItem> items;
-            if (this.itemType is null)
-            {
-                items = this.itemRepository.GetItems();
-            }
-            else
-            {
-                items = this.itemRepository.GetItems().Where(item => item.Type == this.itemType.Value);
-            }
-
+            IEnumerable<IItem> items = this.GetRelevantItems();
             return items
                 .Where(item => name.ToLower().Trim().Equals(item.Name.ToLower().Trim()))
                 .ToList();
+        }
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Irrelevant for generic types IMO")]
+    public class StringIdRule<T> : StringIdRule
+        where T : IItem
+    {
+        public StringIdRule(IItemRepository itemRepository, WikiTitleCache wikiTitleCache, bool shouldCheckFcsName = false)
+            : base(itemRepository, wikiTitleCache, shouldCheckFcsName)
+        {
+        }
+
+        protected override IEnumerable<IItem> GetRelevantItems()
+        {
+            return (IEnumerable<IItem>)this.ItemRepository.GetItems<T>();
         }
     }
 }
