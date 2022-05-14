@@ -31,7 +31,7 @@ namespace KenshiWikiValidator.WikiCategories.Locations
             this.rules = new List<IValidationRule>()
             {
                 new ContainsTemplateRule("Town"),
-                new StringIdRule<Town>(itemRepository, wikiTitles, true),
+                new StringIdRule<Town>(itemRepository, wikiTitles),
                 new ContainsTownTemplateRule(itemRepository, wikiTitles, zoneDataProvider),
             };
         }

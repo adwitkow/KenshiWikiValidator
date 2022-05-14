@@ -107,7 +107,7 @@ namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
             var validator = new Mock<ArticleValidatorBase>();
             validator
                 .Setup(v => v.Rules)
-                .Returns(new[] { new StringIdRule(itemRepository.Object, new WikiTitleCache(), true) });
+                .Returns(new[] { new StringIdRule(itemRepository.Object, new WikiTitleCache()) });
 
             var result = validator.Object.Validate("Wakizashi - title different from the FCS name", textToValidate);
 
@@ -128,7 +128,7 @@ namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
             var validator = new Mock<ArticleValidatorBase>();
             validator
                 .Setup(v => v.Rules)
-                .Returns(new[] { new StringIdRule<Weapon>(itemRepository.Object, new WikiTitleCache(), true) });
+                .Returns(new[] { new StringIdRule<Weapon>(itemRepository.Object, new WikiTitleCache()) });
 
             var result = validator.Object.Validate("Wakizashi", textToValidate);
 

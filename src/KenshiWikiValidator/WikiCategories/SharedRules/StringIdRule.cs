@@ -25,13 +25,11 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
         private static readonly string[] ValidTemplateNames = { "Weapon", "Armour", "Traders", "Town" };
 
         private readonly WikiTitleCache wikiTitleCache;
-        private readonly bool shouldCheckFcsName;
 
-        public StringIdRule(IItemRepository itemRepository, WikiTitleCache wikiTitleCache, bool shouldCheckFcsName = false)
+        public StringIdRule(IItemRepository itemRepository, WikiTitleCache wikiTitleCache)
         {
             this.ItemRepository = itemRepository;
             this.wikiTitleCache = wikiTitleCache;
-            this.shouldCheckFcsName = shouldCheckFcsName;
         }
 
         protected IItemRepository ItemRepository { get; }
@@ -142,8 +140,8 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
     public class StringIdRule<T> : StringIdRule
         where T : IItem
     {
-        public StringIdRule(IItemRepository itemRepository, WikiTitleCache wikiTitleCache, bool shouldCheckFcsName = false)
-            : base(itemRepository, wikiTitleCache, shouldCheckFcsName)
+        public StringIdRule(IItemRepository itemRepository, WikiTitleCache wikiTitleCache)
+            : base(itemRepository, wikiTitleCache)
         {
         }
 

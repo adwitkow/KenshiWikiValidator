@@ -30,7 +30,7 @@ namespace KenshiWikiValidator.WikiCategories.TownResidents
             {
                 new NewLinesRule(),
                 new ContainsTemplateRule("Traders"),
-                new StringIdRule(itemRepository, wikiTitles, true),
+                new StringIdRule(itemRepository, wikiTitles),
             };
         }
 
