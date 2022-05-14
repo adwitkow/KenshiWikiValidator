@@ -58,16 +58,7 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
 
             var fcsNameValue = this.SelectSingleParameter(validTemplates, "fcs_name");
 
-            if (string.IsNullOrEmpty(fcsNameValue))
-            {
-                var possibleFcsNames = matchingItems.Select(item => item.Name.ToLower().Trim());
-
-                if (this.shouldCheckFcsName && possibleFcsNames.Any(name => !name.Equals(title.ToLower().Trim())))
-                {
-                    result.AddIssue($"FCS name is missing! Possible FCS names: {string.Join(", ", possibleFcsNames)}");
-                }
-            }
-            else
+            if (!string.IsNullOrEmpty(fcsNameValue))
             {
                 matchingItems.Clear();
                 var fcsNames = fcsNameValue.Split(',').Select(name => name.Trim());
@@ -116,16 +107,9 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
             {
                 var matchingItem = matchingItems.FirstOrDefault(item => item.StringId == stringId);
 
-                if (matchingItem is null)
+                if (matchingItem is null && matchingItems.Any())
                 {
-                    if (matchingItems.Any())
-                    {
-                        result.AddIssue($"String id '{stringId}' is incorrect in the article. Should be corrected to one of the following: [{string.Join(", ", matchingItems.Select(item => item.StringId))}]");
-                    }
-                    else
-                    {
-                        result.AddIssue($"String id '{stringId}' could not be found in the game files.");
-                    }
+                    result.AddIssue($"String id '{stringId}' is incorrect in the article. Should be corrected to one of the following: [{string.Join(", ", matchingItems.Select(item => item.StringId))}]");
                 }
                 else
                 {
