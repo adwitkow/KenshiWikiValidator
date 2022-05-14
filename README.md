@@ -14,3 +14,7 @@
 
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=adwitkow_KenshiWikiValidator&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=adwitkow_KenshiWikiValidator)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=adwitkow_KenshiWikiValidator&metric=coverage)](https://sonarcloud.io/summary/new_code?id=adwitkow_KenshiWikiValidator)
+
+## Dependencies
+* [OpenConstructionSet](https://github.com/lmaydev/OpenConstructionSet) by lmaydev
+* [WikiClientLibrary](https://github.com/CXuesong/WikiClientLibrary) by CXuesong
