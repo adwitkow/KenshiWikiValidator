@@ -2,9 +2,6 @@
 using KenshiWikiValidator.OcsProxy.DialogueComponents;
 using KenshiWikiValidator.OcsProxy.Models;
 using KenshiWikiValidator.WikiSections;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
-using System.Linq;
 
 namespace DialogueDumper
 {

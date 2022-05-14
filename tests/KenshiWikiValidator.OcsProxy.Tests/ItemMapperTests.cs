@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using KenshiWikiValidator.OcsProxy.DialogueComponents;
 using KenshiWikiValidator.OcsProxy.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

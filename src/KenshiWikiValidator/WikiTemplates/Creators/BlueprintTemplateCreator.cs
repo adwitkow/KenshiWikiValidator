@@ -18,7 +18,6 @@ using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.Models;
 using KenshiWikiValidator.OcsProxy.Models.Interfaces;
-using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.WikiTemplates.Creators;
 
@@ -45,10 +44,10 @@ public class BlueprintTemplateCreator : ITemplateCreator
 
         var research = this.GetUnlockingResearch(item);
 
-        var color = item.Type switch
+        var color = item switch
         {
-            ItemType.Crossbow => "yellow",
-            ItemType.Armour => "green",
+            Crossbow _ => "yellow",
+            Armour _ => "green",
             _ => "blue",
         };
 

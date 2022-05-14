@@ -16,9 +16,9 @@
 
 using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.OcsProxy;
+using KenshiWikiValidator.OcsProxy.Models;
 using KenshiWikiValidator.WikiCategories.Locations.Rules;
 using KenshiWikiValidator.WikiCategories.SharedRules;
-using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.WikiCategories.Locations
 {
@@ -31,7 +31,7 @@ namespace KenshiWikiValidator.WikiCategories.Locations
             this.rules = new List<IValidationRule>()
             {
                 new ContainsTemplateRule("Town"),
-                new StringIdRule(itemRepository, wikiTitles, true, ItemType.Town),
+                new StringIdRule<Town>(itemRepository, wikiTitles),
                 new ContainsTownTemplateRule(itemRepository, wikiTitles, zoneDataProvider),
             };
         }

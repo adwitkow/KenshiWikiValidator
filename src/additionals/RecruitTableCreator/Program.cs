@@ -3,7 +3,6 @@
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.DialogueComponents;
 using KenshiWikiValidator.OcsProxy.Models;
-using OpenConstructionSet.Models;
 
 var repository = new ItemRepository();
 repository.Load();
