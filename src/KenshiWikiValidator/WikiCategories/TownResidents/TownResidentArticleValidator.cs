@@ -25,12 +25,12 @@ namespace KenshiWikiValidator.WikiCategories.TownResidents
         private readonly IEnumerable<IValidationRule> rules;
 
         public TownResidentArticleValidator(IItemRepository itemRepository, WikiTitleCache wikiTitles)
+            : base(itemRepository, wikiTitles)
         {
             this.rules = new List<IValidationRule>()
             {
                 new NewLinesRule(),
                 new ContainsTemplateRule("Traders"),
-                new StringIdRule(itemRepository, wikiTitles),
             };
         }
 

@@ -28,11 +28,11 @@ namespace KenshiWikiValidator.WikiCategories.Weapons
         private readonly IEnumerable<IValidationRule> rules;
 
         public WeaponArticleValidator(IItemRepository itemRepository, WikiTitleCache wikiTitles, TownResidentArticleValidator townResidentValidator)
+            : base(itemRepository, wikiTitles)
         {
             this.dependencies = new List<IArticleValidator>() { townResidentValidator };
             this.rules = new List<IValidationRule>()
             {
-                new StringIdRule(itemRepository, wikiTitles),
                 new ContainsTemplateRule("Weapon", new[] { "Weapon Types" }),
                 new NewLinesRule(),
                 new ContainsBlueprintsSectionRule(itemRepository, wikiTitles),

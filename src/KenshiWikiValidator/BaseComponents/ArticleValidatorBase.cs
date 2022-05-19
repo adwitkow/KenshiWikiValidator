@@ -15,6 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System.Text.RegularExpressions;
+using KenshiWikiValidator.OcsProxy;
+using KenshiWikiValidator.WikiCategories.SharedRules;
 using KenshiWikiValidator.WikiTemplates;
 
 namespace KenshiWikiValidator.BaseComponents
@@ -23,9 +25,15 @@ namespace KenshiWikiValidator.BaseComponents
     {
         private static readonly Regex CategoryRegex = new Regex(@"\[\[Category:(?<name>.*?)(\|#)?]]");
 
-        protected ArticleValidatorBase()
+        private readonly Dictionary<string, ArticleData> articleDataMap;
+        private readonly IItemRepository itemRepository;
+        private readonly WikiTitleCache wikiTitles;
+
+        protected ArticleValidatorBase(IItemRepository itemRepository, WikiTitleCache wikiTitles)
         {
-            this.Data = new ArticleData();
+            this.articleDataMap = new Dictionary<string, ArticleData>();
+            this.itemRepository = itemRepository;
+            this.wikiTitles = wikiTitles;
         }
 
         public abstract string CategoryName { get; }
@@ -34,29 +42,15 @@ namespace KenshiWikiValidator.BaseComponents
 
         public virtual IEnumerable<IArticleValidator> Dependencies => Enumerable.Empty<IArticleValidator>();
 
-        public ArticleData Data { get; private set; }
-
         public ArticleValidationResult Validate(string title, string content)
         {
             var result = new ArticleValidationResult();
             var results = new List<RuleResult>();
 
-            var categories = new List<string>();
-            foreach (Match match in CategoryRegex.Matches(content))
-            {
-                var category = match.Groups["name"].Value;
-                categories.Add(category);
-            }
-
-            this.Data = new ArticleData
-            {
-                WikiTemplates = this.ParseTemplates(content),
-                Categories = categories,
-            };
-
+            var data = this.articleDataMap[title];
             foreach (IValidationRule? rule in this.Rules)
             {
-                results.Add(rule.Execute(title, content, this.Data));
+                results.Add(rule.Execute(title, content, data));
             }
 
             var success = !results.Any(result => !result.Success);
@@ -74,6 +68,29 @@ namespace KenshiWikiValidator.BaseComponents
             }
 
             return result;
+        }
+
+        public void CachePageData(string title, string content)
+        {
+            var categories = new List<string>();
+            foreach (Match match in CategoryRegex.Matches(content))
+            {
+                var category = match.Groups["name"].Value;
+                categories.Add(category);
+            }
+
+            var articleData = new ArticleData
+            {
+                WikiTemplates = this.ParseTemplates(content),
+                Categories = categories,
+            };
+
+            // TODO: This is a hack: I should figure out a different way
+            // to process the string ids before the rules are ran.
+            var stringIdRule = new StringIdRule(this.itemRepository, this.wikiTitles);
+            stringIdRule.Execute(title, content, articleData);
+
+            this.articleDataMap[title] = articleData;
         }
 
         public IEnumerable<WikiTemplate> ParseTemplates(string content)
