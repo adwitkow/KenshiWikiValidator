@@ -18,6 +18,28 @@ namespace KenshiWikiValidator.WikiTemplates
 {
     public class TemplateParser
     {
+        public IEnumerable<WikiTemplate> ParseAllTemplates(string content)
+        {
+            var templates = new List<WikiTemplate>();
+
+            var startingIndex = content.IndexOf("{{");
+            var endingIndex = content.IndexOf("}}");
+
+            while (startingIndex != -1 && endingIndex != -1)
+            {
+                var body = content.Substring(startingIndex, endingIndex - startingIndex + 2);
+                templates.Add(this.Parse(body));
+
+                startingIndex = content.IndexOf("{{", endingIndex);
+                if (startingIndex != -1)
+                {
+                    endingIndex = content.IndexOf("}}", startingIndex);
+                }
+            }
+
+            return templates;
+        }
+
         public WikiTemplate Parse(string input)
         {
             var trimmed = input.Trim();

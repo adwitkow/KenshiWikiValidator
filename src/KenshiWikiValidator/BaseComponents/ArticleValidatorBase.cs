@@ -25,16 +25,17 @@ namespace KenshiWikiValidator.BaseComponents
     {
         private static readonly Regex CategoryRegex = new Regex(@"\[\[Category:(?<name>.*?)(\|#)?]]");
 
-        private readonly Dictionary<string, ArticleData> articleDataMap;
         private readonly IItemRepository itemRepository;
         private readonly WikiTitleCache wikiTitles;
 
         protected ArticleValidatorBase(IItemRepository itemRepository, WikiTitleCache wikiTitles)
         {
-            this.articleDataMap = new Dictionary<string, ArticleData>();
+            this.ArticleDataMap = new Dictionary<string, ArticleData>();
             this.itemRepository = itemRepository;
             this.wikiTitles = wikiTitles;
         }
+
+        public Dictionary<string, ArticleData> ArticleDataMap { get; }
 
         public abstract string CategoryName { get; }
 
@@ -47,7 +48,7 @@ namespace KenshiWikiValidator.BaseComponents
             var result = new ArticleValidationResult();
             var results = new List<RuleResult>();
 
-            var data = this.articleDataMap[title];
+            var data = this.ArticleDataMap[title];
             foreach (IValidationRule? rule in this.Rules)
             {
                 results.Add(rule.Execute(title, content, data));
@@ -90,30 +91,13 @@ namespace KenshiWikiValidator.BaseComponents
             var stringIdRule = new StringIdRule(this.itemRepository, this.wikiTitles);
             stringIdRule.Execute(title, content, articleData);
 
-            this.articleDataMap[title] = articleData;
+            this.ArticleDataMap[title] = articleData;
         }
 
         public IEnumerable<WikiTemplate> ParseTemplates(string content)
         {
             var parser = new TemplateParser();
-            var templates = new List<WikiTemplate>();
-
-            var startingIndex = content.IndexOf("{{");
-            var endingIndex = content.IndexOf("}}");
-
-            while (startingIndex != -1 && endingIndex != -1)
-            {
-                var body = content.Substring(startingIndex, endingIndex - startingIndex + 2);
-                templates.Add(parser.Parse(body));
-
-                startingIndex = content.IndexOf("{{", endingIndex);
-                if (startingIndex != -1)
-                {
-                    endingIndex = content.IndexOf("}}", startingIndex);
-                }
-            }
-
-            return templates;
+            return parser.ParseAllTemplates(content);
         }
     }
 }

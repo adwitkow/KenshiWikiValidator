@@ -2,8 +2,10 @@
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.Models;
 using KenshiWikiValidator.WikiCategories.SharedRules;
+using KenshiWikiValidator.WikiTemplates;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
@@ -22,12 +24,9 @@ namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
                 .Setup(repo => repo.GetItems())
                 .Returns(new[] { wakizashi });
 
-            var validator = new Mock<ArticleValidatorBase>();
-            validator
-                .Setup(v => v.Rules)
-                .Returns(new[] { new StringIdRule(itemRepository.Object, new WikiTitleCache()) });
-
-            var result = validator.Object.Validate("Wakizashi", textToValidate);
+            var stringIdRule = new StringIdRule(itemRepository.Object, new WikiTitleCache());
+            var articleData = new ArticleData();
+            var result = stringIdRule.Execute("Wakizashi", textToValidate, articleData);
 
             Assert.IsTrue(result.Success);
         }
@@ -43,12 +42,15 @@ namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
                 .Setup(repo => repo.GetItems())
                 .Returns(new[] { wakizashi });
 
-            var validator = new Mock<ArticleValidatorBase>();
-            validator
-                .Setup(v => v.Rules)
-                .Returns(new[] { new StringIdRule(itemRepository.Object, new WikiTitleCache()) });
+            var stringIdRule = new StringIdRule(itemRepository.Object, new WikiTitleCache());
+            var templateParser = new TemplateParser();
+            var articleData = new ArticleData()
+            {
+                WikiTemplates = templateParser.ParseAllTemplates(textToValidate)
+            };
+            var result = stringIdRule.Execute("Wakizashi", textToValidate, articleData);
 
-            Assert.IsFalse(validator.Object.Validate("Wakizashi", textToValidate).Success);
+            Assert.IsFalse(result.Success);
         }
 
         [TestMethod]
@@ -62,12 +64,13 @@ namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
                 .Setup(repo => repo.GetItems())
                 .Returns(new[] { wakizashi });
 
-            var validator = new Mock<ArticleValidatorBase>();
-            validator
-                .Setup(v => v.Rules)
-                .Returns(new[] { new StringIdRule(itemRepository.Object, new WikiTitleCache()) });
-
-            var result = validator.Object.Validate("Wakizashi", textToValidate);
+            var stringIdRule = new StringIdRule(itemRepository.Object, new WikiTitleCache());
+            var templateParser = new TemplateParser();
+            var articleData = new ArticleData()
+            {
+                WikiTemplates = templateParser.ParseAllTemplates(textToValidate)
+            };
+            var result = stringIdRule.Execute("Wakizashi", textToValidate, articleData);
 
             Assert.IsFalse(result.Success);
         }
@@ -83,14 +86,15 @@ namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
                 .Setup(repo => repo.GetItems())
                 .Returns(new[] { lostArmoury });
 
-            var validator = new Mock<ArticleValidatorBase>();
-            validator
-                .Setup(v => v.Rules)
-                .Returns(new[] { new StringIdRule(itemRepository.Object, new WikiTitleCache()) });
+            var stringIdRule = new StringIdRule(itemRepository.Object, new WikiTitleCache());
+            var templateParser = new TemplateParser();
+            var articleData = new ArticleData()
+            {
+                WikiTemplates = templateParser.ParseAllTemplates(textToValidate)
+            };
+            stringIdRule.Execute("Lost Armoury", textToValidate, articleData);
 
-            validator.Object.Validate("Lost Armoury", textToValidate);
-            
-            Assert.AreEqual("49935-rebirth.mod", validator.Object.Data.PotentialStringId);
+            Assert.AreEqual("49935-rebirth.mod", articleData.PotentialStringId);
         }
 
         [TestMethod]
@@ -104,35 +108,15 @@ namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
                 .Setup(repo => repo.GetItems())
                 .Returns(new[] { wakizashi });
 
-            var validator = new Mock<ArticleValidatorBase>();
-            validator
-                .Setup(v => v.Rules)
-                .Returns(new[] { new StringIdRule(itemRepository.Object, new WikiTitleCache()) });
-
-            var result = validator.Object.Validate("Wakizashi - title different from the FCS name", textToValidate);
+            var stringIdRule = new StringIdRule(itemRepository.Object, new WikiTitleCache());
+            var templateParser = new TemplateParser();
+            var articleData = new ArticleData()
+            {
+                WikiTemplates = templateParser.ParseAllTemplates(textToValidate)
+            };
+            var result = stringIdRule.Execute("Wakizashi - title different from the FCS name", textToValidate, articleData);
 
             Assert.AreEqual("No string id! Most likely string id: [string id = 1020-gamedata.base|]", result.Issues.First());
-        }
-
-        [TestMethod]
-        public void ShouldFilterByTypeCorrectly()
-        {
-            var wakizashi = new Weapon("1020-gamedata.base", "Wakizashi");
-            var textToValidate = "{{Weapon|string id = 1020-gamedata.base}}";
-
-            var itemRepository = new Mock<IItemRepository>();
-            itemRepository
-                .Setup(repo => repo.GetItems<Weapon>())
-                .Returns(new[] { wakizashi });
-
-            var validator = new Mock<ArticleValidatorBase>();
-            validator
-                .Setup(v => v.Rules)
-                .Returns(new[] { new StringIdRule<Weapon>(itemRepository.Object, new WikiTitleCache()) });
-
-            var result = validator.Object.Validate("Wakizashi", textToValidate);
-
-            Assert.IsTrue(result.Success);
         }
     }
 }
