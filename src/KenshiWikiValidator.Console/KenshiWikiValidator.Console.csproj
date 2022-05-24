@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\KenshiWikiValidator\KenshiWikiValidator.csproj" />
+    <ProjectReference Include="..\KenshiWikiValidator\KenshiWikiValidator.csproj" />
   </ItemGroup>
 
 </Project>
