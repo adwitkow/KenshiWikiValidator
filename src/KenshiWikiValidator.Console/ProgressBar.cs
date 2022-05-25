@@ -35,6 +35,11 @@ namespace KenshiWikiValidator.Console
 
 		public void Report(double value)
 		{
+			if (disposed)
+            {
+				throw new ObjectDisposedException(nameof(ProgressBar));
+            }
+
 			// Make sure value is in [0..1] range
 			value = Math.Max(0, Math.Min(1, value));
 			Interlocked.Exchange(ref currentProgress, value);
