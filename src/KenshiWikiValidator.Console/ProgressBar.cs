@@ -107,6 +107,7 @@ namespace KenshiWikiValidator.Console
 					{
 						disposed = true;
 						UpdateText(string.Empty);
+						timer.Dispose();
 					}
 				}
 

@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KenshiWikiValidator.Console.Tests
@@ -7,24 +8,32 @@ namespace KenshiWikiValidator.Console.Tests
     public class ProgressBarTests
     {
         [TestMethod]
-        public void ShouldHandleNegativeValues()
+        public async Task ShouldHandleNegativeValues()
         {
             var progress = new ProgressBar();
             using (progress)
             {
-                progress.Report(-1);
+                for (int i = 0; i < 10; i++)
+                {
+                    progress.Report(-i);
+                    await Task.Delay(200);
+                }
             }
 
             Assert.ThrowsException<ObjectDisposedException>(() => progress.Report(-1));
         }
 
         [TestMethod]
-        public void ShouldHandleBigValues()
+        public async Task ShouldHandleBigValues()
         {
             var progress = new ProgressBar();
             using (progress)
             {
-                progress.Report(double.MaxValue);
+                for (int i = 0; i < 10; i++)
+                {
+                    progress.Report(double.MaxValue);
+                    await Task.Delay(200);
+                }
             }
 
             Assert.ThrowsException<ObjectDisposedException>(() => progress.Report(double.MaxValue));
