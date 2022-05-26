@@ -16,7 +16,7 @@ namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
     public class ContainsBlueprintsSectionRuleTests
     {
         [TestMethod]
-        public void Test()
+        public void IsSuccessfulForCombinedCase()
         {
             var textToValidate = @"{{Weapon|string id = 1020-gamedata.base}}
 == Blueprints ==
@@ -77,15 +77,15 @@ The [[Blueprints]] for this item can be found at the following locations.
                 .Setup(repo => repo.GetItems<Town>())
                 .Returns(towns);
 
-            var validator = new Mock<ArticleValidatorBase>();
+            var validator = new Mock<ArticleValidatorBase>(itemRepository.Object, new WikiTitleCache());
             validator
                 .Setup(v => v.Rules)
                 .Returns(new IValidationRule[]
                 {
-                    new StringIdRule(itemRepository.Object, titleCache),
                     new ContainsBlueprintsSectionRule(itemRepository.Object, titleCache),
                 });
 
+            validator.Object.CachePageData("Wakizashi", textToValidate);
             var result = validator.Object.Validate("Wakizashi", textToValidate);
 
             Assert.IsTrue(result.Success);

@@ -135,19 +135,4 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
                 .ToList();
         }
     }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Irrelevant for generic types IMO")]
-    public class StringIdRule<T> : StringIdRule
-        where T : IItem
-    {
-        public StringIdRule(IItemRepository itemRepository, WikiTitleCache wikiTitleCache)
-            : base(itemRepository, wikiTitleCache)
-        {
-        }
-
-        protected override IEnumerable<IItem> GetRelevantItems()
-        {
-            return (IEnumerable<IItem>)this.ItemRepository.GetItems<T>();
-        }
-    }
 }

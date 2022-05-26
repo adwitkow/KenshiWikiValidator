@@ -22,16 +22,16 @@ using KenshiWikiValidator.WikiCategories.SharedRules;
 
 namespace KenshiWikiValidator.WikiCategories.Locations
 {
-    internal class LocationsArticleValidator : ArticleValidatorBase
+    public class LocationsArticleValidator : ArticleValidatorBase
     {
         private readonly IEnumerable<IValidationRule> rules;
 
         public LocationsArticleValidator(IItemRepository itemRepository, ZoneDataProvider zoneDataProvider, WikiTitleCache wikiTitles)
+            : base(itemRepository, wikiTitles)
         {
             this.rules = new List<IValidationRule>()
             {
                 new ContainsTemplateRule("Town"),
-                new StringIdRule<Town>(itemRepository, wikiTitles),
                 new ContainsTownTemplateRule(itemRepository, wikiTitles, zoneDataProvider),
             };
         }

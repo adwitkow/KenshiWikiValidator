@@ -20,11 +20,12 @@ using KenshiWikiValidator.WikiCategories.SharedRules;
 
 namespace KenshiWikiValidator.WikiCategories.Characters
 {
-    internal class CharactersArticleValidator : ArticleValidatorBase
+    public class CharactersArticleValidator : ArticleValidatorBase
     {
         private readonly IEnumerable<IValidationRule> rules;
 
         public CharactersArticleValidator(IItemRepository itemRepository, WikiTitleCache wikiTitles)
+            : base(itemRepository, wikiTitles)
         {
             this.rules = new List<IValidationRule>()
             {

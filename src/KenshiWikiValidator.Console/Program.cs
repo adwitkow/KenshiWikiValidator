@@ -16,6 +16,7 @@
 
 using System.Diagnostics;
 using KenshiWikiValidator.BaseComponents;
+using KenshiWikiValidator.Console;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.WikiCategories.Characters;
 using KenshiWikiValidator.WikiCategories.Locations;
@@ -97,14 +98,26 @@ static async Task RetrieveAndValidate(IArticleValidator validator, WikiClient cl
 
     var pages = await RetrieveArticles(client, validator.CategoryName);
 
-    Console.WriteLine("Retrieved. Beginning to validate.");
+    Console.WriteLine($"Retrieved {pages.Count} articles. Proceeding to cache the metadata.");
 
     Console.ResetColor();
 
+    using (var progress = new ProgressBar())
+    {
+        for (var i = 0; i < pages.Count; i++)
+        {
+            progress.Report((double)i / pages.Count);
+            var page = pages[i];
+
+            await page.RefreshAsync(PageQueryOptions.FetchContent);
+            validator.CachePageData(page.Title, page.Content);
+        }
+    }
+
+    Console.WriteLine("Done. Beginning to validate the articles.");
+
     foreach (var page in pages)
     {
-        await page.RefreshAsync(PageQueryOptions.FetchContent);
-
         ValidateArticle(page, validator);
     }
 }
@@ -138,7 +151,7 @@ static void ValidateArticle(WikiPage page, IArticleValidator articleValidator)
     }
 }
 
-static async Task<IEnumerable<WikiPage>> RetrieveArticles(WikiClient client, string category)
+static async Task<IList<WikiPage>> RetrieveArticles(WikiClient client, string category)
 {
     var site = new WikiaSite(client, WikiApiUrl);
     await site.Initialization;

@@ -15,6 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System.Text.RegularExpressions;
+using KenshiWikiValidator.OcsProxy;
+using KenshiWikiValidator.WikiCategories.SharedRules;
 using KenshiWikiValidator.WikiTemplates;
 
 namespace KenshiWikiValidator.BaseComponents
@@ -23,10 +25,17 @@ namespace KenshiWikiValidator.BaseComponents
     {
         private static readonly Regex CategoryRegex = new Regex(@"\[\[Category:(?<name>.*?)(\|#)?]]");
 
-        protected ArticleValidatorBase()
+        private readonly IItemRepository itemRepository;
+        private readonly WikiTitleCache wikiTitles;
+
+        protected ArticleValidatorBase(IItemRepository itemRepository, WikiTitleCache wikiTitles)
         {
-            this.Data = new ArticleData();
+            this.ArticleDataMap = new Dictionary<string, ArticleData>();
+            this.itemRepository = itemRepository;
+            this.wikiTitles = wikiTitles;
         }
+
+        public Dictionary<string, ArticleData> ArticleDataMap { get; }
 
         public abstract string CategoryName { get; }
 
@@ -34,29 +43,20 @@ namespace KenshiWikiValidator.BaseComponents
 
         public virtual IEnumerable<IArticleValidator> Dependencies => Enumerable.Empty<IArticleValidator>();
 
-        public ArticleData Data { get; private set; }
-
         public ArticleValidationResult Validate(string title, string content)
         {
             var result = new ArticleValidationResult();
             var results = new List<RuleResult>();
 
-            var categories = new List<string>();
-            foreach (Match match in CategoryRegex.Matches(content))
+            if (!this.ArticleDataMap.ContainsKey(title))
             {
-                var category = match.Groups["name"].Value;
-                categories.Add(category);
+                this.CachePageData(title, content);
             }
 
-            this.Data = new ArticleData
-            {
-                WikiTemplates = this.ParseTemplates(content),
-                Categories = categories,
-            };
-
+            var data = this.ArticleDataMap[title];
             foreach (IValidationRule? rule in this.Rules)
             {
-                results.Add(rule.Execute(title, content, this.Data));
+                results.Add(rule.Execute(title, content, data));
             }
 
             var success = !results.Any(result => !result.Success);
@@ -76,27 +76,33 @@ namespace KenshiWikiValidator.BaseComponents
             return result;
         }
 
+        public void CachePageData(string title, string content)
+        {
+            var categories = new List<string>();
+            foreach (Match match in CategoryRegex.Matches(content))
+            {
+                var category = match.Groups["name"].Value;
+                categories.Add(category);
+            }
+
+            var articleData = new ArticleData
+            {
+                WikiTemplates = this.ParseTemplates(content),
+                Categories = categories,
+            };
+
+            // TODO: This is a hack: I should figure out a different way
+            // to process the string ids before the rules are ran.
+            var stringIdRule = new StringIdRule(this.itemRepository, this.wikiTitles);
+            stringIdRule.Execute(title, content, articleData);
+
+            this.ArticleDataMap[title] = articleData;
+        }
+
         public IEnumerable<WikiTemplate> ParseTemplates(string content)
         {
             var parser = new TemplateParser();
-            var templates = new List<WikiTemplate>();
-
-            var startingIndex = content.IndexOf("{{");
-            var endingIndex = content.IndexOf("}}");
-
-            while (startingIndex != -1 && endingIndex != -1)
-            {
-                var body = content.Substring(startingIndex, endingIndex - startingIndex + 2);
-                templates.Add(parser.Parse(body));
-
-                startingIndex = content.IndexOf("{{", endingIndex);
-                if (startingIndex != -1)
-                {
-                    endingIndex = content.IndexOf("}}", startingIndex);
-                }
-            }
-
-            return templates;
+            return parser.ParseAllTemplates(content);
         }
     }
 }
