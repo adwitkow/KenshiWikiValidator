@@ -8,32 +8,24 @@ namespace KenshiWikiValidator.Console.Tests
     public class ProgressBarTests
     {
         [TestMethod]
-        public async Task ShouldHandleNegativeValues()
+        public void ShouldHandleNegativeValues()
         {
             var progress = new ProgressBar();
             using (progress)
             {
-                for (int i = 0; i < 10; i++)
-                {
-                    progress.Report(-i);
-                    await Task.Delay(200);
-                }
+                progress.Report(-1);
             }
 
             Assert.ThrowsException<ObjectDisposedException>(() => progress.Report(-1));
         }
 
         [TestMethod]
-        public async Task ShouldHandleBigValues()
+        public void ShouldHandleBigValues()
         {
             var progress = new ProgressBar();
             using (progress)
             {
-                for (int i = 0; i < 10; i++)
-                {
-                    progress.Report(double.MaxValue);
-                    await Task.Delay(200);
-                }
+                progress.Report(double.MaxValue);
             }
 
             Assert.ThrowsException<ObjectDisposedException>(() => progress.Report(double.MaxValue));
