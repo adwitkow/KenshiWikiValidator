@@ -32,7 +32,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KenshiWikiValidator.OcsProx
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KenshiWikiValidator.Console", "src\KenshiWikiValidator.Console\KenshiWikiValidator.Console.csproj", "{F6CAB342-E81A-41CB-9F6C-305D8C147919}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KenshiWikiValidator.Console.Tests", "KenshiWikiValidator.Console.Tests\KenshiWikiValidator.Console.Tests.csproj", "{9437F397-9652-48BB-9060-D5C2C8768B50}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KenshiWikiValidator.Console.Tests", "tests\KenshiWikiValidator.Console.Tests\KenshiWikiValidator.Console.Tests.csproj", "{9437F397-9652-48BB-9060-D5C2C8768B50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
