@@ -48,6 +48,11 @@ namespace KenshiWikiValidator.BaseComponents
             var result = new ArticleValidationResult();
             var results = new List<RuleResult>();
 
+            if (!this.ArticleDataMap.ContainsKey(title))
+            {
+                this.CachePageData(title, content);
+            }
+
             var data = this.ArticleDataMap[title];
             foreach (IValidationRule? rule in this.Rules)
             {
