@@ -48,9 +48,7 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Rules
             }
 
             var items = stringIds.Select(id => this.itemRepository.GetItemByStringId<Town>(id));
-            var townOverrides = items
-                .SelectMany(item => item.OverrideTown
-                    .Select(townReference => townReference.Item))
+            var townOverrides = items.SelectItems(item => item.OverrideTown)
                 .ToList();
 
             if (!townOverrides.Any())
