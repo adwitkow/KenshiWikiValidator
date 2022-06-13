@@ -1,0 +1,44 @@
+name: publish
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  publish:
+
+    runs-on: windows-latest
+
+    steps:
+    - name: Get current date
+      id: date
+      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      shell: pwsh
+      run: |
+        # Build everything
+        dir "src/**/*.csproj" -Recurse | %{ dotnet publish $PSItem.FullName -c Release -o publish/win-x64 -r win-x64 --no-self-contained }
+        dir "src/**/*.csproj" -Recurse | %{ dotnet publish $PSItem.FullName -c Release -o publish/win-x86 -r win-x86 --no-self-contained }
+        
+        Compress-Archive -Path publish/win-x64/* -DestinationPath win-x64.zip
+        Compress-Archive -Path publish/win-x86/* -DestinationPath win-x86.zip
+    - name: Publish
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: nightly
+        name: "nightly-release-${{ steps.date.outputs.date }}"
+        files: |
+          win-x86.zip
+          win-x64.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
