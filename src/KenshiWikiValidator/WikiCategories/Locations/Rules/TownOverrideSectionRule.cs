@@ -21,7 +21,7 @@ using KenshiWikiValidator.WikiSections;
 
 namespace KenshiWikiValidator.WikiCategories.Locations.Rules
 {
-    internal class TownOverrideSectionRule : ContainsSectionRuleBase
+    public class TownOverrideSectionRule : ContainsSectionRuleBase
     {
         private readonly IItemRepository itemRepository;
         private readonly IWikiTitleCache wikiTitleCache;
