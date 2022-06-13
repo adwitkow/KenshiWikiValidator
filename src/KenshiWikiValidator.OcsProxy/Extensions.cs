@@ -23,5 +23,15 @@ namespace KenshiWikiValidator.OcsProxy
         {
             return references.Any(reference => ReferenceEquals(item, reference.Item));
         }
+
+        public static IEnumerable<TResult> SelectItems<T, TResult>(
+            this IEnumerable<T> items,
+            Func<T, IEnumerable<ItemReference<TResult>>> func)
+            where T : IItem
+            where TResult : IItem
+        {
+            return items.SelectMany(item => func(item)
+                    .Select(townReference => townReference.Item));
+        }
     }
 }

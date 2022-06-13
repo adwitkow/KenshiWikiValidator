@@ -47,14 +47,14 @@ namespace KenshiWikiValidator.BaseComponents
             {
                 result.AddIssue($"Incorrect or missing '{section.Header}' section");
 
-                var sectionPath = Path.Combine(output, $"{title}-{section.Header}-Section.txt");
+                var sectionPath = Path.Combine(output, $"{title.Replace('/', ' ')}-{section.Header}-Section.txt");
                 File.WriteAllText(sectionPath, sectionContent);
             }
 
             return result;
         }
 
-        protected abstract WikiSectionBuilder CreateSectionBuilder(ArticleData data);
+        protected abstract WikiSectionBuilder? CreateSectionBuilder(ArticleData data);
 
         private static string MakeNewlinesConsistent(string input)
         {

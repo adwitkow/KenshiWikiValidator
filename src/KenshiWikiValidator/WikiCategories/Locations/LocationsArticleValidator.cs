@@ -33,6 +33,7 @@ namespace KenshiWikiValidator.WikiCategories.Locations
             {
                 new ContainsTemplateRule("Town"),
                 new ContainsTownTemplateRule(itemRepository, wikiTitles, zoneDataProvider),
+                new TownOverrideSectionRule(itemRepository, wikiTitles),
             };
         }
 
