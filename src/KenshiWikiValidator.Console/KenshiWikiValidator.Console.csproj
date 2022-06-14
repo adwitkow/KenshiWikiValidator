@@ -9,6 +9,7 @@
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	<BaseOutputPath>..\..\bin\</BaseOutputPath>
 	<UseCommonOutputDirectory>true</UseCommonOutputDirectory>
+	<GenerateRuntimeConfigDevFile>true</GenerateRuntimeConfigDevFile>
   </PropertyGroup>
 
   <ItemGroup>
