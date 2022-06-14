@@ -8,6 +8,7 @@
     <CodeAnalysisRuleSet>..\..\..\.sonarlint\adwitkow_kenshiwikivalidatorcsharp.ruleset</CodeAnalysisRuleSet>
 	<BaseOutputPath>..\..\..\bin\</BaseOutputPath>
 	<UseCommonOutputDirectory>true</UseCommonOutputDirectory>
+	<GenerateRuntimeConfigDevFile>true</GenerateRuntimeConfigDevFile>
   </PropertyGroup>
 
   <ItemGroup>
