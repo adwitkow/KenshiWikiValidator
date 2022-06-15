@@ -1,8 +1,11 @@
 name: publish
-
 on:
-  push:
-    branches: [ master ]
+  workflow_run:
+    workflows: ["Build"]
+    types:
+      - completed
+    branches:
+      - master
 
 jobs:
   publish:
@@ -32,14 +35,14 @@ jobs:
     - name: Build
       shell: pwsh
       run: |
-        # Publish everything
+        # Create artifacts
         dir "src/**/*.csproj" -Recurse | %{ dotnet publish $PSItem.FullName -c Release -o publish/win-x64 -r win-x64 --no-self-contained }
         dir "src/**/*.csproj" -Recurse | %{ dotnet publish $PSItem.FullName -c Release -o publish/win-x86 -r win-x86 --no-self-contained }
         
-        # Compress to zip archives
+        # Compress them into zip archives
         Compress-Archive -Path publish/win-x64/* -DestinationPath win-x64.zip
         Compress-Archive -Path publish/win-x86/* -DestinationPath win-x86.zip
-    - name: Publish
+    - name: Release
       uses: softprops/action-gh-release@v1
       with:
         tag_name: nightly
