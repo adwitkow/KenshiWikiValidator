@@ -14,6 +14,14 @@ jobs:
       id: date
       run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
     - uses: actions/checkout@v2
+    - name: Tag commit
+      shell: bash
+      run: |
+        git config user.name "${GITHUB_ACTOR}"
+        git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+        
+        git tag -fa "nightly" -m "nightly release"
+        git push -f --tags
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
@@ -24,10 +32,11 @@ jobs:
     - name: Build
       shell: pwsh
       run: |
-        # Build everything
+        # Publish everything
         dir "src/**/*.csproj" -Recurse | %{ dotnet publish $PSItem.FullName -c Release -o publish/win-x64 -r win-x64 --no-self-contained }
         dir "src/**/*.csproj" -Recurse | %{ dotnet publish $PSItem.FullName -c Release -o publish/win-x86 -r win-x86 --no-self-contained }
         
+        # Compress to zip archives
         Compress-Archive -Path publish/win-x64/* -DestinationPath win-x64.zip
         Compress-Archive -Path publish/win-x86/* -DestinationPath win-x86.zip
     - name: Publish
