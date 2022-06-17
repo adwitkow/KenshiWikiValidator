@@ -29,13 +29,14 @@ namespace KenshiWikiValidator.BaseComponents
             var isNegated = worldStateReference.Value0 == 0;
 
             var npcIsComponents = CreateCharacterComponents(worldState.NpcIs, "is", isNegated);
-            //var npcIsNotComponents = CreateCharacterComponents(worldState.NpcIsNot, "is not", isNegated);
+            var npcIsNotComponents = CreateCharacterComponents(worldState.NpcIsNot, "is not", isNegated);
             //var playerAllyItems = worldState.PlayerAlly
             //    .ToDictionary(
             //        reference => reference.Item,
             //        reference => Convert.ToBoolean(reference.Value0));
 
-            return OxbridgeAnd(npcIsComponents.Select(comp => JoinSentence(comp)));
+            return OxbridgeAnd(npcIsComponents.Select(comp => JoinSentence(comp))
+                .Concat(npcIsNotComponents.Select(comp => JoinSentence(comp))));
         }
 
         private static IEnumerable<WorldStateSentence> CreateCharacterComponents(
