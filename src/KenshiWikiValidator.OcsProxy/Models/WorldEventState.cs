@@ -48,5 +48,14 @@ namespace KenshiWikiValidator.OcsProxy.Models
 
         [Reference("player enemy")]
         public IEnumerable<ItemReference<Faction>> PlayerEnemy { get; set; }
+
+        public IEnumerable<object> GetAllConditions()
+        {
+            return this.NpcIs.Cast<object>()
+                .Concat(this.NpcIsNot.Cast<object>())
+                .Concat(this.PlayerAlly.Cast<object>())
+                .Concat(this.PlayerEnemy.Cast<object>())
+                .ToList();
+        }
     }
 }
