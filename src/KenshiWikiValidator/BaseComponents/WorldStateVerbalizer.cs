@@ -79,10 +79,9 @@ namespace KenshiWikiValidator.BaseComponents
                 }
             }
 
-            foreach (var pair in sentenceMap)
+            var sentences = sentenceMap.Select(pair => pair.Value);
+            foreach (var sentence in sentences)
             {
-                var sentence = pair.Value;
-
                 if (sentence.Subjects.Count > 1)
                 {
                     sentence.Predicate = sentence.Predicate.Replace("is", "are");
