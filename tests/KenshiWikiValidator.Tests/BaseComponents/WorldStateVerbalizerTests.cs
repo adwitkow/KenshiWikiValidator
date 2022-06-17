@@ -245,6 +245,29 @@ namespace KenshiWikiValidator.Tests.BaseComponents
             Assert.AreEqual(expected, result);
         }
 
+        [TestMethod]
+        public void ShouldVerbalizeMultipleDifferentWorldStates()
+        {
+            var verbalizer = new WorldStateVerbalizer();
+            var worldState1 = SetupCharacterIsWorldState(TrueValue, AliveIdentifier, 2);
+            var worldState2 = SetupCharacterIsNotWorldState(FalseValue, AliveIdentifier, 2);
+            var worldState3 = SetupFactionAllyWorldState(TrueValue, TrueValue, 2);
+            var worldState4 = SetupFactionEnemyWorldState(TrueValue, FalseValue, 2);
+
+            var worldStates = new[]
+            {
+                worldState1,
+                worldState2,
+                worldState3,
+                worldState4,
+            };
+
+            var result = verbalizer.Verbalize(worldStates);
+
+            var expected = $"[[character0]] and [[character1]] are alive, [[character0]] and [[character1]] are not killed or imprisoned, [[faction0]] and [[faction1]] are allied to the player and [[faction0]] and [[faction1]] are not an enemy of the player";
+            Assert.AreEqual(expected, result);
+        }
+
         private ItemReference<WorldEventState> SetupCharacterIsWorldState(int worldStateValue, int subjectStateValue, int characterCount)
         {
             var worldState = new WorldEventState("worldstateid", "name");
