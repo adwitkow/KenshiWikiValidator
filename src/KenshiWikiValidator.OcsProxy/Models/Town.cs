@@ -34,7 +34,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
             this.DefaultResident = Enumerable.Empty<ItemReference<Squad>>();
             this.DebrisBuilding = Enumerable.Empty<ItemReference<Building>>();
             this.Debris = Enumerable.Empty<ItemReference<NestItem>>();
-            this.WorldState = Enumerable.Empty<ItemReference<WorldEventState>>();
+            this.WorldStates = Enumerable.Empty<ItemReference<WorldEventState>>();
             this.LootSpawn = Enumerable.Empty<ItemReference<VendorList>>();
         }
 
@@ -122,7 +122,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<NestItem>> Debris { get; set; }
 
         [Reference("world state")]
-        public IEnumerable<ItemReference<WorldEventState>> WorldState { get; set; }
+        public IEnumerable<ItemReference<WorldEventState>> WorldStates { get; set; }
 
         [Reference("loot spawn")]
         public IEnumerable<ItemReference<VendorList>> LootSpawn { get; set; }

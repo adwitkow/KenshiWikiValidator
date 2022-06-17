@@ -99,7 +99,7 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Rules
             var sectionBuilder = new WikiSectionBuilder()
                 .WithHeader("Town override")
                 .WithLine($"{{{{Main|{title}}}}}")
-                .WithParagraph(this.worldStateVerbalizer.Verbalize(townOverride.WorldState));
+                .WithParagraph(this.worldStateVerbalizer.Verbalize(townOverride.WorldStates));
 
             return sectionBuilder;
         }

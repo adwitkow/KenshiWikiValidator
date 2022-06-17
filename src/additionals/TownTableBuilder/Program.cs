@@ -89,7 +89,7 @@ void AppendTown(StringBuilder builder, Town town)
 string UnwrapWorldStates(Town town)
 {
     var results = new List<string>();
-    var worldStates = town.WorldState
+    var worldStates = town.WorldStates
         .ToDictionary(
             reference => reference.Item,
             reference => Convert.ToBoolean(reference.Value0));
