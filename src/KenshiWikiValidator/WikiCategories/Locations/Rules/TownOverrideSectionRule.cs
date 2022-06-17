@@ -81,7 +81,10 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Rules
                 .WithParagraph($"'''{pageTitle}''' can be affected by multiple [[World States]] to produce the following [[Town Overrides]].")
                 .WithLine("<tabview>");
 
-            var overrideSubpages = townOverrides.Select(townOverride => this.wikiTitleCache.GetTitle(townOverride));
+            var overrideSubpages = townOverrides
+                .OrderBy(townOverride => townOverride.WorldStates
+                    .Sum(state => state.Item.GetAllConditions().Count()))
+                .Select(townOverride => this.wikiTitleCache.GetTitle(townOverride));
             var longestSubpageTitle = overrideSubpages.Max(subpage => subpage.Length);
             foreach (var subpage in overrideSubpages)
             {
