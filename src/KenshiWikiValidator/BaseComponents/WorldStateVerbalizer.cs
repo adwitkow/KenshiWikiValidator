@@ -28,21 +28,24 @@ namespace KenshiWikiValidator.BaseComponents
             var worldState = worldStateReference.Item;
             var isNegated = worldStateReference.Value0 == 0;
 
-            var npcIsComponents = CreateCharacterComponents(worldState.NpcIs, "is", isNegated);
-            var npcIsNotComponents = CreateCharacterComponents(worldState.NpcIsNot, "is not", isNegated);
-            //var playerAllyItems = worldState.PlayerAlly
-            //    .ToDictionary(
-            //        reference => reference.Item,
-            //        reference => Convert.ToBoolean(reference.Value0));
+            var npcIsComponents = CreateComponents(worldState.NpcIs, "is", isNegated);
+            var npcIsNotComponents = CreateComponents(worldState.NpcIsNot, "is not", isNegated);
+
+            var playerAllyComponents = CreateComponents(worldState.PlayerAlly, "is", isNegated, "allied to the player");
+            var playerEnemyComponents = CreateComponents(worldState.PlayerEnemy, "is", isNegated, "an enemy of the player");
 
             return OxbridgeAnd(npcIsComponents.Select(comp => JoinSentence(comp))
-                .Concat(npcIsNotComponents.Select(comp => JoinSentence(comp))));
+                .Concat(npcIsNotComponents.Select(comp => JoinSentence(comp)))
+                .Concat(playerAllyComponents.Select(comp => JoinSentence(comp)))
+                .Concat(playerEnemyComponents.Select(comp => JoinSentence(comp))));
         }
 
-        private static IEnumerable<WorldStateSentence> CreateCharacterComponents(
-            IEnumerable<ItemReference<Character>> characterReferences,
+        private static IEnumerable<WorldStateSentence> CreateComponents<T>(
+            IEnumerable<ItemReference<T>> characterReferences,
             string predicate,
-            bool isNegated)
+            bool isNegated,
+            string baseState = "")
+            where T : IItem
         {
             var itemsWithStates = characterReferences
                 .ToDictionary(
@@ -52,29 +55,26 @@ namespace KenshiWikiValidator.BaseComponents
             var sentenceMap = new Dictionary<string, WorldStateSentence>();
             foreach (var itemPair in itemsWithStates)
             {
-                var character = itemPair.Key;
-                var characterState = itemPair.Value;
+                var item = itemPair.Key;
+                var itemState = itemPair.Value;
 
                 string convertedState;
-                if (isNegated)
+                if (item is Character)
                 {
-                    var validStates = PossibleCharacterStates.ToList();
-                    validStates.RemoveAt(characterState);
-
-                    convertedState = string.Join(" or ", validStates);
+                    convertedState = ConvertCharacterState(isNegated, itemState);
                 }
                 else
                 {
-                    convertedState = PossibleCharacterStates[characterState];
+                    convertedState = ConvertFactionState(isNegated, itemState, baseState);
                 }
 
                 if (sentenceMap.TryGetValue(predicate + convertedState, out var sentence))
                 {
-                    sentence.Subjects.Add(character.Name);
+                    sentence.Subjects.Add(item.Name);
                 }
                 else
                 {
-                    var newSentence = new WorldStateSentence(character.Name, predicate, convertedState);
+                    var newSentence = new WorldStateSentence(item.Name, predicate, convertedState);
                     sentenceMap.Add(predicate + convertedState, newSentence);
                 }
             }
@@ -90,6 +90,42 @@ namespace KenshiWikiValidator.BaseComponents
             }
 
             return sentenceMap.Values;
+        }
+
+        private static string ConvertFactionState(bool isNegated, int factionState, string baseState)
+        {
+            var state = factionState;
+            if (isNegated)
+            {
+                state = Math.Abs(state - 1);
+            }
+
+            string output;
+            if (state == 0)
+            {
+                output = "not " + baseState;
+            }
+            else
+            {
+                output = baseState;
+            }
+
+            return output;
+        }
+
+        private static string ConvertCharacterState(bool isNegated, int characterState)
+        {
+            if (isNegated)
+            {
+                var validStates = PossibleCharacterStates.ToList();
+                validStates.RemoveAt(characterState);
+
+                return string.Join(" or ", validStates);
+            }
+            else
+            {
+                return PossibleCharacterStates[characterState];
+            }
         }
 
         private static string JoinSentence(WorldStateSentence sentence)
@@ -143,7 +179,6 @@ namespace KenshiWikiValidator.BaseComponents
             public string Predicate { get; set; }
 
             public string State { get; set; }
-
         }
     }
 }
