@@ -136,30 +136,18 @@ namespace KenshiWikiValidator.BaseComponents
         private static string OxbridgeAnd(IEnumerable<string> collection)
         {
             // Modified version of https://stackoverflow.com/a/23151256
-            var output = string.Empty;
-
-            if (collection == null)
+            if (!collection.Any())
             {
-                return output;
+                return string.Empty;
             }
 
-            var list = collection.ToList();
-
-            if (!list.Any())
+            if (collection.Count() == 1)
             {
-                return output;
+                return collection.First();
             }
 
-            if (list.Count == 1)
-            {
-                return list.First();
-            }
-
-            var delimited = string.Join(", ", list.Take(list.Count - 1));
-
-            output = string.Concat(delimited, " and ", list.LastOrDefault());
-
-            return output;
+            var delimited = string.Join(", ", collection.Take(collection.Count() - 1));
+            return string.Concat(delimited, " and ", collection.LastOrDefault());
         }
 
         private sealed class WorldStateSentence

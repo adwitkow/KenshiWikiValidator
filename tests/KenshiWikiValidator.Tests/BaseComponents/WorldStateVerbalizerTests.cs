@@ -16,6 +16,16 @@ namespace KenshiWikiValidator.Tests.BaseComponents
         private const int ImprisonedIdentifier = 2;
 
         [TestMethod]
+        public void ShouldReturnEmptyForEmptyWorldState()
+        {
+            var verbalizer = new WorldStateVerbalizer();
+            var worldState = new ItemReference<WorldEventState>(new WorldEventState("id", "name"), 0, 0, 0);
+            var result = verbalizer.Verbalize(worldState);
+
+            Assert.AreEqual("", result);
+        }
+
+        [TestMethod]
         public void ShouldVerbalizeWorldStatesWhereOneNpcIsAlive()
         {
             var verbalizer = new WorldStateVerbalizer();
