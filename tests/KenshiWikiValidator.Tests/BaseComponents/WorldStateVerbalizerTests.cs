@@ -1,4 +1,5 @@
-﻿using KenshiWikiValidator.BaseComponents;
+﻿using System.Collections.Generic;
+using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,16 +19,10 @@ namespace KenshiWikiValidator.Tests.BaseComponents
         public void ShouldVerbalizeWorldStatesWhereOneNpcIsAlive()
         {
             var verbalizer = new WorldStateVerbalizer();
-            var worldState = new WorldEventState("worldstateid", "name");
+            var worldState = SetupCharacterWorldState(TrueValue, AliveIdentifier, 1);
+            var result = verbalizer.Verbalize(worldState);
 
-            var worldStateReference = new ItemReference<WorldEventState>(worldState, TrueValue, 0, 0);
-            var character = new Character("characterid", "character");
-
-            worldState.NpcIs = new[] { new ItemReference<Character>(character, AliveIdentifier, 0, 0) };
-
-            var result = verbalizer.Verbalize(worldStateReference);
-
-            var expected = $"[[{character.Name}]] is alive";
+            var expected = $"[[character0]] is alive";
             Assert.AreEqual(expected, result);
         }
 
@@ -35,16 +30,10 @@ namespace KenshiWikiValidator.Tests.BaseComponents
         public void ShouldVerbalizeWorldStatesWhereOneNpcIsAliveNegated()
         {
             var verbalizer = new WorldStateVerbalizer();
-            var worldState = new WorldEventState("worldstateid", "name");
+            var worldState = SetupCharacterWorldState(FalseValue, AliveIdentifier, 1);
+            var result = verbalizer.Verbalize(worldState);
 
-            var worldStateReference = new ItemReference<WorldEventState>(worldState, FalseValue, 0, 0);
-            var character = new Character("characterid", "character");
-
-            worldState.NpcIs = new[] { new ItemReference<Character>(character, AliveIdentifier, 0, 0) };
-
-            var result = verbalizer.Verbalize(worldStateReference);
-
-            var expected = $"[[{character.Name}]] is killed or imprisoned";
+            var expected = $"[[character0]] is killed or imprisoned";
             Assert.AreEqual(expected, result);
         }
 
@@ -52,16 +41,10 @@ namespace KenshiWikiValidator.Tests.BaseComponents
         public void ShouldVerbalizeWorldStatesWhereOneNpcIsKilled()
         {
             var verbalizer = new WorldStateVerbalizer();
-            var worldState = new WorldEventState("worldstateid", "name");
+            var worldState = SetupCharacterWorldState(TrueValue, KilledIdentifier, 1);
+            var result = verbalizer.Verbalize(worldState);
 
-            var worldStateReference = new ItemReference<WorldEventState>(worldState, TrueValue, 0, 0);
-            var character = new Character("characterid", "character");
-
-            worldState.NpcIs = new[] { new ItemReference<Character>(character, KilledIdentifier, 0, 0) };
-
-            var result = verbalizer.Verbalize(worldStateReference);
-
-            var expected = $"[[{character.Name}]] is killed";
+            var expected = $"[[character0]] is killed";
             Assert.AreEqual(expected, result);
         }
 
@@ -69,16 +52,10 @@ namespace KenshiWikiValidator.Tests.BaseComponents
         public void ShouldVerbalizeWorldStatesWhereOneNpcIsKilledNegated()
         {
             var verbalizer = new WorldStateVerbalizer();
-            var worldState = new WorldEventState("worldstateid", "name");
+            var worldState = SetupCharacterWorldState(FalseValue, KilledIdentifier, 1);
+            var result = verbalizer.Verbalize(worldState);
 
-            var worldStateReference = new ItemReference<WorldEventState>(worldState, FalseValue, 0, 0);
-            var character = new Character("characterid", "character");
-
-            worldState.NpcIs = new[] { new ItemReference<Character>(character, KilledIdentifier, 0, 0) };
-
-            var result = verbalizer.Verbalize(worldStateReference);
-
-            var expected = $"[[{character.Name}]] is alive or imprisoned"; // doesn't really make sense
+            var expected = $"[[character0]] is alive or imprisoned"; // doesn't really make sense
             Assert.AreEqual(expected, result);
         }
 
@@ -86,16 +63,10 @@ namespace KenshiWikiValidator.Tests.BaseComponents
         public void ShouldVerbalizeWorldStatesWhereOneNpcIsImprisoned()
         {
             var verbalizer = new WorldStateVerbalizer();
-            var worldState = new WorldEventState("worldstateid", "name");
+            var worldState = SetupCharacterWorldState(TrueValue, ImprisonedIdentifier, 1);
+            var result = verbalizer.Verbalize(worldState);
 
-            var worldStateReference = new ItemReference<WorldEventState>(worldState, TrueValue, 0, 0);
-            var character = new Character("characterid", "character");
-
-            worldState.NpcIs = new[] { new ItemReference<Character>(character, ImprisonedIdentifier, 0, 0) };
-
-            var result = verbalizer.Verbalize(worldStateReference);
-
-            var expected = $"[[{character.Name}]] is imprisoned";
+            var expected = $"[[character0]] is imprisoned";
             Assert.AreEqual(expected, result);
         }
 
@@ -103,17 +74,48 @@ namespace KenshiWikiValidator.Tests.BaseComponents
         public void ShouldVerbalizeWorldStatesWhereOneNpcIsImprisonedNegated()
         {
             var verbalizer = new WorldStateVerbalizer();
+            var worldState = SetupCharacterWorldState(FalseValue, ImprisonedIdentifier, 1);
+            var result = verbalizer.Verbalize(worldState);
+
+            var expected = $"[[character0]] is killed or alive"; // doesn't make sense at all
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void ShouldVerbalizeWorldStatesWhereTwoNpcsAreAlive()
+        {
+            var verbalizer = new WorldStateVerbalizer();
+            var worldState = SetupCharacterWorldState(TrueValue, AliveIdentifier, 2);
+            var result = verbalizer.Verbalize(worldState);
+
+            var expected = $"[[character0]] and [[character1]] are alive";
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void ShouldVerbalizeWorldStatesWhereThreeNpcsAreAliveNegated()
+        {
+            var verbalizer = new WorldStateVerbalizer();
+            var worldState = SetupCharacterWorldState(FalseValue, AliveIdentifier, 3);
+            var result = verbalizer.Verbalize(worldState);
+
+            var expected = $"[[character0]], [[character1]] and [[character2]] are killed or imprisoned";
+            Assert.AreEqual(expected, result);
+        }
+
+        private ItemReference<WorldEventState> SetupCharacterWorldState(int worldStateValue, int subjectStateValue, int characterCount)
+        {
             var worldState = new WorldEventState("worldstateid", "name");
 
-            var worldStateReference = new ItemReference<WorldEventState>(worldState, FalseValue, 0, 0);
-            var character = new Character("characterid", "character");
+            var characters = new List<ItemReference<Character>>();
+            for (var i = 0; i < characterCount; i++)
+            {
+                var character = new Character($"characterid{i}", $"character{i}");
+                characters.Add(new ItemReference<Character>(character, subjectStateValue, 0, 0));
+            }
 
-            worldState.NpcIs = new[] { new ItemReference<Character>(character, ImprisonedIdentifier, 0, 0) };
-
-            var result = verbalizer.Verbalize(worldStateReference);
-
-            var expected = $"[[{character.Name}]] is killed or alive"; // doesn't make sense at all
-            Assert.AreEqual(expected, result);
+            worldState.NpcIs = characters;
+            return new ItemReference<WorldEventState>(worldState, worldStateValue, 0, 0);
         }
     }
 }
