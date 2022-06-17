@@ -68,7 +68,7 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations.Rules
 
             var expectedText = @"== Town override ==
 {{Main|Result}}
-DESCRIPTION OF THE REQUIRED WORLD STATES.
+
 ";
             var result = rule.Execute("Title", expectedText, articleData);
 
