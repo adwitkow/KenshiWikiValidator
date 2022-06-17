@@ -23,6 +23,54 @@ namespace KenshiWikiValidator.BaseComponents
     {
         private static readonly string[] PossibleCharacterStates = new[] { "killed", "alive", "imprisoned" };
 
+        public string Verbalize(IEnumerable<ItemReference<WorldEventState>> worldStateReferences)
+        {
+            var npcIsLookup = worldStateReferences
+                .ToLookup(r => r.Value0 == 0, r => r.Item.NpcIs);
+            var npcIsNotLookup = worldStateReferences
+                .ToLookup(r => r.Value0 == 0, r => r.Item.NpcIsNot);
+            var playerAllyLookup = worldStateReferences
+                .ToLookup(r => r.Value0 == 0, r => r.Item.PlayerAlly);
+            var playerEnemyLookup = worldStateReferences
+                .ToLookup(r => r.Value0 == 0, r => r.Item.PlayerEnemy);
+
+            var components = new List<WorldStateSentence>();
+
+            foreach (var npcIsGroup in npcIsLookup)
+            {
+                var isNegated = npcIsGroup.Key;
+                var npcIsReferences = npcIsGroup.SelectMany(group => group);
+
+                components.AddRange(CreateComponents(npcIsReferences, "is", isNegated));
+            }
+
+            foreach (var npcIsNotGroup in npcIsNotLookup)
+            {
+                var isNegated = npcIsNotGroup.Key;
+                var npcIsNotReferences = npcIsNotGroup.SelectMany(group => group);
+
+                components.AddRange(CreateComponents(npcIsNotReferences, "is not", isNegated));
+            }
+
+            foreach (var playerAllyGroup in playerAllyLookup)
+            {
+                var isNegated = playerAllyGroup.Key;
+                var playerAllyReferences = playerAllyGroup.SelectMany(group => group);
+
+                components.AddRange(CreateComponents(playerAllyReferences, "is", isNegated, "allied to the player"));
+            }
+
+            foreach (var playerEnemyGroup in playerEnemyLookup)
+            {
+                var isNegated = playerEnemyGroup.Key;
+                var playerEnemyReferences = playerEnemyGroup.SelectMany(group => group);
+
+                components.AddRange(CreateComponents(playerEnemyReferences, "is", isNegated, "an enemy of the player"));
+            }
+
+            return OxbridgeAnd(components.Select(comp => JoinSentence(comp)));
+        }
+
         public string Verbalize(ItemReference<WorldEventState> worldStateReference)
         {
             var worldState = worldStateReference.Item;
