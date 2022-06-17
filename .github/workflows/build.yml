@@ -59,3 +59,5 @@ jobs:
         dotnet build
         dotnet-coverage collect 'dotnet test --no-build' -f xml -o 'coverage.xml'
         .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
