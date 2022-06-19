@@ -100,7 +100,7 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations.Templates
             var zoneDataProvider = new Mock<IZoneDataProvider>();
             zoneDataProvider
                 .Setup(provider => provider.GetZones("town name"))
-                .Returns(new[] {"zone name"});
+                .Returns(new[] {"[[zone name]]"});
             var articleData = new ArticleData();
             articleData.StringIds.Add("stringid");
 
@@ -161,7 +161,7 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations.Templates
             var zoneDataProvider = new Mock<IZoneDataProvider>();
             zoneDataProvider
                 .Setup(provider => provider.GetZones(baseTown.Name))
-                .Returns(new[] { "zone name" });
+                .Returns(new[] { "[[zone name]]" });
             var articleData = new ArticleData();
             articleData.StringIds.Add(town.StringId);
 

@@ -79,11 +79,10 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
                     .Select(factionRef => $"[[{factionRef.Item.Name}]]"))
                 .Distinct();
 
-            var zones = this.ExtractZones(items, baseArticleTitle);
+            var zones = this.ExtractZones(items, baseArticleTitle)
+                .Distinct();
 
-            var regions = string.Join(", ", zones
-                    .Select(region => this.ConvertRegion(region))
-                .Distinct());
+            var regions = string.Join(", ", zones);
             var fcsNames = items
                 .Select(item => item.Name)
                 .Distinct();
@@ -115,13 +114,6 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
             }
 
             return new WikiTemplate(WikiTemplateName, properties);
-        }
-
-        private string ConvertRegion(string region)
-        {
-            var regionExceptions = new[] { "Bast", "Flats Lagoon", "Rebirth", "Heng" };
-
-            return regionExceptions.Contains(region) ? $"[[{region} (Zone)|{region}]]" : $"[[{region}]]";
         }
 
         private IEnumerable<string> ExtractZones(IEnumerable<Town> items, string baseArticleTitle)
