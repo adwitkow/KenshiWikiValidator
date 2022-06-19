@@ -329,7 +329,11 @@
   },
   {
     "name": "Library Ruins",
-    "zone": "[[No Zone]]"
+    "zone": "[[The Hook]]"
+  },
+  {
+    "name": "Library Ruins",
+    "zone": "shore of [[Shun]]"
   },
   {
     "name": "Deadhive Overrun",
@@ -476,10 +480,6 @@
     "zone": "[[The Grid]]"
   },
   {
-    "name": "Library Ruins",
-    "zone": "[[The Hook]]"
-  },
-  {
     "name": "Abandoned Town",
     "zone": "[[The Hook]]"
   },
@@ -597,7 +597,7 @@
   },
   {
     "name": "Okran's Shield",
-    "zone": "[[No Zone]]"
+    "zone": "Border between [[Skinner's Roam]], [[Iron Valleys]] and [[Arm of Okran]]"
   },
   {
     "name": "Holy Military Base",
