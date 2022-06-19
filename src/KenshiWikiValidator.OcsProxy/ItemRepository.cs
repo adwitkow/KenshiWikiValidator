@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using KenshiWikiValidator.OcsProxy.Models;
 using OpenConstructionSet;
 using OpenConstructionSet.Data;
 using OpenConstructionSet.Models;
@@ -104,6 +105,45 @@ namespace KenshiWikiValidator.OcsProxy
 
                 this.itemLookup[item.StringId] = item;
             }
+
+            foreach (var item in this.GetItems<Town>())
+            {
+                item.BaseTowns = this.FindBaseTowns(item);
+            }
+        }
+
+        private IEnumerable<Town> FindBaseTowns(Town item)
+        {
+            var baseItems = new List<Town>() { item };
+            var previousBaseItems = baseItems;
+            var allBaseTowns = this.GetItems<Town>()
+                .Where(town => town.OverrideTown.Any())
+                .ToList();
+            while (baseItems is not null && baseItems.Any())
+            {
+                previousBaseItems = baseItems.ToList();
+
+                baseItems.Clear();
+                foreach (var town in allBaseTowns)
+                {
+                    if (town.OverrideTown.ContainsItem(item))
+                    {
+                        baseItems.Add(town);
+                    }
+                }
+
+                baseItems = baseItems
+                    .Except(new[] { item })
+                    .Distinct()
+                    .ToList();
+
+                if (previousBaseItems.All(baseItems.Contains))
+                {
+                    break;
+                }
+            }
+
+            return previousBaseItems;
         }
     }
 }

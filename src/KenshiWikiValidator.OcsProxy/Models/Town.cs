@@ -36,6 +36,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
             this.Debris = Enumerable.Empty<ItemReference<NestItem>>();
             this.WorldStates = Enumerable.Empty<ItemReference<WorldEventState>>();
             this.LootSpawn = Enumerable.Empty<ItemReference<VendorList>>();
+            this.BaseTowns = Enumerable.Empty<Town>();
         }
 
         public override ItemType Type => ItemType.Town;
@@ -126,6 +127,8 @@ namespace KenshiWikiValidator.OcsProxy.Models
 
         [Reference("loot spawn")]
         public IEnumerable<ItemReference<VendorList>> LootSpawn { get; set; }
+
+        public IEnumerable<Town> BaseTowns { get; set; }
 
         public override string ToString()
         {
