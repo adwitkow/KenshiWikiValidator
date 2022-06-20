@@ -29,10 +29,10 @@ namespace KenshiWikiValidator.OcsProxy
         private readonly OcsDataContexOptions contextOptions;
         private readonly IOcsDataContextBuilder contextBuilder;
 
-        public ItemRepository(IOcsDataContextBuilder contextBuilder)
+        public ItemRepository(IOcsDiscoveryService discoveryService, IOcsDataContextBuilder contextBuilder)
         {
-            var installations = OcsDiscoveryService.Default.DiscoverAllInstallations();
-            var installation = installations.Values.First();
+            var installations = discoveryService.DiscoverAllInstallations();
+            var installation = installations.Values.FirstOrDefault();
 
             this.contextOptions = new OcsDataContexOptions(
                 Name: Guid.NewGuid().ToString(),
@@ -41,14 +41,14 @@ namespace KenshiWikiValidator.OcsProxy
                 LoadEnabledMods: ModLoadType.None,
                 ThrowIfMissing: false);
 
-            this.GameDirectory = installation.Game;
+            this.GameDirectory = installation?.Game;
             this.itemLookup = new Dictionary<string, IItem>();
             this.itemsByType = new Dictionary<Type, IEnumerable<IItem>>();
             this.contextBuilder = contextBuilder;
         }
 
         public ItemRepository()
-            : this(OcsDataContextBuilder.Default)
+            : this(OcsDiscoveryService.Default, OcsDataContextBuilder.Default)
         {
         }
 

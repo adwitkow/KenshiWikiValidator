@@ -14,21 +14,23 @@ namespace KenshiWikiValidator.OcsProxy.Tests
     [TestClass]
     public class ItemRepositoryTests
     {
-        [TestMethod]
-        public void ShouldConstruct()
-        {
-            var contextBuilderMock = new Mock<IOcsDataContextBuilder>();
-            var repository = new ItemRepository(contextBuilderMock.Object);
+        private Installation? installation;
 
-            Assert.IsNotNull(repository);
+        [TestInitialize]
+        public void Initialize()
+        {
+            var modfolder = new ModFolder("", new Dictionary<string, ModFile>());
+            installation = new Installation("", new List<string>(), modfolder, modfolder, modfolder, null);
         }
 
         [TestMethod]
-        public void ShouldLoad()
+        public void ShouldConstruct()
         {
-            var contextBuilderMock = CreateDataContextBuilderMock(Enumerable.Empty<DataItem>());
-            var repository = new ItemRepository(contextBuilderMock.Object);
-            repository.Load();
+            var discoveryServiceMock = CreateDiscoveryServiceMock();
+            var contextBuilderMock = new Mock<IOcsDataContextBuilder>();
+            var repository = new ItemRepository(discoveryServiceMock.Object, contextBuilderMock.Object);
+
+            Assert.IsNotNull(repository);
         }
 
         [TestMethod]
@@ -44,8 +46,9 @@ namespace KenshiWikiValidator.OcsProxy.Tests
                 dataTown,
                 baseDataTown,
             };
+            var discoveryServiceMock = CreateDiscoveryServiceMock();
             var contextBuilderMock = CreateDataContextBuilderMock(items);
-            var repository = new ItemRepository(contextBuilderMock.Object);
+            var repository = new ItemRepository(discoveryServiceMock.Object, contextBuilderMock.Object);
             repository.Load();
 
             var town = repository.GetItemByStringId<Town>(dataTown.StringId);
@@ -57,10 +60,9 @@ namespace KenshiWikiValidator.OcsProxy.Tests
         {
             var contextBuilderMock = new Mock<IOcsDataContextBuilder>();
             var ioServiceMock = new Mock<IOcsIOService>();
-            var modfolder = new ModFolder("", new Dictionary<string, ModFile>());
             var dataContext = new OcsDataContext(
                 ioServiceMock.Object,
-                new Installation("", new List<string>(), modfolder, modfolder, modfolder, null),
+                this.installation!,
                 new OcsSortedList<DataItem>(items),
                 new Dictionary<string, OpenConstructionSet.Models.Item>(),
                 string.Empty,
@@ -69,6 +71,19 @@ namespace KenshiWikiValidator.OcsProxy.Tests
                 .Returns(dataContext);
 
             return contextBuilderMock;
+        }
+
+        private Mock<IOcsDiscoveryService> CreateDiscoveryServiceMock()
+        {
+            var result = new Dictionary<string, Installation>()
+            {
+                { "", this.installation! },
+            };
+            var discoveryServiceMock = new Mock<IOcsDiscoveryService>();
+            discoveryServiceMock.Setup(service => service.DiscoverAllInstallations())
+                .Returns(result);
+
+            return discoveryServiceMock;
         }
     }
 }
