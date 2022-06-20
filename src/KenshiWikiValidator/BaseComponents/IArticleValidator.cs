@@ -30,6 +30,6 @@ namespace KenshiWikiValidator.BaseComponents
 
         public void PopulateStringIds();
 
-        public void AfterValidations();
+        public IEnumerable<RuleResult> AfterValidations();
     }
 }

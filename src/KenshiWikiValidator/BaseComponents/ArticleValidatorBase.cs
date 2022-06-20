@@ -122,8 +122,9 @@ namespace KenshiWikiValidator.BaseComponents
             this.StringIds.AddRange(stringIds);
         }
 
-        public virtual void AfterValidations()
+        public virtual IEnumerable<RuleResult> AfterValidations()
         {
+            return Enumerable.Empty<RuleResult>();
         }
 
         private IEnumerable<WikiTemplate> ParseTemplates(string content)

@@ -45,8 +45,10 @@ namespace KenshiWikiValidator.WikiCategories.Locations
 
         public override IEnumerable<IValidationRule> Rules => this.rules;
 
-        public override void AfterValidations()
+        public override IEnumerable<RuleResult> AfterValidations()
         {
+            var results = new List<RuleResult>();
+
             foreach (var stringId in this.StringIds)
             {
                 var data = new ArticleData()
@@ -54,8 +56,10 @@ namespace KenshiWikiValidator.WikiCategories.Locations
                     StringIds = new[] { stringId },
                 };
 
-                this.containsTownTemplateRule.Execute(stringId, string.Empty, data);
+                results.Add(this.containsTownTemplateRule.Execute(stringId, string.Empty, data));
             }
+
+            return results;
         }
     }
 }
