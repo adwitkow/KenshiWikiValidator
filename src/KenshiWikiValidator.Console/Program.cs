@@ -90,6 +90,8 @@ if (validator.Dependencies.Any())
 
 await RetrieveAndValidate(validator, client);
 
+validator.AfterValidations();
+
 return 0;
 
 static async Task RetrieveAndValidate(IArticleValidator validator, WikiClient client)
@@ -102,6 +104,8 @@ static async Task RetrieveAndValidate(IArticleValidator validator, WikiClient cl
 
     Console.ResetColor();
 
+    validator.PopulateStringIds();
+
     using (var progress = new ProgressBar())
     {
         for (var i = 0; i < pages.Count; i++)
@@ -110,6 +114,7 @@ static async Task RetrieveAndValidate(IArticleValidator validator, WikiClient cl
             var page = pages[i];
 
             await page.RefreshAsync(PageQueryOptions.FetchContent);
+
             validator.CachePageData(page.Title, page.Content);
         }
     }

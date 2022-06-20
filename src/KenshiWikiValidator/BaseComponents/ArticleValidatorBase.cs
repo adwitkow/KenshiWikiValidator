@@ -27,12 +27,15 @@ namespace KenshiWikiValidator.BaseComponents
 
         private readonly IItemRepository itemRepository;
         private readonly WikiTitleCache wikiTitles;
+        private readonly Type? itemType;
 
-        protected ArticleValidatorBase(IItemRepository itemRepository, WikiTitleCache wikiTitles)
+        protected ArticleValidatorBase(IItemRepository itemRepository, WikiTitleCache wikiTitles, Type? itemType = null)
         {
             this.ArticleDataMap = new Dictionary<string, ArticleData>();
             this.itemRepository = itemRepository;
             this.wikiTitles = wikiTitles;
+            this.itemType = itemType;
+            this.StringIds = new List<string>();
         }
 
         public Dictionary<string, ArticleData> ArticleDataMap { get; }
@@ -42,6 +45,8 @@ namespace KenshiWikiValidator.BaseComponents
         public abstract IEnumerable<IValidationRule> Rules { get; }
 
         public virtual IEnumerable<IArticleValidator> Dependencies => Enumerable.Empty<IArticleValidator>();
+
+        protected List<string> StringIds { get; }
 
         public ArticleValidationResult Validate(string title, string content)
         {
@@ -96,10 +101,27 @@ namespace KenshiWikiValidator.BaseComponents
             var stringIdRule = new StringIdRule(this.itemRepository, this.wikiTitles);
             stringIdRule.Execute(title, content, articleData);
 
+            foreach (var stringId in articleData.StringIds)
+            {
+                this.StringIds.Remove(stringId);
+            }
+
             this.ArticleDataMap[title] = articleData;
         }
 
-        public IEnumerable<WikiTemplate> ParseTemplates(string content)
+        public void PopulateStringIds()
+        {
+            this.StringIds.Clear();
+            var items = this.itemRepository.GetItems().Where(item => item.GetType() == this.itemType);
+            var stringIds = items.Select(item => item.StringId).Distinct();
+            this.StringIds.AddRange(stringIds);
+        }
+
+        public virtual void AfterValidations()
+        {
+        }
+
+        private IEnumerable<WikiTemplate> ParseTemplates(string content)
         {
             var parser = new TemplateParser();
             return parser.ParseAllTemplates(content);
