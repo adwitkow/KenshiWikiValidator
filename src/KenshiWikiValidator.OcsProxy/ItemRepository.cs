@@ -26,10 +26,30 @@ namespace KenshiWikiValidator.OcsProxy
         private readonly Dictionary<string, IItem> itemLookup;
         private readonly Dictionary<Type, IEnumerable<IItem>> itemsByType;
 
-        public ItemRepository()
+        private readonly OcsDataContexOptions contextOptions;
+        private readonly IOcsDataContextBuilder contextBuilder;
+
+        public ItemRepository(IOcsDataContextBuilder contextBuilder)
         {
+            var installations = OcsDiscoveryService.Default.DiscoverAllInstallations();
+            var installation = installations.Values.First();
+
+            this.contextOptions = new OcsDataContexOptions(
+                Name: Guid.NewGuid().ToString(),
+                Installation: installation,
+                LoadGameFiles: ModLoadType.Base,
+                LoadEnabledMods: ModLoadType.None,
+                ThrowIfMissing: false);
+
+            this.GameDirectory = installation.Game;
             this.itemLookup = new Dictionary<string, IItem>();
             this.itemsByType = new Dictionary<Type, IEnumerable<IItem>>();
+            this.contextBuilder = contextBuilder;
+        }
+
+        public ItemRepository()
+            : this(OcsDataContextBuilder.Default)
+        {
         }
 
         public string? GameDirectory { get; private set; }
@@ -70,19 +90,7 @@ namespace KenshiWikiValidator.OcsProxy
 
         public void Load()
         {
-            var installations = OcsDiscoveryService.Default.DiscoverAllInstallations();
-            var installation = installations.Values.First();
-
-            var options = new OcsDataContexOptions(
-                Name: Guid.NewGuid().ToString(),
-                Installation: installation,
-                LoadGameFiles: ModLoadType.Base,
-                LoadEnabledMods: ModLoadType.None,
-                ThrowIfMissing: false);
-
-            var contextItems = OcsDataContextBuilder.Default.Build(options).Items.Values.ToList();
-
-            this.GameDirectory = installation.Game;
+            var contextItems = this.contextBuilder.Build(this.contextOptions).Items.Values.ToList();
 
             var modelConverter = new ItemModelConverter(this);
             var convertedItems = modelConverter.Convert(contextItems).ToArray();
