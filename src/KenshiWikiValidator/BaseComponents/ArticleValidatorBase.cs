@@ -38,6 +38,11 @@ namespace KenshiWikiValidator.BaseComponents
             this.StringIds = new List<string>();
         }
 
+        protected ArticleValidatorBase(IItemRepository itemRepository, WikiTitleCache wikiTitles)
+            : this(itemRepository, wikiTitles, null)
+        {
+        }
+
         public Dictionary<string, ArticleData> ArticleDataMap { get; }
 
         public abstract string CategoryName { get; }

@@ -138,6 +138,11 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
                 return Enumerable.Empty<string>();
             }
 
+            if (!baseTowns.Any())
+            {
+                baseTowns = items;
+            }
+
             zones = this.zoneDataProvider.GetZones(baseTowns.Single().Name);
 
             return zones;
