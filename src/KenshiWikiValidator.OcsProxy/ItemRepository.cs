@@ -124,12 +124,10 @@ namespace KenshiWikiValidator.OcsProxy
                 previousBaseItems = baseItems.ToList();
 
                 baseItems.Clear();
-                foreach (var town in allBaseTowns)
+                var baseTownsWithThisOverride = allBaseTowns.Where(town => town.OverrideTown.ContainsItem(item));
+                foreach (var town in baseTownsWithThisOverride)
                 {
-                    if (town.OverrideTown.ContainsItem(item))
-                    {
-                        baseItems.Add(town);
-                    }
+                    baseItems.Add(town);
                 }
 
                 baseItems = baseItems

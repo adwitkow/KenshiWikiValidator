@@ -29,7 +29,7 @@ namespace KenshiWikiValidator.BaseComponents
         private readonly WikiTitleCache wikiTitles;
         private readonly Type? itemType;
 
-        protected ArticleValidatorBase(IItemRepository itemRepository, WikiTitleCache wikiTitles, Type? itemType = null)
+        protected ArticleValidatorBase(IItemRepository itemRepository, WikiTitleCache wikiTitles, Type? itemType)
         {
             this.ArticleDataMap = new Dictionary<string, ArticleData>();
             this.itemRepository = itemRepository;
