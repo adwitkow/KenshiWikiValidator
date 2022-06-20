@@ -26,10 +26,10 @@ namespace KenshiWikiValidator.BaseComponents
         private static readonly Regex CategoryRegex = new Regex(@"\[\[Category:(?<name>.*?)(\|#)?]]");
 
         private readonly IItemRepository itemRepository;
-        private readonly WikiTitleCache wikiTitles;
+        private readonly IWikiTitleCache wikiTitles;
         private readonly Type? itemType;
 
-        protected ArticleValidatorBase(IItemRepository itemRepository, WikiTitleCache wikiTitles, Type? itemType)
+        protected ArticleValidatorBase(IItemRepository itemRepository, IWikiTitleCache wikiTitles, Type? itemType)
         {
             this.ArticleDataMap = new Dictionary<string, ArticleData>();
             this.itemRepository = itemRepository;
@@ -38,7 +38,7 @@ namespace KenshiWikiValidator.BaseComponents
             this.StringIds = new List<string>();
         }
 
-        protected ArticleValidatorBase(IItemRepository itemRepository, WikiTitleCache wikiTitles)
+        protected ArticleValidatorBase(IItemRepository itemRepository, IWikiTitleCache wikiTitles)
             : this(itemRepository, wikiTitles, null)
         {
         }

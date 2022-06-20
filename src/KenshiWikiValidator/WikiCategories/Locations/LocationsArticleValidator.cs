@@ -28,7 +28,7 @@ namespace KenshiWikiValidator.WikiCategories.Locations
 
         private readonly ContainsTownTemplateRule containsTownTemplateRule;
 
-        public LocationsArticleValidator(IItemRepository itemRepository, ZoneDataProvider zoneDataProvider, WikiTitleCache wikiTitles)
+        public LocationsArticleValidator(IItemRepository itemRepository, IZoneDataProvider zoneDataProvider, IWikiTitleCache wikiTitles)
             : base(itemRepository, wikiTitles, typeof(Town))
         {
             this.containsTownTemplateRule = new ContainsTownTemplateRule(itemRepository, wikiTitles, zoneDataProvider);
