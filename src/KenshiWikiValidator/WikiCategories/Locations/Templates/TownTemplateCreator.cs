@@ -130,29 +130,22 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
                 return zones;
             }
 
-            var baseTowns = this.FindBaseItems(items);
+            var baseTowns = items.SelectMany(item => item.BaseTowns)
+                .Distinct();
+
+            if (baseTowns.Count() > 1)
+            {
+                return Enumerable.Empty<string>();
+            }
+
+            if (!baseTowns.Any())
+            {
+                baseTowns = items;
+            }
 
             zones = this.zoneDataProvider.GetZones(baseTowns.Single().Name);
 
             return zones;
-        }
-
-        private IEnumerable<Town> FindBaseItems(IEnumerable<Town> items)
-        {
-            var baseItems = items;
-            var previousBaseItems = items;
-            while (baseItems is not null && baseItems.Any())
-            {
-                previousBaseItems = baseItems;
-                baseItems = baseItems
-                    .SelectMany(item => this.itemRepository.GetItems<Town>()
-                        .Where(town => town.OverrideTown
-                            .Any(overrideRef => overrideRef.Item == item)))
-                    .Distinct()
-                    .ToList();
-            }
-
-            return previousBaseItems;
         }
 
         private string? GetExistingParameter(WikiTemplate? existingTemplate, string parameter)

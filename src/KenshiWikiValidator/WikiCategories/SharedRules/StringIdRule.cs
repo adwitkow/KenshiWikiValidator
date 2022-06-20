@@ -24,9 +24,9 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
     {
         private static readonly string[] ValidTemplateNames = { "Weapon", "Armour", "Traders", "Town" };
 
-        private readonly WikiTitleCache wikiTitleCache;
+        private readonly IWikiTitleCache wikiTitleCache;
 
-        public StringIdRule(IItemRepository itemRepository, WikiTitleCache wikiTitleCache)
+        public StringIdRule(IItemRepository itemRepository, IWikiTitleCache wikiTitleCache)
         {
             this.ItemRepository = itemRepository;
             this.wikiTitleCache = wikiTitleCache;

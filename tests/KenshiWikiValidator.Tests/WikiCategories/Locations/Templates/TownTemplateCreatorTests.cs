@@ -148,6 +148,7 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations.Templates
             {
                 OverrideTown = new[] { new ItemReference<Town>(town, 0, 0, 0) }
             };
+            town.BaseTowns = new[] { baseTown };
             var repository = new Mock<IItemRepository>();
             repository
                 .Setup(repo => repo.GetItemByStringId<Town>(town.StringId))

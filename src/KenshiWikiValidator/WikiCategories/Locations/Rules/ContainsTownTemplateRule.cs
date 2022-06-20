@@ -24,10 +24,10 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Rules
     public class ContainsTownTemplateRule : ContainsDetailedTemplateRuleBase
     {
         private readonly IItemRepository itemRepository;
-        private readonly WikiTitleCache wikiTitles;
-        private readonly ZoneDataProvider zoneDataProvider;
+        private readonly IWikiTitleCache wikiTitles;
+        private readonly IZoneDataProvider zoneDataProvider;
 
-        public ContainsTownTemplateRule(IItemRepository itemRepository, WikiTitleCache wikiTitles, ZoneDataProvider zoneDataProvider)
+        public ContainsTownTemplateRule(IItemRepository itemRepository, IWikiTitleCache wikiTitles, IZoneDataProvider zoneDataProvider)
         {
             this.itemRepository = itemRepository;
             this.wikiTitles = wikiTitles;

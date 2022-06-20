@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using KenshiWikiValidator.OcsProxy.Models;
 using OpenConstructionSet;
 using OpenConstructionSet.Data;
 using OpenConstructionSet.Models;
@@ -25,10 +26,30 @@ namespace KenshiWikiValidator.OcsProxy
         private readonly Dictionary<string, IItem> itemLookup;
         private readonly Dictionary<Type, IEnumerable<IItem>> itemsByType;
 
-        public ItemRepository()
+        private readonly OcsDataContexOptions contextOptions;
+        private readonly IOcsDataContextBuilder contextBuilder;
+
+        public ItemRepository(IOcsDiscoveryService discoveryService, IOcsDataContextBuilder contextBuilder)
         {
+            var installations = discoveryService.DiscoverAllInstallations();
+            var installation = installations.Values.FirstOrDefault();
+
+            this.contextOptions = new OcsDataContexOptions(
+                Name: Guid.NewGuid().ToString(),
+                Installation: installation,
+                LoadGameFiles: ModLoadType.Base,
+                LoadEnabledMods: ModLoadType.None,
+                ThrowIfMissing: false);
+
+            this.GameDirectory = installation?.Game;
             this.itemLookup = new Dictionary<string, IItem>();
             this.itemsByType = new Dictionary<Type, IEnumerable<IItem>>();
+            this.contextBuilder = contextBuilder;
+        }
+
+        public ItemRepository()
+            : this(OcsDiscoveryService.Default, OcsDataContextBuilder.Default)
+        {
         }
 
         public string? GameDirectory { get; private set; }
@@ -69,19 +90,7 @@ namespace KenshiWikiValidator.OcsProxy
 
         public void Load()
         {
-            var installations = OcsDiscoveryService.Default.DiscoverAllInstallations();
-            var installation = installations.Values.First();
-
-            var options = new OcsDataContexOptions(
-                Name: Guid.NewGuid().ToString(),
-                Installation: installation,
-                LoadGameFiles: ModLoadType.Base,
-                LoadEnabledMods: ModLoadType.None,
-                ThrowIfMissing: false);
-
-            var contextItems = OcsDataContextBuilder.Default.Build(options).Items.Values.ToList();
-
-            this.GameDirectory = installation.Game;
+            var contextItems = this.contextBuilder.Build(this.contextOptions).Items.Values.ToList();
 
             var modelConverter = new ItemModelConverter(this);
             var convertedItems = modelConverter.Convert(contextItems).ToArray();
@@ -104,6 +113,43 @@ namespace KenshiWikiValidator.OcsProxy
 
                 this.itemLookup[item.StringId] = item;
             }
+
+            foreach (var item in this.GetItems<Town>())
+            {
+                item.BaseTowns = this.FindBaseTowns(item);
+            }
+        }
+
+        private IEnumerable<Town> FindBaseTowns(Town item)
+        {
+            var baseItems = new List<Town>() { item };
+            var previousBaseItems = baseItems;
+            var allBaseTowns = this.GetItems<Town>()
+                .Where(town => town.OverrideTown.Any())
+                .ToList();
+            while (baseItems is not null && baseItems.Any())
+            {
+                previousBaseItems = baseItems.ToList();
+
+                baseItems.Clear();
+                var baseTownsWithThisOverride = allBaseTowns.Where(town => town.OverrideTown.ContainsItem(item));
+                foreach (var town in baseTownsWithThisOverride)
+                {
+                    baseItems.Add(town);
+                }
+
+                baseItems = baseItems
+                    .Except(new[] { item })
+                    .Distinct()
+                    .ToList();
+
+                if (previousBaseItems.All(baseItems.Contains))
+                {
+                    break;
+                }
+            }
+
+            return previousBaseItems;
         }
     }
 }

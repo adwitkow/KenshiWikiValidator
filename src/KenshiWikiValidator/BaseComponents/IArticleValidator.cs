@@ -27,5 +27,9 @@ namespace KenshiWikiValidator.BaseComponents
         ArticleValidationResult Validate(string title, string content);
 
         void CachePageData(string title, string content);
+
+        public void PopulateStringIds();
+
+        public IEnumerable<RuleResult> AfterValidations();
     }
 }

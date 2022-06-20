@@ -26,13 +26,17 @@ namespace KenshiWikiValidator.WikiCategories.Locations
     {
         private readonly IEnumerable<IValidationRule> rules;
 
-        public LocationsArticleValidator(IItemRepository itemRepository, ZoneDataProvider zoneDataProvider, WikiTitleCache wikiTitles)
-            : base(itemRepository, wikiTitles)
+        private readonly ContainsTownTemplateRule containsTownTemplateRule;
+
+        public LocationsArticleValidator(IItemRepository itemRepository, IZoneDataProvider zoneDataProvider, IWikiTitleCache wikiTitles)
+            : base(itemRepository, wikiTitles, typeof(Town))
         {
+            this.containsTownTemplateRule = new ContainsTownTemplateRule(itemRepository, wikiTitles, zoneDataProvider);
+
             this.rules = new List<IValidationRule>()
             {
                 new ContainsTemplateRule("Town"),
-                new ContainsTownTemplateRule(itemRepository, wikiTitles, zoneDataProvider),
+                this.containsTownTemplateRule,
                 new TownOverrideSectionRule(itemRepository, wikiTitles),
             };
         }
@@ -40,5 +44,22 @@ namespace KenshiWikiValidator.WikiCategories.Locations
         public override string CategoryName => "Locations";
 
         public override IEnumerable<IValidationRule> Rules => this.rules;
+
+        public override IEnumerable<RuleResult> AfterValidations()
+        {
+            var results = new List<RuleResult>();
+
+            foreach (var stringId in this.StringIds)
+            {
+                var data = new ArticleData()
+                {
+                    StringIds = new[] { stringId },
+                };
+
+                results.Add(this.containsTownTemplateRule.Execute(stringId, string.Empty, data));
+            }
+
+            return results;
+        }
     }
 }
