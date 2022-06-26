@@ -27,6 +27,7 @@ namespace KenshiWikiValidator.WikiCategories.Locations
         private readonly IEnumerable<IValidationRule> rules;
 
         private readonly ContainsTownTemplateRule containsTownTemplateRule;
+        private readonly IItemRepository itemRepository;
 
         public LocationsArticleValidator(IItemRepository itemRepository, IZoneDataProvider zoneDataProvider, IWikiTitleCache wikiTitles)
             : base(itemRepository, wikiTitles, typeof(Town))
@@ -39,6 +40,7 @@ namespace KenshiWikiValidator.WikiCategories.Locations
                 this.containsTownTemplateRule,
                 new TownOverrideSectionRule(itemRepository, wikiTitles),
             };
+            this.itemRepository = itemRepository;
         }
 
         public override string CategoryName => "Locations";
@@ -51,12 +53,13 @@ namespace KenshiWikiValidator.WikiCategories.Locations
 
             foreach (var stringId in this.StringIds)
             {
+                var name = this.itemRepository.GetItemByStringId(stringId).Name;
                 var data = new ArticleData()
                 {
                     StringIds = new[] { stringId },
                 };
 
-                results.Add(this.containsTownTemplateRule.Execute(stringId, string.Empty, data));
+                results.Add(this.containsTownTemplateRule.Execute($@"{stringId}-{name}", string.Empty, data));
             }
 
             return results;
