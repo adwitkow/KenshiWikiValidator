@@ -41,6 +41,10 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations
                     town1,
                     town2,
                 });
+            repositoryMock.Setup(repo => repo.GetItemByStringId(town1.StringId))
+                .Returns(town1);
+            repositoryMock.Setup(repo => repo.GetItemByStringId(town2.StringId))
+                .Returns(town2);
             repositoryMock.Setup(repo => repo.GetItemByStringId<Town>(town1.StringId))
                 .Returns(town1);
             repositoryMock.Setup(repo => repo.GetItemByStringId<Town>(town2.StringId))
