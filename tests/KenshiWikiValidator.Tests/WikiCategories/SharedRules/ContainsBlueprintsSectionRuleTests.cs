@@ -84,6 +84,8 @@ The [[Blueprints]] for this item can be found at the following locations.
                 {
                     new ContainsBlueprintsSectionRule(itemRepository.Object, titleCache),
                 });
+            validator.Setup(v => v.CategoryName)
+                .Returns("Weapons");
 
             validator.Object.CachePageData("Wakizashi", textToValidate);
             var result = validator.Object.Validate("Wakizashi", textToValidate);
