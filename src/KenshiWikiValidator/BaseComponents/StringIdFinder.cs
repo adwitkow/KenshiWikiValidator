@@ -14,33 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.WikiTemplates;
 
-namespace KenshiWikiValidator.WikiCategories.SharedRules
+namespace KenshiWikiValidator.BaseComponents
 {
-    public class StringIdRule : IValidationRule
+    public class StringIdFinder
     {
-        private static readonly string[] ValidTemplateNames = { "Weapon", "Armour", "Traders", "Town" };
-
+        private readonly IItemRepository itemRepository;
         private readonly IWikiTitleCache wikiTitleCache;
+        private readonly Dictionary<string, string> categoryToTemplateMap;
 
-        public StringIdRule(IItemRepository itemRepository, IWikiTitleCache wikiTitleCache)
+        public StringIdFinder(IItemRepository itemRepository, IWikiTitleCache wikiTitleCache)
         {
-            this.ItemRepository = itemRepository;
+            this.itemRepository = itemRepository;
             this.wikiTitleCache = wikiTitleCache;
+            this.categoryToTemplateMap = CreateCategoryToTemplateMap();
         }
 
-        protected IItemRepository ItemRepository { get; }
-
-        public RuleResult Execute(string title, string content, ArticleData data)
+        public void PopulateStringIds(string title, ArticleData data, string category)
         {
-            var result = new RuleResult();
-
             var validTemplates = data.WikiTemplates
-                .Where(template => ValidTemplateNames
-                    .Any(valid => template.Name.Equals(valid)));
+                .Where(template => this.categoryToTemplateMap[category].Equals(template.Name));
             var matchingItems = this.GetMatchingItems(title);
 
             if (!validTemplates.Any())
@@ -51,7 +46,7 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
                     data.PotentialStringId = matchingItem.StringId;
                 }
 
-                return result;
+                return;
             }
 
             var fcsNameValue = this.SelectSingleParameter(validTemplates, "fcs_name");
@@ -70,11 +65,7 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
             var stringIdValue = this.SelectSingleParameter(validTemplates, "string id");
             if (!string.IsNullOrEmpty(stringIdValue))
             {
-                matchingItems = this.CheckStringIds(title, data, result, matchingItems, stringIdValue);
-            }
-            else
-            {
-                result.AddIssue($"No string id! Most likely string id: [{string.Join(", ", matchingItems.Select(item => $"string id = {item.StringId}|"))}]");
+                matchingItems = this.CheckStringIds(title, data, matchingItems, stringIdValue);
             }
 
             if (matchingItems.Count == 1)
@@ -82,34 +73,34 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
                 var matchingItem = matchingItems.Single();
                 data.PotentialStringId = matchingItem.StringId;
             }
-
-            return result;
         }
 
-        protected virtual IEnumerable<IItem> GetRelevantItems()
+        private static Dictionary<string, string> CreateCategoryToTemplateMap()
         {
-            return this.ItemRepository.GetItems();
+            return new Dictionary<string, string>()
+            {
+                { "Weapons", "Weapon" },
+                { "Armour", "Armour" },
+                { "Town Residents", "Traders" },
+                { "Locations", "Town" },
+            };
         }
 
-        private List<IItem> CheckStringIds(string title, ArticleData data, RuleResult result, List<IItem> matchingItems, string stringIdValue)
+        private List<IItem> CheckStringIds(string title, ArticleData data, List<IItem> matchingItems, string stringIdValue)
         {
             var stringIds = stringIdValue.Split(',')
                 .Select(id => id.Trim());
 
             if (!matchingItems.Any())
             {
-                matchingItems = stringIds.Select(id => this.ItemRepository.GetItemByStringId(id)).ToList();
+                matchingItems = stringIds.Select(id => this.itemRepository.GetItemByStringId(id)).ToList();
             }
 
             foreach (var stringId in stringIds)
             {
                 var matchingItem = matchingItems.FirstOrDefault(item => item.StringId == stringId);
 
-                if (matchingItem is null && matchingItems.Any())
-                {
-                    result.AddIssue($"String id '{stringId}' is incorrect in the article. Should be corrected to one of the following: [{string.Join(", ", matchingItems.Select(item => item.StringId))}]");
-                }
-                else
+                if (matchingItem is not null)
                 {
                     data.StringIds.Add(stringId);
                     this.wikiTitleCache.AddTitle(stringId, title);
@@ -129,8 +120,7 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
 
         private List<IItem> GetMatchingItems(string name)
         {
-            IEnumerable<IItem> items = this.GetRelevantItems();
-            return items
+            return this.itemRepository.GetItems()
                 .Where(item => name.ToLower().Trim().Equals(item.Name.ToLower().Trim()))
                 .ToList();
         }

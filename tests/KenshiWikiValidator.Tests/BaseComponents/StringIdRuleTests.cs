@@ -8,10 +8,10 @@ using Moq;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
+namespace KenshiWikiValidator.Tests.BaseComponents
 {
     [TestClass]
-    public class StringIdRuleTests
+    public class StringIdFinderTests
     {
         [TestMethod]
         public void ShouldSucceedIfArticleContainsCorrectStringId()
@@ -23,16 +23,19 @@ namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
             itemRepository
                 .Setup(repo => repo.GetItems())
                 .Returns(new[] { wakizashi });
+            var templateParser = new TemplateParser();
+            var articleData = new ArticleData()
+            {
+                WikiTemplates = templateParser.ParseAllTemplates(textToValidate)
+            };
+            var stringIdRule = new StringIdFinder(itemRepository.Object, new WikiTitleCache());
+            stringIdRule.PopulateStringIds("Wakizashi", articleData, "Weapons");
 
-            var stringIdRule = new StringIdRule(itemRepository.Object, new WikiTitleCache());
-            var articleData = new ArticleData();
-            var result = stringIdRule.Execute("Wakizashi", textToValidate, articleData);
-
-            Assert.IsTrue(result.Success);
+            Assert.AreEqual(wakizashi.StringId, articleData.StringIds.First());
         }
 
         [TestMethod]
-        public void ShouldFailIfArticleContainsIncorrectStringId()
+        public void ShouldFindPotentialIfArticleContainsIncorrectStringId()
         {
             var wakizashi = new Weapon("1020-gamedata.base", "Wakizashi");
             var textToValidate = "{{Weapon|string id = invalidStringId}}";
@@ -42,19 +45,20 @@ namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
                 .Setup(repo => repo.GetItems())
                 .Returns(new[] { wakizashi });
 
-            var stringIdRule = new StringIdRule(itemRepository.Object, new WikiTitleCache());
+            var stringIdRule = new StringIdFinder(itemRepository.Object, new WikiTitleCache());
             var templateParser = new TemplateParser();
             var articleData = new ArticleData()
             {
                 WikiTemplates = templateParser.ParseAllTemplates(textToValidate)
             };
-            var result = stringIdRule.Execute("Wakizashi", textToValidate, articleData);
+            stringIdRule.PopulateStringIds("Wakizashi", articleData, "Weapons");
 
-            Assert.IsFalse(result.Success);
+            Assert.IsFalse(articleData.StringIds.Any());
+            Assert.IsFalse(string.IsNullOrEmpty(articleData.PotentialStringId));
         }
 
         [TestMethod]
-        public void ShouldFailIfStringIdIsMissing()
+        public void ShouldNotFindAnyStringIdsIfStringIdIsMissing()
         {
             var wakizashi = new Weapon("1020-gamedata.base", "Wakizashi");
             var textToValidate = "{{Weapon}}";
@@ -64,15 +68,15 @@ namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
                 .Setup(repo => repo.GetItems())
                 .Returns(new[] { wakizashi });
 
-            var stringIdRule = new StringIdRule(itemRepository.Object, new WikiTitleCache());
+            var stringIdRule = new StringIdFinder(itemRepository.Object, new WikiTitleCache());
             var templateParser = new TemplateParser();
             var articleData = new ArticleData()
             {
                 WikiTemplates = templateParser.ParseAllTemplates(textToValidate)
             };
-            var result = stringIdRule.Execute("Wakizashi", textToValidate, articleData);
+            stringIdRule.PopulateStringIds("Wakizashi", articleData, "Weapons");
 
-            Assert.IsFalse(result.Success);
+            Assert.IsFalse(articleData.StringIds.Any());
         }
 
         [TestMethod]
@@ -86,19 +90,19 @@ namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
                 .Setup(repo => repo.GetItems())
                 .Returns(new[] { lostArmoury });
 
-            var stringIdRule = new StringIdRule(itemRepository.Object, new WikiTitleCache());
+            var stringIdRule = new StringIdFinder(itemRepository.Object, new WikiTitleCache());
             var templateParser = new TemplateParser();
             var articleData = new ArticleData()
             {
                 WikiTemplates = templateParser.ParseAllTemplates(textToValidate)
             };
-            stringIdRule.Execute("Lost Armoury", textToValidate, articleData);
+            stringIdRule.PopulateStringIds("Lost Armoury", articleData, "Locations");
 
-            Assert.AreEqual("49935-rebirth.mod", articleData.PotentialStringId);
+            Assert.AreEqual(lostArmoury.StringId, articleData.PotentialStringId);
         }
 
         [TestMethod]
-        public void ShouldFailWithCorrectStringIdIfFcsNameIsPresent()
+        public void ShouldFindPotentialStringIdIfFcsNameIsPresent()
         {
             var wakizashi = new Weapon("1020-gamedata.base", "Wakizashi");
             var textToValidate = "{{Weapon|fcs_name = Wakizashi}}";
@@ -108,15 +112,16 @@ namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules
                 .Setup(repo => repo.GetItems())
                 .Returns(new[] { wakizashi });
 
-            var stringIdRule = new StringIdRule(itemRepository.Object, new WikiTitleCache());
+            var stringIdRule = new StringIdFinder(itemRepository.Object, new WikiTitleCache());
             var templateParser = new TemplateParser();
             var articleData = new ArticleData()
             {
                 WikiTemplates = templateParser.ParseAllTemplates(textToValidate)
             };
-            var result = stringIdRule.Execute("Wakizashi - title different from the FCS name", textToValidate, articleData);
+            stringIdRule.PopulateStringIds("Wakizashi", articleData, "Weapons");
 
-            Assert.AreEqual("No string id! Most likely string id: [string id = 1020-gamedata.base|]", result.Issues.First());
+            Assert.IsFalse(articleData.StringIds.Any());
+            Assert.IsFalse(string.IsNullOrEmpty(articleData.PotentialStringId));
         }
     }
 }

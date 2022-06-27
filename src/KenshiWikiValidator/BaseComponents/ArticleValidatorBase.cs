@@ -103,8 +103,8 @@ namespace KenshiWikiValidator.BaseComponents
 
             // TODO: This is a hack: I should figure out a different way
             // to process the string ids before the rules are ran.
-            var stringIdRule = new StringIdRule(this.itemRepository, this.wikiTitles);
-            stringIdRule.Execute(title, content, articleData);
+            var stringIdFinder = new StringIdFinder(this.itemRepository, this.wikiTitles);
+            stringIdFinder.PopulateStringIds(title, articleData, this.CategoryName);
 
             foreach (var stringId in articleData.StringIds)
             {
