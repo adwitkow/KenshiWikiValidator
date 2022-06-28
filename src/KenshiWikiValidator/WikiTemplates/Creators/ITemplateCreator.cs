@@ -14,10 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using KenshiWikiValidator.BaseComponents;
+
 namespace KenshiWikiValidator.WikiTemplates.Creators
 {
     public interface ITemplateCreator
     {
-        public WikiTemplate? Generate();
+        public WikiTemplate? Generate(ArticleData data);
     }
 }

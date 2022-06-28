@@ -89,7 +89,7 @@ namespace KenshiWikiValidator.WikiCategories.Weapons.Rules
                     Time = research.Time.GetValueOrDefault(),
                 };
 
-                var template = researchInfoTemplateCreator.Generate();
+                var template = researchInfoTemplateCreator.Generate(data);
 
                 builder.WithTemplate(template)
                     .WithNewline();
@@ -109,19 +109,19 @@ namespace KenshiWikiValidator.WikiCategories.Weapons.Rules
             craftingTemplateCreator.BuildingName = "Weapon Smith I";
             craftingTemplateCreator.Input1 = ("Iron Plates", cost.GetValueOrDefault());
 
-            builder.WithTemplate(craftingTemplateCreator.Generate());
+            builder.WithTemplate(craftingTemplateCreator.Generate(data));
 
             craftingTemplateCreator.BuildingName = "Weapon Smith II";
             craftingTemplateCreator.Input1 = ("Iron Plates", cost.GetValueOrDefault());
             craftingTemplateCreator.Input2 = ("Fabrics", cost.GetValueOrDefault());
 
-            builder.WithTemplate(craftingTemplateCreator.Generate());
+            builder.WithTemplate(craftingTemplateCreator.Generate(data));
 
             craftingTemplateCreator.BuildingName = "Weapon Smith III";
             craftingTemplateCreator.Input1 = ("Steel Bars", cost.GetValueOrDefault());
             craftingTemplateCreator.Input2 = ("Fabrics", cost.GetValueOrDefault());
 
-            builder.WithTemplate(craftingTemplateCreator.Generate());
+            builder.WithTemplate(craftingTemplateCreator.Generate(data));
 
             return builder;
         }

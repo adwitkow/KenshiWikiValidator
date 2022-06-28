@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using KenshiWikiValidator.BaseComponents;
+
 namespace KenshiWikiValidator.WikiTemplates.Creators
 {
     public class ResearchInfoTemplateCreator : ITemplateCreator
@@ -40,7 +42,7 @@ namespace KenshiWikiValidator.WikiTemplates.Creators
 
         public IEnumerable<string> RequiredFor { get; set; } = Enumerable.Empty<string>();
 
-        public WikiTemplate Generate()
+        public WikiTemplate Generate(ArticleData data)
         {
             var prerequisites = string.Join(", ", this.Prerequisites.Select(item => $"[[{item}]]"));
             var newBuildings = string.Join(", ", this.NewBuildings.Select(item => $"[[{item}]]"));
