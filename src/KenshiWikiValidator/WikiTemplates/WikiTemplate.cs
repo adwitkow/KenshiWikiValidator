@@ -83,7 +83,25 @@ namespace KenshiWikiValidator.WikiTemplates
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            var hash = 0;
+            hash *= this.Name.GetHashCode();
+
+            foreach (var parameterPair in this.Parameters)
+            {
+                hash *= parameterPair.Key.GetHashCode();
+
+                if (parameterPair.Value is not null)
+                {
+                    hash *= parameterPair.Value.GetHashCode();
+                }
+            }
+
+            foreach (var parameter in this.UnnamedParameters)
+            {
+                hash *= parameter.GetHashCode();
+            }
+
+            return hash;
         }
 
         private static bool AreParametersEqual(SortedList<string, string?> sorted1, SortedList<string, string?> sorted2)
