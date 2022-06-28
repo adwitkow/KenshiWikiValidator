@@ -57,6 +57,11 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
         {
             var stringIds = data.GetAllPossibleStringIds();
 
+            if (!stringIds.Any())
+            {
+                return null;
+            }
+
             var items = stringIds.Select(stringId => this.itemRepository.GetItemByStringId<Town>(stringId));
             var articleTitle = this.wikiTitles.GetTitle(stringIds.First(), items.First().Name);
             var baseArticleTitle = articleTitle.Split('/').First();
