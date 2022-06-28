@@ -46,28 +46,33 @@ namespace KenshiWikiValidator.BaseComponents
 
             title = title.Replace("/", string.Empty);
 
-            var contentToValidate = MakeNewlinesConsistent(content);
+            var articleContainsCorrectTemplate = data.WikiTemplates.Any(wikiTemplate => wikiTemplate.Equals(template));
 
-            if (!contentToValidate.Contains(correctTemplateString))
+            if (!articleContainsCorrectTemplate)
             {
-                result.AddIssue($"Incorrect or missing {template.Name} template");
+                var articleContainsTemplateAtAll = data.WikiTemplates.Any(t => t.Name.Equals(template.Name));
+
+                if (!articleContainsTemplateAtAll)
+                {
+                    result.AddIssue($"Template '{template.Name}' is missing.");
+                }
+                else
+                {
+                    result.AddIssue($"Template '{template.Name}' contains incorrect parameters.");
+                }
 
                 if (!Directory.Exists(output))
                 {
                     Directory.CreateDirectory(output);
                 }
 
-                File.WriteAllText(Path.Combine(output, $"{title}-{template.Name.Replace("/", string.Empty)}-Template.txt"), correctTemplateString);
+                var path = Path.Combine(output, $"{title}-{template.Name.Replace("/", string.Empty)}-Template.txt");
+                File.WriteAllText(path, correctTemplateString);
             }
 
             return result;
         }
 
         protected abstract WikiTemplate? PrepareTemplate(ArticleData data);
-
-        private static string MakeNewlinesConsistent(string input)
-        {
-            return Regex.Replace(input, @"\r\n|\r|\n", Environment.NewLine);
-        }
     }
 }
