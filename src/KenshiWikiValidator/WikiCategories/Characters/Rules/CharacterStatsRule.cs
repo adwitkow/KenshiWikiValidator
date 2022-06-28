@@ -29,6 +29,7 @@ namespace KenshiWikiValidator.WikiCategories.Characters.Rules
         private readonly IItemRepository itemRepository;
         private readonly StatsTemplateCreator statsTemplateCreator;
         private readonly CharacterStatsTemplateCreator characterStatsTemplateCreator;
+        private readonly AnimalStatsTemplateCreator animalStatsTemplateCreator;
 
         public CharacterStatsRule(IItemRepository itemRepository)
         {
@@ -36,6 +37,7 @@ namespace KenshiWikiValidator.WikiCategories.Characters.Rules
 
             this.statsTemplateCreator = new StatsTemplateCreator();
             this.characterStatsTemplateCreator = new CharacterStatsTemplateCreator();
+            this.animalStatsTemplateCreator = new AnimalStatsTemplateCreator();
         }
 
         protected override WikiTemplate? PrepareTemplate(ArticleData data)
@@ -47,6 +49,7 @@ namespace KenshiWikiValidator.WikiCategories.Characters.Rules
                 return null;
             }
 
+            bool isAnimal = false;
             IStatsContainer item;
             if (data.Categories.Contains("Lore"))
             {
@@ -55,6 +58,7 @@ namespace KenshiWikiValidator.WikiCategories.Characters.Rules
             else if (data.Categories.Contains("Animals"))
             {
                 item = this.itemRepository.GetItemByStringId<AnimalCharacter>(stringId);
+                isAnimal = true;
             }
             else
             {
@@ -72,8 +76,16 @@ namespace KenshiWikiValidator.WikiCategories.Characters.Rules
             }
             else
             {
-                this.characterStatsTemplateCreator.StatsContainer = item;
-                creator = this.characterStatsTemplateCreator;
+                if (isAnimal)
+                {
+                    this.animalStatsTemplateCreator.AnimalCharacter = item as AnimalCharacter;
+                    creator = this.animalStatsTemplateCreator;
+                }
+                else
+                {
+                    this.characterStatsTemplateCreator.StatsContainer = item;
+                    creator = this.characterStatsTemplateCreator;
+                }
             }
 
             return creator.Generate(data);
