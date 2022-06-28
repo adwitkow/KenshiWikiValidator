@@ -40,5 +40,59 @@ namespace KenshiWikiValidator.Tests.WikiTemplates
 
             Assert.ThrowsException<ArgumentNullException>(action);
         }
+
+        [TestMethod]
+        public void ShouldBeEqualWithItselfAndOnlyName()
+        {
+            var template = new WikiTemplate("test", new SortedSet<string>(), new SortedList<string, string?>());
+
+            Assert.IsTrue(template.Equals(template));
+        }
+
+        [TestMethod]
+        public void ShouldNotBeEqualIfUnnamedParametersAreDifferent()
+        {
+            var template = new WikiTemplate("test", new SortedSet<string>()
+            {
+                "test"
+            });
+            var template2 = new WikiTemplate("test", new SortedSet<string>()
+            {
+                "test2"
+            });
+
+            Assert.IsFalse(template.Equals(template2));
+        }
+
+        [TestMethod]
+        public void ShouldNotBeEqualIfParametersAreDifferent()
+        {
+            var template = new WikiTemplate("test", new SortedList<string, string?>()
+            {
+                { "test", "test1" },
+            });
+            var template2 = new WikiTemplate("test", new SortedList<string, string?>()
+            {
+                { "test", "test2" },
+            });
+
+            Assert.IsFalse(template.Equals(template2));
+        }
+
+        [TestMethod]
+        public void ShouldNotBeEqualIfParameterCountsAreDifferent()
+        {
+            var template = new WikiTemplate("test", new SortedList<string, string?>()
+            {
+                { "test", "test1" },
+            });
+            var template2 = new WikiTemplate("test", new SortedList<string, string?>()
+            {
+                { "test", "test1" },
+                { "test2", "test1" }
+            });
+
+            Assert.IsFalse(template.Equals(template2));
+        }
     }
 }
