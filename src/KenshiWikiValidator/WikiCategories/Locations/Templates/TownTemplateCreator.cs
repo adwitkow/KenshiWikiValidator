@@ -55,18 +55,7 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
 
         public WikiTemplate? Generate(ArticleData data)
         {
-            var stringIds = this.data.StringIds;
-            if (!stringIds.Any())
-            {
-                if (string.IsNullOrEmpty(this.data.PotentialStringId))
-                {
-                    return null;
-                }
-                else
-                {
-                    stringIds = new[] { this.data.PotentialStringId };
-                }
-            }
+            var stringIds = data.GetAllPossibleStringIds();
 
             var items = stringIds.Select(stringId => this.itemRepository.GetItemByStringId<Town>(stringId));
             var articleTitle = this.wikiTitles.GetTitle(stringIds.First(), items.First().Name);
