@@ -32,9 +32,9 @@ namespace KenshiWikiValidator.WikiCategories.Weapons.Rules
 
         protected override WikiTemplate? PrepareTemplate(ArticleData data)
         {
-            var weaponTemplateCreator = new WeaponTemplateCreator(this.itemRepository, data);
+            var weaponTemplateCreator = new WeaponTemplateCreator(this.itemRepository);
 
-            return weaponTemplateCreator.Generate();
+            return weaponTemplateCreator.Generate(data);
         }
     }
 }

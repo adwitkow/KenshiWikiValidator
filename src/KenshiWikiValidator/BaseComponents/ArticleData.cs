@@ -35,5 +35,16 @@ namespace KenshiWikiValidator.BaseComponents
         public IEnumerable<WikiTemplate> WikiTemplates { get; set; }
 
         public string PotentialStringId { get; set; }
+
+        public IEnumerable<string> GetAllPossibleStringIds()
+        {
+            var stringIds = this.StringIds;
+            if (!stringIds.Any() && !string.IsNullOrEmpty(this.PotentialStringId))
+            {
+                stringIds = new[] { this.PotentialStringId };
+            }
+
+            return stringIds;
+        }
     }
 }

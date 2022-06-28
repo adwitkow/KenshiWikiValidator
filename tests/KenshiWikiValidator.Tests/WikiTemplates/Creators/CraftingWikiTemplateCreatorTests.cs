@@ -1,4 +1,5 @@
-﻿using KenshiWikiValidator.WikiTemplates.Creators;
+﻿using KenshiWikiValidator.BaseComponents;
+using KenshiWikiValidator.WikiTemplates.Creators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KenshiWikiValidator.Tests.WikiTemplates.Creators
@@ -11,7 +12,7 @@ namespace KenshiWikiValidator.Tests.WikiTemplates.Creators
         {
             var creator = new CraftingTemplateCreator();
 
-            var template = creator.Generate();
+            var template = creator.Generate(new ArticleData());
 
             Assert.IsTrue(template.Parameters.ContainsKey("building"));
             Assert.IsTrue(template.Parameters.ContainsKey("input0"));
@@ -29,7 +30,7 @@ namespace KenshiWikiValidator.Tests.WikiTemplates.Creators
                 BuildingName = "building name"
             };
 
-            var template = creator.Generate();
+            var template = creator.Generate(new ArticleData());
 
             Assert.AreEqual("building name", template.Parameters["building"]);
         }
@@ -42,7 +43,7 @@ namespace KenshiWikiValidator.Tests.WikiTemplates.Creators
                 Input1 = ("input", 1)
             };
 
-            var template = creator.Generate();
+            var template = creator.Generate(new ArticleData());
 
             Assert.AreEqual(null, template.Parameters["input1"]);
             Assert.AreEqual(null, template.Parameters["input1amount"]);
@@ -56,7 +57,7 @@ namespace KenshiWikiValidator.Tests.WikiTemplates.Creators
                 Output = "test"
             };
 
-            var template = creator.Generate();
+            var template = creator.Generate(new ArticleData());
 
             Assert.AreEqual("test", template.Parameters["output"]);
         }

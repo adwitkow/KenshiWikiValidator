@@ -18,9 +18,9 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations.Templates
         {
             var repository = new Mock<IItemRepository>();
             var zoneDataProvider = new Mock<IZoneDataProvider>();
-            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache(), new ArticleData());
+            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache());
 
-            var template = creator.Generate();
+            var template = creator.Generate(new ArticleData());
 
             Assert.IsNull(template);
         }
@@ -37,9 +37,9 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations.Templates
             var articleData = new ArticleData();
             articleData.StringIds.Add("stringid");
 
-            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache(), articleData);
+            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache());
 
-            var template = creator.Generate();
+            var template = creator.Generate(articleData);
 
             Assert.IsNotNull(template);
         }
@@ -58,9 +58,9 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations.Templates
                 PotentialStringId = "stringid"
             };
 
-            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache(), articleData);
+            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache());
 
-            var template = creator.Generate();
+            var template = creator.Generate(articleData);
 
             Assert.IsNotNull(template);
         }
@@ -81,9 +81,9 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations.Templates
             var articleData = new ArticleData();
             articleData.StringIds.Add("stringid");
 
-            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache(), articleData);
+            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache());
 
-            var template = creator.Generate();
+            var template = creator.Generate(articleData);
 
             Assert.IsNotNull(template);
             Assert.AreEqual("[[faction name]]", template.Parameters["factions"]);
@@ -104,9 +104,9 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations.Templates
             var articleData = new ArticleData();
             articleData.StringIds.Add("stringid");
 
-            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache(), articleData);
+            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache());
 
-            var template = creator.Generate();
+            var template = creator.Generate(articleData);
 
             Assert.IsNotNull(template);
             Assert.AreEqual("[[zone name]]", template.Parameters["biome"]);
@@ -132,9 +132,9 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations.Templates
                 })
             };
 
-            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache(), articleData);
+            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache());
 
-            var template = creator.Generate();
+            var template = creator.Generate(articleData);
 
             Assert.IsNotNull(template);
             Assert.AreEqual("old image", template.Parameters["image1"]);
@@ -166,9 +166,9 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations.Templates
             var articleData = new ArticleData();
             articleData.StringIds.Add(town.StringId);
 
-            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache(), articleData);
+            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, new WikiTitleCache());
 
-            var template = creator.Generate();
+            var template = creator.Generate(articleData);
 
             Assert.IsNotNull(template);
             Assert.AreEqual("[[zone name]]", template.Parameters["biome"]);
@@ -190,9 +190,9 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations.Templates
                 .Setup(cache => cache.GetTitle("stringid", "town name"))
                 .Returns("article title");
 
-            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, wikiTitleCache.Object, articleData);
+            var creator = new TownTemplateCreator(repository.Object, zoneDataProvider.Object, wikiTitleCache.Object);
 
-            var template = creator.Generate();
+            var template = creator.Generate(articleData);
 
             Assert.IsNotNull(template);
             Assert.AreEqual("article title", template.Parameters["title1"]);

@@ -26,14 +26,12 @@ namespace KenshiWikiValidator.WikiTemplates.Creators
         private const string WikiTemplateName = "Weapon";
 
         private readonly IItemRepository itemRepository;
-        private readonly ArticleData data;
 
         private readonly Dictionary<int, string> skillToClassMap;
 
-        public WeaponTemplateCreator(IItemRepository itemRepository, ArticleData data)
+        public WeaponTemplateCreator(IItemRepository itemRepository)
         {
             this.itemRepository = itemRepository;
-            this.data = data;
 
             this.skillToClassMap = new Dictionary<int, string>()
             {
@@ -46,9 +44,9 @@ namespace KenshiWikiValidator.WikiTemplates.Creators
             };
         }
 
-        public WikiTemplate? Generate()
+        public WikiTemplate? Generate(ArticleData data)
         {
-            var stringId = this.data.StringIds.SingleOrDefault();
+            var stringId = data.StringIds.SingleOrDefault();
             if (string.IsNullOrEmpty(stringId))
             {
                 return null;

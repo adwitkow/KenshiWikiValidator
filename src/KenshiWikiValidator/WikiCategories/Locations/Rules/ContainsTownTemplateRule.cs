@@ -36,9 +36,9 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Rules
 
         protected override WikiTemplate? PrepareTemplate(ArticleData data)
         {
-            var weaponTemplateCreator = new TownTemplateCreator(this.itemRepository, this.zoneDataProvider, this.wikiTitles, data);
+            var weaponTemplateCreator = new TownTemplateCreator(this.itemRepository, this.zoneDataProvider, this.wikiTitles);
 
-            return weaponTemplateCreator.Generate();
+            return weaponTemplateCreator.Generate(data);
         }
     }
 }

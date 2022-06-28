@@ -44,8 +44,8 @@ namespace KenshiWikiValidator.WikiCategories.SharedRules
                 return null!;
             }
 
-            var templateCreator = new BlueprintTemplateCreator(this.itemRepository, data);
-            var template = templateCreator.Generate();
+            var templateCreator = new BlueprintTemplateCreator(this.itemRepository);
+            var template = templateCreator.Generate(data);
 
             if (template is null)
             {

@@ -24,17 +24,15 @@ namespace KenshiWikiValidator.WikiTemplates.Creators;
 public class BlueprintTemplateCreator : ITemplateCreator
 {
     private readonly IItemRepository itemRepository;
-    private readonly ArticleData data;
 
-    public BlueprintTemplateCreator(IItemRepository itemRepository, ArticleData data)
+    public BlueprintTemplateCreator(IItemRepository itemRepository)
     {
         this.itemRepository = itemRepository;
-        this.data = data;
     }
 
-    public WikiTemplate Generate()
+    public WikiTemplate Generate(ArticleData data)
     {
-        var stringId = this.data.StringIds.SingleOrDefault();
+        var stringId = data.StringIds.SingleOrDefault();
         if (string.IsNullOrEmpty(stringId))
         {
             return null!;

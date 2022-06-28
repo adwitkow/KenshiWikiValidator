@@ -16,9 +16,9 @@ namespace KenshiWikiValidator.Tests.WikiTemplates.Creators
         public void ShouldReturnNullForEmptyArticleData()
         {
             var repository = new Mock<IItemRepository>();
-            var creator = new WeaponTemplateCreator(repository.Object, new ArticleData());
+            var creator = new WeaponTemplateCreator(repository.Object);
 
-            var template = creator.Generate();
+            var template = creator.Generate(new ArticleData());
 
             Assert.IsNull(template);
         }
@@ -34,9 +34,9 @@ namespace KenshiWikiValidator.Tests.WikiTemplates.Creators
             var articleData = new ArticleData();
             articleData.StringIds.Add("stringid");
 
-            var creator = new WeaponTemplateCreator(repository.Object, articleData);
+            var creator = new WeaponTemplateCreator(repository.Object);
 
-            var template = creator.Generate();
+            var template = creator.Generate(articleData);
 
             Assert.IsNotNull(template);
         }
@@ -66,9 +66,9 @@ namespace KenshiWikiValidator.Tests.WikiTemplates.Creators
             var articleData = new ArticleData();
             articleData.StringIds.Add("stringid");
 
-            var creator = new WeaponTemplateCreator(repository.Object, articleData);
+            var creator = new WeaponTemplateCreator(repository.Object);
 
-            var template = creator.Generate();
+            var template = creator.Generate(articleData);
 
             Assert.IsNotNull(template);
             Assert.AreEqual("-50", template.Parameters["damage_spider"]);
@@ -96,9 +96,9 @@ and this is another line"
             var articleData = new ArticleData();
             articleData.StringIds.Add("stringid");
 
-            var creator = new WeaponTemplateCreator(repository.Object, articleData);
+            var creator = new WeaponTemplateCreator(repository.Object);
 
-            var template = creator.Generate();
+            var template = creator.Generate(articleData);
 
             Assert.IsNotNull(template);
             Assert.AreEqual("this is a line<br /><br />and this is another line", template.Parameters["description"]);
@@ -123,9 +123,9 @@ and this is another line"
             var articleData = new ArticleData();
             articleData.StringIds.Add("stringid");
 
-            var creator = new WeaponTemplateCreator(repository.Object, articleData);
+            var creator = new WeaponTemplateCreator(repository.Object);
 
-            Assert.ThrowsException<InvalidOperationException>(() => creator.Generate());
+            Assert.ThrowsException<InvalidOperationException>(() => creator.Generate(articleData));
         }
 
         [TestMethod]
@@ -142,9 +142,9 @@ and this is another line"
             var articleData = new ArticleData();
             articleData.StringIds.Add("stringid");
 
-            var creator = new WeaponTemplateCreator(repository.Object, articleData);
+            var creator = new WeaponTemplateCreator(repository.Object);
 
-            var template = creator.Generate();
+            var template = creator.Generate(articleData);
 
             Assert.IsNotNull(template);
             Assert.AreEqual("1.20", template.Parameters["blood loss"]);

@@ -29,15 +29,13 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
         private readonly IItemRepository itemRepository;
         private readonly IZoneDataProvider zoneDataProvider;
         private readonly IWikiTitleCache wikiTitles;
-        private readonly ArticleData data;
         private readonly string[] townTypes;
 
-        public TownTemplateCreator(IItemRepository itemRepository, IZoneDataProvider zoneDataProvider, IWikiTitleCache wikiTitles, ArticleData data)
+        public TownTemplateCreator(IItemRepository itemRepository, IZoneDataProvider zoneDataProvider, IWikiTitleCache wikiTitles)
         {
             this.itemRepository = itemRepository;
             this.zoneDataProvider = zoneDataProvider;
             this.wikiTitles = wikiTitles;
-            this.data = data;
 
             this.townTypes = new[]
             {
@@ -55,19 +53,13 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
             };
         }
 
-        public WikiTemplate? Generate()
+        public WikiTemplate? Generate(ArticleData data)
         {
-            var stringIds = this.data.StringIds;
+            var stringIds = data.GetAllPossibleStringIds();
+
             if (!stringIds.Any())
             {
-                if (string.IsNullOrEmpty(this.data.PotentialStringId))
-                {
-                    return null;
-                }
-                else
-                {
-                    stringIds = new[] { this.data.PotentialStringId };
-                }
+                return null;
             }
 
             var items = stringIds.Select(stringId => this.itemRepository.GetItemByStringId<Town>(stringId));
@@ -92,7 +84,7 @@ namespace KenshiWikiValidator.WikiCategories.Locations.Templates
                 fcsNames = Enumerable.Empty<string>();
             }
 
-            var existingTemplate = this.data.WikiTemplates
+            var existingTemplate = data.WikiTemplates
                 .SingleOrDefault(template => template.Name.ToLower().Equals("town"));
 
             var properties = new SortedList<string, string?>
