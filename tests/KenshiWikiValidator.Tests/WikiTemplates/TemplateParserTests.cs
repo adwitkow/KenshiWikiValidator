@@ -19,6 +19,15 @@ namespace KenshiWikiValidator.Tests.WikiTemplates
 | armour penetration = -30
 |attack = +2|defence = -2
 }}";
+        private const string PipedLinkTemplate = @"{{Town
+| biome     = [[Bast (Zone)|Bast]]
+| caption1  = The Ruin of Bast
+| factions  = [[United Cities]]
+| image1    = Bast.jpg
+| map       = BastMap.png
+| string id = 55655-rebirth.mod
+| type      = Ruins
+}}";
 
         [TestMethod]
         public void MustBeNotNullIfHasAllCorrectFormat()
@@ -124,6 +133,18 @@ namespace KenshiWikiValidator.Tests.WikiTemplates
             Assert.AreEqual("+2", result.Parameters["attack"]);
             Assert.IsTrue(result.Parameters.ContainsKey("defence"));
             Assert.AreEqual("-2", result.Parameters["defence"]);
+        }
+
+        [TestMethod]
+        public void ShouldHandlePipedLinks()
+        {
+            var parser = new TemplateParser();
+
+            var result = parser.Parse(PipedLinkTemplate);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(7, result.Parameters.Count);
+            Assert.AreEqual("[[Bast (Zone)|Bast]]", result.Parameters["biome"]);
         }
     }
 }
