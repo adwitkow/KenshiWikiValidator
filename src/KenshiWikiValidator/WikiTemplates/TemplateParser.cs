@@ -14,10 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Text.RegularExpressions;
+
 namespace KenshiWikiValidator.WikiTemplates
 {
     public class TemplateParser
     {
+        private static readonly Regex PipeRegex = new Regex(@"(?<pipe>\|)|(\[\[.+\|.+\]\])");
+
+        private int lastPipeIndex = 0;
+
         public IEnumerable<WikiTemplate> ParseAllTemplates(string content)
         {
             var templates = new List<WikiTemplate>();
@@ -60,15 +66,22 @@ namespace KenshiWikiValidator.WikiTemplates
                 throw new ArgumentException("Input does not have any content to parse.", nameof(input));
             }
 
-            var templateElements = trimmed.Split('|', StringSplitOptions.RemoveEmptyEntries)
-                .Select(element => element.Trim())
-                .ToList();
-            var name = templateElements.First();
+            var elements = this.SplitOnPipes(trimmed);
 
+            var name = trimmed.Substring(0, this.lastPipeIndex).Trim();
+            var properties = PopulateProperties(elements);
+
+            var result = new WikiTemplate(name, properties);
+
+            return result;
+        }
+
+        private static SortedList<string, string?> PopulateProperties(IList<string> elements)
+        {
             var properties = new SortedList<string, string?>();
-            for (int i = 1; i < templateElements.Count; i++)
+            for (int i = 0; i < elements.Count; i++)
             {
-                var element = templateElements[i];
+                var element = elements[i];
                 if (element.Contains('='))
                 {
                     var splitElements = element.Split('=');
@@ -83,9 +96,32 @@ namespace KenshiWikiValidator.WikiTemplates
                 }
             }
 
-            var result = new WikiTemplate(name, properties);
+            return properties;
+        }
 
-            return result;
+        private IList<string> SplitOnPipes(string trimmed)
+        {
+            var matches = PipeRegex.Matches(trimmed);
+            var elements = new List<string>();
+            this.lastPipeIndex = trimmed.Length;
+            for (int i = matches.Count - 1; i >= 0; i--)
+            {
+                var match = matches[i];
+                var group = match.Groups["pipe"];
+
+                if (!group.Success)
+                {
+                    continue;
+                }
+
+                var index = group.Index;
+                var element = trimmed.Substring(index + 1, this.lastPipeIndex - index - 1);
+                this.lastPipeIndex = index;
+
+                elements.Add(element.Trim());
+            }
+
+            return elements;
         }
     }
 }
