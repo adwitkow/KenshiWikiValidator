@@ -20,7 +20,7 @@ namespace KenshiWikiValidator.WikiTemplates
 {
     public class TemplateParser
     {
-        private static readonly Regex PipeRegex = new Regex(@"(?<pipe>\|)|(\[\[.+\|.+\]\])");
+        private static readonly Regex PipeRegex = new Regex(@"(?<pipe>\|)|(\[\[.+?\|?.+?\]\])");
 
         private int lastPipeIndex = 0;
 
