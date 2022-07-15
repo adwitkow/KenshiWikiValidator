@@ -146,5 +146,24 @@ namespace KenshiWikiValidator.Tests.WikiTemplates
             Assert.AreEqual(7, result.Parameters.Count);
             Assert.AreEqual("[[Bast (Zone)|Bast]]", result.Parameters["biome"]);
         }
+
+        [TestMethod]
+        public void ShouldHandleMultipleNonPipedLinks()
+        {
+            var input = @"{{Town|title1 = Secret Drug Farm|image1 = Secret Drug BAse.jpg|biome = [[Stobe's Gamble]]|factions = [[Blackshifters]]|map = Secret Drug Base -Map-.png|dangers = [[Security Spider II]]|resources = [[Hashish]]}}";
+            var parser = new TemplateParser();
+
+            var result = parser.Parse(input);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(7, result.Parameters.Count);
+            Assert.AreEqual("[[Stobe's Gamble]]", result.Parameters["biome"]);
+            Assert.AreEqual("Secret Drug Farm", result.Parameters["title1"]);
+            Assert.AreEqual("Secret Drug BAse.jpg", result.Parameters["image1"]);
+            Assert.AreEqual("[[Blackshifters]]", result.Parameters["factions"]);
+            Assert.AreEqual("Secret Drug Base -Map-.png", result.Parameters["map"]);
+            Assert.AreEqual("[[Security Spider II]]", result.Parameters["dangers"]);
+            Assert.AreEqual("[[Hashish]]", result.Parameters["resources"]);
+        }
     }
 }
