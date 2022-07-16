@@ -42,7 +42,7 @@ namespace KenshiWikiValidator.BaseComponents
             var addNewlines = template.Parameters.Count > 3;
             var correctTemplateString = this.templateBuilder.Build(template, addNewlines);
 
-            var output = "output";
+            var output = Path.Combine("output", "templates", this.GetType().Name);
 
             title = title.Replace("/", string.Empty);
 
