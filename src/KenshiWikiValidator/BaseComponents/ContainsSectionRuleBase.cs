@@ -35,7 +35,7 @@ namespace KenshiWikiValidator.BaseComponents
             var section = sectionBuilder.WikiSection;
             var sectionContent = sectionBuilder.Build();
 
-            var output = "output";
+            var output = Path.Combine("output", "sections", this.GetType().Name);
             if (!Directory.Exists(output))
             {
                 Directory.CreateDirectory(output);
