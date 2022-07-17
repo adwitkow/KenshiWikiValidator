@@ -1,6 +1,6 @@
 ﻿using System;
 using KenshiWikiValidator.BaseComponents;
-using KenshiWikiValidator.WikiCategories.SharedRules;
+using KenshiWikiValidator.BaseComponents.SharedRules;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KenshiWikiValidator.Tests.WikiCategories.SharedRules

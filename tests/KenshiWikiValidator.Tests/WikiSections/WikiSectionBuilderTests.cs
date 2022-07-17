@@ -1,5 +1,4 @@
-﻿using KenshiWikiValidator.WikiSections;
-using KenshiWikiValidator.WikiTemplates;
+﻿using KenshiWikiValidator.BaseComponents;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

@@ -14,35 +14,26 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace KenshiWikiValidator.BaseComponents
+using KenshiWikiValidator.BaseComponents;
+using KenshiWikiValidator.BaseComponents.Creators;
+using KenshiWikiValidator.OcsProxy;
+
+namespace KenshiWikiValidator.Weapons.Rules
 {
-    public class ArticleData
+    internal class ContainsWeaponTemplateRule : ContainsDetailedTemplateRuleBase
     {
-        public ArticleData()
+        private readonly IItemRepository itemRepository;
+
+        public ContainsWeaponTemplateRule(IItemRepository itemRepository)
         {
-            this.WikiTemplates = new List<WikiTemplate>();
-            this.StringIds = new List<string>();
-            this.Categories = new List<string>();
-            this.PotentialStringId = string.Empty;
+            this.itemRepository = itemRepository;
         }
 
-        public ICollection<string> StringIds { get; set; }
-
-        public ICollection<string> Categories { get; set; }
-
-        public IEnumerable<WikiTemplate> WikiTemplates { get; set; }
-
-        public string PotentialStringId { get; set; }
-
-        public IEnumerable<string> GetAllPossibleStringIds()
+        protected override WikiTemplate? PrepareTemplate(ArticleData data)
         {
-            var stringIds = this.StringIds;
-            if (!stringIds.Any() && !string.IsNullOrEmpty(this.PotentialStringId))
-            {
-                stringIds = new[] { this.PotentialStringId };
-            }
+            var weaponTemplateCreator = new WeaponTemplateCreator(this.itemRepository);
 
-            return stringIds;
+            return weaponTemplateCreator.Generate(data);
         }
     }
 }
