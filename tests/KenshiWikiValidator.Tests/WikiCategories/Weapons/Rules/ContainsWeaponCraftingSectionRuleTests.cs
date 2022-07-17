@@ -2,7 +2,7 @@
 using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.Models;
-using KenshiWikiValidator.WikiCategories.Weapons.Rules;
+using KenshiWikiValidator.Weapons.Rules;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using KenshiWikiValidator.BaseComponents;
+using KenshiWikiValidator.Locations;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.Models;
-using KenshiWikiValidator.WikiCategories.Locations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 

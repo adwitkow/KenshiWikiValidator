@@ -16,12 +16,12 @@
 
 using System.Diagnostics;
 using KenshiWikiValidator.BaseComponents;
+using KenshiWikiValidator.Characters;
 using KenshiWikiValidator.Console;
+using KenshiWikiValidator.Locations;
 using KenshiWikiValidator.OcsProxy;
-using KenshiWikiValidator.WikiCategories.Characters;
-using KenshiWikiValidator.WikiCategories.Locations;
-using KenshiWikiValidator.WikiCategories.TownResidents;
-using KenshiWikiValidator.WikiCategories.Weapons;
+using KenshiWikiValidator.TownResidents;
+using KenshiWikiValidator.Weapons;
 using WikiClientLibrary.Client;
 using WikiClientLibrary.Generators;
 using WikiClientLibrary.Pages;
