@@ -30,7 +30,7 @@ namespace KenshiWikiValidator.BaseComponents
             var builder = new StringBuilder("{{");
 
             var newlineAfterName = true;
-            if (!template.Parameters.Any() && !template.UnnamedParameters.Any() || template.UnnamedParameters.Count == 1)
+            if (!(template.Parameters.Any() || template.UnnamedParameters.Any()) || template.UnnamedParameters.Count == 1)
             {
                 newlineAfterName = false;
             }
