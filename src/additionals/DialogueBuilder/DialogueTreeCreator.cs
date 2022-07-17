@@ -1,7 +1,7 @@
-﻿using KenshiWikiValidator.OcsProxy;
+﻿using KenshiWikiValidator.BaseComponents;
+using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.DialogueComponents;
 using KenshiWikiValidator.OcsProxy.Models;
-using KenshiWikiValidator.WikiSections;
 
 namespace DialogueDumper
 {

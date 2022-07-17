@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using KenshiWikiValidator.BaseComponents;
+using KenshiWikiValidator.BaseComponents.Creators;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.Models;
-using KenshiWikiValidator.WikiTemplates.Creators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 

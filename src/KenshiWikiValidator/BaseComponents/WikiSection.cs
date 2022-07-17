@@ -16,33 +16,16 @@
 
 namespace KenshiWikiValidator.BaseComponents
 {
-    public class ArticleData
+    public class WikiSection
     {
-        public ArticleData()
+        public WikiSection()
         {
-            this.WikiTemplates = new List<WikiTemplate>();
-            this.StringIds = new List<string>();
-            this.Categories = new List<string>();
-            this.PotentialStringId = string.Empty;
+            this.Header = string.Empty;
+            this.Components = new List<string>();
         }
 
-        public ICollection<string> StringIds { get; set; }
+        public string Header { get; set; }
 
-        public ICollection<string> Categories { get; set; }
-
-        public IEnumerable<WikiTemplate> WikiTemplates { get; set; }
-
-        public string PotentialStringId { get; set; }
-
-        public IEnumerable<string> GetAllPossibleStringIds()
-        {
-            var stringIds = this.StringIds;
-            if (!stringIds.Any() && !string.IsNullOrEmpty(this.PotentialStringId))
-            {
-                stringIds = new[] { this.PotentialStringId };
-            }
-
-            return stringIds;
-        }
+        public List<string> Components { get; }
     }
 }

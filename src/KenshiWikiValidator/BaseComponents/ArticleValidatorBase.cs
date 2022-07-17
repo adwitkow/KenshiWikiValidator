@@ -16,8 +16,6 @@
 
 using System.Text.RegularExpressions;
 using KenshiWikiValidator.OcsProxy;
-using KenshiWikiValidator.WikiCategories.SharedRules;
-using KenshiWikiValidator.WikiTemplates;
 
 namespace KenshiWikiValidator.BaseComponents
 {

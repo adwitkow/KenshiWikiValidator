@@ -14,35 +14,27 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace KenshiWikiValidator.BaseComponents
+using KenshiWikiValidator.BaseComponents;
+using KenshiWikiValidator.BaseComponents.SharedRules;
+using KenshiWikiValidator.OcsProxy;
+
+namespace KenshiWikiValidator.Characters
 {
-    public class ArticleData
+    public class CharactersArticleValidator : ArticleValidatorBase
     {
-        public ArticleData()
+        private readonly IEnumerable<IValidationRule> rules;
+
+        public CharactersArticleValidator(IItemRepository itemRepository, WikiTitleCache wikiTitles)
+            : base(itemRepository, wikiTitles)
         {
-            this.WikiTemplates = new List<WikiTemplate>();
-            this.StringIds = new List<string>();
-            this.Categories = new List<string>();
-            this.PotentialStringId = string.Empty;
-        }
-
-        public ICollection<string> StringIds { get; set; }
-
-        public ICollection<string> Categories { get; set; }
-
-        public IEnumerable<WikiTemplate> WikiTemplates { get; set; }
-
-        public string PotentialStringId { get; set; }
-
-        public IEnumerable<string> GetAllPossibleStringIds()
-        {
-            var stringIds = this.StringIds;
-            if (!stringIds.Any() && !string.IsNullOrEmpty(this.PotentialStringId))
+            this.rules = new List<IValidationRule>()
             {
-                stringIds = new[] { this.PotentialStringId };
-            }
-
-            return stringIds;
+                new ContainsTemplateRule("Character"),
+            };
         }
+
+        public override string CategoryName => "Characters";
+
+        public override IEnumerable<IValidationRule> Rules => this.rules;
     }
 }

@@ -1,5 +1,5 @@
 ﻿using KenshiWikiValidator.BaseComponents;
-using KenshiWikiValidator.WikiTemplates.Creators;
+using KenshiWikiValidator.BaseComponents.Creators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KenshiWikiValidator.Tests.WikiTemplates.Creators
