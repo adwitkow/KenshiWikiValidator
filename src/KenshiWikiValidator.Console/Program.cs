@@ -19,6 +19,7 @@ using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.Characters;
 using KenshiWikiValidator.Console;
 using KenshiWikiValidator.Locations;
+using KenshiWikiValidator.MapItems;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.TownResidents;
 using KenshiWikiValidator.Weapons;
@@ -41,6 +42,7 @@ var validators = new List<IArticleValidator>()
     townResidentValidator,
     new LocationsArticleValidator(itemRepository, zoneDataProvider, wikiTitles),
     new WeaponArticleValidator(itemRepository, wikiTitles, townResidentValidator),
+    new MapItemArticleValidator(itemRepository, wikiTitles),
 };
 
 var output = "output";
