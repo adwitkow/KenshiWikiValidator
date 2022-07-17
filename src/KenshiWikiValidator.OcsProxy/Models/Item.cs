@@ -113,7 +113,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public object? GroundMesh { get; set; }
 
         [Value("icon")]
-        public object? Icon { get; set; }
+        public string? Icon { get; set; }
 
         [Value("mesh")]
         public object? Mesh { get; set; }
