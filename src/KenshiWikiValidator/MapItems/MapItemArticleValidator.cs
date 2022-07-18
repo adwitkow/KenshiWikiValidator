@@ -40,7 +40,7 @@ namespace KenshiWikiValidator.MapItems
             };
         }
 
-        public override string CategoryName => "Map Items";
+        public override string CategoryName => "Map items";
 
         public override IEnumerable<IValidationRule> Rules => this.rules;
 
