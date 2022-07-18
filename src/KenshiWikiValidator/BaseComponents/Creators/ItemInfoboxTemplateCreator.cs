@@ -19,7 +19,7 @@ using KenshiWikiValidator.OcsProxy.Models;
 
 namespace KenshiWikiValidator.BaseComponents.Creators
 {
-    internal class ItemInfoboxTemplateCreator : ITemplateCreator
+    public class ItemInfoboxTemplateCreator : ITemplateCreator
     {
         private readonly IItemRepository itemRepository;
 
