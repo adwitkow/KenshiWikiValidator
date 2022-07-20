@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using KenshiWikiValidator.BaseComponents;
+using KenshiWikiValidator.Locations;
 using KenshiWikiValidator.MapItems;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.Models;
@@ -16,9 +17,11 @@ namespace KenshiWikiValidator.Tests.MapItems
         {
             var repositoryMock = new Mock<IItemRepository>();
             var titleCacheMock = new Mock<IWikiTitleCache>();
+            var zoneProviderMock = new Mock<IZoneDataProvider>();
             var validator = new MapItemArticleValidator(
                 repositoryMock.Object,
-                titleCacheMock.Object);
+                titleCacheMock.Object,
+                zoneProviderMock.Object);
 
             Assert.IsNotNull(validator);
         }
@@ -40,9 +43,11 @@ namespace KenshiWikiValidator.Tests.MapItems
             repositoryMock.Setup(repo => repo.GetItemByStringId(mapItem2.StringId))
                 .Returns(mapItem2);
             var titleCacheMock = new Mock<IWikiTitleCache>();
+            var zoneProviderMock = new Mock<IZoneDataProvider>();
             var validator = new MapItemArticleValidator(
                 repositoryMock.Object,
-                titleCacheMock.Object);
+                titleCacheMock.Object,
+                zoneProviderMock.Object);
 
             validator.PopulateStringIds();
             validator.Validate("title", "content");
