@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 
-namespace KenshiWikiValidator.Tests.WikiTemplates
+namespace KenshiWikiValidator.Tests.BaseComponents
 {
     [TestClass]
     public class WikiTemplateTests

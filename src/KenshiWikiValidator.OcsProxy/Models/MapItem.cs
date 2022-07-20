@@ -85,7 +85,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public int? Stackable { get; set; }
 
         [Value("unlock count")]
-        public int? UnlockCount { get; set; }
+        public int UnlockCount { get; set; }
 
         [Value("value")]
         public int? Value { get; set; }
@@ -97,7 +97,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public object? GroundMesh { get; set; }
 
         [Value("icon")]
-        public object? Icon { get; set; }
+        public string? Icon { get; set; }
 
         [Value("mesh")]
         public object? Mesh { get; set; }

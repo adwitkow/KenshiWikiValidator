@@ -89,7 +89,7 @@ namespace KenshiWikiValidator.OcsProxy.Tests
         }
 
         [TestMethod]
-        public void ShouldHandleNonConvertibleValues()
+        public void ShouldConvertFileValueObjectToString()
         {
             var repositoryMock = new Mock<IItemRepository>();
             var mapper = new ItemMapper(repositoryMock.Object);
@@ -101,7 +101,7 @@ namespace KenshiWikiValidator.OcsProxy.Tests
 
             mapper.Map(dataItem, builtItem);
 
-            Assert.AreEqual(fileValue, builtItem.Icon);
+            Assert.AreEqual("path", builtItem.Icon);
         }
 
         [TestMethod]

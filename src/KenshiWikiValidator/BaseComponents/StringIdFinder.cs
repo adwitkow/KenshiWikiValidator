@@ -83,6 +83,7 @@ namespace KenshiWikiValidator.BaseComponents
                 { "Town Residents", "Traders" },
                 { "Locations", "Town" },
                 { "Characters", "Character" },
+                { "Map items", "Map item" },
             };
         }
 
