@@ -17,6 +17,7 @@
 using System.Collections;
 using System.Reflection;
 using OpenConstructionSet.Data.Models;
+using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.OcsProxy
 {
@@ -91,6 +92,11 @@ namespace KenshiWikiValidator.OcsProxy
 
         private static object? ChangeType(object value, Type conversion)
         {
+            if (value is FileValue fv)
+            {
+                return fv.Path;
+            }
+
             if (value is not IConvertible)
             {
                 return value;
