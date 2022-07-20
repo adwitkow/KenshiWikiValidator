@@ -85,7 +85,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public int? Stackable { get; set; }
 
         [Value("unlock count")]
-        public int? UnlockCount { get; set; }
+        public int UnlockCount { get; set; }
 
         [Value("value")]
         public int? Value { get; set; }

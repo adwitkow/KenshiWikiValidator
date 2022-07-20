@@ -42,7 +42,7 @@ var validators = new List<IArticleValidator>()
     townResidentValidator,
     new LocationsArticleValidator(itemRepository, zoneDataProvider, wikiTitles),
     new WeaponArticleValidator(itemRepository, wikiTitles, townResidentValidator),
-    new MapItemArticleValidator(itemRepository, wikiTitles),
+    new MapItemArticleValidator(itemRepository, wikiTitles, zoneDataProvider),
 };
 
 var output = "output";

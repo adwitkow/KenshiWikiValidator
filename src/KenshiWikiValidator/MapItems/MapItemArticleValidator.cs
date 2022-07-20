@@ -16,6 +16,8 @@
 
 using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.BaseComponents.SharedRules;
+using KenshiWikiValidator.Locations;
+using KenshiWikiValidator.MapItems.Rules;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.Models;
 
@@ -28,7 +30,7 @@ namespace KenshiWikiValidator.MapItems
 
         private readonly ContainsItemInfoboxRule containsItemInfoboxRule;
 
-        public MapItemArticleValidator(IItemRepository itemRepository, IWikiTitleCache wikiTitles)
+        public MapItemArticleValidator(IItemRepository itemRepository, IWikiTitleCache wikiTitles, IZoneDataProvider zoneDataProvider)
             : base(itemRepository, wikiTitles, typeof(MapItem))
         {
             this.itemRepository = itemRepository;
@@ -37,6 +39,7 @@ namespace KenshiWikiValidator.MapItems
             this.rules = new List<IValidationRule>()
             {
                 this.containsItemInfoboxRule,
+                new RevealedLocationsSectionRule(itemRepository, wikiTitles, zoneDataProvider),
             };
         }
 
