@@ -22,12 +22,10 @@ namespace KenshiWikiValidator.BaseComponents.SharedRules
     internal class ContainsItemInfoboxRule : ContainsDetailedTemplateRuleBase
     {
         private readonly IItemRepository itemRepository;
-        private readonly IWikiTitleCache wikiTitles;
 
-        public ContainsItemInfoboxRule(IItemRepository itemRepository, IWikiTitleCache wikiTitles)
+        public ContainsItemInfoboxRule(IItemRepository itemRepository)
         {
             this.itemRepository = itemRepository;
-            this.wikiTitles = wikiTitles;
         }
 
         protected override WikiTemplate? PrepareTemplate(ArticleData data)

@@ -34,7 +34,7 @@ namespace KenshiWikiValidator.MapItems
             : base(itemRepository, wikiTitles, typeof(MapItem))
         {
             this.itemRepository = itemRepository;
-            this.containsItemInfoboxRule = new ContainsItemInfoboxRule(itemRepository, wikiTitles);
+            this.containsItemInfoboxRule = new ContainsItemInfoboxRule(itemRepository);
 
             this.rules = new List<IValidationRule>()
             {
