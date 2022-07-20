@@ -83,15 +83,13 @@ namespace KenshiWikiValidator.BaseComponents
 
         public override int GetHashCode()
         {
-            var hash = 0;
-            hash *= this.Name.GetHashCode();
+            var hash = this.Name.GetHashCode();
 
             foreach (var parameterPair in this.Parameters)
             {
-                hash *= parameterPair.Key.GetHashCode();
-
                 if (parameterPair.Value is not null)
                 {
+                    hash *= parameterPair.Key.GetHashCode();
                     hash *= parameterPair.Value.GetHashCode();
                 }
             }
