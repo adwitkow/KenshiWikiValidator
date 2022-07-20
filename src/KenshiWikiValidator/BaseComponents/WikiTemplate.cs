@@ -48,5 +48,79 @@ namespace KenshiWikiValidator.BaseComponents
         public SortedSet<string> UnnamedParameters { get; private set; }
 
         public SortedList<string, string?> Parameters { get; private set; }
+
+        public override bool Equals(object? obj)
+        {
+            var template = obj as WikiTemplate;
+
+            if (template is null)
+            {
+                return false;
+            }
+
+            if (!template.Name.Equals(this.Name))
+            {
+                return false;
+            }
+
+            if (!AreParametersEqual(this.Parameters, template.Parameters))
+            {
+                return false;
+            }
+
+            if (!AreParametersEqual(template.Parameters, this.Parameters))
+            {
+                return false;
+            }
+
+            if (!this.UnnamedParameters.SequenceEqual(template.UnnamedParameters))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            var hash = this.Name.GetHashCode();
+
+            foreach (var parameterPair in this.Parameters)
+            {
+                if (parameterPair.Value is not null)
+                {
+                    hash *= parameterPair.Key.GetHashCode();
+                    hash *= parameterPair.Value.GetHashCode();
+                }
+            }
+
+            foreach (var parameter in this.UnnamedParameters)
+            {
+                hash *= parameter.GetHashCode();
+            }
+
+            return hash;
+        }
+
+        private static bool AreParametersEqual(SortedList<string, string?> sorted1, SortedList<string, string?> sorted2)
+        {
+            var nonNullParameters = sorted1.Where(pair => !string.IsNullOrEmpty(pair.Value));
+            foreach (var parameterPair in nonNullParameters)
+            {
+                var otherContainsParam = sorted2.TryGetValue(parameterPair.Key, out var otherValue);
+
+                if (!otherContainsParam)
+                {
+                    return false;
+                }
+
+                if (!parameterPair.Value!.Equals(otherValue))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 }

@@ -31,28 +31,28 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public float? ArmourSmith { get; set; }
 
         [Value("assassin")]
-        public float? Assassin { get; set; }
+        public float? Assassination { get; set; }
 
         [Value("athletics")]
         public float? Athletics { get; set; }
 
         [Value("attack")]
-        public float? Attack { get; set; }
+        public float? MeleeAttack { get; set; }
 
         [Value("blunt")]
         public float? Blunt { get; set; }
 
         [Value("bow")]
-        public float? Bow { get; set; }
+        public float? Crossbow { get; set; }
 
         [Value("bow smith")]
-        public float? BowSmith { get; set; }
+        public float? CrossbowSmith { get; set; }
 
         [Value("cooking")]
         public float? Cooking { get; set; }
 
         [Value("defence")]
-        public float? Defence { get; set; }
+        public float? MeleeDefence { get; set; }
 
         [Value("dexterity")]
         public float? Dexterity { get; set; }
@@ -67,7 +67,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public float? Farming { get; set; }
 
         [Value("ff")]
-        public float? Ff { get; set; }
+        public float? PrecisionShooting { get; set; }
 
         [Value("hackers")]
         public float? Hackers { get; set; }
@@ -85,13 +85,13 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public float? Lockpicking { get; set; }
 
         [Value("medic")]
-        public float? Medic { get; set; }
+        public float? FieldMedic { get; set; }
 
         [Value("perception")]
         public float? Perception { get; set; }
 
         [Value("poles")]
-        public float? Poles { get; set; }
+        public float? Polearms { get; set; }
 
         [Value("robotics")]
         public float? Robotics { get; set; }
@@ -115,66 +115,66 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public float? Thievery { get; set; }
 
         [Value("toughness2")]
-        public float? Toughness2 { get; set; }
+        public float? Toughness { get; set; }
 
         [Value("turrets")]
         public float? Turrets { get; set; }
 
         [Value("unarmed")]
-        public float? Unarmed { get; set; }
+        public float? MartialArts { get; set; }
 
         [Value("weapon smith")]
         public float? WeaponSmith { get; set; }
 
         [Value("endurance")]
-        public float? Endurance { get; set; }
+        public float? UnusedEndurance { get; set; }
 
         [Value("evasion")]
-        public float? Evasion { get; set; }
+        public float? UnusedEvasion { get; set; }
 
         [Value("fitness")]
-        public float? Fitness { get; set; }
+        public float? UnusedFitness { get; set; }
 
         [Value("intelligence")]
-        public float? Intelligence { get; set; }
+        public float? UnusedIntelligence { get; set; }
 
         [Value("labour")]
-        public float? Labour { get; set; }
+        public float? UnusedLabour { get; set; }
 
         [Value("mass combat")]
-        public float? MassCombat { get; set; }
+        public float? UnusedMassCombat { get; set; }
 
         [Value("move speed")]
-        public float? MoveSpeed { get; set; }
+        public float? UnusedMoveSpeed { get; set; }
 
         [Value("speed")]
-        public float? Speed { get; set; }
+        public float? UnusedSpeed { get; set; }
 
         [Value("sword defence")]
-        public float? SwordDefence { get; set; }
+        public float? UnusedSwordDefence { get; set; }
 
         [Value("sword skill")]
-        public float? SwordSkill { get; set; }
+        public float? UnusedSwordSkill { get; set; }
 
         [Value("warrior spirit")]
-        public float? WarriorSpirit { get; set; }
+        public float? UnusedWarriorSpirit { get; set; }
 
         [Value("xp")]
-        public float? Xp { get; set; }
+        public float? UnusedXp { get; set; }
 
         [Value("free attribute points")]
-        public int? FreeAttributePoints { get; set; }
+        public int? UnusedFreeAttributePoints { get; set; }
 
         [Value("free skill points")]
-        public int? FreeSkillPoints { get; set; }
+        public int? UnusedFreeSkillPoints { get; set; }
 
         [Value("flowing")]
-        public float? Flowing { get; set; }
+        public float? UnusedFlowing { get; set; }
 
         [Value("sword skill attack")]
-        public float? SwordSkillAttack { get; set; }
+        public float? UnusedSwordSkillAttack { get; set; }
 
         [Value("sword skill defence")]
-        public float? SwordSkillDefence { get; set; }
+        public float? UnusedSwordSkillDefence { get; set; }
     }
 }

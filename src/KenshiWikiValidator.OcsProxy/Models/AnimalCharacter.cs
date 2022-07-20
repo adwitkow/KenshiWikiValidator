@@ -14,11 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using KenshiWikiValidator.OcsProxy.Models.Interfaces;
 using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
-    public class AnimalCharacter : ItemBase
+    public class AnimalCharacter : ItemBase, IStatsContainer
     {
         public AnimalCharacter(string stringId, string name)
             : base(stringId, name)

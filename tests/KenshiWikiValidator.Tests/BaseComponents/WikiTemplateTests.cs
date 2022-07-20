@@ -40,5 +40,105 @@ namespace KenshiWikiValidator.Tests.BaseComponents
 
             Assert.ThrowsException<ArgumentNullException>(action);
         }
+
+        [TestMethod]
+        public void ShouldBeEqualWithItselfAndOnlyName()
+        {
+            var template = new WikiTemplate("test", new SortedSet<string>(), new SortedList<string, string?>());
+
+            Assert.IsTrue(template.Equals(template));
+        }
+
+        [TestMethod]
+        public void ShouldNotBeEqualIfUnnamedParametersAreDifferent()
+        {
+            var template = new WikiTemplate("test", new SortedSet<string>()
+            {
+                "test"
+            });
+            var template2 = new WikiTemplate("test", new SortedSet<string>()
+            {
+                "test2"
+            });
+
+            Assert.IsFalse(template.Equals(template2));
+        }
+
+        [TestMethod]
+        public void ShouldNotBeEqualIfParametersAreDifferent()
+        {
+            var template = new WikiTemplate("test", new SortedList<string, string?>()
+            {
+                { "test", "test1" },
+            });
+            var template2 = new WikiTemplate("test", new SortedList<string, string?>()
+            {
+                { "test", "test2" },
+            });
+
+            Assert.IsFalse(template.Equals(template2));
+        }
+
+        [TestMethod]
+        public void ShouldNotBeEqualIfParameterCountsAreDifferent()
+        {
+            var template = new WikiTemplate("test", new SortedList<string, string?>()
+            {
+                { "test", "test1" },
+            });
+            var template2 = new WikiTemplate("test", new SortedList<string, string?>()
+            {
+                { "test", "test1" },
+                { "test2", "test1" }
+            });
+
+            Assert.IsFalse(template.Equals(template2));
+        }
+
+        [TestMethod]
+        public void HashCodesOfEqualTemplatesShouldBeEqual()
+        {
+            var template = new WikiTemplate("test", new SortedList<string, string?>()
+            {
+                { "test", "test1" },
+            });
+            var template2 = new WikiTemplate("test", new SortedList<string, string?>()
+            {
+                { "test", "test1" },
+            });
+
+            Assert.AreEqual(template.GetHashCode(), template2.GetHashCode());
+        }
+
+        [TestMethod]
+        public void HashCodesOfDifferentTemplatesShouldBeDifferent()
+        {
+            var template = new WikiTemplate("test", new SortedList<string, string?>()
+            {
+                { "test", "test1" },
+            });
+            var template2 = new WikiTemplate("test", new SortedList<string, string?>()
+            {
+                { "test", "test2" },
+            });
+
+            Assert.AreNotEqual(template.GetHashCode(), template2.GetHashCode());
+        }
+
+        [TestMethod]
+        public void NullValuesShouldBeOmittedDuringHashCodeCalculations()
+        {
+            var template = new WikiTemplate("test", new SortedList<string, string?>()
+            {
+                { "test", "test1" },
+            });
+            var template2 = new WikiTemplate("test", new SortedList<string, string?>()
+            {
+                { "test", "test1" },
+                { "test2", null },
+            });
+
+            Assert.AreEqual(template.GetHashCode(), template2.GetHashCode());
+        }
     }
 }
