@@ -71,6 +71,7 @@ namespace KenshiWikiValidator.BaseComponents
             {
                 var matchingItem = matchingItems.Single();
                 data.PotentialStringId = matchingItem.StringId;
+                this.wikiTitleCache.AddTitle(matchingItem.StringId, title);
             }
         }
 
