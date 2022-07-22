@@ -76,7 +76,7 @@ namespace KenshiWikiValidator.Locations.Templates
 
             var regions = string.Join(", ", zones);
             var fcsNames = items
-                .Select(item => item.Name)
+                .Select(item => item.Name.Trim())
                 .Distinct();
 
             if (fcsNames.Count() == 1 && fcsNames.Single().Equals(articleTitle))
