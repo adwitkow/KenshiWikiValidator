@@ -117,7 +117,17 @@ static async Task RetrieveAndValidate(IArticleValidator validator, WikiClient cl
 
             await page.RefreshAsync(PageQueryOptions.FetchContent);
 
-            validator.CachePageData(page.Title, page.Content);
+            try
+            {
+                validator.CachePageData(page.Title, page.Content);
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"An exception has been thrown in the article: '{page.Title}'");
+                Console.WriteLine(ex);
+                Console.ResetColor();
+            }
         }
     }
 
