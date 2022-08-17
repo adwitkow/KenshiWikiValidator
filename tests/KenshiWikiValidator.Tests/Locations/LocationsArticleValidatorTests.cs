@@ -28,8 +28,14 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations
         [TestMethod]
         public void ShouldExecuteContainsTownTemplateRuleAfterValidationsForRemainingItems()
         {
-            var town1 = new Town("Town1", "Town1Id");
-            var town2 = new Town("Town2", "Town2Id");
+            var town1 = new Town("Town1", "Town1Id")
+            {
+                TownType = TownType.Town
+            };
+            var town2 = new Town("Town2", "Town2Id")
+            {
+                TownType = TownType.Town
+            };
             var repositoryMock = new Mock<IItemRepository>();
             repositoryMock.Setup(repo => repo.GetItems())
                 .Returns(new[]
