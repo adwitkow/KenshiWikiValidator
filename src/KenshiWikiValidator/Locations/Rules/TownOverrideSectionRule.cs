@@ -100,8 +100,7 @@ namespace KenshiWikiValidator.Locations.Rules
             var title = this.wikiTitleCache.GetTitle(townOverride);
             var sectionBuilder = new WikiSectionBuilder()
                 .WithHeader("Town override")
-                .WithLine($"{{{{Main|{title}}}}}")
-                .WithParagraph(this.worldStateVerbalizer.Verbalize(townOverride.WorldStates));
+                .WithLine($"{{{{:{title}}}}}");
 
             return sectionBuilder;
         }
