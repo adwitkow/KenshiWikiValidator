@@ -91,7 +91,7 @@ namespace KenshiWikiValidator.Locations.Templates
             {
                 { "string id", string.Join(", ", stringIds) },
                 { "fcs_name", string.Join(", ", fcsNames) },
-                { "type", this.townTypes[items.Min(item => item.TownType.GetValueOrDefault())] },
+                { "type", this.townTypes[items.Min(item => (int)item.TownType)] },
                 { "biome", regions },
                 { "image1", this.GetExistingParameter(existingTemplate, "image1") },
                 { "caption1", this.GetExistingParameter(existingTemplate, "caption1") },

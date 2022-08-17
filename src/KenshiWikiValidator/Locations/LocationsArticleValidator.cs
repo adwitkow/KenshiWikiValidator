@@ -49,15 +49,28 @@ namespace KenshiWikiValidator.Locations
 
         public override IEnumerable<RuleResult> AfterValidations()
         {
+            var ignoredTypes = new[]
+            {
+                TownType.Nest,
+                TownType.Null,
+                TownType.NestMarker,
+            };
+
             var results = new List<RuleResult>();
 
             foreach (var stringId in this.StringIds)
             {
-                var name = this.itemRepository.GetItemByStringId(stringId).Name;
+                var town = this.itemRepository.GetItemByStringId<Town>(stringId);
+                var name = town.Name;
                 var data = new ArticleData()
                 {
                     StringIds = new[] { stringId },
                 };
+
+                if (ignoredTypes.Contains(town.TownType))
+                {
+                    continue;
+                }
 
                 results.Add(this.containsTownTemplateRule.Execute($@"{stringId}-{name}", string.Empty, data));
             }
