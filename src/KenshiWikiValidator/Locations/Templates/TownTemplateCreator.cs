@@ -26,6 +26,17 @@ namespace KenshiWikiValidator.Locations.Templates
     {
         private const string WikiTemplateName = "Town";
 
+        private static readonly Dictionary<string, string> FactionFixes = new Dictionary<string, string>()
+        {
+            { "Cactus Den", "[[Sand Ninjas]]" },
+            { "Mongrel", "[[Mongrel (Faction)|Mongrel]]" },
+            { "Grayflayer Village", "[[Swampers]] ([[Grayflayers]])" },
+            { "Shark", "[[Swampers]] ([[Hounds]])" },
+            { "Shark (override) blackshifter", "[[Swampers]] ([[Blackshifters]])" },
+            { "Shark (override) Grayflayer", "[[Swampers]] ([[Grayflayers]])" },
+            { "Shark (override) all ded", "[[Swampers]]" },
+        };
+
         private readonly IItemRepository itemRepository;
         private readonly IZoneDataProvider zoneDataProvider;
         private readonly IWikiTitleCache wikiTitles;
@@ -65,11 +76,7 @@ namespace KenshiWikiValidator.Locations.Templates
             var items = stringIds.Select(stringId => this.itemRepository.GetItemByStringId<Town>(stringId));
             var articleTitle = this.wikiTitles.GetTitle(stringIds.First(), items.First().Name);
             var baseArticleTitle = articleTitle.Split('/').First();
-
-            var factions = items
-                .SelectMany(item => item.Factions
-                    .Select(factionRef => $"[[{factionRef.Item.Name}]]"))
-                .Distinct();
+            var factions = ExtractFactions(items);
 
             var zones = this.ExtractZones(items, baseArticleTitle)
                 .Distinct();
@@ -87,6 +94,8 @@ namespace KenshiWikiValidator.Locations.Templates
             var existingTemplate = data.WikiTemplates
                 .SingleOrDefault(template => template.Name.ToLower().Equals("town"));
 
+            var title = this.GetExistingParameter(existingTemplate, "title1");
+
             var properties = new SortedList<string, string?>
             {
                 { "string id", string.Join(", ", stringIds) },
@@ -98,14 +107,38 @@ namespace KenshiWikiValidator.Locations.Templates
                 { "map", this.GetExistingParameter(existingTemplate, "map") },
                 { "caption2", this.GetExistingParameter(existingTemplate, "caption2") },
                 { "factions", string.Join(", ", factions) },
+                { "title1", title },
             };
 
-            if (fcsNames.Any(fcsName => !fcsName.Equals(articleTitle)))
+            if (fcsNames.Any(fcsName => !fcsName.Equals(articleTitle) && string.IsNullOrEmpty(title)))
             {
-                properties.Add("title1", baseArticleTitle);
+                properties["title1"] = baseArticleTitle;
             }
 
             return new WikiTemplate(WikiTemplateName, properties);
+        }
+
+        private static IEnumerable<string> ExtractFactions(IEnumerable<Town> items)
+        {
+            var rawNames = items
+                .SelectMany(item => item.Factions
+                    .Select(factionRef => $"[[{factionRef.Item.Name}]]"))
+                .Distinct();
+
+            var fcsNames = items.Select(item => item.Name);
+
+            if (fcsNames.Count() > 1)
+            {
+                return rawNames;
+            }
+
+            var fcsName = fcsNames.Single();
+            if (FactionFixes.TryGetValue(fcsName, out var fixedValue))
+            {
+                rawNames = new[] { fixedValue };
+            }
+
+            return rawNames;
         }
 
         private IEnumerable<string> ExtractZones(IEnumerable<Town> items, string baseArticleTitle)
