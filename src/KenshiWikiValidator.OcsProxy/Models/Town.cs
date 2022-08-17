@@ -84,7 +84,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public int? NumCentrepoints { get; set; }
 
         [Value("type")]
-        public int? TownType { get; set; }
+        public TownType TownType { get; set; }
 
         [Value("unexplored name")]
         public string? UnexploredName { get; set; }
