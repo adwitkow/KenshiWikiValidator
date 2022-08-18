@@ -161,7 +161,7 @@ namespace DialogueDumper
             }
         }
 
-        private class TaggedBooleanDescription : BooleanDescription
+        private sealed class TaggedBooleanDescription : BooleanDescription
         {
             private readonly Type enumType;
 
