@@ -24,14 +24,11 @@ namespace KenshiWikiValidator.Locations.Rules
     {
         private readonly IItemRepository itemRepository;
         private readonly IWikiTitleCache wikiTitleCache;
-        private readonly WorldStateVerbalizer worldStateVerbalizer;
 
         public TownOverrideSectionRule(IItemRepository itemRepository, IWikiTitleCache wikiTitleCache)
         {
             this.itemRepository = itemRepository;
             this.wikiTitleCache = wikiTitleCache;
-
-            this.worldStateVerbalizer = new WorldStateVerbalizer();
         }
 
         protected override WikiSectionBuilder? CreateSectionBuilder(ArticleData data)
