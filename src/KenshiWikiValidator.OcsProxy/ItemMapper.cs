@@ -46,24 +46,7 @@ namespace KenshiWikiValidator.OcsProxy
             {
                 var prop = propertyContainer.GetValueProperty(pair.Key);
 
-                // phew... ugly!
-                object? convertedValue;
-                if (prop.Name == nameof(DialogAction.CompareBy))
-                {
-                    convertedValue = pair.Value switch
-                    {
-                        0 => '=',
-                        1 => '>',
-                        2 => '<',
-                        "==" => '=',
-                        _ => Convert.ToChar(pair.Value),
-                    };
-                }
-                else
-                {
-                    convertedValue = ChangeType(pair.Value, prop.PropertyType);
-                }
-
+                var convertedValue = ConvertValue(pair, prop);
                 prop.SetValue(builtItem, convertedValue);
             }
 
@@ -107,6 +90,29 @@ namespace KenshiWikiValidator.OcsProxy
             }
 
             return builtItem;
+        }
+
+        private static object? ConvertValue(KeyValuePair<string, object> pair, PropertyInfo prop)
+        {
+            // phew... ugly!
+            object? convertedValue;
+            if (prop.Name == nameof(DialogAction.CompareBy))
+            {
+                convertedValue = pair.Value switch
+                {
+                    0 => '=',
+                    1 => '>',
+                    2 => '<',
+                    "==" => '=',
+                    _ => Convert.ToChar(pair.Value),
+                };
+            }
+            else
+            {
+                convertedValue = ChangeType(pair.Value, prop.PropertyType);
+            }
+
+            return convertedValue;
         }
 
         private static object? ChangeType(object value, Type conversion)
