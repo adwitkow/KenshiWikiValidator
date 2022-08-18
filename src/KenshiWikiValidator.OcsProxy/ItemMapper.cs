@@ -46,8 +46,9 @@ namespace KenshiWikiValidator.OcsProxy
             {
                 var prop = propertyContainer.GetValueProperty(pair.Key);
 
+                // phew... ugly!
                 object? convertedValue;
-                if (prop.Name == nameof(DialogAction.CompareBy)) // phew... ugly!
+                if (prop.Name == nameof(DialogAction.CompareBy))
                 {
                     convertedValue = pair.Value switch
                     {
@@ -62,6 +63,7 @@ namespace KenshiWikiValidator.OcsProxy
                 {
                     convertedValue = ChangeType(pair.Value, prop.PropertyType);
                 }
+
                 prop.SetValue(builtItem, convertedValue);
             }
 
