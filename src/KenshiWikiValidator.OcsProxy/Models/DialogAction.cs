@@ -37,7 +37,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public int? Tag { get; set; }
 
         [Value("compare by")]
-        public object? CompareBy { get; set; }
+        public char CompareBy { get; set; }
 
         [Value("condition name")]
         public DialogueCondition ConditionName { get; set; }

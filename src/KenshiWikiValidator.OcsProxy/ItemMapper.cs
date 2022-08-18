@@ -16,6 +16,7 @@
 
 using System.Collections;
 using System.Reflection;
+using KenshiWikiValidator.OcsProxy.Models;
 using OpenConstructionSet.Data.Models;
 using OpenConstructionSet.Models;
 
@@ -44,7 +45,23 @@ namespace KenshiWikiValidator.OcsProxy
             foreach (var pair in baseItem.Values)
             {
                 var prop = propertyContainer.GetValueProperty(pair.Key);
-                var convertedValue = ChangeType(pair.Value, prop.PropertyType);
+
+                object? convertedValue;
+                if (prop.Name == nameof(DialogAction.CompareBy)) // phew... ugly!
+                {
+                    convertedValue = pair.Value switch
+                    {
+                        0 => '=',
+                        1 => '>',
+                        2 => '<',
+                        "==" => '=',
+                        _ => Convert.ToChar(pair.Value),
+                    };
+                }
+                else
+                {
+                    convertedValue = ChangeType(pair.Value, prop.PropertyType);
+                }
                 prop.SetValue(builtItem, convertedValue);
             }
 

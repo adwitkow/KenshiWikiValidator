@@ -75,9 +75,13 @@ namespace DialogueDumper
 
                 foreach (var line in allLines)
                 {
-                    foreach (var condition in line.Conditions)
+                    if (line.Conditions.Any())
                     {
-                        sectionBuilder.WithLine($"{new string('*', line.Level)} ''{condition}''");
+                        sectionBuilder.WithLine($"{new string('*', line.Level)} ''If any of the following conditions is '''true''':''");
+                        foreach (var condition in line.Conditions)
+                        {
+                            sectionBuilder.WithLine($"{new string('*', line.Level + 1)} ''{condition}''");
+                        }
                     }
 
                     sectionBuilder.WithLine(line.ToString());

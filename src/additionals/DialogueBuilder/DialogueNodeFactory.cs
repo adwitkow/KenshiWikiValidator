@@ -1,4 +1,5 @@
-﻿using KenshiWikiValidator.OcsProxy.DialogueComponents;
+﻿using KenshiWikiValidator.OcsProxy;
+using KenshiWikiValidator.OcsProxy.DialogueComponents;
 using KenshiWikiValidator.OcsProxy.Models;
 
 namespace DialogueDumper
@@ -21,16 +22,19 @@ namespace DialogueDumper
                 Level = level,
                 Line = text,
                 Speakers = speakers,
-                Conditions = this.ConvertConditions(line.Conditions.Select(conditionRef => conditionRef.Item), speakerMap),
+                Conditions = this.ConvertConditions(line.Conditions, speakerMap),
             };
         }
 
-        private IEnumerable<string> ConvertConditions(IEnumerable<DialogAction> conditions, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap)
+        private IEnumerable<string> ConvertConditions(IEnumerable<ItemReference<DialogAction>> conditionReferences, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap)
         {
             var results = new List<string>();
 
-            foreach (var condition in conditions)
+            foreach (var conditionRef in conditionReferences)
             {
+                var condition = conditionRef.Item;
+                var conditionValue = conditionRef.Value0;
+
                 var speakers = speakerMap[condition.Who];
 
                 string validSpeakers;
@@ -43,7 +47,8 @@ namespace DialogueDumper
                     validSpeakers = speakers.Single();
                 }
 
-                var result = $"If {validSpeakers}: {this.conditionMap[condition.ConditionName]}";
+                var conditionDescription = this.conditionMap[condition.ConditionName, conditionValue, condition.CompareBy, condition.Tag];
+                var result = $"{validSpeakers} {conditionDescription}";
 
                 results.Add(result);
             }
@@ -53,9 +58,8 @@ namespace DialogueDumper
 
         private sealed class ConditionMap
         {
-            private static readonly Dictionary<DialogueCondition, string> map = new()
+            private static readonly Dictionary<DialogueCondition, IConditionDescription?> map = new()
             {
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
                 { DialogueCondition.DC_NONE, null },
                 { DialogueCondition.DC_RELATIONS, null },
                 { DialogueCondition.DC_PLAYERMONEY, null },
@@ -70,9 +74,9 @@ namespace DialogueDumper
                 { DialogueCondition.DC_BUILDING_IS_CLOSED_AND_SECURED, null },
                 { DialogueCondition.DC_PLAYER_TECH_LEVEL, null },
                 { DialogueCondition.DC_NUM_DIALOG_EVENT_REPEATS, null },
-                { DialogueCondition.DC_IS_IMPRISONED, "is imprisoned" },
+                { DialogueCondition.DC_IS_IMPRISONED, new BooleanDescription("is imprisoned", "is not imprisoned") },
                 { DialogueCondition.DC_IMPRISONMENT_IS_DEATHROW, null },
-                { DialogueCondition.DC_TARGET_IN_TALKING_RANGE, "is nearby" },
+                { DialogueCondition.DC_TARGET_IN_TALKING_RANGE, new BooleanDescription("is nearby", "is not nearby") },
                 { DialogueCondition.DC_IN_MY_BUILDING, null },
                 { DialogueCondition.DC_TARGET_LAST_SEEN_X_HOURS_AGO, null },
                 { DialogueCondition.DC_IS_LEADER, null },
@@ -82,12 +86,12 @@ namespace DialogueDumper
                 { DialogueCondition.DC_HAS_TAG, null },
                 { DialogueCondition.DC_IS_ALLY, null },
                 { DialogueCondition.DC_IS_ENEMY, null },
-                { DialogueCondition.DC_PERSONALITY_TAG, "has specified personality" },
+                { DialogueCondition.DC_PERSONALITY_TAG, new TaggedBooleanDescription("has {0} personality", "does not have {0} personality", typeof(PersonalityTag))},
                 { DialogueCondition.DC_BROKEN_LEG, null },
                 { DialogueCondition.DC_BROKEN_ARM, null },
                 { DialogueCondition.DC_DAMAGED_HEAD, null },
                 { DialogueCondition.DC_NEARLY_KO, null },
-                { DialogueCondition.DC_IN_A_NON_PLAYER_TOWN, "is in a town (not including towns owned by the player)" },
+                { DialogueCondition.DC_IN_A_NON_PLAYER_TOWN, new BooleanDescription("is in a town (not including towns owned by the player)", "is not in a town (not including towns owned by the player)") },
                 { DialogueCondition.DC_IS_RUNNING, null },
                 { DialogueCondition.DC_COPS_AROUND, null },
                 { DialogueCondition.NULL_NULL_____DC_TARGET_SQUAD_SIZE, null },
@@ -97,11 +101,11 @@ namespace DialogueDumper
                 { DialogueCondition.DC_SQUAD_ONLY_ANIMALS, null },
                 { DialogueCondition.DC_IS_OUTNUMBERED, null },
                 { DialogueCondition.DC_BOUNTY_AMOUNT_PERCEIVED, null },
-                { DialogueCondition.DC_IS_KO, "is KO" },
+                { DialogueCondition.DC_IS_KO, new BooleanDescription("is unconscious", "is not unconscious") },
                 { DialogueCondition.DC_IS_NEARLY_KO, null },
                 { DialogueCondition.DC_SQUAD_IS_DOWN, null },
                 { DialogueCondition.DC_IS_DEAD, null },
-                { DialogueCondition.DC_IS_FEMALE, "is female" },
+                { DialogueCondition.DC_IS_FEMALE, new BooleanDescription("is female", "is male") },
                 { DialogueCondition.DC_CARRYING_SOMEONE_TO_ENSLAVE, null },
                 { DialogueCondition.DC_BOUNTY_AMOUNT_ACTUAL, null },
                 { DialogueCondition.DC_IM_UNARMED, null },
@@ -119,7 +123,7 @@ namespace DialogueDumper
                 { DialogueCondition.DC_HAS_A_BASE_NEARBY, null },
                 { DialogueCondition.DC_TARGET_IS_SLAVE_OF_MY_FACTION, null },
                 { DialogueCondition.DC_IS_ESCAPED_SLAVE, null },
-                { DialogueCondition.DC_IS_IN_LOCKED_CAGE, "is in locked cage" },
+                { DialogueCondition.DC_IS_IN_LOCKED_CAGE, new BooleanDescription("is locked in a cage", "is not locked in a cage") },
                 { DialogueCondition.DC_WEARING_LOCKED_SHACKLES, null },
                 { DialogueCondition.DC_IS_SAME_RACE_AS_ME, null },
                 { DialogueCondition.DC_CAN_AFFORD_BOUNTY, null },
@@ -135,25 +139,92 @@ namespace DialogueDumper
                 { DialogueCondition.DC_TARGET_CHARACTER_EXISTS, null },
                 { DialogueCondition.DC_IS_RECRUITABLE, null },
                 { DialogueCondition.DC_HAS_AI_CONTRACT, null },
-                { DialogueCondition.DC_HAS_ROBOT_LIMBS, "has robotic limbs attached" },
+                { DialogueCondition.DC_HAS_ROBOT_LIMBS, new BooleanDescription("has robotic limbs attached", "does not have robotic limbs attached") },
                 { DialogueCondition.DC_END, null },
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             };
 
-            public string this[DialogueCondition conditionName]
+            public string this[DialogueCondition conditionName, int value, char compareOperator, int? tag]
             {
                 get
                 {
-                    var result = map[conditionName];
+                    var description = map[conditionName];
 
-                    if (result == null)
+                    if (description is null)
                     {
-                        result = "Unknown condition";
+                        return $"CONDITION DESCRIPTION '{conditionName}' NOT SET";
                     }
+
+                    var result = description.GetDescription(value, compareOperator, tag);
 
                     return result;
                 }
             }
+        }
+
+        private class TaggedBooleanDescription : BooleanDescription
+        {
+            private readonly Type enumType;
+
+            public TaggedBooleanDescription(string trueDescription, string falseDescription, Type enumType)
+                : base(trueDescription, falseDescription)
+            {
+                this.enumType = enumType;
+            }
+
+            public override string GetDescription(int value, char compareOperator, int? tag)
+            {
+                var template = GenerateBooleanDescription(value, compareOperator);
+
+                if (tag is null)
+                {
+                    return template;
+                }
+
+                string result;
+                if (enumType is null)
+                {
+                    result = string.Format(template, tag);
+                }
+                else
+                {
+                    result = string.Format(template, Enum.ToObject(enumType, tag));
+                }
+                return result;
+            }
+        }
+
+        private class BooleanDescription : IConditionDescription
+        {
+            protected readonly string trueDescription;
+            protected readonly string falseDescription;
+
+            public BooleanDescription(string trueDescription, string falseDescription)
+            {
+                this.trueDescription = trueDescription;
+                this.falseDescription = falseDescription;
+            }
+
+            public virtual string GetDescription(int value, char compareOperator, int? tag)
+            {
+                return GenerateBooleanDescription(value, compareOperator);
+            }
+
+            protected string GenerateBooleanDescription(int value, char compareOperator)
+            {
+                var convertedValue = Convert.ToBoolean(value);
+
+                if (compareOperator != '=')
+                {
+                    throw new InvalidOperationException("BooleanDescription cannot work with other operator than '='");
+                }
+
+                return convertedValue ? this.trueDescription : this.falseDescription;
+            }
+        }
+
+        private interface IConditionDescription
+        {
+            public string GetDescription(int value, char compareOperator, int? tag);
         }
     }
 }
