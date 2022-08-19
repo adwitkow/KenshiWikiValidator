@@ -101,8 +101,8 @@ namespace KenshiWikiValidator.OcsProxy
                 convertedValue = pair.Value switch
                 {
                     0 => '=',
-                    1 => '>',
-                    2 => '<',
+                    1 => '<',
+                    2 => '>',
                     "==" => '=',
                     _ => Convert.ToChar(pair.Value),
                 };

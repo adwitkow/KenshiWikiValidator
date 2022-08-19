@@ -47,10 +47,16 @@ namespace DialogueDumper
                     validSpeakers = speakers.Single();
                 }
 
-                var conditionDescription = this.conditionMap[condition.ConditionName, conditionValue, condition.CompareBy, condition.Tag];
-                var result = $"{validSpeakers} {conditionDescription}";
+                var conditionDescription = this.conditionMap[condition.ConditionName];
+                if (conditionDescription is null)
+                {
+                    results.Add($"CONDITION DESCRIPTION '{condition.ConditionName}' NOT SET");
+                    continue;
+                }
 
-                results.Add(result);
+                var verbalizedDescription = conditionDescription.GetDescription(validSpeakers, conditionValue, condition.CompareBy, condition.Tag);
+
+                results.Add(verbalizedDescription);
             }
 
             return results;
@@ -74,9 +80,9 @@ namespace DialogueDumper
                 { DialogueCondition.DC_BUILDING_IS_CLOSED_AND_SECURED, null },
                 { DialogueCondition.DC_PLAYER_TECH_LEVEL, null },
                 { DialogueCondition.DC_NUM_DIALOG_EVENT_REPEATS, null },
-                { DialogueCondition.DC_IS_IMPRISONED, new BooleanDescription("is imprisoned", "is not imprisoned") },
+                { DialogueCondition.DC_IS_IMPRISONED, new BooleanDescription("{0} is imprisoned", "{0} is not imprisoned") },
                 { DialogueCondition.DC_IMPRISONMENT_IS_DEATHROW, null },
-                { DialogueCondition.DC_TARGET_IN_TALKING_RANGE, new BooleanDescription("is nearby", "is not nearby") },
+                { DialogueCondition.DC_TARGET_IN_TALKING_RANGE, new BooleanDescription("{0} is nearby", "{0} is not nearby") },
                 { DialogueCondition.DC_IN_MY_BUILDING, null },
                 { DialogueCondition.DC_TARGET_LAST_SEEN_X_HOURS_AGO, null },
                 { DialogueCondition.DC_IS_LEADER, null },
@@ -86,26 +92,26 @@ namespace DialogueDumper
                 { DialogueCondition.DC_HAS_TAG, null },
                 { DialogueCondition.DC_IS_ALLY, null },
                 { DialogueCondition.DC_IS_ENEMY, null },
-                { DialogueCondition.DC_PERSONALITY_TAG, new TaggedBooleanDescription("has {0} personality", "does not have {0} personality", typeof(PersonalityTag))},
+                { DialogueCondition.DC_PERSONALITY_TAG, new TaggedBooleanDescription("{0} has {1} personality", "{0} does not have {1} personality", typeof(PersonalityTag))},
                 { DialogueCondition.DC_BROKEN_LEG, null },
                 { DialogueCondition.DC_BROKEN_ARM, null },
                 { DialogueCondition.DC_DAMAGED_HEAD, null },
                 { DialogueCondition.DC_NEARLY_KO, null },
-                { DialogueCondition.DC_IN_A_NON_PLAYER_TOWN, new BooleanDescription("is in a town (not including towns owned by the player)", "is not in a town (not including towns owned by the player)") },
+                { DialogueCondition.DC_IN_A_NON_PLAYER_TOWN, new BooleanDescription("{0} is in a town (not including towns owned by the player)", "{0} is not in a town (not including towns owned by the player)") },
                 { DialogueCondition.DC_IS_RUNNING, null },
                 { DialogueCondition.DC_COPS_AROUND, null },
                 { DialogueCondition.NULL_NULL_____DC_TARGET_SQUAD_SIZE, null },
-                { DialogueCondition.DC_SQUAD_SIZE, null },
+                { DialogueCondition.DC_SQUAD_SIZE, new ConditionDescription("Player's squad size is exactly {2}", "Player's squad size is smaller than {2}", "Player's squad size is bigger than {2}")  },
                 { DialogueCondition.DC_IS_PLAYER, null },
                 { DialogueCondition.DC_NUM_BACKPACKS, null },
                 { DialogueCondition.DC_SQUAD_ONLY_ANIMALS, null },
                 { DialogueCondition.DC_IS_OUTNUMBERED, null },
                 { DialogueCondition.DC_BOUNTY_AMOUNT_PERCEIVED, null },
-                { DialogueCondition.DC_IS_KO, new BooleanDescription("is unconscious", "is not unconscious") },
+                { DialogueCondition.DC_IS_KO, new BooleanDescription("{0} is unconscious", "{0} is not unconscious") },
                 { DialogueCondition.DC_IS_NEARLY_KO, null },
                 { DialogueCondition.DC_SQUAD_IS_DOWN, null },
                 { DialogueCondition.DC_IS_DEAD, null },
-                { DialogueCondition.DC_IS_FEMALE, new BooleanDescription("is female", "is male") },
+                { DialogueCondition.DC_IS_FEMALE, new BooleanDescription("{0} is female", "{0} is male") },
                 { DialogueCondition.DC_CARRYING_SOMEONE_TO_ENSLAVE, null },
                 { DialogueCondition.DC_BOUNTY_AMOUNT_ACTUAL, null },
                 { DialogueCondition.DC_IM_UNARMED, null },
@@ -123,7 +129,7 @@ namespace DialogueDumper
                 { DialogueCondition.DC_HAS_A_BASE_NEARBY, null },
                 { DialogueCondition.DC_TARGET_IS_SLAVE_OF_MY_FACTION, null },
                 { DialogueCondition.DC_IS_ESCAPED_SLAVE, null },
-                { DialogueCondition.DC_IS_IN_LOCKED_CAGE, new BooleanDescription("is locked in a cage", "is not locked in a cage") },
+                { DialogueCondition.DC_IS_IN_LOCKED_CAGE, new BooleanDescription("{0} is locked in a cage", "{0} is not locked in a cage") },
                 { DialogueCondition.DC_WEARING_LOCKED_SHACKLES, null },
                 { DialogueCondition.DC_IS_SAME_RACE_AS_ME, null },
                 { DialogueCondition.DC_CAN_AFFORD_BOUNTY, null },
@@ -139,26 +145,11 @@ namespace DialogueDumper
                 { DialogueCondition.DC_TARGET_CHARACTER_EXISTS, null },
                 { DialogueCondition.DC_IS_RECRUITABLE, null },
                 { DialogueCondition.DC_HAS_AI_CONTRACT, null },
-                { DialogueCondition.DC_HAS_ROBOT_LIMBS, new BooleanDescription("has robotic limbs attached", "does not have robotic limbs attached") },
+                { DialogueCondition.DC_HAS_ROBOT_LIMBS, new BooleanDescription("{0} has robotic limbs attached", "{0} does not have robotic limbs attached") },
                 { DialogueCondition.DC_END, null },
             };
 
-            public string this[DialogueCondition conditionName, int value, char compareOperator, int? tag]
-            {
-                get
-                {
-                    var description = map[conditionName];
-
-                    if (description is null)
-                    {
-                        return $"CONDITION DESCRIPTION '{conditionName}' NOT SET";
-                    }
-
-                    var result = description.GetDescription(value, compareOperator, tag);
-
-                    return result;
-                }
-            }
+            public IConditionDescription? this[DialogueCondition conditionName] => map[conditionName];
         }
 
         private sealed class TaggedBooleanDescription : BooleanDescription
@@ -171,32 +162,16 @@ namespace DialogueDumper
                 this.enumType = enumType;
             }
 
-            public override string GetDescription(int value, char compareOperator, int? tag)
+            public override string GetDescription(string speakers, int value, char compareOperator, object? tag)
             {
-                var template = GenerateBooleanDescription(value, compareOperator);
-
-                if (tag is null)
-                {
-                    return template;
-                }
-
-                string result;
-                if (enumType is null)
-                {
-                    result = string.Format(template, tag);
-                }
-                else
-                {
-                    result = string.Format(template, Enum.ToObject(enumType, tag));
-                }
-                return result;
+                return base.GetDescription(speakers, value, compareOperator, Enum.ToObject(this.enumType, tag));
             }
         }
 
         private class BooleanDescription : IConditionDescription
         {
-            protected readonly string trueDescription;
-            protected readonly string falseDescription;
+            private readonly string trueDescription;
+            private readonly string falseDescription;
 
             public BooleanDescription(string trueDescription, string falseDescription)
             {
@@ -204,9 +179,11 @@ namespace DialogueDumper
                 this.falseDescription = falseDescription;
             }
 
-            public virtual string GetDescription(int value, char compareOperator, int? tag)
+            public virtual string GetDescription(string speakers, int value, char compareOperator, object? tag)
             {
-                return GenerateBooleanDescription(value, compareOperator);
+                var template =  GenerateBooleanDescription(value, compareOperator);
+
+                return string.Format(template, speakers, tag);
             }
 
             protected string GenerateBooleanDescription(int value, char compareOperator)
@@ -222,9 +199,36 @@ namespace DialogueDumper
             }
         }
 
+        private class ConditionDescription : IConditionDescription
+        {
+            private readonly string equalDescription;
+            private readonly string lessThanDescription;
+            private readonly string moreThanDescription;
+
+            public ConditionDescription(string equalDescription, string lessThanDescription, string moreThanDescription)
+            {
+                this.equalDescription = equalDescription;
+                this.lessThanDescription = lessThanDescription;
+                this.moreThanDescription = moreThanDescription;
+            }
+
+            public string GetDescription(string speakers, int value, char compareOperator, object? tag)
+            {
+                var description = compareOperator switch
+                {
+                    '=' => this.equalDescription,
+                    '<' => this.lessThanDescription,
+                    '>' => this.moreThanDescription,
+                    _ => throw new ArgumentException("Invalid compare operator"),
+                };
+
+                return string.Format(description, speakers, tag, value);
+            }
+        }
+
         private interface IConditionDescription
         {
-            public string GetDescription(int value, char compareOperator, int? tag);
+            public string GetDescription(string speakers, int value, char compareOperator, object? tag);
         }
     }
 }
