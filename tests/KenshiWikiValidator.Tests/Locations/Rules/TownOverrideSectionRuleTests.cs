@@ -70,9 +70,7 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations.Rules
             };
 
             var expectedText = @"== Town override ==
-{{Main|Result}}
-[[character0]] is alive or imprisoned
-";
+{{:Result}}";
             var result = rule.Execute("Title", expectedText, articleData);
 
             Assert.IsTrue(result.Success);

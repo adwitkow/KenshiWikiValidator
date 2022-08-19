@@ -24,14 +24,11 @@ namespace KenshiWikiValidator.Locations.Rules
     {
         private readonly IItemRepository itemRepository;
         private readonly IWikiTitleCache wikiTitleCache;
-        private readonly WorldStateVerbalizer worldStateVerbalizer;
 
         public TownOverrideSectionRule(IItemRepository itemRepository, IWikiTitleCache wikiTitleCache)
         {
             this.itemRepository = itemRepository;
             this.wikiTitleCache = wikiTitleCache;
-
-            this.worldStateVerbalizer = new WorldStateVerbalizer();
         }
 
         protected override WikiSectionBuilder? CreateSectionBuilder(ArticleData data)
@@ -100,8 +97,7 @@ namespace KenshiWikiValidator.Locations.Rules
             var title = this.wikiTitleCache.GetTitle(townOverride);
             var sectionBuilder = new WikiSectionBuilder()
                 .WithHeader("Town override")
-                .WithLine($"{{{{Main|{title}}}}}")
-                .WithParagraph(this.worldStateVerbalizer.Verbalize(townOverride.WorldStates));
+                .WithLine($"{{{{:{title}}}}}");
 
             return sectionBuilder;
         }
