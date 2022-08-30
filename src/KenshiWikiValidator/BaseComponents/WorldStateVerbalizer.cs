@@ -21,7 +21,7 @@ namespace KenshiWikiValidator.BaseComponents
 {
     public class WorldStateVerbalizer
     {
-        private static readonly string[] PossibleCharacterStates = new[] { "killed", "alive", "imprisoned" };
+        private static readonly string[] PossibleCharacterStates = new[] { "dead", "alive", "imprisoned" };
 
         public string Verbalize(IEnumerable<ItemReference<WorldEventState>> worldStateReferences)
         {

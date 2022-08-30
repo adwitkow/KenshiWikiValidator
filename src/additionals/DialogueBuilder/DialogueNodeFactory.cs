@@ -1,4 +1,5 @@
-﻿using KenshiWikiValidator.OcsProxy;
+﻿using KenshiWikiValidator.BaseComponents;
+using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.DialogueComponents;
 using KenshiWikiValidator.OcsProxy.Models;
 
@@ -7,10 +8,12 @@ namespace DialogueDumper
     public class DialogueNodeFactory
     {
         private readonly ConditionMap conditionMap;
+        private readonly WorldStateVerbalizer worldStateVerbalizer;
 
         public DialogueNodeFactory()
         {
             this.conditionMap = new ConditionMap();
+            this.worldStateVerbalizer = new WorldStateVerbalizer();
         }
 
         public DialogueNode Create(DialogueLine line, int level, IEnumerable<string> speakers, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap)
@@ -22,29 +25,156 @@ namespace DialogueDumper
                 Level = level,
                 Line = text,
                 Speakers = speakers,
-                Conditions = this.ConvertConditions(line.Conditions, speakerMap),
+                Conditions = this.ConvertConditions(line, speakerMap),
+                Effects = this.ConvertEffects(line, speakerMap),
             };
         }
 
-        private IEnumerable<string> ConvertConditions(IEnumerable<ItemReference<DialogAction>> conditionReferences, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap)
+        private IEnumerable<string> ConvertEffects(DialogueLine line, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap)
+        {
+            if (line.AiContract.Any())
+            {
+                throw new NotImplementedException("AiContract");
+            }
+
+            if (line.ChangeAi.Any())
+            {
+                throw new NotImplementedException("ChangeAi");
+            }
+
+            if (line.ChangeRelations.Any())
+            {
+                throw new NotImplementedException("ChangeRelations");
+            }
+
+            if (line.CrowdTrigger.Any())
+            {
+                throw new NotImplementedException("CrowdTrigger");
+            }
+
+            if (line.GiveItem.Any())
+            {
+                throw new NotImplementedException("GiveItem");
+            }
+
+            if (line.Interrupt.Any())
+            {
+                throw new NotImplementedException("Interrupt");
+            }
+
+            if (line.LockCampaign.Any())
+            {
+                throw new NotImplementedException("LockCampaign");
+            }
+
+            if (line.Locks.Any())
+            {
+                throw new NotImplementedException("Locks");
+            }
+
+            if (line.TriggerCampaign.Any())
+            {
+                throw new NotImplementedException("TriggerCampaign");
+            }
+
+            if (line.UnlockButKeepMe.Any())
+            {
+                throw new NotImplementedException("UnlockButKeepMe");
+            }
+
+            if (line.Unlocks.Any())
+            {
+                throw new NotImplementedException("Unlocks");
+            }
+
+            return Enumerable.Empty<string>();
+        }
+
+        private IEnumerable<string> ConvertConditions(DialogueLine line, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap)
         {
             var results = new List<string>();
 
+            var speakers = speakerMap[line.Speaker].ToCommaSeparatedListOr();
+
+            if (line.HasPackage.Any())
+            {
+                results.Add($"{speakers} has package {line.HasPackage.ToCommaSeparatedListOr()}");
+            }
+
+            if (line.InTownOf.Any())
+            {
+                throw new NotImplementedException("InTownOf");
+            }
+
+            if (line.IsCharacter.Any())
+            {
+                if (!speakers.Equals(line.IsCharacter.ToCommaSeparatedListOr()))
+                {
+                    throw new InvalidOperationException("Speakers list is different from the 'is character' condition");
+                }
+            }
+
+            if (line.MyFaction.Any())
+            {
+                throw new NotImplementedException("MyFaction");
+            }
+
+            if (line.MyRace.Any())
+            {
+                results.Add($"{speakers}'s race is {line.MyRace.ToCommaSeparatedListOr()}");
+            }
+
+            if (line.MySubrace.Any())
+            {
+                results.Add($"{speakers}'s subrace is {line.MySubrace.ToCommaSeparatedListOr()}");
+            }
+
+            if (line.TargetCarryingCharacter.Any())
+            {
+                throw new NotImplementedException("TargetCarryingCharacter");
+            }
+
+            if (line.TargetFaction.Any())
+            {
+                throw new NotImplementedException("TargetFaction");
+            }
+
+            if (line.TargetHasItem.Any())
+            {
+                throw new NotImplementedException("TargetHasItem");
+            }
+
+            if (line.TargetHasItemType.Any())
+            {
+                throw new NotImplementedException("TargetHasItemType");
+            }
+
+            if (line.TargetRace.Any())
+            {
+                results.Add($"Target's race is {line.TargetRace.ToCommaSeparatedListOr()}");
+            }
+
+            if (line.WorldState.Any())
+            {
+                results.Add(this.worldStateVerbalizer.Verbalize(line.WorldState));
+            }
+
+            var conditionReferences = line.Conditions;
             foreach (var conditionRef in conditionReferences)
             {
                 var condition = conditionRef.Item;
                 var conditionValue = conditionRef.Value0;
 
-                var speakers = speakerMap[condition.Who];
+                var conditionSpeakers = speakerMap[condition.Who];
 
                 string validSpeakers;
-                if (speakers.Count() > 1)
+                if (conditionSpeakers.Count() > 1)
                 {
-                    validSpeakers = string.Join(", ", speakers.SkipLast(1)) + " or " + speakers.TakeLast(1).Single();
+                    validSpeakers = conditionSpeakers.ToCommaSeparatedListOr();
                 }
                 else
                 {
-                    validSpeakers = speakers.Single();
+                    validSpeakers = conditionSpeakers.Single();
                 }
 
                 var conditionDescription = this.conditionMap[condition.ConditionName];
