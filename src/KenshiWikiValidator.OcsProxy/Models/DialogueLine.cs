@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Linq;
 using KenshiWikiValidator.OcsProxy.DialogueComponents;
 using OpenConstructionSet.Models;
 
@@ -293,5 +294,56 @@ namespace KenshiWikiValidator.OcsProxy.Models
 
         [Reference("lock campaign")]
         public IEnumerable<ItemReference<FactionCampaign>> LockCampaign { get; set; }
+
+        public void CopyReferencesFrom(DialogueLine line)
+        {
+            this.Unlocks = this.Unlocks.Concat(line.Unlocks).Distinct();
+            this.Effects = this.Effects.Concat(line.Effects).Distinct();
+            this.ChangeRelations = this.ChangeRelations.Concat(line.ChangeRelations).Distinct();
+            this.MyRace = this.MyRace.Concat(line.MyRace).Distinct();
+            this.Interrupt = this.Interrupt.Concat(line.Interrupt).Distinct();
+            this.UnlockButKeepMe = this.UnlockButKeepMe.Concat(line.UnlockButKeepMe).Distinct();
+            this.TargetFaction = this.TargetFaction.Concat(line.TargetFaction).Distinct();
+            this.InTownOf = this.InTownOf.Concat(line.InTownOf).Distinct();
+            this.TargetRace = this.TargetRace.Concat(line.TargetRace).Distinct();
+            this.WorldState = this.WorldState.Concat(line.WorldState).Distinct();
+            this.ChangeAi = this.ChangeAi.Concat(line.ChangeAi).Distinct();
+            this.AiContract = this.AiContract.Concat(line.AiContract).Distinct();
+            this.TargetHasItemType = this.TargetHasItemType.Concat(line.TargetHasItemType).Distinct();
+            this.MyFaction = this.MyFaction.Concat(line.MyFaction).Distinct();
+            this.MySubrace = this.MySubrace.Concat(line.MySubrace).Distinct();
+            this.CrowdTrigger = this.CrowdTrigger.Concat(line.CrowdTrigger).Distinct();
+            this.TriggerCampaign = this.TriggerCampaign.Concat(line.TriggerCampaign).Distinct();
+            this.HasPackage = this.HasPackage.Concat(line.HasPackage).Distinct();
+            this.GiveItem = this.GiveItem.Concat(line.GiveItem).Distinct();
+            this.TargetCarryingCharacter = this.TargetCarryingCharacter.Concat(line.TargetCarryingCharacter).Distinct();
+            this.TargetHasItem = this.TargetHasItem.Concat(line.TargetHasItem).Distinct();
+            this.DeliveryAiPackage = this.DeliveryAiPackage.Concat(line.DeliveryAiPackage).Distinct();
+            this.SetAiPackage = this.SetAiPackage.Concat(line.SetAiPackage).Distinct();
+            this.Locks = this.Locks.Concat(line.Locks).Distinct();
+            this.LockCampaign = this.LockCampaign.Concat(line.LockCampaign).Distinct();
+
+            var conditionRefs = new List<ItemReference<DialogAction>>(this.Conditions);
+            foreach (var conditionRef in line.Conditions)
+            {
+                var newRef = new ItemReference<DialogAction>(
+                    conditionRef.Item,
+                    conditionRef.Value0,
+                    conditionRef.Value1,
+                    conditionRef.Value2);
+                var condition = newRef.Item;
+
+                if (condition.Who == DialogueSpeaker.Me)
+                {
+                    condition.Who = line.Speaker;
+                }
+
+                conditionRefs.Add(newRef);
+            }
+
+            this.Conditions = conditionRefs.Distinct();
+
+            // this.IsCharacter = this.IsCharacter.Concat(line.IsCharacter).Distinct();
+        }
     }
 }

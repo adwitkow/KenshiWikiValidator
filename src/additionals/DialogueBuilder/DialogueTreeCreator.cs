@@ -266,6 +266,15 @@ namespace DialogueDumper
                 var isInterjection = string.IsNullOrEmpty(text);
                 var lineIdToRemove = isInterjection ? -1 : allLines.Count;
 
+                if (isInterjection)
+                {
+                    var children = line.Lines.Select(reference => reference.Item);
+                    foreach (var child in children)
+                    {
+                        child.CopyReferencesFrom(line);
+                    }
+                }
+
                 var currentNode = GetCurrentNode(allLines, previousNode, level, line, newSpeakersMap, isInterjection);
 
                 var lines = line.Lines.Select(lineRef => lineRef.Item);

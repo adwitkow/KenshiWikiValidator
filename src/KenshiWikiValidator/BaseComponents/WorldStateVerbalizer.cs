@@ -96,6 +96,7 @@ namespace KenshiWikiValidator.BaseComponents
             where T : IItem
         {
             var itemsWithStates = characterReferences
+                .Distinct()
                 .ToDictionary(
                     reference => reference.Item,
                     reference => reference.Value0);

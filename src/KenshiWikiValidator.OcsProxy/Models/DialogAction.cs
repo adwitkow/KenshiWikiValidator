@@ -65,5 +65,24 @@ namespace KenshiWikiValidator.OcsProxy.Models
 
         [Reference("contract end talk passive")]
         public IEnumerable<ItemReference<Dialogue>> ContractEndTalkPassive { get; set; }
+
+        public DialogAction Clone()
+        {
+            return new DialogAction(this.StringId, this.Name)
+            {
+                ActionName = this.ActionName,
+                ActionValue = this.ActionValue,
+                ContractEndTalkPassive = this.ContractEndTalkPassive,
+                ClearsExistingJobs = this.ClearsExistingJobs,
+                CompareBy = this.CompareBy,
+                ConditionName = this.ConditionName,
+                LeaderAiGoals = this.LeaderAiGoals,
+                SignalFunc = this.SignalFunc,
+                Stringvar = this.Stringvar,
+                Tag = this.Tag,
+                UnloadedFunc = this.UnloadedFunc,
+                Who = this.Who,
+            };
+        }
     }
 }
