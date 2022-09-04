@@ -6,15 +6,22 @@ namespace DialogueDumper
     internal class DialogueComponentConverter
     {
         private readonly ConditionMap conditionMap;
+        private readonly EffectMap effectMap;
 
         public DialogueComponentConverter()
         {
             this.conditionMap = new ConditionMap();
+            this.effectMap = new EffectMap();
         }
 
-        public IConditionDescription? ConvertAction(DialogAction action)
+        public IConditionDescription? ConvertCondition(DialogAction action)
         {
             return this.conditionMap[action.ConditionName];
+        }
+
+        public IEffectDescription? ConvertEffect(DialogAction action)
+        {
+            return this.effectMap[action.ActionName];
         }
 
         private sealed class ConditionMap
@@ -107,6 +114,75 @@ namespace DialogueDumper
             public IConditionDescription? this[DialogueCondition conditionName] => map[conditionName];
         }
 
+        private sealed class EffectMap
+        {
+            private static readonly Dictionary<DialogueEffect, IEffectDescription?> map = new()
+            {
+                { DialogueEffect.DA_NONE, null },
+                { DialogueEffect.DA_TRADE, null },
+                { DialogueEffect.DA_TALK_TO_LEADER, null },
+                { DialogueEffect.DA_JOIN_SQUAD_WITH_EDIT, null },
+                { DialogueEffect.DA_AFFECT_RELATIONS, null },
+                { DialogueEffect.DA_AFFECT_REPUTATION, null },
+                { DialogueEffect.DA_ATTACK_CHASE_FOREVER, null },
+                { DialogueEffect.DA_GO_HOME, null },
+                { DialogueEffect.DA_TAKE_MONEY, null },
+                { DialogueEffect.DA_GIVE_MONEY, null },
+                { DialogueEffect.DA_PAY_BOUNTY, null },
+                { DialogueEffect.DA_CHARACTER_EDITOR, null },
+                { DialogueEffect.DA_FORCE_SPEECH_TIMER, null },
+                { DialogueEffect.DA_DECLARE_WAR, null },
+                { DialogueEffect.DA_END_WAR, null },
+                { DialogueEffect.DA_CLEAR_AI, null },
+                { DialogueEffect.DA_FOLLOW_WHILE_TALKING, null },
+                { DialogueEffect.DA_THUG_HUNTER, null },
+                { DialogueEffect.DA_JOIN_SQUAD_FAST, new EffectDescription("{0} joins the squad without the character creator screen") },
+                { DialogueEffect.DA_REMEMBER_CHARACTER, null },
+                { DialogueEffect.DA_FLAG_TEMP_ALLY, null },
+                { DialogueEffect.DA_FLAG_TEMP_ENEMY, null },
+                { DialogueEffect.DA_MATES_KILL_ME, null },
+                { DialogueEffect.DA_MAKE_TARGET_RUN_FASTER, null },
+                { DialogueEffect.DA_GIVE_TARGET_MY_SLAVES, null },
+                { DialogueEffect.DA_TAG_ESCAPED_SLAVE, null },
+                { DialogueEffect.DA_FREE_TARGET_SLAVE, null },
+                { DialogueEffect.DA_MERGE_WITH_SIMILAR_SQUADS, null },
+                { DialogueEffect.DA_SEPARATE_TO_MY_OWN_SQUAD, null },
+                { DialogueEffect.DA_ARREST_TARGET, null },
+                { DialogueEffect.DA_ARREST_TARGETS_CARRIED_PERSON, null },
+                { DialogueEffect.DA_ATTACK_TOWN, null },
+                { DialogueEffect.DA_ASSIGN_BOUNTY, null },
+                { DialogueEffect.DA_CRIME_ALARM, null },
+                { DialogueEffect.DA_RUN_AWAY, null },
+                { DialogueEffect.DA_INCREASE_FACTION_RANK, null },
+                { DialogueEffect.DA_LOCK_THIS_DIALOG, null },
+                { DialogueEffect.DA_ASSAULT_PHASE, null },
+                { DialogueEffect.DA_RETREAT_PHASE, null },
+                { DialogueEffect.DA_VICTORY_PHASE, null },
+                { DialogueEffect.DA_ENSLAVE_TARGETS_CARRIED_PERSON, null },
+                { DialogueEffect.CHOOSE_SLAVES_SELLING, null },
+                { DialogueEffect.CHOOSE_SLAVES_BUYING, null },
+                { DialogueEffect.CHOOSE_PRISONER_BAIL, null },
+                { DialogueEffect.CHOOSE_CONSCRIPTION, null },
+                { DialogueEffect.CHOOSE_RECRUITING, null },
+                { DialogueEffect.CHOOSE_HIRING_CONTRACT, null },
+                { DialogueEffect.SURRENDER_NON_HUMANS, null },
+                { DialogueEffect.CHOOSE_ANIMALS_BUYING, null },
+                { DialogueEffect.DA_CLEAR_BOUNTY, null },
+                { DialogueEffect.DA_PLAYER_SELL_PRISONERS, null },
+                { DialogueEffect.DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE, null },
+                { DialogueEffect.DA_SUMMON_MY_SQUAD, null },
+                { DialogueEffect.DA_REMOVE_SLAVE_STATUS, null },
+                { DialogueEffect.DA_OPEN_NEAREST_GATE, null },
+                { DialogueEffect.DA_ATTACK_STAY_NEAR_HOME, null },
+                { DialogueEffect.DA_MASSIVE_ALARM, null },
+                { DialogueEffect.DA_ATTACK_IF_NO_COEXIST, null },
+                { DialogueEffect.DA_KNOCKOUT, null },
+                { DialogueEffect.DA_END, null },
+            };
+
+            public IEffectDescription? this[DialogueEffect effectName] => map[effectName];
+        }
+
         private sealed class TaggedBooleanDescription : BooleanDescription
         {
             private readonly Type enumType;
@@ -178,6 +254,21 @@ namespace DialogueDumper
                 };
 
                 return string.Format(description, speakers, tag, value);
+            }
+        }
+
+        private class EffectDescription : IEffectDescription
+        {
+            private readonly string description;
+
+            public EffectDescription(string description)
+            {
+                this.description = description;
+            }
+
+            public string GetDescription(string speakers, int? value)
+            {
+                return string.Format(this.description, speakers, value);
             }
         }
     }

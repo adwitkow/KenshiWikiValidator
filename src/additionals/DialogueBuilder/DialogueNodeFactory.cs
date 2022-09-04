@@ -1,5 +1,6 @@
 ﻿using System.Xml.Xsl;
 using KenshiWikiValidator.BaseComponents;
+using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.DialogueComponents;
 using KenshiWikiValidator.OcsProxy.Models;
 
@@ -32,6 +33,8 @@ namespace DialogueDumper
 
         private IEnumerable<string> ConvertEffects(DialogueLine line, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap)
         {
+            var results = new List<string>();
+
             if (line.AiContract.Any())
             {
                 throw new NotImplementedException("AiContract");
@@ -87,7 +90,24 @@ namespace DialogueDumper
                 throw new NotImplementedException("Unlocks");
             }
 
-            return Enumerable.Empty<string>();
+            var effects = line.Effects.SelectItems();
+            foreach (var effect in effects)
+            {
+                var effectValue = effect.ActionValue;
+
+                var effectDescription = this.componentConverter.ConvertEffect(effect);
+                if (effectDescription is null)
+                {
+                    results.Add($"EFFECT DESCRIPTION '{effect.ActionName}' NOT SET");
+                    continue;
+                }
+
+                effectDescription.GetDescription()
+
+                results.Add(effectDescription);
+            }
+
+            return results;
         }
 
         private IEnumerable<string> ConvertConditions(DialogueLine line, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap)
@@ -177,7 +197,7 @@ namespace DialogueDumper
                     validSpeakers = conditionSpeakers.Single();
                 }
 
-                var conditionDescription = this.componentConverter.ConvertAction(condition);
+                var conditionDescription = this.componentConverter.ConvertCondition(condition);
                 if (conditionDescription is null)
                 {
                     results.Add($"CONDITION DESCRIPTION '{condition.ConditionName}' NOT SET");

@@ -85,6 +85,11 @@ namespace DialogueDumper
                     }
 
                     sectionBuilder.WithLine(line.ToString());
+
+                    foreach (var effect in line.Effects)
+                    {
+                        sectionBuilder.WithLine($"{new string('*', line.Level)} ''({effect})''");
+                    }
                 }
 
                 results.Add(sectionBuilder.Build());
