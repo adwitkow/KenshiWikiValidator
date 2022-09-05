@@ -1,5 +1,4 @@
-﻿using System.Xml.Xsl;
-using KenshiWikiValidator.BaseComponents;
+﻿using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.DialogueComponents;
 using KenshiWikiValidator.OcsProxy.Models;
@@ -17,13 +16,12 @@ namespace DialogueDumper
             this.worldStateVerbalizer = new WorldStateVerbalizer();
         }
 
-        public DialogueNode Create(DialogueLine line, int level, IEnumerable<string> speakers, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap)
+        public DialogueNode Create(DialogueLine line, IEnumerable<string> speakers, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap)
         {
             var text = line.Text0;
 
             return new DialogueNode()
             {
-                Level = level,
                 Line = text,
                 Speakers = speakers,
                 Conditions = this.ConvertConditions(line, speakerMap),
@@ -34,6 +32,7 @@ namespace DialogueDumper
         private IEnumerable<string> ConvertEffects(DialogueLine line, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap)
         {
             var results = new List<string>();
+            var speakers = speakerMap[line.Speaker].ToCommaSeparatedListOr();
 
             if (line.AiContract.Any())
             {
@@ -102,9 +101,9 @@ namespace DialogueDumper
                     continue;
                 }
 
-                effectDescription.GetDescription()
+                var description = effectDescription.GetDescription(speakers, effectValue);
 
-                results.Add(effectDescription);
+                results.Add(description);
             }
 
             return results;
