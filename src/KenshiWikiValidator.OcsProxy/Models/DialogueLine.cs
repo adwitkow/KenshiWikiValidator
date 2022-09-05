@@ -20,7 +20,7 @@ using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
-    public class DialogueLine : ItemBase
+    public class DialogueLine : ItemBase, IDialogueNode
     {
         public DialogueLine(string stringId, string name)
             : base(stringId, name)
@@ -295,36 +295,41 @@ namespace KenshiWikiValidator.OcsProxy.Models
         [Reference("lock campaign")]
         public IEnumerable<ItemReference<FactionCampaign>> LockCampaign { get; set; }
 
-        public void CopyReferencesFrom(DialogueLine line)
+        public void CopyReferencesFrom(IDialogueNode node)
         {
-            this.Unlocks = this.Unlocks.Concat(line.Unlocks).Distinct();
-            this.Effects = this.Effects.Concat(line.Effects).Distinct();
-            this.ChangeRelations = this.ChangeRelations.Concat(line.ChangeRelations).Distinct();
-            this.MyRace = this.MyRace.Concat(line.MyRace).Distinct();
-            this.Interrupt = this.Interrupt.Concat(line.Interrupt).Distinct();
-            this.UnlockButKeepMe = this.UnlockButKeepMe.Concat(line.UnlockButKeepMe).Distinct();
-            this.TargetFaction = this.TargetFaction.Concat(line.TargetFaction).Distinct();
-            this.InTownOf = this.InTownOf.Concat(line.InTownOf).Distinct();
-            this.TargetRace = this.TargetRace.Concat(line.TargetRace).Distinct();
-            this.WorldState = this.WorldState.Concat(line.WorldState).Distinct();
-            this.ChangeAi = this.ChangeAi.Concat(line.ChangeAi).Distinct();
-            this.AiContract = this.AiContract.Concat(line.AiContract).Distinct();
-            this.TargetHasItemType = this.TargetHasItemType.Concat(line.TargetHasItemType).Distinct();
-            this.MyFaction = this.MyFaction.Concat(line.MyFaction).Distinct();
-            this.MySubrace = this.MySubrace.Concat(line.MySubrace).Distinct();
-            this.CrowdTrigger = this.CrowdTrigger.Concat(line.CrowdTrigger).Distinct();
-            this.TriggerCampaign = this.TriggerCampaign.Concat(line.TriggerCampaign).Distinct();
-            this.HasPackage = this.HasPackage.Concat(line.HasPackage).Distinct();
-            this.GiveItem = this.GiveItem.Concat(line.GiveItem).Distinct();
-            this.TargetCarryingCharacter = this.TargetCarryingCharacter.Concat(line.TargetCarryingCharacter).Distinct();
-            this.TargetHasItem = this.TargetHasItem.Concat(line.TargetHasItem).Distinct();
-            this.DeliveryAiPackage = this.DeliveryAiPackage.Concat(line.DeliveryAiPackage).Distinct();
-            this.SetAiPackage = this.SetAiPackage.Concat(line.SetAiPackage).Distinct();
-            this.Locks = this.Locks.Concat(line.Locks).Distinct();
-            this.LockCampaign = this.LockCampaign.Concat(line.LockCampaign).Distinct();
+            var line = node as DialogueLine;
+            if (line is not null)
+            {
+                this.Unlocks = this.Unlocks.Concat(line.Unlocks).Distinct();
+                this.Effects = this.Effects.Concat(line.Effects).Distinct();
+                this.ChangeRelations = this.ChangeRelations.Concat(line.ChangeRelations).Distinct();
+                this.Interrupt = this.Interrupt.Concat(line.Interrupt).Distinct();
+                this.UnlockButKeepMe = this.UnlockButKeepMe.Concat(line.UnlockButKeepMe).Distinct();
+                this.ChangeAi = this.ChangeAi.Concat(line.ChangeAi).Distinct();
+                this.AiContract = this.AiContract.Concat(line.AiContract).Distinct();
+                this.TargetHasItemType = this.TargetHasItemType.Concat(line.TargetHasItemType).Distinct();
+                this.MyFaction = this.MyFaction.Concat(line.MyFaction).Distinct();
+                this.MySubrace = this.MySubrace.Concat(line.MySubrace).Distinct();
+                this.CrowdTrigger = this.CrowdTrigger.Concat(line.CrowdTrigger).Distinct();
+                this.TriggerCampaign = this.TriggerCampaign.Concat(line.TriggerCampaign).Distinct();
+                this.HasPackage = this.HasPackage.Concat(line.HasPackage).Distinct();
+                this.GiveItem = this.GiveItem.Concat(line.GiveItem).Distinct();
+                this.TargetCarryingCharacter = this.TargetCarryingCharacter.Concat(line.TargetCarryingCharacter).Distinct();
+                this.DeliveryAiPackage = this.DeliveryAiPackage.Concat(line.DeliveryAiPackage).Distinct();
+                this.SetAiPackage = this.SetAiPackage.Concat(line.SetAiPackage).Distinct();
+                this.Locks = this.Locks.Concat(line.Locks).Distinct();
+                this.LockCampaign = this.LockCampaign.Concat(line.LockCampaign).Distinct();
+            }
+
+            this.MyRace = this.MyRace.Concat(node.MyRace).Distinct();
+            this.TargetFaction = this.TargetFaction.Concat(node.TargetFaction).Distinct();
+            this.InTownOf = this.InTownOf.Concat(node.InTownOf).Distinct();
+            this.TargetRace = this.TargetRace.Concat(node.TargetRace).Distinct();
+            this.WorldState = this.WorldState.Concat(node.WorldState).Distinct();
+            this.TargetHasItem = this.TargetHasItem.Concat(node.TargetHasItem).Distinct();
 
             var conditionRefs = new List<ItemReference<DialogAction>>(this.Conditions);
-            foreach (var conditionRef in line.Conditions)
+            foreach (var conditionRef in node.Conditions)
             {
                 var newRef = new ItemReference<DialogAction>(
                     conditionRef.Item,
@@ -333,7 +338,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
                     conditionRef.Value2);
                 var condition = newRef.Item;
 
-                if (condition.Who == DialogueSpeaker.Me)
+                if (condition.Who == DialogueSpeaker.Me && line is not null)
                 {
                     condition.Who = line.Speaker;
                 }

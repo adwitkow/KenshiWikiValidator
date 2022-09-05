@@ -18,7 +18,7 @@ using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
-    public class Dialogue : ItemBase
+    public class Dialogue : ItemBase, IDialogueNode
     {
         public Dialogue(string stringId, string name)
             : base(stringId, name)

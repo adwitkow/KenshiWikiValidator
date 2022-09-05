@@ -62,7 +62,12 @@ namespace DialogueDumper
                 var validCharacters = dialogueIdTocharacter[dialogue.StringId];
                 var speakers = CreateSpeakersDictionary(events, validCharacters);
 
-                var lines = dialogue.Lines.Select(lineRef => lineRef.Item);
+                var lines = dialogue.Lines.SelectItems();
+                foreach (var line in lines)
+                {
+                    line.CopyReferencesFrom(dialogue);
+                }
+
                 var allLines = this.dialogueMapper.MapDialogueLines(lines, speakers, character.Name, events);
 
                 var roots = allLines

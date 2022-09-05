@@ -154,7 +154,7 @@ namespace DialogueDumper
 
             if (line.TargetFaction.Any())
             {
-                throw new NotImplementedException("TargetFaction");
+                results.Add($"Target's faction is {line.TargetFaction.ToCommaSeparatedListOr()}");
             }
 
             if (line.TargetHasItem.Any())
