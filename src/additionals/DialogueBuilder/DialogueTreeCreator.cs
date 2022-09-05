@@ -63,7 +63,7 @@ namespace DialogueDumper
                 var speakers = CreateSpeakersDictionary(events, validCharacters);
 
                 var lines = dialogue.Lines.Select(lineRef => lineRef.Item);
-                var allLines = this.dialogueMapper.MapDialogueLines(lines, speakers, character.Name);
+                var allLines = this.dialogueMapper.MapDialogueLines(lines, speakers, character.Name, events);
 
                 var roots = allLines
                     .Where(node => !allLines

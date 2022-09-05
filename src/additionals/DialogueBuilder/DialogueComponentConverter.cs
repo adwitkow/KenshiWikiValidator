@@ -121,7 +121,7 @@ namespace DialogueDumper
                 { DialogueEffect.DA_NONE, null },
                 { DialogueEffect.DA_TRADE, null },
                 { DialogueEffect.DA_TALK_TO_LEADER, null },
-                { DialogueEffect.DA_JOIN_SQUAD_WITH_EDIT, null },
+                { DialogueEffect.DA_JOIN_SQUAD_WITH_EDIT, new JoinSquadDescription("{0} joins the squad. Character creator screen opens.") },
                 { DialogueEffect.DA_AFFECT_RELATIONS, null },
                 { DialogueEffect.DA_AFFECT_REPUTATION, null },
                 { DialogueEffect.DA_ATTACK_CHASE_FOREVER, null },
@@ -136,7 +136,7 @@ namespace DialogueDumper
                 { DialogueEffect.DA_CLEAR_AI, null },
                 { DialogueEffect.DA_FOLLOW_WHILE_TALKING, null },
                 { DialogueEffect.DA_THUG_HUNTER, null },
-                { DialogueEffect.DA_JOIN_SQUAD_FAST, new EffectDescription("{0} joins the squad without the character creator screen") },
+                { DialogueEffect.DA_JOIN_SQUAD_FAST, new JoinSquadDescription("{0} joins the squad, omitting the character creator screen") },
                 { DialogueEffect.DA_REMEMBER_CHARACTER, null },
                 { DialogueEffect.DA_FLAG_TEMP_ALLY, null },
                 { DialogueEffect.DA_FLAG_TEMP_ENEMY, null },
@@ -266,9 +266,27 @@ namespace DialogueDumper
                 this.description = description;
             }
 
-            public string GetDescription(string speakers, int? value)
+            public virtual string GetDescription(Dictionary<DialogueSpeaker, IEnumerable<string>> speakersMap, DialogueSpeaker speaker, int? value, IEnumerable<DialogueEvent> _)
             {
-                return string.Format(this.description, speakers, value);
+                return string.Format(this.description, speakersMap[speaker].ToCommaSeparatedListOr(), value);
+            }
+        }
+
+        private class JoinSquadDescription : EffectDescription
+        {
+            public JoinSquadDescription(string description)
+                : base(description)
+            {
+            }
+
+            public override string GetDescription(Dictionary<DialogueSpeaker, IEnumerable<string>> speakersMap, DialogueSpeaker speaker, int? value, IEnumerable<DialogueEvent> dialogueEvents)
+            {
+                if (dialogueEvents.Count() == 1 && dialogueEvents.Single() == DialogueEvent.EV_PLAYER_TALK_TO_ME)
+                {
+                    speaker = DialogueSpeaker.Me;
+                }
+
+                return base.GetDescription(speakersMap, speaker, value, dialogueEvents);
             }
         }
     }

@@ -16,7 +16,7 @@ namespace DialogueDumper
             this.worldStateVerbalizer = new WorldStateVerbalizer();
         }
 
-        public DialogueNode Create(DialogueLine line, IEnumerable<string> speakers, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap)
+        public DialogueNode Create(DialogueLine line, IEnumerable<string> speakers, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap, IEnumerable<DialogueEvent> dialogueEvents)
         {
             var text = line.Text0;
 
@@ -25,14 +25,13 @@ namespace DialogueDumper
                 Line = text,
                 Speakers = speakers,
                 Conditions = this.ConvertConditions(line, speakerMap),
-                Effects = this.ConvertEffects(line, speakerMap),
+                Effects = this.ConvertEffects(line, speakerMap, dialogueEvents),
             };
         }
 
-        private IEnumerable<string> ConvertEffects(DialogueLine line, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap)
+        private IEnumerable<string> ConvertEffects(DialogueLine line, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap, IEnumerable<DialogueEvent> dialogueEvents)
         {
             var results = new List<string>();
-            var speakers = speakerMap[line.Speaker].ToCommaSeparatedListOr();
 
             if (line.AiContract.Any())
             {
@@ -101,7 +100,7 @@ namespace DialogueDumper
                     continue;
                 }
 
-                var description = effectDescription.GetDescription(speakers, effectValue);
+                var description = effectDescription.GetDescription(speakerMap, line.Speaker, effectValue, dialogueEvents);
 
                 results.Add(description);
             }

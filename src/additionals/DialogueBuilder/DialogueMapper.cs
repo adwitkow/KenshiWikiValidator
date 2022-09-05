@@ -60,16 +60,16 @@ namespace DialogueDumper
             return dialogueIdTocharacter;
         }
 
-        public IList<DialogueNode> MapDialogueLines(IEnumerable<DialogueLine> dialogueLines, Dictionary<DialogueSpeaker, IEnumerable<string>> speakersMap, string characterName)
+        public IList<DialogueNode> MapDialogueLines(IEnumerable<DialogueLine> dialogueLines, Dictionary<DialogueSpeaker, IEnumerable<string>> speakersMap, string characterName, IEnumerable<DialogueEvent> dialogueEvents)
         {
             var allLines = new List<DialogueNode>();
 
-            this.AddDialogueLines(allLines, null, dialogueLines, speakersMap, characterName, false);
+            this.AddDialogueLines(allLines, null, dialogueLines, speakersMap, characterName, false, dialogueEvents);
 
             return allLines;
         }
 
-        private bool AddDialogueLines(IList<DialogueNode> allLines, DialogueNode? previousNode, IEnumerable<DialogueLine> dialogueLines, Dictionary<DialogueSpeaker, IEnumerable<string>> speakersMap, string characterName, bool isSearchedCharactersLine)
+        private bool AddDialogueLines(IList<DialogueNode> allLines, DialogueNode? previousNode, IEnumerable<DialogueLine> dialogueLines, Dictionary<DialogueSpeaker, IEnumerable<string>> speakersMap, string characterName, bool isSearchedCharactersLine, IEnumerable<DialogueEvent> dialogueEvents)
         {
             var isSearchedCharactersLineResult = false;
             foreach (var line in dialogueLines)
@@ -102,10 +102,10 @@ namespace DialogueDumper
                     }
                 }
 
-                var currentNode = GetCurrentNode(allLines, previousNode, line, newSpeakersMap, isInterjection);
+                var currentNode = GetCurrentNode(allLines, previousNode, line, newSpeakersMap, isInterjection, dialogueEvents);
 
                 var lines = line.Lines.Select(lineRef => lineRef.Item);
-                var stackContainsCharacter = this.AddDialogueLines(allLines, currentNode, lines, newSpeakersMap, characterName, isSearchedCharactersLineInternal);
+                var stackContainsCharacter = this.AddDialogueLines(allLines, currentNode, lines, newSpeakersMap, characterName, isSearchedCharactersLineInternal, dialogueEvents);
 
                 if (stackContainsCharacter || isSearchedCharactersLineInternal)
                 {
@@ -133,7 +133,7 @@ namespace DialogueDumper
             }
         }
 
-        private DialogueNode? GetCurrentNode(IList<DialogueNode> allLines, DialogueNode? previousNode, DialogueLine line, Dictionary<DialogueSpeaker, IEnumerable<string>> newSpeakersMap, bool isInterjection)
+        private DialogueNode? GetCurrentNode(IList<DialogueNode> allLines, DialogueNode? previousNode, DialogueLine line, Dictionary<DialogueSpeaker, IEnumerable<string>> newSpeakersMap, bool isInterjection, IEnumerable<DialogueEvent> dialogueEvents)
         {
             DialogueNode? currentNode;
             if (isInterjection)
@@ -142,16 +142,16 @@ namespace DialogueDumper
             }
             else
             {
-                currentNode = this.CreateNewNode(allLines, previousNode, line, newSpeakersMap);
+                currentNode = this.CreateNewNode(allLines, previousNode, line, newSpeakersMap, dialogueEvents);
             }
 
             return currentNode;
         }
 
-        private DialogueNode CreateNewNode(IList<DialogueNode> allLines, DialogueNode? previousNode, DialogueLine line, Dictionary<DialogueSpeaker, IEnumerable<string>> newSpeakersMap)
+        private DialogueNode CreateNewNode(IList<DialogueNode> allLines, DialogueNode? previousNode, DialogueLine line, Dictionary<DialogueSpeaker, IEnumerable<string>> newSpeakersMap, IEnumerable<DialogueEvent> dialogueEvents)
         {
             var validSpeakers = newSpeakersMap[line.Speaker];
-            var currentNode = this.nodeFactory.Create(line, validSpeakers, newSpeakersMap);
+            var currentNode = this.nodeFactory.Create(line, validSpeakers, newSpeakersMap, dialogueEvents);
 
             if (previousNode != null)
             {
