@@ -103,7 +103,7 @@ namespace DialogueDumper
 
                 var description = effectDescription.GetDescription(speakerMap, line.Speaker, effectValue, dialogueEvents);
 
-                results.Add(description);
+                results.Add($"{description} ({effect.ActionName}, {effectValue})");
             }
 
             return results;
@@ -205,7 +205,7 @@ namespace DialogueDumper
 
                 var verbalizedDescription = conditionDescription.GetDescription(validSpeakers, conditionValue, condition.CompareBy, condition.Tag);
 
-                results.Add(verbalizedDescription);
+                results.Add($"{verbalizedDescription} ({condition.ConditionName}, {conditionValue})");
             }
 
             return results;
