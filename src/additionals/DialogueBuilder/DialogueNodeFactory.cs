@@ -88,10 +88,11 @@ namespace DialogueDumper
                 throw new NotImplementedException("Unlocks");
             }
 
-            var effects = line.Effects.SelectItems();
-            foreach (var effect in effects)
+            var effectRefs = line.Effects;
+            foreach (var effectRef in effectRefs)
             {
-                var effectValue = effect.ActionValue;
+                var effect = effectRef.Item;
+                var effectValue = effectRef.Value0;
 
                 var effectDescription = this.componentConverter.ConvertEffect(effect);
                 if (effectDescription is null)
