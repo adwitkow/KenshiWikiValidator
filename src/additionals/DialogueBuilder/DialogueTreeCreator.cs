@@ -22,6 +22,7 @@ namespace DialogueDumper
         public string Create(Character character)
         {
             var results = new List<string>();
+            var characterName = character.Name;
 
             var packages = character.DialoguePackage.Concat(character.DialoguePackagePlayer)
                 .Select(packageRef => packageRef.Item);
@@ -39,67 +40,93 @@ namespace DialogueDumper
 
             foreach (var dialogue in dialogues)
             {
-                var dialogueRefs = dialogueMap[dialogue];
-
-                var allEvents = new List<DialogueEvent>();
-                foreach (var dialogueRef in dialogueRefs)
-                {
-                    allEvents.Add((DialogueEvent)dialogueRef.Value0);
-                    allEvents.Add((DialogueEvent)dialogueRef.Value1);
-                    allEvents.Add((DialogueEvent)dialogueRef.Value2);
-                }
-
-                var events = allEvents.Distinct().Except(new[] { DialogueEvent.EV_NONE });
-
-                if (!events.Any())
-                {
-                    events = new[] { DialogueEvent.EV_NONE };
-                }
-
-                var sectionBuilder = new WikiSectionBuilder();
-                sectionBuilder.WithHeader($"{dialogue.Name} ({string.Join(", ", events)})");
-
-                var validCharacters = dialogueIdTocharacter[dialogue.StringId];
-                var speakers = CreateSpeakersDictionary(events, validCharacters);
-
-                var lines = dialogue.Lines.SelectItems();
-                foreach (var line in lines)
-                {
-                    line.CopyReferencesFrom(dialogue);
-                }
-
-                var allLines = this.dialogueMapper.MapDialogueLines(lines, speakers, character.Name, events);
-
-                var roots = allLines
-                    .Where(node => !allLines
-                        .Any(n => n.Children.Contains(node)))
-                    .ToList();
-
-                this.levelCalculator.CalculateLevels(1, roots);
-
-                foreach (var line in allLines)
-                {
-                    if (line.Conditions.Any())
-                    {
-                        sectionBuilder.WithLine($"{new string('*', line.Level)} ''If all of the following conditions are '''true''':''");
-                        foreach (var condition in line.Conditions)
-                        {
-                            sectionBuilder.WithLine($"{new string('*', line.Level + 1)} ''{condition}''");
-                        }
-                    }
-
-                    sectionBuilder.WithLine(line.ToString());
-
-                    foreach (var effect in line.Effects)
-                    {
-                        sectionBuilder.WithLine($"{new string('*', line.Level)} ''({effect})''");
-                    }
-                }
-
-                results.Add(sectionBuilder.Build());
+                var built = CreateDialogue(characterName, dialogueMap, dialogueIdTocharacter, dialogue);
+                results.Add(built);
             }
 
             return string.Join(Environment.NewLine, results);
+        }
+
+        public string CreateDialogue(Character character, Dialogue dialogue)
+        {
+            var packages = character.DialoguePackage.Concat(character.DialoguePackagePlayer)
+                .Select(packageRef => packageRef.Item);
+
+            var dialogueMap = this.itemRepository.GetItems<DialoguePackage>()
+                .SelectMany(package => package.Dialogs)
+                .ToLookup(dialogueRef => dialogueRef.Item, dialogueRef => dialogueRef);
+
+            var dialogues = packages
+                .SelectMany(package => package.Dialogs
+                    .Select(dialogueRef => dialogueRef.Item))
+                .ToList();
+
+            var dialogueIdTocharacter = this.dialogueMapper.MapAllDialogues(character, ref dialogues);
+
+            return CreateDialogue(character.Name, dialogueMap, dialogueIdTocharacter, dialogue);
+        }
+
+        private string CreateDialogue(string characterName, ILookup<Dialogue, ItemReference<Dialogue>> dialogueMap, Dictionary<string, List<string>> dialogueIdTocharacter, Dialogue? dialogue)
+        {
+            var results = new List<string>();
+            var dialogueRefs = dialogueMap[dialogue];
+
+            var allEvents = new List<DialogueEvent>();
+            foreach (var dialogueRef in dialogueRefs)
+            {
+                allEvents.Add((DialogueEvent)dialogueRef.Value0);
+                allEvents.Add((DialogueEvent)dialogueRef.Value1);
+                allEvents.Add((DialogueEvent)dialogueRef.Value2);
+            }
+
+            var events = allEvents.Distinct().Except(new[] { DialogueEvent.EV_NONE });
+
+            if (!events.Any())
+            {
+                events = new[] { DialogueEvent.EV_NONE };
+            }
+
+            var sectionBuilder = new WikiSectionBuilder();
+            sectionBuilder.WithHeader($"{dialogue.Name} ({string.Join(", ", events)})");
+
+            var validCharacters = dialogueIdTocharacter[dialogue.StringId];
+            var speakers = CreateSpeakersDictionary(events, validCharacters);
+
+            var lines = dialogue.Lines.SelectItems();
+            foreach (var line in lines)
+            {
+                line.CopyReferencesFrom(dialogue);
+            }
+
+            var allLines = this.dialogueMapper.MapDialogueLines(lines, speakers, characterName, events);
+
+            var roots = allLines
+                .Where(node => !allLines
+                    .Any(n => n.Children.Contains(node)))
+                .ToList();
+
+            this.levelCalculator.CalculateLevels(1, roots);
+
+            foreach (var line in allLines)
+            {
+                if (line.Conditions.Any())
+                {
+                    sectionBuilder.WithLine($"{new string('*', line.Level)} ''If all of the following conditions are '''true''':''");
+                    foreach (var condition in line.Conditions)
+                    {
+                        sectionBuilder.WithLine($"{new string('*', line.Level + 1)} ''{condition}''");
+                    }
+                }
+
+                sectionBuilder.WithLine(line.ToString());
+
+                foreach (var effect in line.Effects)
+                {
+                    sectionBuilder.WithLine($"{new string('*', line.Level)} ''({effect})''");
+                }
+            }
+
+            return sectionBuilder.Build();
         }
 
         private static Dictionary<DialogueSpeaker, IEnumerable<string>> CreateSpeakersDictionary(IEnumerable<DialogueEvent> events, List<string> validCharacters)

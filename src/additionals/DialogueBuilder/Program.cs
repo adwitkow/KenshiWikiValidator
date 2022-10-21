@@ -14,9 +14,11 @@ repository.Load();
 
 var characters = repository.GetItems<Character>();
 var beep = characters.Single(character => character.Name == "Beep");
+var beepLosesArm = repository.GetItems<Dialogue>().FirstOrDefault(d => d.StringId == "96393-rebirth.mod");
 
 var dialogueTreeCreator = new DialogueTreeCreator(repository);
 var text = dialogueTreeCreator.Create(beep);
+//var text = dialogueTreeCreator.CreateDialogue(beep, beepLosesArm);
 
 var path = Path.Combine("characters", $"{beep.Name}.txt");
 Directory.CreateDirectory("characters");
