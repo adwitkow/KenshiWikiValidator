@@ -33,34 +33,39 @@ namespace DialogueDumper
         {
             var results = new List<string>();
 
+            var speakers = speakerMap[line.Speaker].ToCommaSeparatedListOr();
+
             if (line.AiContract.Any())
             {
-                throw new NotImplementedException("AiContract");
+                results.Add($"{speakers}'s contract gets changed to '{line.AiContract.Single().Item.Name}'");
             }
 
             if (line.ChangeAi.Any())
             {
-                throw new NotImplementedException("ChangeAi");
+                results.Add($"{speakers}'s AI package gets changed to '{line.ChangeAi.Single().Item.Name}'");
             }
 
             if (line.ChangeRelations.Any())
             {
-                throw new NotImplementedException("ChangeRelations");
+                foreach (var change in line.ChangeRelations)
+                {
+                    results.Add($"The relations with '{change.Item.Name}' are changed by {change.Value0}.");
+                }
             }
 
             if (line.CrowdTrigger.Any())
             {
-                throw new NotImplementedException("CrowdTrigger");
+                results.Add($"'{line.CrowdTrigger.Single()}' dialogue gets triggered for all squad members of {speakers}.");
             }
 
             if (line.GiveItem.Any())
             {
-                throw new NotImplementedException("GiveItem");
+                results.Add($"{speakers} gives {line.GiveItem.ToCommaSeparatedListAnd()} to the target.");
             }
 
             if (line.Interrupt.Any())
             {
-                throw new NotImplementedException("Interrupt");
+                // I don't really care about this, to be honest.
             }
 
             if (line.LockCampaign.Any())
@@ -70,22 +75,22 @@ namespace DialogueDumper
 
             if (line.Locks.Any())
             {
-                throw new NotImplementedException("Locks");
+                results.Add($"'{line.Unlocks.ToCommaSeparatedListAnd()}' dialogue(s) gets locked for {speakers}.");
             }
 
             if (line.TriggerCampaign.Any())
             {
-                throw new NotImplementedException("TriggerCampaign");
+                results.Add($"'{line.TriggerCampaign.ToCommaSeparatedListAnd()}' campaign gets triggered.");
             }
 
             if (line.UnlockButKeepMe.Any())
             {
-                throw new NotImplementedException("UnlockButKeepMe");
+                results.Add($"'{line.UnlockButKeepMe.ToCommaSeparatedListAnd()}' dialogue(s) gets unlocked for {speakers}.");
             }
 
             if (line.Unlocks.Any())
             {
-                throw new NotImplementedException("Unlocks");
+                results.Add($"'{line.Unlocks.ToCommaSeparatedListAnd()}' dialogue(s) gets unlocked for {speakers}.");
             }
 
             var effectRefs = line.Effects;
@@ -122,7 +127,7 @@ namespace DialogueDumper
 
             if (line.InTownOf.Any())
             {
-                throw new NotImplementedException("InTownOf");
+                results.Add($"{speakers} is in a location that belongs to {line.MyFaction.ToCommaSeparatedListOr()}");
             }
 
             if (line.IsCharacter.Any())
@@ -135,7 +140,7 @@ namespace DialogueDumper
 
             if (line.MyFaction.Any())
             {
-                throw new NotImplementedException("MyFaction");
+                results.Add($"{speakers}'s faction is {line.MyFaction.ToCommaSeparatedListOr()}");
             }
 
             if (line.MyRace.Any())
@@ -150,7 +155,7 @@ namespace DialogueDumper
 
             if (line.TargetCarryingCharacter.Any())
             {
-                throw new NotImplementedException("TargetCarryingCharacter");
+                results.Add($"Target is carrying {line.TargetCarryingCharacter.ToCommaSeparatedListOr()}");
             }
 
             if (line.TargetFaction.Any())
@@ -160,12 +165,12 @@ namespace DialogueDumper
 
             if (line.TargetHasItem.Any())
             {
-                throw new NotImplementedException("TargetHasItem");
+                results.Add($"Target has {line.TargetHasItem.ToCommaSeparatedListOr()}");
             }
 
             if (line.TargetHasItemType.Any())
             {
-                throw new NotImplementedException("TargetHasItemType");
+                results.Add($"Target owns an item of the same type as {line.TargetHasItemType.ToCommaSeparatedListOr()}");
             }
 
             if (line.TargetRace.Any())

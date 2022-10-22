@@ -9,17 +9,18 @@ if (Directory.Exists("characters"))
     Directory.Delete("characters", true);
 }
 
+Directory.CreateDirectory("characters");
+
 var repository = new ItemRepository();
 repository.Load();
 
-var characters = repository.GetItems<Character>();
-var beep = characters.Single(character => character.Name == "Beep");
-var beepLosesArm = repository.GetItems<Dialogue>().FirstOrDefault(d => d.StringId == "96393-rebirth.mod");
-
 var dialogueTreeCreator = new DialogueTreeCreator(repository);
-var text = dialogueTreeCreator.Create(beep);
-//var text = dialogueTreeCreator.CreateDialogue(beep, beepLosesArm);
 
-var path = Path.Combine("characters", $"{beep.Name}.txt");
-Directory.CreateDirectory("characters");
-File.WriteAllText(path, text);
+var characters = repository.GetItems<Character>();
+foreach (var character in characters)
+{
+    var dialogueContent = dialogueTreeCreator.Create(character);
+    var path = Path.Combine("characters", $"{character.Name} ({character.StringId}).txt");
+
+    File.WriteAllText(path, dialogueContent);
+}

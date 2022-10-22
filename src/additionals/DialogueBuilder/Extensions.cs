@@ -11,6 +11,13 @@ namespace DialogueDumper
             return ToCommaSeparatedList(names, "or");
         }
 
+        public static string ToCommaSeparatedListAnd<T>(this IEnumerable<ItemReference<T>> input)
+            where T : IItem
+        {
+            var names = input.Select(reference => reference.Item.Name);
+            return ToCommaSeparatedList(names, "and");
+        }
+
         public static string ToCommaSeparatedListOr(this IEnumerable<string> input)
         {
             return ToCommaSeparatedList(input, "or");
