@@ -155,13 +155,15 @@ namespace KenshiWikiValidator.BaseComponents.Creators
                 return null;
             }
 
+            var inputValue = input.Value;
+
             if (isPercentage)
             {
-                input = (input - 1) * 100f;
-                return FormatIntStat((int)input);
+                inputValue = (inputValue - 1) * 100f;
+                return FormatIntStat((int)Math.Round(inputValue));
             }
 
-            return input.Value.ToString("F2");
+            return inputValue.ToString("F2");
         }
 
         private static string? FormatIntStat(int? input)
