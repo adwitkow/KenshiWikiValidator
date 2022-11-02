@@ -16,8 +16,8 @@
 
 using KenshiWikiValidator.OcsProxy.Models;
 using OpenConstructionSet;
-using OpenConstructionSet.Data;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Mods;
+using OpenConstructionSet.Mods.Context;
 
 namespace KenshiWikiValidator.OcsProxy
 {
@@ -25,34 +25,22 @@ namespace KenshiWikiValidator.OcsProxy
     {
         private readonly Dictionary<string, IItem> itemLookup;
         private readonly Dictionary<Type, IEnumerable<IItem>> itemsByType;
+        private readonly IInstallationService installationService;
+        private readonly IContextBuilder contextBuilder;
 
-        private readonly OcsDataContexOptions contextOptions;
-        private readonly IOcsDataContextBuilder contextBuilder;
-
-        public ItemRepository(IOcsDiscoveryService discoveryService, IOcsDataContextBuilder contextBuilder)
+        public ItemRepository(IInstallationService installationService, IContextBuilder contextBuilder)
         {
-            var installations = discoveryService.DiscoverAllInstallations();
-            var installation = installations.Values.FirstOrDefault();
+            this.installationService = installationService;
+            this.contextBuilder = contextBuilder;
 
-            this.contextOptions = new OcsDataContexOptions(
-                Name: Guid.NewGuid().ToString(),
-                Installation: installation,
-                LoadGameFiles: ModLoadType.Base,
-                LoadEnabledMods: ModLoadType.None,
-                ThrowIfMissing: false);
-
-            this.GameDirectory = installation?.Game;
             this.itemLookup = new Dictionary<string, IItem>();
             this.itemsByType = new Dictionary<Type, IEnumerable<IItem>>();
-            this.contextBuilder = contextBuilder;
         }
 
         public ItemRepository()
-            : this(OcsDiscoveryService.Default, OcsDataContextBuilder.Default)
+            : this(new InstallationService(), new ContextBuilder())
         {
         }
-
-        public string? GameDirectory { get; private set; }
 
         public IEnumerable<IItem> GetItems()
         {
@@ -88,9 +76,21 @@ namespace KenshiWikiValidator.OcsProxy
             return (T)this.GetItemByStringId(id);
         }
 
-        public void Load()
+        public async Task LoadAsync()
         {
-            var contextItems = this.contextBuilder.Build(this.contextOptions).Items.Values.ToList();
+            var installations = await this.installationService.DiscoverAllInstallationsAsync()
+                .ToDictionaryAsync(i => i.Identifier);
+            var installation = installations.Values.FirstOrDefault();
+
+            var contextOptions = new ModContextOptions(
+                Guid.NewGuid().ToString(),
+                installation,
+                loadGameFiles: ModLoadType.Base,
+                loadEnabledMods: ModLoadType.None,
+                throwIfMissing: false);
+
+            var context = await this.contextBuilder.BuildAsync(contextOptions);
+            var contextItems = context.Items.AsEnumerable();
 
             var modelConverter = new ItemModelConverter(this);
             var convertedItems = modelConverter.Convert(contextItems).ToArray();

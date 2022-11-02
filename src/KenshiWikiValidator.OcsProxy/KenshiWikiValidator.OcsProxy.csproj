@@ -20,11 +20,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenConstructionSet" Version="2.2.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\OpenConstructionSet\OpenConstructionSet\OpenConstructionSet.csproj" />
   </ItemGroup>
 
 </Project>

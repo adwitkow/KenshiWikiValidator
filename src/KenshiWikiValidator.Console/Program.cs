@@ -54,7 +54,7 @@ if (Directory.Exists(output))
 
 Console.WriteLine("Loading items...");
 var sw = Stopwatch.StartNew();
-itemRepository.Load();
+await itemRepository.LoadAsync();
 sw.Stop();
 
 Console.WriteLine($"Loaded all items in {sw.Elapsed}");

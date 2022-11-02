@@ -10,7 +10,7 @@ if (Directory.Exists("characters"))
 }
 
 var repository = new ItemRepository();
-repository.Load();
+await repository.LoadAsync();
 
 var characters = repository.GetItems<Character>();
 var beep = characters.Single(character => character.Name == "Beep");
