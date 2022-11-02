@@ -1,0 +1,3 @@
+[submodule "OpenConstructionSet"]
+	path = OpenConstructionSet
+	url = https://github.com/adwitkow/OpenConstructionSet
