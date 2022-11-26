@@ -4,8 +4,8 @@ using System.Linq;
 using KenshiWikiValidator.OcsProxy.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Tests
 {
@@ -18,7 +18,7 @@ namespace KenshiWikiValidator.OcsProxy.Tests
             var repository = new Mock<ItemRepository>();
             var converter = new ItemModelConverter(repository.Object);
 
-            var weaponDataItem = new DataItem(ItemType.Weapon, 0, "name", "stringid");
+            var weaponDataItem = new ModItem(ItemType.Weapon, "name", "stringid");
 
             var convertedItem = converter.Convert(weaponDataItem);
 
@@ -31,9 +31,9 @@ namespace KenshiWikiValidator.OcsProxy.Tests
             var repository = new Mock<ItemRepository>();
             var converter = new ItemModelConverter(repository.Object);
 
-            var weaponDataItem = new DataItem(ItemType.Weapon, 0, "name", "stringid");
-            var containerDataItem = new DataItem(ItemType.Container, 0, "name", "stringid");
-            var armourDataItem = new DataItem(ItemType.Armour, 0, "name", "stringid");
+            var weaponDataItem = new ModItem(ItemType.Weapon, "name", "stringid");
+            var containerDataItem = new ModItem(ItemType.Container, "name", "stringid");
+            var armourDataItem = new ModItem(ItemType.Armour, "name", "stringid");
 
             var dataItems = new[] { weaponDataItem, containerDataItem, armourDataItem };
 
@@ -65,13 +65,13 @@ namespace KenshiWikiValidator.OcsProxy.Tests
             var repository = new Mock<ItemRepository>();
             var converter = new ItemModelConverter(repository.Object);
 
-            var dataItems = new List<DataItem>();
+            var dataItems = new List<ModItem>();
             var itemTypes = Enum.GetValues(typeof(ItemType))
                 .Cast<ItemType>()
                 .Except(unknownItemTypes);
             foreach (var type in itemTypes)
             {
-                dataItems.Add(new DataItem(type, 0, type.ToString(), type.ToString()));
+                dataItems.Add(new ModItem(type, type.ToString(), type.ToString()));
             }
 
             var convertedPairs = converter.Convert(dataItems);

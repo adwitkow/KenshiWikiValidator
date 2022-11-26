@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using KenshiWikiValidator.OcsProxy.DialogueComponents;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {

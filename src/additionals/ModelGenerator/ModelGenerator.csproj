@@ -16,7 +16,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenConstructionSet" Version="2.2.0" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\OpenConstructionSet\OpenConstructionSet\OpenConstructionSet.csproj" />
   </ItemGroup>
 
 </Project>

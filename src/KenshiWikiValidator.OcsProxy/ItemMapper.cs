@@ -16,8 +16,8 @@
 
 using System.Collections;
 using System.Reflection;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy
 {
@@ -32,7 +32,7 @@ namespace KenshiWikiValidator.OcsProxy
             this.propertyMap = new Dictionary<Type, PropertyContainer>();
         }
 
-        public IItem Map(DataItem baseItem, IItem builtItem)
+        public IItem Map(ModItem baseItem, IItem builtItem)
         {
             var type = builtItem.GetType();
             if (!this.propertyMap.TryGetValue(type, out var propertyContainer))
@@ -43,6 +43,11 @@ namespace KenshiWikiValidator.OcsProxy
 
             foreach (var pair in baseItem.Values)
             {
+                if (pair.Key == "REMOVED")
+                {
+                    continue;
+                }
+
                 var prop = propertyContainer.GetValueProperty(pair.Key);
                 var convertedValue = ChangeType(pair.Value, prop.PropertyType);
                 prop.SetValue(builtItem, convertedValue);
@@ -54,7 +59,7 @@ namespace KenshiWikiValidator.OcsProxy
 
                 foreach (var prop in referenceProperties)
                 {
-                    var baseReferences = refCategory.Value.Values;
+                    var baseReferences = refCategory.References;
 
                     var propertyGenericType = prop.PropertyType.GenericTypeArguments[0];
                     var listType = typeof(List<>).MakeGenericType(propertyGenericType);
@@ -69,7 +74,16 @@ namespace KenshiWikiValidator.OcsProxy
 
                     foreach (var baseReference in baseReferences)
                     {
-                        var item = this.itemRepository.GetItemByStringId(baseReference.TargetId);
+                        IItem item;
+                        try
+                        {
+                            item = this.itemRepository.GetItemByStringId(baseReference.TargetId);
+                        }
+                        catch (KeyNotFoundException)
+                        {
+                            continue;
+                        }
+
                         var args = new object[] { item, baseReference.Value0, baseReference.Value1, baseReference.Value2 };
 
                         try

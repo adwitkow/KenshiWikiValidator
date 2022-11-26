@@ -5,7 +5,7 @@ using KenshiWikiValidator.OcsProxy.DialogueComponents;
 using KenshiWikiValidator.OcsProxy.Models;
 
 var repository = new ItemRepository();
-repository.Load();
+await repository.LoadAsync();
 
 var characterNames = new List<string>();
 

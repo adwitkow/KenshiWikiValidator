@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\OpenConstructionSet\OpenConstructionSet\OpenConstructionSet.csproj" />
     <ProjectReference Include="..\KenshiWikiValidator\KenshiWikiValidator.csproj" />
   </ItemGroup>
 

@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using KenshiWikiValidator.OcsProxy.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using OpenConstructionSet;
-using OpenConstructionSet.Collections;
 using OpenConstructionSet.Data;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Installations;
+using OpenConstructionSet.Mods;
+using OpenConstructionSet.Mods.Context;
 
 namespace KenshiWikiValidator.OcsProxy.Tests
 {
@@ -19,71 +20,67 @@ namespace KenshiWikiValidator.OcsProxy.Tests
         [TestInitialize]
         public void Initialize()
         {
-            var modfolder = new ModFolder("", new Dictionary<string, ModFile>());
-            installation = new Installation("", new List<string>(), modfolder, modfolder, modfolder, null);
+            installation = new Installation("", "", "");
         }
 
         [TestMethod]
         public void ShouldConstruct()
         {
-            var discoveryServiceMock = CreateDiscoveryServiceMock();
-            var contextBuilderMock = new Mock<IOcsDataContextBuilder>();
-            var repository = new ItemRepository(discoveryServiceMock.Object, contextBuilderMock.Object);
+            var installationServiceMock = new Mock<IInstallationService>();
+            var contextBuilderMock = new Mock<IContextBuilder>();
+            var repository = new ItemRepository(installationServiceMock.Object, contextBuilderMock.Object);
 
             Assert.IsNotNull(repository);
         }
 
         [TestMethod]
-        public void ShouldMapTownsWithOverrides()
+        public async Task ShouldMapTownsWithOverrides()
         {
-            var dataTown = new DataItem(ItemType.Town, 0, "Town", "TownId");
-            var baseDataTown = new DataItem(ItemType.Town, 0, "BaseTown", "BaseTownId");
-            var references = new[] { new DataReference("TownId", 0, 0, 0) };
-            var referenceCategory = new DataReferenceCategory("override town", references);
+            var dataTown = new ModItem(ItemType.Town, "Town", "TownId");
+            var baseDataTown = new ModItem(ItemType.Town, "BaseTown", "BaseTownId");
+            var references = new[] { new ModReference("TownId", 0, 0, 0) };
+            var referenceCategory = new ModReferenceCategory("override town", references);
             baseDataTown.ReferenceCategories.Add(referenceCategory);
             var items = new[]
             {
                 dataTown,
                 baseDataTown,
             };
-            var discoveryServiceMock = CreateDiscoveryServiceMock();
+            var installationServiceMock = CreateInstallationServiceMock();
             var contextBuilderMock = CreateDataContextBuilderMock(items);
-            var repository = new ItemRepository(discoveryServiceMock.Object, contextBuilderMock.Object);
-            repository.Load();
+            var repository = new ItemRepository(installationServiceMock.Object, contextBuilderMock.Object);
+            await repository.LoadAsync();
 
             var town = repository.GetItemByStringId<Town>(dataTown.StringId);
 
             Assert.AreEqual(baseDataTown.StringId, town.BaseTowns.First().StringId);
         }
 
-        private Mock<IOcsDataContextBuilder> CreateDataContextBuilderMock(IEnumerable<DataItem> items)
+        private Mock<IContextBuilder> CreateDataContextBuilderMock(IEnumerable<ModItem> items)
         {
-            var contextBuilderMock = new Mock<IOcsDataContextBuilder>();
-            var ioServiceMock = new Mock<IOcsIOService>();
-            var dataContext = new OcsDataContext(
-                ioServiceMock.Object,
-                this.installation!,
-                new OcsSortedList<DataItem>(items),
-                new Dictionary<string, OpenConstructionSet.Models.Item>(),
-                string.Empty,
-                0);
-            contextBuilderMock.Setup(builder => builder.Build(It.IsAny<OcsDataContexOptions>()))
-                .Returns(dataContext);
+            var contextBuilderMock = new Mock<IContextBuilder>();
+            var modContextMock = new Mock<IModContext>();
+
+            modContextMock.Setup(context => context.Items)
+                .Returns(new ModItemCollection(null, items));
+
+            contextBuilderMock.Setup(builder => builder.BuildAsync(It.IsAny<ModContextOptions>()))
+                .Returns(Task.FromResult(modContextMock.Object));
 
             return contextBuilderMock;
         }
 
-        private Mock<IOcsDiscoveryService> CreateDiscoveryServiceMock()
+        private Mock<IInstallationService> CreateInstallationServiceMock()
         {
-            var result = new Dictionary<string, Installation>()
-            {
-                { "", this.installation! },
-            };
-            var discoveryServiceMock = new Mock<IOcsDiscoveryService>();
-            discoveryServiceMock.Setup(service => service.DiscoverAllInstallations())
+            var installationMock = new Mock<IInstallation>();
+            installationMock.Setup(i => i.Identifier)
+                .Returns(string.Empty);
+            var result = new[] { installationMock.Object }.ToAsyncEnumerable();
+            var installationServiceMock = new Mock<IInstallationService>();
+            installationServiceMock.Setup(service => service.DiscoverAllInstallationsAsync())
                 .Returns(result);
 
-            return discoveryServiceMock;
+            return installationServiceMock;
         }
     }
 }
