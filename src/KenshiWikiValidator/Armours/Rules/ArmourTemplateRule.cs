@@ -43,7 +43,15 @@ namespace KenshiWikiValidator.Armours.Rules
             foreach (var template in armourTemplates)
             {
                 var gradeString = template.Parameters["Grade"];
-                var price = int.Parse(template.Parameters["value"].Replace(",", "").Replace(".", ""));
+                var valueString = template.Parameters["value"];
+
+                if (string.IsNullOrEmpty(gradeString) || string.IsNullOrEmpty(valueString))
+                {
+                    result.AddIssue("One of the Armour templates does not contain a grade or value.");
+                    continue;
+                }
+
+                var price = int.Parse(valueString.Replace(",", string.Empty).Replace(".", string.Empty));
 
                 var grade = (ArmourGrade)Enum.Parse(typeof(ArmourGrade), gradeString);
                 var calculated = this.priceCalculator.CalculatePrice(armour, grade);
