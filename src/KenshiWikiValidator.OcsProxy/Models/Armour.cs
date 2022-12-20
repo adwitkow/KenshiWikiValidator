@@ -139,7 +139,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public float? WeightKg { get; set; }
 
         [Value("class")]
-        public int? Class { get; set; }
+        public ArmourClass Class { get; set; }
 
         [Value("combat attk bonus")]
         public int? CombatAttkBonus { get; set; }
@@ -169,7 +169,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public int? LockLevel { get; set; }
 
         [Value("material type")]
-        public int? MaterialType { get; set; }
+        public MaterialType MaterialType { get; set; }
 
         [Value("perception bonus")]
         public int? PerceptionBonus { get; set; }
@@ -178,7 +178,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public int? RangedBonus { get; set; }
 
         [Value("slot")]
-        public int? Slot { get; set; }
+        public Slot Slot { get; set; }
 
         [Value("stigma")]
         public int? Stigma { get; set; }

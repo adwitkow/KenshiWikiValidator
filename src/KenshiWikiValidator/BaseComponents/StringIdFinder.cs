@@ -80,7 +80,7 @@ namespace KenshiWikiValidator.BaseComponents
             return new Dictionary<string, string>()
             {
                 { "Weapons", "Weapon" },
-                { "Armour", "Armour" },
+                { "Armour", "Equipment Intro" },
                 { "Town Residents", "Traders" },
                 { "Locations", "Town" },
                 { "Characters", "Character" },
