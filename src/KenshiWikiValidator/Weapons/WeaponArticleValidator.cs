@@ -39,6 +39,7 @@ namespace KenshiWikiValidator.Weapons
                 new ContainsWeaponTemplateRule(itemRepository),
                 new ContainsWeaponNavboxRule(),
                 new ContainsWeaponCraftingSectionRule(itemRepository),
+                new WeaponPriceScraper(),
             };
         }
 
