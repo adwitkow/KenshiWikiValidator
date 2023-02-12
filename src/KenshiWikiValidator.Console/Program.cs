@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System.Diagnostics;
+using KenshiWikiValidator.Armours;
 using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.Characters;
 using KenshiWikiValidator.Console;
@@ -43,6 +44,7 @@ var validators = new List<IArticleValidator>()
     new LocationsArticleValidator(itemRepository, zoneDataProvider, wikiTitles),
     new WeaponArticleValidator(itemRepository, wikiTitles, townResidentValidator),
     new MapItemArticleValidator(itemRepository, wikiTitles, zoneDataProvider),
+    new ArmourArticleValidator(itemRepository, wikiTitles),
 };
 
 var output = "output";
