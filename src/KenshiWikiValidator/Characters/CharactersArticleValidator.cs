@@ -30,6 +30,7 @@ namespace KenshiWikiValidator.Characters
         {
             this.rules = new List<IValidationRule>()
             {
+                new StringIdRule(),
                 new ContainsTemplateRule("Character"),
                 new CharacterStatsRule(itemRepository),
             };

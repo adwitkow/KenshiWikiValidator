@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Linq;
 using OpenConstructionSet.Models;
 
 namespace KenshiWikiValidator.OcsProxy.Models
@@ -82,5 +83,23 @@ namespace KenshiWikiValidator.OcsProxy.Models
 
         [Reference("robotics")]
         public IEnumerable<ItemReference<LimbReplacement>> Robotics { get; set; }
+
+        public IEnumerable<IItemReference<IItem>> AllReferences
+        {
+            get
+            {
+                return this.ArmourBlueprints.Cast<IItemReference<IItem>>()
+                    .Concat(this.Clothing.Cast<IItemReference<IItem>>())
+                    .Concat(this.Items.Cast<IItemReference<IItem>>())
+                    .Concat(this.Blueprints.Cast<IItemReference<IItem>>())
+                    .Concat(this.WeaponManufacturers.Cast<IItemReference<IItem>>())
+                    .Concat(this.Weapons.Cast<IItemReference<IItem>>())
+                    .Concat(this.Containers.Cast<IItemReference<IItem>>())
+                    .Concat(this.Maps.Cast<IItemReference<IItem>>())
+                    .Concat(this.Crossbows.Cast<IItemReference<IItem>>())
+                    .Concat(this.CrossbowBlueprints.Cast<IItemReference<IItem>>())
+                    .Concat(this.Robotics.Cast<IItemReference<IItem>>());
+            }
+        }
     }
 }

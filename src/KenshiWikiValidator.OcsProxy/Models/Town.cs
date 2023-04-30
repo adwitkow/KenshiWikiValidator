@@ -129,10 +129,5 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<VendorList>> LootSpawn { get; set; }
 
         public IEnumerable<Town> BaseTowns { get; set; }
-
-        public override string ToString()
-        {
-            return this.Name;
-        }
     }
 }

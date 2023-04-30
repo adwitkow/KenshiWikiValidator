@@ -14,27 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using OpenConstructionSet.Models;
-
-namespace KenshiWikiValidator.OcsProxy
+namespace KenshiWikiValidator.BaseComponents
 {
-    public abstract class ItemBase : IItem
+    internal class StringIdRule : IValidationRule
     {
-        protected ItemBase(string stringId, string name)
+        public RuleResult Execute(string title, string content, ArticleData data)
         {
-            this.StringId = stringId;
-            this.Name = name;
-        }
+            var result = new RuleResult();
+            if (!data.GetAllPossibleStringIds().Any())
+            {
+                result.AddIssue("String ID is missing and no match could be found.");
+            }
+            else if (!data.StringIds.Any())
+            {
+                result.AddIssue("There are no explicit String IDs in the article.");
+            }
 
-        public abstract ItemType Type { get; }
-
-        public string StringId { get; }
-
-        public string Name { get; }
-
-        public override string ToString()
-        {
-            return $"{this.Type} {this.Name}";
+            return result;
         }
     }
 }

@@ -17,6 +17,7 @@
 using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.BaseComponents.SharedRules;
 using KenshiWikiValidator.OcsProxy;
+using KenshiWikiValidator.TownResidents.Rules;
 
 namespace KenshiWikiValidator.TownResidents
 {
@@ -29,7 +30,7 @@ namespace KenshiWikiValidator.TownResidents
         {
             this.rules = new List<IValidationRule>()
             {
-                new NewLinesRule(),
+                new StockSectionRule(itemRepository),
                 new ContainsTemplateRule("Traders"),
             };
         }

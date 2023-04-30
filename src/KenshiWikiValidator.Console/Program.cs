@@ -37,15 +37,18 @@ await zoneDataProvider.Load();
 var itemRepository = new ItemRepository();
 var wikiTitles = new WikiTitleCache();
 var townResidentValidator = new TownResidentArticleValidator(itemRepository, wikiTitles);
+var locationsValidator = new LocationsArticleValidator(itemRepository, zoneDataProvider, wikiTitles);
 var validators = new List<IArticleValidator>()
 {
     new CharactersArticleValidator(itemRepository, wikiTitles),
     townResidentValidator,
-    new LocationsArticleValidator(itemRepository, zoneDataProvider, wikiTitles),
+    locationsValidator,
     new WeaponArticleValidator(itemRepository, wikiTitles, townResidentValidator),
-    new MapItemArticleValidator(itemRepository, wikiTitles, zoneDataProvider),
+    new MapItemArticleValidator(itemRepository, wikiTitles, zoneDataProvider, locationsValidator, townResidentValidator),
     new ArmourArticleValidator(itemRepository, wikiTitles),
 };
+
+
 
 var output = "output";
 if (Directory.Exists(output))
