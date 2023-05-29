@@ -49,7 +49,7 @@ public class BlueprintTemplateCreator : ITemplateCreator
             _ => "blue",
         };
 
-        var templateProperties = new SortedList<string, string?>();
+        var templateProperties = new IndexedDictionary<string, string?>();
         if (research is null)
         {
             if (!this.HasBlueprints(item))
@@ -62,14 +62,14 @@ public class BlueprintTemplateCreator : ITemplateCreator
                 throw new InvalidOperationException("This creator should be called only for items that contain descriptions.");
             }
 
-            templateProperties.Add("name", item.Name!);
             templateProperties.Add("color", color);
             templateProperties.Add("description", descriptive.Description);
             templateProperties.Add("level", "1");
-            templateProperties.Add("value", "???");
+            templateProperties.Add("name", item.Name!);
+            templateProperties.Add("new items", item.Name!);
             templateProperties.Add("prerequisites", string.Empty);
             templateProperties.Add("sell value", "???");
-            templateProperties.Add("new items", item.Name!);
+            templateProperties.Add("value", "???");
         }
         else
         {
@@ -79,14 +79,14 @@ public class BlueprintTemplateCreator : ITemplateCreator
 
             if (cost != 0)
             {
-                templateProperties.Add("name", research.Name!);
                 templateProperties.Add("color", color);
                 templateProperties.Add("description", research.Description);
                 templateProperties.Add("level", research.Level.GetValueOrDefault().ToString());
-                templateProperties.Add("value", string.Format("{0:n0}", cost));
+                templateProperties.Add("name", research.Name!);
+                templateProperties.Add("new items", string.Join(", ", newItems.Select(newItem => $"[[{newItem.Name}]]")));
                 templateProperties.Add("prerequisites", string.Join(", ", requirements.Select(req => $"[[{req.Item.Name} (Tech)]]")));
                 templateProperties.Add("sell value", string.Format("{0:n0}", cost / 4));
-                templateProperties.Add("new items", string.Join(", ", newItems.Select(newItem => $"[[{newItem.Name}]]")));
+                templateProperties.Add("value", string.Format("{0:n0}", cost));
             }
             else
             {

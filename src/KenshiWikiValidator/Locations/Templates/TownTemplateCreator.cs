@@ -96,7 +96,7 @@ namespace KenshiWikiValidator.Locations.Templates
 
             var title = this.GetExistingParameter(existingTemplate, "title1");
 
-            var properties = new SortedList<string, string?>
+            var properties = new IndexedDictionary<string, string?>
             {
                 { "string id", string.Join(", ", stringIds) },
                 { "fcs_name", string.Join(", ", fcsNames) },

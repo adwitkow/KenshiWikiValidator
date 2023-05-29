@@ -50,18 +50,18 @@ namespace KenshiWikiValidator.BaseComponents.Creators
             var requiredFor = string.Join(", ", this.RequiredFor.Select(item => $"[[{item}]]"));
             var costs = string.Join(", ", this.Costs);
 
-            var properties = new SortedList<string, string?>()
+            var properties = new IndexedDictionary<string, string?>()
             {
-                { "name", this.ResearchName },
-                { "image", this.Icon },
+                { "costs", costs },
                 { "description", this.Description },
-                { "time", this.Time.ToString() },
+                { "image", this.Icon },
                 { "level", this.TechLevel.ToString() },
-                { "prerequisites", prerequisites },
+                { "name", this.ResearchName },
                 { "new_bldgs", newBuildings },
                 { "new_items", newItems },
-                { "costs", costs },
+                { "prerequisites", prerequisites },
                 { "required_for", requiredFor },
+                { "time", this.Time.ToString() },
             };
 
             return new WikiTemplate(TemplateName, properties);

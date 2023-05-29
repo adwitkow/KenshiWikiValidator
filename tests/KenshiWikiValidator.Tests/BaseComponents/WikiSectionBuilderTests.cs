@@ -44,7 +44,7 @@ namespace KenshiWikiValidator.Tests.BaseComponents
         [TestMethod]
         public void WithTemplateShouldCreateProperTemplate()
         {
-            var templateProperties = new SortedList<string, string?>()
+            var templateProperties = new IndexedDictionary<string, string?>()
             {
                 { "prop1", "val1" },
                 { "prop2", "val2" },

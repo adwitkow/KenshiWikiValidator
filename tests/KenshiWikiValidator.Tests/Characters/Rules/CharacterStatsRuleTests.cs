@@ -44,7 +44,7 @@ namespace KenshiWikiValidator.Tests.Characters.Rules
                 StringIds = new[] { "stringId" },
                 WikiTemplates = new[]
                 {
-                    new WikiTemplate("Animal Stats", new SortedList<string, string?>()
+                    new WikiTemplate("Animal Stats", new IndexedDictionary<string, string?>()
                     {
                         { "strength", "5" }
                     }),
@@ -72,7 +72,7 @@ namespace KenshiWikiValidator.Tests.Characters.Rules
                 StringIds = new[] { "stringId" },
                 WikiTemplates = new[]
                 {
-                    new WikiTemplate("Character Stats", new SortedList<string, string?>()
+                    new WikiTemplate("Character Stats", new IndexedDictionary<string, string?>()
                     {
                         { "strength", "5" }
                     }),
@@ -106,7 +106,7 @@ namespace KenshiWikiValidator.Tests.Characters.Rules
                 StringIds = new[] { "stringId" },
                 WikiTemplates = new[]
                 {
-                    new WikiTemplate("Stats", new SortedList<string, string?>()
+                    new WikiTemplate("Stats", new IndexedDictionary<string, string?>()
                     {
                         { "Strength", "5" }
                     }),

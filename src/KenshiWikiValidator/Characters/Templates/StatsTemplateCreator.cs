@@ -35,7 +35,7 @@ namespace KenshiWikiValidator.WikiCategories.Characters.Templates
                 throw new InvalidOperationException("Cannot create a Stats template without a Stats object");
             }
 
-            var parameters = new SortedList<string, string?>()
+            var parameters = new IndexedDictionary<string, string?>()
             {
                 { "Strength", GetStatsValue(this.Stats.Strength, 1) },
                 { "Toughness", GetStatsValue(this.Stats.Toughness, 1) },
