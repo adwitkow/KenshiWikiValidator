@@ -32,7 +32,7 @@ jobs:
         # Compress them into zip archives
         Compress-Archive -Path publish/win-x64/* -DestinationPath win-x64.zip
         Compress-Archive -Path publish/win-x86/* -DestinationPath win-x86.zip
-    - uses: dev-drprasad/delete-tag-and-release@v0.2.0
+    - uses: dev-drprasad/delete-tag-and-release@v0.2.1
       with:
         delete_release: true # default: false
         tag_name: nightly
