@@ -75,8 +75,7 @@ namespace KenshiWikiValidator.BaseComponents
         {
             get
             {
-                TValue value;
-                if (this.TryGetValue(key, out value))
+                if (this.TryGetValue(key, out TValue value))
                 {
                     return value;
                 }
@@ -119,8 +118,7 @@ namespace KenshiWikiValidator.BaseComponents
 
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
-            TValue value;
-            if (this.TryGetValue(item.Key, out value)
+            if (this.TryGetValue(item.Key, out TValue value)
                 && Equals(value, item.Value))
             {
                 this.Remove(item.Key);
