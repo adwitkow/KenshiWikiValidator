@@ -76,9 +76,9 @@ namespace KenshiWikiValidator.BaseComponents
             return result;
         }
 
-        private static SortedList<string, string?> PopulateProperties(IList<string> elements)
+        private static IndexedDictionary<string, string?> PopulateProperties(IList<string> elements)
         {
-            var properties = new SortedList<string, string?>();
+            var properties = new List<KeyValuePair<string, string?>>();
             for (int i = 0; i < elements.Count; i++)
             {
                 var element = elements[i];
@@ -88,15 +88,17 @@ namespace KenshiWikiValidator.BaseComponents
                     var key = splitElements[0].Trim();
                     var value = splitElements[1].Trim();
 
-                    properties.Add(key, value);
+                    properties.Add(new KeyValuePair<string, string?>(key, value));
                 }
                 else
                 {
-                    properties.Add(i.ToString(), element);
+                    properties.Add(new KeyValuePair<string, string?>(i.ToString(), element));
                 }
             }
 
-            return properties;
+            properties.Reverse();
+
+            return new IndexedDictionary<string, string?>(properties); ;
         }
 
         private IList<string> SplitOnPipes(string trimmed)

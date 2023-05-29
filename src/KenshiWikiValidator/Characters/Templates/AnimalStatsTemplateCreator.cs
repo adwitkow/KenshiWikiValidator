@@ -33,7 +33,7 @@ namespace KenshiWikiValidator.WikiCategories.Characters.Templates
                 throw new InvalidOperationException("Cannot create the template without an AnimalCharacter object");
             }
 
-            var parameters = new SortedList<string, string?>()
+            var parameters = new IndexedDictionary<string, string?>()
             {
                 /*
                  * TODO: Figure out whether these values are even needed or not

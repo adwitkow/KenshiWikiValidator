@@ -12,7 +12,7 @@ namespace KenshiWikiValidator.Tests.BaseComponents
         public void ConstructorMustThrowIfNameParameterIsNull()
         {
             string name = null!;
-            var properties = new SortedList<string, string?>();
+            var properties = new IndexedDictionary<string, string?>();
 
             var action = () => new WikiTemplate(name, properties);
 
@@ -23,7 +23,7 @@ namespace KenshiWikiValidator.Tests.BaseComponents
         public void ConstructorMustThrowIfParametersParameterIsNull()
         {
             var name = string.Empty;
-            SortedList<string, string?> properties = null!;
+            IndexedDictionary<string, string?> properties = null!;
 
             var action = () => new WikiTemplate(name, properties);
 
@@ -44,7 +44,7 @@ namespace KenshiWikiValidator.Tests.BaseComponents
         [TestMethod]
         public void ShouldBeEqualWithItselfAndOnlyName()
         {
-            var template = new WikiTemplate("test", new SortedSet<string>(), new SortedList<string, string?>());
+            var template = new WikiTemplate("test", new SortedSet<string>(), new IndexedDictionary<string, string?>());
 
             Assert.IsTrue(template.Equals(template));
         }
@@ -67,11 +67,11 @@ namespace KenshiWikiValidator.Tests.BaseComponents
         [TestMethod]
         public void ShouldNotBeEqualIfParametersAreDifferent()
         {
-            var template = new WikiTemplate("test", new SortedList<string, string?>()
+            var template = new WikiTemplate("test", new IndexedDictionary<string, string?>()
             {
                 { "test", "test1" },
             });
-            var template2 = new WikiTemplate("test", new SortedList<string, string?>()
+            var template2 = new WikiTemplate("test", new IndexedDictionary<string, string?>()
             {
                 { "test", "test2" },
             });
@@ -82,11 +82,11 @@ namespace KenshiWikiValidator.Tests.BaseComponents
         [TestMethod]
         public void ShouldNotBeEqualIfParameterCountsAreDifferent()
         {
-            var template = new WikiTemplate("test", new SortedList<string, string?>()
+            var template = new WikiTemplate("test", new IndexedDictionary<string, string?>()
             {
                 { "test", "test1" },
             });
-            var template2 = new WikiTemplate("test", new SortedList<string, string?>()
+            var template2 = new WikiTemplate("test", new IndexedDictionary<string, string?>()
             {
                 { "test", "test1" },
                 { "test2", "test1" }
@@ -98,11 +98,11 @@ namespace KenshiWikiValidator.Tests.BaseComponents
         [TestMethod]
         public void HashCodesOfEqualTemplatesShouldBeEqual()
         {
-            var template = new WikiTemplate("test", new SortedList<string, string?>()
+            var template = new WikiTemplate("test", new IndexedDictionary<string, string?>()
             {
                 { "test", "test1" },
             });
-            var template2 = new WikiTemplate("test", new SortedList<string, string?>()
+            var template2 = new WikiTemplate("test", new IndexedDictionary<string, string?>()
             {
                 { "test", "test1" },
             });
@@ -113,11 +113,11 @@ namespace KenshiWikiValidator.Tests.BaseComponents
         [TestMethod]
         public void HashCodesOfDifferentTemplatesShouldBeDifferent()
         {
-            var template = new WikiTemplate("test", new SortedList<string, string?>()
+            var template = new WikiTemplate("test", new IndexedDictionary<string, string?>()
             {
                 { "test", "test1" },
             });
-            var template2 = new WikiTemplate("test", new SortedList<string, string?>()
+            var template2 = new WikiTemplate("test", new IndexedDictionary<string, string?>()
             {
                 { "test", "test2" },
             });
@@ -128,11 +128,11 @@ namespace KenshiWikiValidator.Tests.BaseComponents
         [TestMethod]
         public void NullValuesShouldBeOmittedDuringHashCodeCalculations()
         {
-            var template = new WikiTemplate("test", new SortedList<string, string?>()
+            var template = new WikiTemplate("test", new IndexedDictionary<string, string?>()
             {
                 { "test", "test1" },
             });
-            var template2 = new WikiTemplate("test", new SortedList<string, string?>()
+            var template2 = new WikiTemplate("test", new IndexedDictionary<string, string?>()
             {
                 { "test", "test1" },
                 { "test2", null },

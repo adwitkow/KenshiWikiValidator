@@ -22,7 +22,7 @@ namespace KenshiWikiValidator.Weapons.Rules
     {
         protected override WikiTemplate PrepareTemplate(ArticleData data)
         {
-            return new WikiTemplate("Navbox/Weapons", new SortedList<string, string?>());
+            return new WikiTemplate("Navbox/Weapons", new IndexedDictionary<string, string?>());
         }
     }
 }

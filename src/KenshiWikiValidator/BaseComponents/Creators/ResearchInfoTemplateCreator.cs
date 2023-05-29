@@ -50,7 +50,7 @@ namespace KenshiWikiValidator.BaseComponents.Creators
             var requiredFor = string.Join(", ", this.RequiredFor.Select(item => $"[[{item}]]"));
             var costs = string.Join(", ", this.Costs);
 
-            var properties = new SortedList<string, string?>()
+            var properties = new IndexedDictionary<string, string?>()
             {
                 { "name", this.ResearchName },
                 { "image", this.Icon },

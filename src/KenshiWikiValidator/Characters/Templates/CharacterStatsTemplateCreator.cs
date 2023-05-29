@@ -33,7 +33,7 @@ namespace KenshiWikiValidator.WikiCategories.Characters.Templates
                 throw new InvalidOperationException("Cannot create a Stats template without an IStatsContainer object");
             }
 
-            var parameters = new SortedList<string, string?>()
+            var parameters = new IndexedDictionary<string, string?>()
             {
                 { "strength", GetStatsValue(this.StatsContainer.Strength, 0) },
                 { "combat stats", GetStatsValue(this.StatsContainer.CombatStats, 0) },

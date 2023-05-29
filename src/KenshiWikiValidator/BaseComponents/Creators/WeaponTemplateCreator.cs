@@ -117,7 +117,7 @@ namespace KenshiWikiValidator.BaseComponents.Creators
                 }
             }
 
-            var properties = new SortedList<string, string?>()
+            var properties = new IndexedDictionary<string, string?>()
             {
                 { "class", weaponClass },
                 { "blood loss", bloodLoss },

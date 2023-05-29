@@ -125,7 +125,7 @@ namespace KenshiWikiValidator.Tests.WikiCategories.Locations.Templates
             articleData.StringIds.Add("stringid");
             articleData.WikiTemplates = new[]
             {
-                new WikiTemplate("Town", new SortedList<string, string?>()
+                new WikiTemplate("Town", new IndexedDictionary<string, string?>()
                 {
                     { "image1", "old image" }
                 })

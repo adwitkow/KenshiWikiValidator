@@ -49,7 +49,7 @@ public class BlueprintTemplateCreator : ITemplateCreator
             _ => "blue",
         };
 
-        var templateProperties = new SortedList<string, string?>();
+        var templateProperties = new IndexedDictionary<string, string?>();
         if (research is null)
         {
             if (!this.HasBlueprints(item))

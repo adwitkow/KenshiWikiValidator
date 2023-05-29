@@ -53,7 +53,7 @@ namespace KenshiWikiValidator.BaseComponents.Creators
                 throw new InvalidOperationException("Invalid item type to create the item infobox.");
             }
 
-            var properties = new SortedList<string, string?>
+            var properties = new IndexedDictionary<string, string?>
             {
                 { "icon", parameters.Icon },
                 { "type", parameters.Type },
