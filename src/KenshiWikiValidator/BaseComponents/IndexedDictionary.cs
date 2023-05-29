@@ -16,6 +16,7 @@
 
 using System.Collections;
 using System.Collections.Specialized;
+using System.Diagnostics.CodeAnalysis;
 
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning disable CS8601 // Possible null reference assignment.
@@ -24,6 +25,7 @@ using System.Collections.Specialized;
 namespace KenshiWikiValidator.BaseComponents
 {
     [Serializable]
+    [ExcludeFromCodeCoverage]
     public sealed class IndexedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
         private readonly OrderedDictionary backing;
