@@ -40,11 +40,11 @@ namespace KenshiWikiValidator.BaseComponents.Creators
             var properties = new IndexedDictionary<string, string?>()
             {
                 { "building", this.BuildingName },
+                { "imagesettings", this.ImageSettings },
                 { "input0", this.Input1.Name },
                 { "input0amount", this.Input1.Amount.ToString() },
                 { "input1", this.Input2?.Name },
                 { "input1amount", this.Input2?.Amount.ToString() },
-                { "imagesettings", this.ImageSettings },
                 { "output", this.Output },
             };
 

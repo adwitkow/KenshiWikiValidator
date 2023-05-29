@@ -38,14 +38,14 @@ namespace KenshiWikiValidator.Tests.BaseComponents
             var templateName = "Blueprint";
             var templateValues = new IndexedDictionary<string, string?>()
             {
-                { "name", "Wakizashis" },
                 { "color", "green" },
                 { "description", "A shorter variant of the Katana, they are fast and sharp but generally used as backup weapons." },
                 { "level", "2" },
-                { "value", "5000" },
-                { "sell value", "1250" },
-                { "prerequisites", "some prereqs" },
+                { "name", "Wakizashis" },
                 { "new items", "[[Wakizashi]]" },
+                { "prerequisites", "some prereqs" },
+                { "sell value", "1250" },
+                { "value", "5000" },
                 { "vendors", "i dunno" },
             };
             var template = new WikiTemplate(templateName, templateValues);
@@ -92,14 +92,14 @@ namespace KenshiWikiValidator.Tests.BaseComponents
             var unnamedParameters = new SortedSet<string>() { "parameter 1", "parameter 2", "parameter 3" };
             var namedParameters = new IndexedDictionary<string, string?>()
             {
-                { "name", "Wakizashis" },
                 { "color", "green" },
                 { "description", "A shorter variant of the Katana, they are fast and sharp but generally used as backup weapons." },
                 { "level", "2" },
-                { "value", "5000" },
-                { "sell value", "1250" },
-                { "prerequisites", "some prereqs" },
+                { "name", "Wakizashis" },
                 { "new items", "[[Wakizashi]]" },
+                { "prerequisites", "some prereqs" },
+                { "sell value", "1250" },
+                { "value", "5000" },
                 { "vendors", "i dunno" },
             };
             var template = new WikiTemplate(templateName, unnamedParameters, namedParameters);
@@ -131,14 +131,14 @@ namespace KenshiWikiValidator.Tests.BaseComponents
             var unnamedParameters = new SortedSet<string>() { "parameter 1" };
             var namedParameters = new IndexedDictionary<string, string?>()
             {
-                { "name", "Wakizashis" },
                 { "color", "green" },
                 { "description", "A shorter variant of the Katana, they are fast and sharp but generally used as backup weapons." },
                 { "level", "2" },
-                { "value", "5000" },
-                { "sell value", "1250" },
-                { "prerequisites", "some prereqs" },
+                { "name", "Wakizashis" },
                 { "new items", "[[Wakizashi]]" },
+                { "prerequisites", "some prereqs" },
+                { "sell value", "1250" },
+                { "value", "5000" },
                 { "vendors", "i dunno" },
             };
             var template = new WikiTemplate(templateName, unnamedParameters, namedParameters);
