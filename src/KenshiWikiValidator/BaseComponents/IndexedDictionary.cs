@@ -165,7 +165,7 @@ namespace KenshiWikiValidator.BaseComponents
                 return true;
             }
 
-            value = default(TValue);
+            value = default;
             return false;
         }
     }
