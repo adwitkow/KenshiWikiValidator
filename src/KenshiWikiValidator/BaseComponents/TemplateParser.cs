@@ -98,7 +98,7 @@ namespace KenshiWikiValidator.BaseComponents
 
             properties.Reverse();
 
-            return new IndexedDictionary<string, string?>(properties);
+            return new IndexedDictionary<string, string?>(properties); ;
         }
 
         private IList<string> SplitOnPipes(string trimmed)

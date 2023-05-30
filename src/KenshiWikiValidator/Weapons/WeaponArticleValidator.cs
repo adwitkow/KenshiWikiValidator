@@ -34,12 +34,13 @@ namespace KenshiWikiValidator.Weapons
             this.rules = new List<IValidationRule>()
             {
                 new ContainsTemplateRule("Weapon", new[] { "Weapon Types" }),
-                new NewLinesRule(),
-                new ContainsBlueprintsSectionRule(itemRepository, wikiTitles),
-                new ContainsWeaponTemplateRule(itemRepository),
-                new ContainsWeaponNavboxRule(),
-                new ContainsWeaponCraftingSectionRule(itemRepository),
-                new WeaponPriceScraper(),
+                //new NewLinesRule(),
+                //new ContainsBlueprintsSectionRule(itemRepository, wikiTitles),
+                //new ContainsWeaponTemplateRule(itemRepository),
+                //new ContainsWeaponNavboxRule(),
+                //new ContainsWeaponCraftingSectionRule(itemRepository),
+                //new WeaponPriceScraper(),
+                new ContainsWeaponStatsSectionsRule(itemRepository),
             };
         }
 

@@ -39,22 +39,22 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public bool? HasCollision { get; set; }
 
         [Value("animal damage mult")]
-        public float? AnimalDamageMultiplier { get; set; }
+        public float AnimalDamageMultiplier { get; set; }
 
         [Value("armour penetration")]
-        public float? ArmourPenetration { get; set; }
+        public float ArmourPenetration { get; set; }
 
         [Value("bleed mult")]
-        public float? BleedMultiplier { get; set; }
+        public float BleedMultiplier { get; set; }
 
         [Value("blunt damage multiplier")]
-        public float? BluntDamageMultiplier { get; set; }
+        public float BluntDamageMultiplier { get; set; }
 
         [Value("cut damage multiplier")]
-        public float? CutDamageMultiplier { get; set; }
+        public float CutDamageMultiplier { get; set; }
 
         [Value("human damage mult")]
-        public float? HumanDamageMulitplier { get; set; }
+        public float HumanDamageMulitplier { get; set; }
 
         [Value("icon offset H")]
         public float? IconOffsetH { get; set; }
@@ -66,16 +66,16 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public float? IconZoom { get; set; }
 
         [Value("min cut damage mult")]
-        public float? MinCutDamageMult { get; set; }
+        public float MinCutDamageMult { get; set; }
 
         [Value("overall scale")]
         public float? OverallScale { get; set; }
 
         [Value("pierce damage multiplier")]
-        public float? PierceDamageMultiplier { get; set; }
+        public float PierceDamageMultiplier { get; set; }
 
         [Value("robot damage mult")]
-        public float? RobotDamageMultiplier { get; set; }
+        public float RobotDamageMultiplier { get; set; }
 
         [Value("scale length")]
         public float? ScaleLength { get; set; }
@@ -87,19 +87,19 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public float? ScaleWidth { get; set; }
 
         [Value("weight kg")]
-        public float? WeightKg { get; set; }
+        public float WeightKg { get; set; }
 
         [Value("weight mult")]
         public float? WeightMult { get; set; }
 
         [Value("attack mod")]
-        public int? AttackModifier { get; set; }
+        public int AttackModifier { get; set; }
 
         [Value("defence mod")]
-        public int? DefenceModifier { get; set; }
+        public int DefenceModifier { get; set; }
 
         [Value("indoors mod")]
-        public int? IndoorsModifier { get; set; }
+        public int IndoorsModifier { get; set; }
 
         [Value("inventory footprint height")]
         public int? InventoryFootprintHeight { get; set; }
@@ -108,7 +108,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public int? InventoryFootprintWidth { get; set; }
 
         [Value("length")]
-        public int? Length { get; set; }
+        public int Length { get; set; }
 
         [Value("material")]
         public int? Material { get; set; }
@@ -117,7 +117,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public int? MaterialCost { get; set; }
 
         [Value("skill category")]
-        public int? SkillCategory { get; set; }
+        public int SkillCategory { get; set; }
 
         [Value("skill category animation override")]
         public int? SkillCategoryAnimationOverride { get; set; }
@@ -126,7 +126,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public int? Slot { get; set; }
 
         [Value("value")]
-        public int? Value { get; set; }
+        public int Value { get; set; }
 
         [Value("description")]
         public string? Description { get; set; }

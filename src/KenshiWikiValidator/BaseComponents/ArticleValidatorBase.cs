@@ -22,6 +22,7 @@ namespace KenshiWikiValidator.BaseComponents
     public abstract class ArticleValidatorBase : IArticleValidator
     {
         private static readonly Regex CategoryRegex = new Regex(@"\[\[Category:(?<name>.*?)(\|#)?]]");
+        private static readonly Regex SectionRegex = new Regex("==(?<name>[^=.]+)==");
 
         private readonly IItemRepository itemRepository;
         private readonly IWikiTitleCache wikiTitles;
@@ -93,10 +94,18 @@ namespace KenshiWikiValidator.BaseComponents
                 categories.Add(category);
             }
 
+            var sections = new List<string>();
+            foreach (Match match in SectionRegex.Matches(content))
+            {
+                var section = match.Groups["name"].Value;
+                sections.Add(section.Trim());
+            }
+
             var articleData = new ArticleData
             {
                 WikiTemplates = this.ParseTemplates(content),
                 Categories = categories,
+                Sections = sections,
             };
 
             // TODO: This is a hack: I should figure out a different way
