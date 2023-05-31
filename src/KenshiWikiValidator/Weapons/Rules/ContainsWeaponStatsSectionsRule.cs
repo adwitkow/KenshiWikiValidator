@@ -104,7 +104,7 @@ namespace KenshiWikiValidator.Weapons.Rules
 
         private static void AppendManufacturerTemplates(
             ArticleData data,
-            Weapon? weapon,
+            Weapon weapon,
             IEnumerable<WeaponManufacturer> manufacturers,
             WikiSectionBuilder builder,
             WeaponStatsTemplateCreator templateCreator,
