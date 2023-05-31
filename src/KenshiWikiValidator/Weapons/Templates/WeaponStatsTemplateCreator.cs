@@ -46,8 +46,6 @@ namespace KenshiWikiValidator.Weapons.Templates
 
             var bluntModifier = (decimal)manufacturer.BluntDamageMod * (decimal)weapon.BluntDamageMultiplier;
             var cutModifier = (decimal)manufacturer.CutDamageMod * (decimal)weapon.CutDamageMultiplier;
-            var priceModifier = (decimal)manufacturer.PriceMod;
-            var minCutDamage = (decimal)manufacturer.MinCutDamage;
 
             foreach (var modelPair in models)
             {
