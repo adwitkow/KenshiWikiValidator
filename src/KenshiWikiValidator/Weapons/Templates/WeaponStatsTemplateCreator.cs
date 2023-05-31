@@ -25,7 +25,7 @@ namespace KenshiWikiValidator.Weapons.Templates
     {
         private static readonly IEnumerable<string> WeaponClasses = new[]
         {
-            "Katana", "Sabre", "Blunt", "Heavy", "Hacker", "Unarmed", "Bow", "Turret", "Polearm"
+            "Katana", "Sabre", "Blunt", "Heavy", "Hacker", "Unarmed", "Bow", "Turret", "Polearm",
         };
 
         public WikiTemplate? Generate(ArticleData data)
