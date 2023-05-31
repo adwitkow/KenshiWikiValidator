@@ -90,7 +90,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public float WeightKg { get; set; }
 
         [Value("weight mult")]
-        public float? WeightMult { get; set; }
+        public float WeightMult { get; set; }
 
         [Value("attack mod")]
         public int AttackModifier { get; set; }
