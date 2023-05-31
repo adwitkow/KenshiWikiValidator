@@ -49,17 +49,7 @@ namespace KenshiWikiValidator.Weapons.Templates
 
             foreach (var modelPair in models)
             {
-                IDictionary<string, string?> baseParameters;
-                var baseTemplate = articleTemplates.FirstOrDefault(template => IsBaseTemplate(template, modelPair.Model, homemade));
-                if (baseTemplate is not null)
-                {
-                    baseParameters = baseTemplate.Parameters;
-                }
-                else
-                {
-                    baseParameters = new IndexedDictionary<string, string?>();
-                }
-
+                var baseParameters = GetBaseParameterDictionary(articleTemplates, homemade, modelPair);
                 var parameters = new IndexedDictionary<string, string?>();
 
                 SetClass(weapon, parameters);
@@ -74,37 +64,7 @@ namespace KenshiWikiValidator.Weapons.Templates
                 SetRequiredStrength(parameters, bluntDamage, (decimal)weapon.WeightKg);
                 SetWeight(weapon, manufacturer, parameters, bluntDamage);
 
-                foreach (var pair in baseParameters)
-                {
-                    if (!parameters.ContainsKey(pair.Key))
-                    {
-                        if (pair.Key == "blood_loss")
-                        {
-                            parameters.Insert(3, pair.Key, pair.Value);
-                        }
-                        else
-                        {
-                            parameters[pair.Key] = pair.Value;
-                        }
-                    }
-                }
-
-                if (!parameters.ContainsKey("value"))
-                {
-                    parameters["value"] = "?";
-                }
-
-                if (!parameters.ContainsKey("sell_val"))
-                {
-                    parameters["sell_val"] = "?";
-                }
-
-                parameters["grade"] = modelPair.Model.Name;
-
-                if (homemade && !parameters.ContainsKey("homemade"))
-                {
-                    parameters["homemade"] = homemade ? "yes" : null;
-                }
+                FillRemainingParameters(parameters, homemade, modelPair.Model.Name, baseParameters);
 
                 var template = new WikiTemplate("WeaponStats", parameters);
 
@@ -112,6 +72,57 @@ namespace KenshiWikiValidator.Weapons.Templates
             }
 
             return results.ToArray();
+        }
+
+        private static void FillRemainingParameters(IndexedDictionary<string, string?> parameters, bool homemade, string modelName, IDictionary<string, string?> baseParameters)
+        {
+            foreach (var pair in baseParameters)
+            {
+                if (!parameters.ContainsKey(pair.Key))
+                {
+                    if (pair.Key == "blood_loss")
+                    {
+                        parameters.Insert(3, pair.Key, pair.Value);
+                    }
+                    else
+                    {
+                        parameters[pair.Key] = pair.Value;
+                    }
+                }
+            }
+
+            if (!parameters.ContainsKey("value"))
+            {
+                parameters["value"] = "?";
+            }
+
+            if (!parameters.ContainsKey("sell_val"))
+            {
+                parameters["sell_val"] = "?";
+            }
+
+            parameters["grade"] = modelName;
+
+            if (homemade && !parameters.ContainsKey("homemade"))
+            {
+                parameters["homemade"] = "yes";
+            }
+        }
+
+        private static IDictionary<string, string?> GetBaseParameterDictionary(IEnumerable<WikiTemplate> articleTemplates, bool homemade, (MaterialSpecsWeapon Model, int Level) modelPair)
+        {
+            IDictionary<string, string?> baseParameters;
+            var baseTemplate = articleTemplates.FirstOrDefault(template => IsBaseTemplate(template, modelPair.Model, homemade));
+            if (baseTemplate is not null)
+            {
+                baseParameters = baseTemplate.Parameters;
+            }
+            else
+            {
+                baseParameters = new IndexedDictionary<string, string?>();
+            }
+
+            return baseParameters;
         }
 
         private static void SetReferencedRacialMultipliers(Weapon weapon, IndexedDictionary<string, string?> parameters)

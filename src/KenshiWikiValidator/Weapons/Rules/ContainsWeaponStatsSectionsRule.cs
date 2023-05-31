@@ -42,15 +42,7 @@ namespace KenshiWikiValidator.Weapons.Rules
 
         protected override WikiSectionBuilder? CreateSectionBuilder(ArticleData data)
         {
-            var stringId = data.GetAllPossibleStringIds().FirstOrDefault();
-
-            if (stringId is null)
-            {
-                return null;
-            }
-
-            var item = this.itemRepository.GetItemByStringId(stringId);
-            var weapon = item as Weapon;
+            var weapon = this.GetWeapon(data.GetAllPossibleStringIds().FirstOrDefault());
 
             if (weapon is null)
             {
@@ -69,22 +61,30 @@ namespace KenshiWikiValidator.Weapons.Rules
             var homemade = this.itemRepository.GetItemByStringId<WeaponManufacturer>("PLAYER_WEAPONS");
             var homemadeTemplates = templateCreator.Generate(weapon, homemade, data.WikiTemplates, true);
 
-            if (homemadeTemplates.Any())
-            {
-                builder.WithSubsection("''Manufacturer''", 1);
-            }
+            AppendManufacturerTemplates(data, weapon, manufacturers, builder, templateCreator, homemadeTemplates);
+            AppendHomemadeTemplates(builder, homemadeTemplates);
+            AppendNavboxAndCategories(data, builder);
 
-            foreach (var manufacturer in manufacturers)
-            {
-                var templates = templateCreator.Generate(weapon, manufacturer, data.WikiTemplates, false);
+            return builder;
+        }
 
-                foreach (var template in templates)
+        private static void AppendNavboxAndCategories(ArticleData data, WikiSectionBuilder builder)
+        {
+            var lastSection = data.Sections.LastOrDefault();
+            if (lastSection == "Variations" || lastSection == "''Homemade''")
+            {
+                builder.WithTemplate(new WikiTemplate("Navbox/Weapons"))
+                    .WithNewline();
+
+                foreach (var category in data.Categories)
                 {
-                    builder.WithTemplate(template)
-                        .WithNewline();
+                    builder.WithLine($"[[Category:{category}]]");
                 }
             }
+        }
 
+        private static void AppendHomemadeTemplates(WikiSectionBuilder builder, WikiTemplate[] homemadeTemplates)
+        {
             if (homemadeTemplates.Any())
             {
                 builder.WithSubsection("''Homemade''", 1);
@@ -100,20 +100,44 @@ namespace KenshiWikiValidator.Weapons.Rules
                         .WithNewline();
                 }
             }
+        }
 
-            var lastSection = data.Sections.LastOrDefault();
-            if (lastSection == "Variations" || lastSection == "''Homemade''")
+        private static void AppendManufacturerTemplates(
+            ArticleData data,
+            Weapon? weapon,
+            IEnumerable<WeaponManufacturer> manufacturers,
+            WikiSectionBuilder builder,
+            WeaponStatsTemplateCreator templateCreator,
+            WikiTemplate[] homemadeTemplates)
+        {
+            if (homemadeTemplates.Any())
             {
-                builder.WithTemplate(new WikiTemplate("Navbox/Weapons"))
-                    .WithNewline();
-
-                foreach (var category in data.Categories)
-                {
-                    builder.WithLine($"[[Category:{category}]]");
-                }
+                builder.WithSubsection("''Manufacturer''", 1);
             }
 
-            return builder;
+            foreach (var manufacturer in manufacturers)
+            {
+                var templates = templateCreator.Generate(weapon, manufacturer, data.WikiTemplates, false);
+
+                foreach (var template in templates)
+                {
+                    builder.WithTemplate(template)
+                        .WithNewline();
+                }
+            }
+        }
+
+        private Weapon? GetWeapon(string? stringId)
+        {
+            if (string.IsNullOrEmpty(stringId))
+            {
+                return null;
+            }
+
+            var item = this.itemRepository.GetItemByStringId(stringId);
+            var weapon = item as Weapon;
+
+            return weapon;
         }
     }
 }
