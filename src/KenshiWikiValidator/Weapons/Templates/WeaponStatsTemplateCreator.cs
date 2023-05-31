@@ -141,11 +141,13 @@ namespace KenshiWikiValidator.Weapons.Templates
         {
             var attack = weapon.AttackModifier;
             var defence = weapon.DefenceModifier;
+
             if (modelLevel < 10)
             {
                 attack--;
                 defence--;
             }
+
             SetPlusMinusValue(parameters, "attack_bonus", attack);
             SetPlusMinusValue(parameters, "defence_bonus", defence);
         }
