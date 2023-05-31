@@ -15,12 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System.Globalization;
-using System.Text;
 using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.BaseComponents.Creators;
-using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.Models;
-using Newtonsoft.Json.Linq;
 
 namespace KenshiWikiValidator.Weapons.Templates
 {
@@ -30,32 +27,6 @@ namespace KenshiWikiValidator.Weapons.Templates
         {
             "Katana", "Sabre", "Blunt", "Heavy", "Hacker", "Unarmed", "Bow", "Turret", "Polearm"
         };
-
-        private static readonly Dictionary<string, decimal> PriceMultipliers = new Dictionary<string, decimal>()
-        {
-            { "Rusted Junk", 18.85m },
-            { "Rusted Blade", 20.65m },
-            { "Mid-Grade Salvage", 23.3m },
-            { "Old Refitted Blade", 27.05m },
-            { "Refitted Blade", 32.275m },
-            { "Catun No.1", 39.35m },
-            { "Catun No.2", 48.55m },
-            { "Catun No.3", 59.95m },
-            { "Mk I", 87.5m },
-            { "Mk II", 101.8m },
-            { "Mk III", 115.025m },
-            { "Edge Type 1", 135.625m },
-            { "Edge Type 2", 142.7m },
-            { "Edge Type 3", 147.9375m },
-            { "Meitou", 157.3m },
-        };
-
-        private readonly IItemRepository itemRepository;
-
-        public WeaponStatsTemplateCreator(IItemRepository itemRepository)
-        {
-            this.itemRepository = itemRepository;
-        }
 
         public WikiTemplate? Generate(ArticleData data)
         {

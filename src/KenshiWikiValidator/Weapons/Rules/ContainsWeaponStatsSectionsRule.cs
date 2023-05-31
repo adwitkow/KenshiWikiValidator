@@ -64,7 +64,7 @@ namespace KenshiWikiValidator.Weapons.Rules
                 .WithHeader("Variations")
                 .WithParagraph("All possible variations in an un-modded game, as of 1.0.55. Please note that the stats shown may differ slightly than in game as it tends to round values.");
 
-            var templateCreator = new WeaponStatsTemplateCreator(this.itemRepository);
+            var templateCreator = new WeaponStatsTemplateCreator();
 
             var homemade = this.itemRepository.GetItemByStringId<WeaponManufacturer>("PLAYER_WEAPONS");
             var homemadeTemplates = templateCreator.Generate(weapon, homemade, data.WikiTemplates, true);
