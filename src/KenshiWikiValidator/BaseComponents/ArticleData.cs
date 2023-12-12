@@ -34,6 +34,8 @@ namespace KenshiWikiValidator.BaseComponents
 
         public string PotentialStringId { get; set; }
 
+        public string ArticleTitle { get; set; }
+
         public IEnumerable<string> GetAllPossibleStringIds()
         {
             var stringIds = this.StringIds;

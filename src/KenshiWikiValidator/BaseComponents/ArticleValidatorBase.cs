@@ -95,6 +95,7 @@ namespace KenshiWikiValidator.BaseComponents
 
             var articleData = new ArticleData
             {
+                ArticleTitle = title,
                 WikiTemplates = this.ParseTemplates(content),
                 Categories = categories,
             };
