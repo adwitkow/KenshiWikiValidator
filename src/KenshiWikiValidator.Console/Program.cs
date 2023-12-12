@@ -100,6 +100,8 @@ return 0;
 
 static async Task RetrieveAndValidate(IArticleValidator validator, WikiClient client)
 {
+    var exceptions = 0;
+
     Console.WriteLine("Retrieving the articles for category: " + validator.CategoryName + "...");
 
     var pages = await RetrieveArticles(client, validator.CategoryName);
@@ -137,12 +139,25 @@ static async Task RetrieveAndValidate(IArticleValidator validator, WikiClient cl
 
     foreach (var page in pages)
     {
-        ValidateArticle(page, validator);
+        exceptions += Convert.ToInt32(ValidateArticle(page, validator));
     }
+
+    if (exceptions > 0)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+    }
+    else
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+    }
+
+    Console.WriteLine($"Exceptions: {exceptions}");
+    Console.ResetColor();
 }
 
-static void ValidateArticle(WikiPage page, IArticleValidator articleValidator)
+static bool ValidateArticle(WikiPage page, IArticleValidator articleValidator)
 {
+    bool failure;
     try
     {
         var result = articleValidator.Validate(page.Title, page.Content);
@@ -160,6 +175,8 @@ static void ValidateArticle(WikiPage page, IArticleValidator articleValidator)
             Console.ResetColor();
             Console.WriteLine();
         }
+
+        failure = false;
     }
     catch (Exception ex)
     {
@@ -167,7 +184,11 @@ static void ValidateArticle(WikiPage page, IArticleValidator articleValidator)
         Console.WriteLine($"An exception has been thrown in the article: '{page.Title}'");
         Console.WriteLine(ex);
         Console.ResetColor();
+
+        failure = true;
     }
+
+    return failure;
 }
 
 static async Task<IList<WikiPage>> RetrieveArticles(WikiClient client, string category)

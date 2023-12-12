@@ -178,7 +178,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public int? RangedBonus { get; set; }
 
         [Value("slot")]
-        public int? Slot { get; set; }
+        public AttachSlot Slot { get; set; }
 
         [Value("stigma")]
         public int? Stigma { get; set; }
