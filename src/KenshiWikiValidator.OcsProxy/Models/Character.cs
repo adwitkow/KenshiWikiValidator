@@ -34,7 +34,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
             this.Inventory = Enumerable.Empty<ItemReference<Item>>();
             this.AiGoals = Enumerable.Empty<ItemReference<AiTask>>();
             this.Personality = Enumerable.Empty<ItemReference<Personality>>();
-            this.Race = Enumerable.Empty<ItemReference<Race>>();
+            this.Races = Enumerable.Empty<ItemReference<Race>>();
             this.Faction = Enumerable.Empty<ItemReference<Faction>>();
             this.Shopping = Enumerable.Empty<ItemReference<Item>>();
             this.WeaponLevel = Enumerable.Empty<ItemReference<WeaponManufacturer>>();
@@ -193,7 +193,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<Personality>> Personality { get; set; }
 
         [Reference("race")]
-        public IEnumerable<ItemReference<Race>> Race { get; set; }
+        public IEnumerable<ItemReference<Race>> Races { get; set; }
 
         [Reference("faction")]
         public IEnumerable<ItemReference<Faction>> Faction { get; set; }

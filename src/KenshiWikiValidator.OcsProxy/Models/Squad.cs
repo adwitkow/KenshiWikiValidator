@@ -40,7 +40,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
             this.BuildingDislike = Enumerable.Empty<ItemReference<Building>>();
             this.ChoosefromList = Enumerable.Empty<ItemReference<Character>>();
             this.Nest = Enumerable.Empty<ItemReference<Town>>();
-            this.RaceOverride = Enumerable.Empty<ItemReference<Race>>();
+            this.RaceOverrides = Enumerable.Empty<ItemReference<Race>>();
             this.Slaves = Enumerable.Empty<ItemReference<Squad>>();
             this.SpecialItems = Enumerable.Empty<ItemReference<Item>>();
             this.SpecialMapItems = Enumerable.Empty<ItemReference<MapItem>>();
@@ -207,7 +207,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<Town>> Nest { get; set; }
 
         [Reference("race override")]
-        public IEnumerable<ItemReference<Race>> RaceOverride { get; set; }
+        public IEnumerable<ItemReference<Race>> RaceOverrides { get; set; }
 
         [Reference("slaves")]
         public IEnumerable<ItemReference<Squad>> Slaves { get; set; }
@@ -223,6 +223,13 @@ namespace KenshiWikiValidator.OcsProxy.Models
 
         [Reference("prisoners")]
         public IEnumerable<ItemReference<Squad>> Prisoners { get; set; }
+
+        public bool ContainsCharacter(Character character)
+        {
+            return this.Leader.ContainsItem(character)
+                || this.Characters.ContainsItem(character)
+                || this.Squad2.ContainsItem(character);
+        }
 
         public bool IsShop => this.AiPackages
             .Any(package => package.Item.LeaderAiGoals
