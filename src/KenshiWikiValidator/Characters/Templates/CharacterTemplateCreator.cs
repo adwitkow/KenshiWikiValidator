@@ -131,13 +131,16 @@ namespace KenshiWikiValidator.Characters.Templates
 
         private static void ProcessArmour(Character character, IndexedDictionary<string, string?> parameters)
         {
-            var groups = character.Clothing.GroupBy(armour => armour.Item.Slot);
-
-            foreach (var group in groups)
+            foreach (var slotPair in SlotMap)
             {
-                var slot = SlotMap[group.Key];
+                var slot = slotPair.Key;
+                var target = slotPair.Value;
 
-                parameters.Add(slot, string.Join(", ", group.Select(reference => $"[[{reference.Item.Name}]]")));
+                var items = character.Clothing.Where(armour => armour.Item.Slot == slot)
+                    .OrderByDescending(reference => reference.Value0)
+                    .ThenBy(reference => reference.Item.Name)
+                    .Select(reference => $"[[{reference.Item.Name}]]");
+                parameters.Add(target, string.Join(", ", items));
             }
         }
 
@@ -187,7 +190,10 @@ namespace KenshiWikiValidator.Characters.Templates
             }
             else
             {
-                return string.Join(", ", itemRefs.Select(itemRef => $"[[{itemRef.Item.Name}]]"));
+                var items = itemRefs.OrderByDescending(reference => reference.Value0)
+                    .ThenBy(reference => reference.Item.Name)
+                    .Select(itemRef => $"[[{itemRef.Item.Name}]]");
+                return string.Join(", ", items);
             }
         }
 
