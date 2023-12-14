@@ -11,11 +11,11 @@ namespace KenshiWikiValidator.Characters.Templates
 
         private static readonly Dictionary<AttachSlot, string> SlotMap = new Dictionary<AttachSlot, string>()
         {
-            { AttachSlot.Legs, "legwear" },
-            { AttachSlot.Shirt, "shirt" },
-            { AttachSlot.Boots, "footwear" },
             { AttachSlot.Hat, "headgear" },
             { AttachSlot.Body, "armour" },
+            { AttachSlot.Shirt, "shirt" },
+            { AttachSlot.Legs, "legwear" },
+            { AttachSlot.Boots, "footwear" },
         };
 
         private static readonly Dictionary<string, string> RaceMap = new Dictionary<string, string>()
