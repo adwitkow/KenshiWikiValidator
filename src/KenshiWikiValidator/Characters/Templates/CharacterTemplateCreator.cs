@@ -112,15 +112,16 @@ namespace KenshiWikiValidator.Characters.Templates
             foreach (var race in races)
             {
                 var hasParent = RaceMap.TryGetValue(race.Name, out var parentRace);
+                var trimmedName = race.Name.Trim();
 
                 if (hasParent)
                 {
                     formattedRaces.Add($"[[{parentRace}]]");
-                    formattedSubraces.Add($"[[{race.Name}]]");
+                    formattedSubraces.Add($"[[{trimmedName}]]");
                 }
                 else
                 {
-                    formattedRaces.Add($"[[{race.Name}]]");
+                    formattedRaces.Add($"[[{trimmedName}]]");
                 }
             }
 
