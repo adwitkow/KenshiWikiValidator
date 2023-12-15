@@ -27,6 +27,11 @@ namespace KenshiWikiValidator.OcsProxy
             this.Value2 = value2;
         }
 
+        public ItemReference(T item)
+            : this(item, 0, 0, 0)
+        {
+        }
+
         public T Item { get; }
 
         public int Value0 { get; }
