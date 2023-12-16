@@ -16,6 +16,7 @@
 
 using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.BaseComponents.SharedRules;
+using KenshiWikiValidator.Characters.Rules;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.WikiCategories.Characters.Rules;
 
@@ -31,6 +32,7 @@ namespace KenshiWikiValidator.Characters
             this.rules = new List<IValidationRule>()
             {
                 new ContainsTemplateRule("Character"),
+                new CharacterRule(itemRepository),
                 new CharacterStatsRule(itemRepository),
             };
         }
