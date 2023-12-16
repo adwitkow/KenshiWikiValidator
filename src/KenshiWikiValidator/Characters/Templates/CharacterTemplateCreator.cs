@@ -163,19 +163,6 @@ namespace KenshiWikiValidator.Characters.Templates
             parameters.Add("gender", result);
         }
 
-        private static string ProcessReferences<T>(Character character, Func<Character, IEnumerable<ItemReference<T>>> func)
-            where T : IItem
-        {
-            var result = ProcessReferences(character, func);
-
-            if (result is null)
-            {
-                return "Unknown";
-            }
-
-            return result;
-        }
-
         private static string? ProcessNullableReferences<T>(Character character, Func<Character, IEnumerable<ItemReference<T>>> func)
             where T : IItem
         {
