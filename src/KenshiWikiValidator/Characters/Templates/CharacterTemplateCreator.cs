@@ -1,4 +1,20 @@
-﻿using KenshiWikiValidator.BaseComponents;
+﻿// This file is part of KenshiWikiValidator project <https://github.com/adwitkow/KenshiWikiValidator>
+// Copyright (C) 2021  Adam Witkowski <https://github.com/adwitkow/>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.BaseComponents.Creators;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.Models;
@@ -84,51 +100,6 @@ namespace KenshiWikiValidator.Characters.Templates
             return new WikiTemplate(TemplateName, parameters);
         }
 
-        private void ProcessRaces(Character character, IndexedDictionary<string, string?> parameters)
-        {
-            var raceReferences = character.Races;
-            if (!raceReferences.Any())
-            {
-                var referringSquads = this.itemRepository.GetItems<Squad>()
-                    .Where(squad => squad.ContainsCharacter(character));
-                var squadRaces = referringSquads.SelectMany(squad => squad.RaceOverrides);
-
-                raceReferences = raceReferences.Concat(squadRaces);
-
-                if (!squadRaces.Any())
-                {
-                    var factions = referringSquads.SelectMany(squad => squad.Faction)
-                        .Distinct();
-                    var factionRaces = factions.SelectMany(faction => faction.Item.Races);
-
-                    raceReferences = raceReferences.Concat(factionRaces);
-                }
-            }
-
-            var races = raceReferences.Select(race => race.Item).Distinct();
-
-            var formattedRaces = new HashSet<string>();
-            var formattedSubraces = new HashSet<string>();
-            foreach (var race in races)
-            {
-                var hasParent = RaceMap.TryGetValue(race.Name, out var parentRace);
-                var trimmedName = race.Name.Trim();
-
-                if (hasParent)
-                {
-                    formattedRaces.Add($"[[{parentRace}]]");
-                    formattedSubraces.Add($"[[{trimmedName}]]");
-                }
-                else
-                {
-                    formattedRaces.Add($"[[{trimmedName}]]");
-                }
-            }
-
-            parameters.Add("race", string.Join(", ", formattedRaces));
-            parameters.Add("subrace", string.Join(", ", formattedSubraces));
-        }
-
         private static void ProcessArmour(Character character, IndexedDictionary<string, string?> parameters)
         {
             foreach (var slotPair in SlotMap)
@@ -194,6 +165,51 @@ namespace KenshiWikiValidator.Characters.Templates
             template.Parameters.TryGetValue(parameter, out var result);
 
             return result;
+        }
+
+        private void ProcessRaces(Character character, IndexedDictionary<string, string?> parameters)
+        {
+            var raceReferences = character.Races;
+            if (!raceReferences.Any())
+            {
+                var referringSquads = this.itemRepository.GetItems<Squad>()
+                    .Where(squad => squad.ContainsCharacter(character));
+                var squadRaces = referringSquads.SelectMany(squad => squad.RaceOverrides);
+
+                raceReferences = raceReferences.Concat(squadRaces);
+
+                if (!squadRaces.Any())
+                {
+                    var factions = referringSquads.SelectMany(squad => squad.Faction)
+                        .Distinct();
+                    var factionRaces = factions.SelectMany(faction => faction.Item.Races);
+
+                    raceReferences = raceReferences.Concat(factionRaces);
+                }
+            }
+
+            var races = raceReferences.Select(race => race.Item).Distinct();
+
+            var formattedRaces = new HashSet<string>();
+            var formattedSubraces = new HashSet<string>();
+            foreach (var raceName in races.Select(race => race.Name))
+            {
+                var hasParent = RaceMap.TryGetValue(raceName, out var parentRace);
+                var trimmedName = raceName.Trim();
+
+                if (hasParent)
+                {
+                    formattedRaces.Add($"[[{parentRace}]]");
+                    formattedSubraces.Add($"[[{trimmedName}]]");
+                }
+                else
+                {
+                    formattedRaces.Add($"[[{trimmedName}]]");
+                }
+            }
+
+            parameters.Add("race", string.Join(", ", formattedRaces));
+            parameters.Add("subrace", string.Join(", ", formattedSubraces));
         }
     }
 }

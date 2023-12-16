@@ -224,16 +224,16 @@ namespace KenshiWikiValidator.OcsProxy.Models
         [Reference("prisoners")]
         public IEnumerable<ItemReference<Squad>> Prisoners { get; set; }
 
+        public bool IsShop => this.AiPackages
+            .Any(package => package.Item.LeaderAiGoals
+                .Any(goal => "Shopkeeper".Equals(goal.Item.Name)));
+
         public bool ContainsCharacter(Character character)
         {
             return this.Leader.ContainsItem(character)
                 || this.Characters.ContainsItem(character)
                 || this.Squad2.ContainsItem(character);
         }
-
-        public bool IsShop => this.AiPackages
-            .Any(package => package.Item.LeaderAiGoals
-                .Any(goal => "Shopkeeper".Equals(goal.Item.Name)));
 
         public IEnumerable<Town> GetLocations(IItemRepository repository)
         {

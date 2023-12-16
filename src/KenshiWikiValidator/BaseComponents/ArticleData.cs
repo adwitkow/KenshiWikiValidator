@@ -24,6 +24,7 @@ namespace KenshiWikiValidator.BaseComponents
             this.StringIds = new List<string>();
             this.Categories = new List<string>();
             this.PotentialStringId = string.Empty;
+            this.ArticleTitle = string.Empty;
         }
 
         public ICollection<string> StringIds { get; set; }
