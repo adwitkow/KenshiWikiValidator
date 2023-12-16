@@ -20,12 +20,14 @@
 
         public IEnumerable<string> Conditions { get; set; }
 
+        public IEnumerable<string> Effects { get; set; }
+
         public override string ToString()
         {
             string speakers;
             if (this.Speakers.Count() > 1)
             {
-                speakers = string.Join(", ", this.Speakers.SkipLast(1)) + " or " + this.Speakers.TakeLast(1).Single();
+                speakers = this.Speakers.ToCommaSeparatedListOr();
             }
             else
             {

@@ -1,159 +1,219 @@
-﻿using KenshiWikiValidator.OcsProxy.DialogueComponents;
+﻿using KenshiWikiValidator.BaseComponents;
+using KenshiWikiValidator.OcsProxy;
+using KenshiWikiValidator.OcsProxy.DialogueComponents;
 using KenshiWikiValidator.OcsProxy.Models;
 
 namespace DialogueDumper
 {
     public class DialogueNodeFactory
     {
-        private readonly ConditionMap conditionMap;
+        private readonly DialogueComponentConverter componentConverter;
+        private readonly WorldStateVerbalizer worldStateVerbalizer;
 
         public DialogueNodeFactory()
         {
-            this.conditionMap = new ConditionMap();
+            this.componentConverter = new DialogueComponentConverter();
+            this.worldStateVerbalizer = new WorldStateVerbalizer();
         }
 
-        public DialogueNode Create(DialogueLine line, int level, IEnumerable<string> speakers, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap)
+        public DialogueNode Create(DialogueLine line, IEnumerable<string> speakers, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap, IEnumerable<DialogueEvent> dialogueEvents)
         {
             var text = line.Text0;
 
             return new DialogueNode()
             {
-                Level = level,
                 Line = text,
                 Speakers = speakers,
-                Conditions = this.ConvertConditions(line.Conditions.Select(conditionRef => conditionRef.Item), speakerMap),
+                Conditions = this.ConvertConditions(line, speakerMap),
+                Effects = this.ConvertEffects(line, speakerMap, dialogueEvents),
             };
         }
 
-        private IEnumerable<string> ConvertConditions(IEnumerable<DialogAction> conditions, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap)
+        private IEnumerable<string> ConvertEffects(DialogueLine line, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap, IEnumerable<DialogueEvent> dialogueEvents)
         {
             var results = new List<string>();
 
-            foreach (var condition in conditions)
+            var speakers = speakerMap[line.Speaker].ToCommaSeparatedListOr();
+
+            if (line.AiContract.Any())
             {
-                var speakers = speakerMap[condition.Who];
+                results.Add($"{speakers}'s contract gets changed to '{line.AiContract.Single().Item.Name}'");
+            }
 
-                string validSpeakers;
-                if (speakers.Count() > 1)
+            if (line.ChangeAi.Any())
+            {
+                results.Add($"{speakers}'s AI package gets changed to '{line.ChangeAi.Single().Item.Name}'");
+            }
+
+            if (line.ChangeRelations.Any())
+            {
+                foreach (var change in line.ChangeRelations)
                 {
-                    validSpeakers = string.Join(", ", speakers.SkipLast(1)) + " or " + speakers.TakeLast(1).Single();
+                    results.Add($"The relations with '{change.Item.Name}' are changed by {change.Value0}.");
                 }
-                else
+            }
+
+            if (line.CrowdTrigger.Any())
+            {
+                results.Add($"'{line.CrowdTrigger.Single()}' dialogue gets triggered for all squad members of {speakers}.");
+            }
+
+            if (line.GiveItem.Any())
+            {
+                results.Add($"{speakers} gives {line.GiveItem.ToCommaSeparatedListAnd()} to the target.");
+            }
+
+            if (line.Interrupt.Any())
+            {
+                // I don't really care about this, to be honest.
+            }
+
+            if (line.LockCampaign.Any())
+            {
+                throw new NotImplementedException("LockCampaign");
+            }
+
+            if (line.Locks.Any())
+            {
+                results.Add($"'{line.Unlocks.ToCommaSeparatedListAnd()}' dialogue(s) gets locked for {speakers}.");
+            }
+
+            if (line.TriggerCampaign.Any())
+            {
+                results.Add($"'{line.TriggerCampaign.ToCommaSeparatedListAnd()}' campaign gets triggered.");
+            }
+
+            if (line.UnlockButKeepMe.Any())
+            {
+                results.Add($"'{line.UnlockButKeepMe.ToCommaSeparatedListAnd()}' dialogue(s) gets unlocked for {speakers}.");
+            }
+
+            if (line.Unlocks.Any())
+            {
+                results.Add($"'{line.Unlocks.ToCommaSeparatedListAnd()}' dialogue(s) gets unlocked for {speakers}.");
+            }
+
+            var effectRefs = line.Effects;
+            foreach (var effectRef in effectRefs)
+            {
+                var effect = effectRef.Item;
+                var effectValue = effectRef.Value0;
+
+                var effectDescription = this.componentConverter.ConvertEffect(effect);
+                if (effectDescription is null)
                 {
-                    validSpeakers = speakers.Single();
+                    results.Add($"EFFECT DESCRIPTION '{effect.ActionName}' NOT SET");
+                    continue;
                 }
 
-                var result = $"If {validSpeakers}: {this.conditionMap[condition.ConditionName]}";
+                var description = effectDescription.GetDescription(speakerMap, line.Speaker, effectValue, dialogueEvents);
 
-                results.Add(result);
+                results.Add($"{description} ({effect.ActionName}, {effectValue})");
             }
 
             return results;
         }
 
-        private sealed class ConditionMap
+        private IEnumerable<string> ConvertConditions(DialogueLine line, Dictionary<DialogueSpeaker, IEnumerable<string>> speakerMap)
         {
-            private static readonly Dictionary<DialogueCondition, string> map = new()
-            {
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-                { DialogueCondition.DC_NONE, null },
-                { DialogueCondition.DC_RELATIONS, null },
-                { DialogueCondition.DC_PLAYERMONEY, null },
-                { DialogueCondition.DC_REPUTATION, null },
-                { DialogueCondition.DC_CARRYING_BOUNTY_ALIVE, null },
-                { DialogueCondition.DC_CARRYING_BOUNTY_DEAD, null },
-                { DialogueCondition.DC_FACTION_VARIABLE, null },
-                { DialogueCondition.DC_IMPRISONED_BY_TARGET, null },
-                { DialogueCondition.DC_IMPRISONED_BY_OTHER, null },
-                { DialogueCondition.DC_IS_A_TRADER, null },
-                { DialogueCondition.DC_FACTION_RANK, null },
-                { DialogueCondition.DC_BUILDING_IS_CLOSED_AND_SECURED, null },
-                { DialogueCondition.DC_PLAYER_TECH_LEVEL, null },
-                { DialogueCondition.DC_NUM_DIALOG_EVENT_REPEATS, null },
-                { DialogueCondition.DC_IS_IMPRISONED, "is imprisoned" },
-                { DialogueCondition.DC_IMPRISONMENT_IS_DEATHROW, null },
-                { DialogueCondition.DC_TARGET_IN_TALKING_RANGE, "is nearby" },
-                { DialogueCondition.DC_IN_MY_BUILDING, null },
-                { DialogueCondition.DC_TARGET_LAST_SEEN_X_HOURS_AGO, null },
-                { DialogueCondition.DC_IS_LEADER, null },
-                { DialogueCondition.DC_MET_TARGET_BEFORE, null },
-                { DialogueCondition.DC_WEAKER_THAN_ME, null },
-                { DialogueCondition.DC_STRONGER_THAN_ME, null },
-                { DialogueCondition.DC_HAS_TAG, null },
-                { DialogueCondition.DC_IS_ALLY, null },
-                { DialogueCondition.DC_IS_ENEMY, null },
-                { DialogueCondition.DC_PERSONALITY_TAG, "has specified personality" },
-                { DialogueCondition.DC_BROKEN_LEG, null },
-                { DialogueCondition.DC_BROKEN_ARM, null },
-                { DialogueCondition.DC_DAMAGED_HEAD, null },
-                { DialogueCondition.DC_NEARLY_KO, null },
-                { DialogueCondition.DC_IN_A_NON_PLAYER_TOWN, "is in a town (not including towns owned by the player)" },
-                { DialogueCondition.DC_IS_RUNNING, null },
-                { DialogueCondition.DC_COPS_AROUND, null },
-                { DialogueCondition.NULL_NULL_____DC_TARGET_SQUAD_SIZE, null },
-                { DialogueCondition.DC_SQUAD_SIZE, null },
-                { DialogueCondition.DC_IS_PLAYER, null },
-                { DialogueCondition.DC_NUM_BACKPACKS, null },
-                { DialogueCondition.DC_SQUAD_ONLY_ANIMALS, null },
-                { DialogueCondition.DC_IS_OUTNUMBERED, null },
-                { DialogueCondition.DC_BOUNTY_AMOUNT_PERCEIVED, null },
-                { DialogueCondition.DC_IS_KO, "is KO" },
-                { DialogueCondition.DC_IS_NEARLY_KO, null },
-                { DialogueCondition.DC_SQUAD_IS_DOWN, null },
-                { DialogueCondition.DC_IS_DEAD, null },
-                { DialogueCondition.DC_IS_FEMALE, "is female" },
-                { DialogueCondition.DC_CARRYING_SOMEONE_TO_ENSLAVE, null },
-                { DialogueCondition.DC_BOUNTY_AMOUNT_ACTUAL, null },
-                { DialogueCondition.DC_IM_UNARMED, null },
-                { DialogueCondition.DC_TOWN_HAS_FORTIFICATIONS_WALLS, null },
-                { DialogueCondition.DC_TARGET_IS_MY_MISSION_TARGET, null },
-                { DialogueCondition.DC_MY_MISSION_IS_FRIENDLY, null },
-                { DialogueCondition.DC_I_LOVE_THIS_GUY, null },
-                { DialogueCondition.DC_I_HATE_THIS_GUY, null },
-                { DialogueCondition.DC_I_SHOULD_SCREW_THIS_GUY_OVER, null },
-                { DialogueCondition.DC_I_SHOULD_HELP_THIS_GUY, null },
-                { DialogueCondition.DC_IN_COMBAT, null },
-                { DialogueCondition.DC_WITHIN_TOWN_WALLS, null },
-                { DialogueCondition.DC_TOWN_WALLS_LOCKED_UP, null },
-                { DialogueCondition.DC_IS_SLAVE, null },
-                { DialogueCondition.DC_HAS_A_BASE_NEARBY, null },
-                { DialogueCondition.DC_TARGET_IS_SLAVE_OF_MY_FACTION, null },
-                { DialogueCondition.DC_IS_ESCAPED_SLAVE, null },
-                { DialogueCondition.DC_IS_IN_LOCKED_CAGE, "is in locked cage" },
-                { DialogueCondition.DC_WEARING_LOCKED_SHACKLES, null },
-                { DialogueCondition.DC_IS_SAME_RACE_AS_ME, null },
-                { DialogueCondition.DC_CAN_AFFORD_BOUNTY, null },
-                { DialogueCondition.DC_IS_SNEAKING, null },
-                { DialogueCondition.DC_IS_INDOORS, null },
-                { DialogueCondition.DC_HAS_ILLEGAL_ITEM, null },
-                { DialogueCondition.DC_USING_MY_TRAINING_EQUIPMENT, null },
-                { DialogueCondition.DC_STARVING, null },
-                { DialogueCondition.DC_MIXED_GENDER_GROUP, null },
-                { DialogueCondition.DC_TOWN_LEVEL_CURRENT_LOCATION, null },
-                { DialogueCondition.DC_PLAYERS_BEST_TOWN_LEVEL, null },
-                { DialogueCondition.DC_IN_A_PLAYER_TOWN, null },
-                { DialogueCondition.DC_TARGET_CHARACTER_EXISTS, null },
-                { DialogueCondition.DC_IS_RECRUITABLE, null },
-                { DialogueCondition.DC_HAS_AI_CONTRACT, null },
-                { DialogueCondition.DC_HAS_ROBOT_LIMBS, "has robotic limbs attached" },
-                { DialogueCondition.DC_END, null },
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-            };
+            var results = new List<string>();
 
-            public string this[DialogueCondition conditionName]
+            var speakers = speakerMap[line.Speaker].ToCommaSeparatedListOr();
+
+            if (line.HasPackage.Any())
             {
-                get
+                results.Add($"{speakers} has package {line.HasPackage.ToCommaSeparatedListOr()}");
+            }
+
+            if (line.InTownOf.Any())
+            {
+                results.Add($"{speakers} is in a location that belongs to {line.MyFaction.ToCommaSeparatedListOr()}");
+            }
+
+            if (line.IsCharacter.Any())
+            {
+                if (!speakers.Equals(line.IsCharacter.ToCommaSeparatedListOr()))
                 {
-                    var result = map[conditionName];
-
-                    if (result == null)
-                    {
-                        result = "Unknown condition";
-                    }
-
-                    return result;
+                    throw new InvalidOperationException("Speakers list is different from the 'is character' condition");
                 }
             }
+
+            if (line.MyFaction.Any())
+            {
+                results.Add($"{speakers}'s faction is {line.MyFaction.ToCommaSeparatedListOr()}");
+            }
+
+            if (line.MyRace.Any())
+            {
+                results.Add($"{speakers}'s race is {line.MyRace.ToCommaSeparatedListOr()}");
+            }
+
+            if (line.MySubrace.Any())
+            {
+                results.Add($"{speakers}'s subrace is {line.MySubrace.ToCommaSeparatedListOr()}");
+            }
+
+            if (line.TargetCarryingCharacter.Any())
+            {
+                results.Add($"Target is carrying {line.TargetCarryingCharacter.ToCommaSeparatedListOr()}");
+            }
+
+            if (line.TargetFaction.Any())
+            {
+                results.Add($"Target's faction is {line.TargetFaction.ToCommaSeparatedListOr()}");
+            }
+
+            if (line.TargetHasItem.Any())
+            {
+                results.Add($"Target has {line.TargetHasItem.ToCommaSeparatedListOr()}");
+            }
+
+            if (line.TargetHasItemType.Any())
+            {
+                results.Add($"Target owns an item of the same type as {line.TargetHasItemType.ToCommaSeparatedListOr()}");
+            }
+
+            if (line.TargetRace.Any())
+            {
+                results.Add($"Target's race is {line.TargetRace.ToCommaSeparatedListOr()}");
+            }
+
+            if (line.WorldState.Any())
+            {
+                results.Add(this.worldStateVerbalizer.Verbalize(line.WorldState));
+            }
+
+            var conditionReferences = line.Conditions;
+            foreach (var conditionRef in conditionReferences)
+            {
+                var condition = conditionRef.Item;
+                var conditionValue = conditionRef.Value0;
+
+                var conditionSpeakers = speakerMap[condition.Who];
+
+                string validSpeakers;
+                if (conditionSpeakers.Count() > 1)
+                {
+                    validSpeakers = conditionSpeakers.ToCommaSeparatedListOr();
+                }
+                else
+                {
+                    validSpeakers = conditionSpeakers.Single();
+                }
+
+                var conditionDescription = this.componentConverter.ConvertCondition(condition);
+                if (conditionDescription is null)
+                {
+                    results.Add($"CONDITION DESCRIPTION '{condition.ConditionName}' NOT SET");
+                    continue;
+                }
+
+                var verbalizedDescription = conditionDescription.GetDescription(validSpeakers, conditionValue, condition.CompareBy, condition.Tag);
+
+                results.Add($"{verbalizedDescription} ({condition.ConditionName}, {conditionValue})");
+            }
+
+            return results;
         }
     }
 }
