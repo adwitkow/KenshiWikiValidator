@@ -28,31 +28,14 @@
                     continue;
                 }
 
-                if (character == '[')
+                if (CanSkipFunction(content, ref i, character, '[', ']'))
                 {
-                    var j = i;
-                    var count = 0;
-                    while (j < content.Length && content[j] == '[')
-                    {
-                        j++;
-                        count++;
-                    }
-
-                    i = FindFunctionBounds(i, content, count, '[', ']');
                     continue;
                 }
 
-                if (character == '{')
+                if (CanSkipFunction(content, ref i, character, '{', '}'))
                 {
-                    var j = i;
-                    var count = 0;
-                    while (j < content.Length && content[j] == '{')
-                    {
-                        j++;
-                        count++;
-                    }
-
-                    i = FindFunctionBounds(i, content, count, '{', '}');
+                    continue;
                 }
             }
 
@@ -66,6 +49,26 @@
                 "switch" => new SwitchParserFunction(name, arguments),
                 _ => new ParserFunction(name, arguments),
             };
+        }
+
+        private static bool CanSkipFunction(string content, ref int i, char character, char openChar, char closeChar)
+        {
+            bool result = false;
+            if (character == openChar)
+            {
+                var j = i;
+                var count = 0;
+                while (j < content.Length && content[j] == openChar)
+                {
+                    j++;
+                    count++;
+                }
+
+                i = FindFunctionBounds(i, content, count, openChar, closeChar);
+                result = true;
+            }
+
+            return result;
         }
 
         public static int FindFunctionBounds(int startingIndex, string content, int functionMarkerCount, char openFunction, char closeFunction)
@@ -89,31 +92,14 @@
                     }
                 }
 
-                if (character == '[')
+                if (CanSkipFunction(content, ref i, character, '[', ']'))
                 {
-                    var j = i;
-                    var count = 0;
-                    while (j < content.Length && content[j] == '[')
-                    {
-                        j++;
-                        count++;
-                    }
-
-                    i = FindFunctionBounds(i, content, count, '[', ']');
                     continue;
                 }
 
-                if (character == '{')
+                if (CanSkipFunction(content, ref i, character, '{', '}'))
                 {
-                    var j = i;
-                    var count = 0;
-                    while (j < content.Length && content[j] == '{')
-                    {
-                        j++;
-                        count++;
-                    }
-
-                    i = FindFunctionBounds(i, content, count, '{', '}');
+                    continue;
                 }
             }
 
