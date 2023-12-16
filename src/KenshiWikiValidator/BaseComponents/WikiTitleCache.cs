@@ -27,6 +27,10 @@ namespace KenshiWikiValidator.BaseComponents
             this.data = new Dictionary<string, string>();
         }
 
+        public string this[IItem item] => this.data[item.StringId];
+
+        public string this[string stringId] => this.data[stringId];
+
         public bool HasArticle(IItem item)
         {
             return this.HasArticle(item.StringId);

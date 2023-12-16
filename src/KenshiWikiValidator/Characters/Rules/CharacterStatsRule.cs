@@ -43,6 +43,11 @@ namespace KenshiWikiValidator.WikiCategories.Characters.Rules
         {
             var stringId = data.GetAllPossibleStringIds().SingleOrDefault();
 
+            if (stringId == "53600-Dialogue.mod")
+            {
+                Console.WriteLine("sztop");
+            }
+
             if (string.IsNullOrEmpty(stringId))
             {
                 return null;

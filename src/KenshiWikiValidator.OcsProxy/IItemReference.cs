@@ -14,27 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using OpenConstructionSet.Models;
-
 namespace KenshiWikiValidator.OcsProxy
 {
-    public abstract class ItemBase : IItem
+    public interface IItemReference<out T>
+        where T : IItem
     {
-        protected ItemBase(string stringId, string name)
-        {
-            this.StringId = stringId;
-            this.Name = name;
-        }
+        T Item { get; }
 
-        public abstract ItemType Type { get; }
+        int Value0 { get; }
 
-        public string StringId { get; }
+        int Value1 { get; }
 
-        public string Name { get; }
-
-        public override string ToString()
-        {
-            return $"{this.Type} {this.Name}";
-        }
+        int Value2 { get; }
     }
 }

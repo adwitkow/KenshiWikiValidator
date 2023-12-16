@@ -16,7 +16,7 @@
 
 namespace KenshiWikiValidator.OcsProxy
 {
-    public readonly struct ItemReference<T>
+    public readonly struct ItemReference<T> : IItemReference<T>
         where T : IItem
     {
         public ItemReference(T item, int value0, int value1, int value2)

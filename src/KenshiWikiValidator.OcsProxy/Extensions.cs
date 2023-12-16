@@ -24,6 +24,12 @@ namespace KenshiWikiValidator.OcsProxy
             return references.Any(reference => ReferenceEquals(item, reference.Item));
         }
 
+        public static bool ContainsAny<T>(this IEnumerable<ItemReference<T>> references, IEnumerable<IItem> items)
+            where T : IItem
+        {
+            return references.Any(reference => items.Any(item => ReferenceEquals(item, reference.Item)));
+        }
+
         public static IEnumerable<TResult> SelectItems<T, TResult>(
             this IEnumerable<T> items,
             Func<T, IEnumerable<ItemReference<TResult>>> func)

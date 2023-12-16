@@ -20,19 +20,28 @@ using KenshiWikiValidator.Locations;
 using KenshiWikiValidator.MapItems.Rules;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.Models;
+using KenshiWikiValidator.TownResidents;
 
 namespace KenshiWikiValidator.MapItems
 {
     public class MapItemArticleValidator : ArticleValidatorBase
     {
         private readonly IEnumerable<IValidationRule> rules;
+        private readonly List<IArticleValidator> dependencies;
         private readonly IItemRepository itemRepository;
 
         private readonly ContainsItemInfoboxRule containsItemInfoboxRule;
 
-        public MapItemArticleValidator(IItemRepository itemRepository, IWikiTitleCache wikiTitles, IZoneDataProvider zoneDataProvider)
+        public MapItemArticleValidator(
+            IItemRepository itemRepository,
+            IWikiTitleCache wikiTitles,
+            IZoneDataProvider zoneDataProvider,
+            LocationsArticleValidator locationsValidator,
+            TownResidentArticleValidator townResidentsValidator)
             : base(itemRepository, wikiTitles, typeof(MapItem))
         {
+            this.dependencies = new List<IArticleValidator>() { locationsValidator, townResidentsValidator };
+
             this.itemRepository = itemRepository;
             this.containsItemInfoboxRule = new ContainsItemInfoboxRule(itemRepository);
 
@@ -40,12 +49,15 @@ namespace KenshiWikiValidator.MapItems
             {
                 this.containsItemInfoboxRule,
                 new RevealedLocationsSectionRule(itemRepository, wikiTitles, zoneDataProvider),
+                new MapItemLootSectionRule(itemRepository, wikiTitles),
             };
         }
 
         public override string CategoryName => "Map items";
 
         public override IEnumerable<IValidationRule> Rules => this.rules;
+
+        public override IEnumerable<IArticleValidator> Dependencies => this.dependencies;
 
         public override IEnumerable<RuleResult> AfterValidations()
         {
