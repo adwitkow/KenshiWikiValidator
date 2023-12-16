@@ -36,6 +36,7 @@ jobs:
       run: gh release delete "nightly" --cleanup-tag
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      continue-on-error: true
     - name: Tag commit
       shell: bash
       run: |
