@@ -16,7 +16,7 @@ var weaponsByType = repo.GetItems<Weapon>()
 
 foreach (var group in weaponsByType)
 {
-    var weaponType = group.Key.GetValueOrDefault();
+    var weaponType = group.Key;
     if (weaponType >= types.Length)
     {
         continue;
