@@ -1,12 +1,12 @@
 ﻿using System.Text.Json;
 using System.Text.RegularExpressions;
+using TemplateAnalyzer;
 using TemplateAnalyzer.ParserFunctions;
 using TemplateAnalyzer.Template;
 using WikiClientLibrary;
 using WikiClientLibrary.Client;
 using WikiClientLibrary.Generators;
 using WikiClientLibrary.Pages;
-using WikiClientLibrary.Pages.Parsing;
 using WikiClientLibrary.Sites;
 
 const string WikiApiUrl = "https://kenshi.fandom.com/api.php";
@@ -32,17 +32,27 @@ var generator = new AllPagesGenerator(site)
 
 var pages = generator.EnumPagesAsync();
 
-var pageMap = new Dictionary<WikiPage, int>();
+var documentationPages = new List<WikiPage>();
+var pagesToAnalyze = new List<TemplatePage>();
 await foreach (var page in pages)
 {
     var lowercaseTitle = page.Title.ToLower();
-    if (lowercaseTitle.EndsWith("/doc") || lowercaseTitle.EndsWith("/sandbox") || lowercaseTitle.EndsWith("/testcases"))
+    if (lowercaseTitle.EndsWith("/sandbox") || lowercaseTitle.EndsWith("/testcases"))
     {
         continue;
     }
 
+    if (lowercaseTitle.EndsWith("/doc"))
+    {
+        documentationPages.Add(page);
+        continue;
+    }
+
     Console.Write($"Mapping {page.Title}...");
-    if (page.Title is "Template:Join" or "Template:Reflist")
+    if (page.Title is "Template:Join"
+        or "Template:Reflist"
+        or "Template:Navbox"
+        or "Template:Navbox2")
     {
         Console.WriteLine("Skipped!");
         continue;
@@ -57,38 +67,46 @@ await foreach (var page in pages)
     Console.Write("Transclusions fetched...");
 
     await page.RefreshAsync(PageQueryOptions.FetchContent);
-    var templateData = ParseTemplate(page.Content);
-    var serializedData = JsonSerializer.Serialize(templateData, new JsonSerializerOptions()
-    {
-        WriteIndented = true,
-    });
-    var cleanTitle = page.Title.Replace("/", "").Replace("Template:", "");
-    File.WriteAllText(Path.Combine("Templates", $"TemplateData-{cleanTitle}.txt"), serializedData);
 
-    pageMap.Add(page, transclusions);
+    var templatePage = new TemplatePage()
+    {
+        Title = page.Title,
+        Content = page.Content,
+        Transclusions = transclusions,
+    };
+
+    pagesToAnalyze.Add(templatePage);
     Console.WriteLine("Done!");
 }
 
-var ordered = pageMap.OrderByDescending(pair => pair.Value)
-    .ThenBy(pair => pair.Key.Title);
-foreach (var pair in ordered)
+foreach (var documentationPage in documentationPages)
 {
-    var page = pair.Key;
+    Console.WriteLine($"Assigning documentation page {documentationPage.Title}...");
+    await documentationPage.RefreshAsync(PageQueryOptions.FetchContent);
+
+    var result = new TemplatePage()
+    {
+        Title = documentationPage.Title,
+        Content = documentationPage.Content,
+    };
+
+    var parentName = documentationPage.Title.Split('/').First();
+    var parent = pagesToAnalyze.SingleOrDefault(page => page.Title == parentName);
+    
+    if (parent is not null)
+    {
+        parent.DocumentationPage = result;
+    }
+}
+
+var ordered = pagesToAnalyze.OrderByDescending(page => page.Transclusions)
+    .ThenBy(page => page.Title);
+foreach (var page in ordered)
+{
     Console.ForegroundColor = ConsoleColor.White;
-    Console.Write($"{pair.Value}\t{page.Title}");
+    Console.Write($"{page.Transclusions}\t{page.Title}");
 
-    if (!page.Content.Contains("<templatedata>"))
-    {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.Write("\tTemplateData is missing");
-    }
-    else
-    {
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write("\tTemplateData is present");
-    }
-
-    if (!page.Content.Contains("{{Documentation}}"))
+    if (page.DocumentationPage is null)
     {
         Console.ForegroundColor = ConsoleColor.Red;
         Console.Write("\tDocumentation is missing");
@@ -99,8 +117,42 @@ foreach (var pair in ordered)
         Console.Write("\tDocumentation is present");
     }
 
-    Console.WriteLine();
+    if (!page.Content.Contains("<templatedata>"))
+    {
+        if (page.DocumentationPage is not null)
+        {
+            if (!page.DocumentationPage.Content.Contains("<templatedata>"))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("\tTemplateData is missing");
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write("\tTemplateData is present");
+            }
+        }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("\tTemplateData is missing");
+        }
+    }
+    else
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write("\tTemplateData is present");
+    }
 
+    var templateData = ParseTemplate(page.Content);
+    var serializedData = JsonSerializer.Serialize(templateData, new JsonSerializerOptions()
+    {
+        WriteIndented = true,
+    });
+    var cleanTitle = page.Title.Replace("/", "").Replace("Template:", "");
+    File.WriteAllText(Path.Combine("Templates", $"TemplateData-{cleanTitle}.txt"), serializedData);
+
+    Console.WriteLine();
 }
 
 Console.ForegroundColor = ConsoleColor.White;
