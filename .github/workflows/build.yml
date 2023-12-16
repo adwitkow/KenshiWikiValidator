@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: Build and test
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
@@ -17,6 +17,20 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
+    - name: Validate project directories
+      shell: powershell
+      run: |
+        $items = Get-ChildItem -Recurse -Force -Include *.csproj
+        foreach ($item in $items)
+        {
+          Write-Output $item.Fullname
+          $parts = $item.FullName.Split("\")
+          if (-not ($parts -contains "src" -or $parts -contains "tests"))
+          {
+            Write-Output "'${item.Fullname}' is not a valid path!"
+            exit 1
+          }
+        }
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -26,6 +40,7 @@ jobs:
 
   sonar:
     name: Analyze
+    needs: [build]
     runs-on: windows-latest
     steps:
       - name: Set up JDK 17
