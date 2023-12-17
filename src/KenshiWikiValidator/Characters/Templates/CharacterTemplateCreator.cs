@@ -145,13 +145,11 @@ namespace KenshiWikiValidator.Characters.Templates
             {
                 return null;
             }
-            else if (itemRefs.Count() == 1)
-            {
-                return $"[[{itemRefs.Single().Item.Name}]]";
-            }
             else
             {
-                var items = itemRefs.OrderByDescending(reference => reference.Value0)
+                var items = itemRefs
+                    .Where(reference => reference.Value0 > 0)
+                    .OrderByDescending(reference => reference.Value0)
                     .ThenBy(reference => reference.Item.Name)
                     .Select(itemRef => $"[[{itemRef.Item.Name}]]");
                 return string.Join(", ", items);
