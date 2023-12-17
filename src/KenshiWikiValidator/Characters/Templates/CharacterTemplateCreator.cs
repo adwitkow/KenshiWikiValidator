@@ -88,8 +88,11 @@ namespace KenshiWikiValidator.Characters.Templates
                 { "caption1", PullFromTemplate(existingTemplate, "caption1") },
             };
 
-            this.ProcessRaces(this.Character, parameters);
-            ProcessGender(this.Character, parameters);
+            var races = this.ProcessRaces(this.Character, parameters);
+            if (!races.Any() || !races.All(race => race is "Hive" or "Southern Hive" or "Skeleton"))
+            {
+                ProcessGender(this.Character, parameters);
+            }
 
             parameters.Add("weapons", ProcessNullableReferences(this.Character, character => character.Weapons));
 
@@ -118,7 +121,7 @@ namespace KenshiWikiValidator.Characters.Templates
         private static void ProcessGender(Character character, IndexedDictionary<string, string?> parameters)
         {
             string result;
-            if (character.FemaleChance == 0)
+            if (character.FemaleChance <= 0)
             {
                 result = "Male";
             }
@@ -128,7 +131,7 @@ namespace KenshiWikiValidator.Characters.Templates
             }
             else
             {
-                result = $"{character.FemaleChance}% Female chance";
+                result = $"{character.FemaleChance}% female";
             }
 
             parameters.Add("gender", result);
@@ -142,13 +145,11 @@ namespace KenshiWikiValidator.Characters.Templates
             {
                 return null;
             }
-            else if (itemRefs.Count() == 1)
-            {
-                return $"[[{itemRefs.Single().Item.Name}]]";
-            }
             else
             {
-                var items = itemRefs.OrderByDescending(reference => reference.Value0)
+                var items = itemRefs
+                    .Where(reference => reference.Value0 > 0)
+                    .OrderByDescending(reference => reference.Value0)
                     .ThenBy(reference => reference.Item.Name)
                     .Select(itemRef => $"[[{itemRef.Item.Name}]]");
                 return string.Join(", ", items);
@@ -167,8 +168,9 @@ namespace KenshiWikiValidator.Characters.Templates
             return result;
         }
 
-        private void ProcessRaces(Character character, IndexedDictionary<string, string?> parameters)
+        private IEnumerable<string> ProcessRaces(Character character, IndexedDictionary<string, string?> parameters)
         {
+            var parentRaces = new List<string>();
             var raceReferences = character.Races;
             if (!raceReferences.Any())
             {
@@ -199,6 +201,7 @@ namespace KenshiWikiValidator.Characters.Templates
 
                 if (hasParent)
                 {
+                    parentRaces.Add(parentRace!);
                     formattedRaces.Add($"[[{parentRace}]]");
                     formattedSubraces.Add($"[[{trimmedName}]]");
                 }
@@ -210,6 +213,8 @@ namespace KenshiWikiValidator.Characters.Templates
 
             parameters.Add("race", string.Join(", ", formattedRaces));
             parameters.Add("subrace", string.Join(", ", formattedSubraces));
+
+            return parentRaces.Distinct();
         }
     }
 }
