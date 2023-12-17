@@ -125,7 +125,7 @@ namespace KenshiWikiValidator.Tests.Characters.Templates
             var result = sut.Generate(new ArticleData());
 
             Assert.IsNotNull(result);
-            Assert.AreEqual("50% Female chance", result.Parameters["gender"]);
+            Assert.AreEqual("50% female", result.Parameters["gender"]);
         }
 
         [TestMethod]
