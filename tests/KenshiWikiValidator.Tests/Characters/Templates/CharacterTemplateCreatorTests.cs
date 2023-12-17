@@ -125,7 +125,7 @@ namespace KenshiWikiValidator.Tests.Characters.Templates
             var result = sut.Generate(new ArticleData());
 
             Assert.IsNotNull(result);
-            Assert.AreEqual("50% Female chance", result.Parameters["gender"]);
+            Assert.AreEqual("50% female", result.Parameters["gender"]);
         }
 
         [TestMethod]
@@ -260,6 +260,56 @@ namespace KenshiWikiValidator.Tests.Characters.Templates
 
             Assert.IsNotNull(result);
             Assert.AreEqual("[[legs1]], [[legs2]]", result.Parameters["legwear"]);
+        }
+
+        [TestMethod]
+        public void ShouldIgnoreGenderOfHivers()
+        {
+            var character = new Character("string id", "name")
+            {
+                FemaleChance = 0
+            };
+            var squad = new Squad("squad string id", "squad name")
+            {
+                RaceOverrides = new[] { new ItemReference<Race>(new Race("race id", "Hive Prince")) },
+                Characters = new[] { new ItemReference<Character>(character) },
+            };
+
+            var itemRepositoryMock = new Mock<IItemRepository>();
+            itemRepositoryMock.Setup(repo => repo.GetItems<Squad>())
+                .Returns(new List<Squad>() { squad });
+            var sut = new CharacterTemplateCreator(itemRepositoryMock.Object);
+            sut.Character = character;
+
+            var result = sut.Generate(new ArticleData());
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.Parameters.ContainsKey("gender"));
+        }
+
+        [TestMethod]
+        public void ShouldIncludeGenderOfHumans()
+        {
+            var character = new Character("string id", "name")
+            {
+                FemaleChance = 0
+            };
+            var squad = new Squad("squad string id", "squad name")
+            {
+                RaceOverrides = new[] { new ItemReference<Race>(new Race("race id", "Greenlander")) },
+                Characters = new[] { new ItemReference<Character>(character) },
+            };
+
+            var itemRepositoryMock = new Mock<IItemRepository>();
+            itemRepositoryMock.Setup(repo => repo.GetItems<Squad>())
+                .Returns(new List<Squad>() { squad });
+            var sut = new CharacterTemplateCreator(itemRepositoryMock.Object);
+            sut.Character = character;
+
+            var result = sut.Generate(new ArticleData());
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Parameters.ContainsKey("gender"));
         }
     }
 }
