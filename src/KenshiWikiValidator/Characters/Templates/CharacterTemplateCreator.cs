@@ -89,7 +89,7 @@ namespace KenshiWikiValidator.Characters.Templates
             };
 
             var races = this.ProcessRaces(this.Character, parameters);
-            if (!races.Any(race => race is "Hive" or "Southern Hive" or "Skeleton"))
+            if (!races.All(race => race is "Hive" or "Southern Hive" or "Skeleton"))
             {
                 ProcessGender(this.Character, parameters);
             }
