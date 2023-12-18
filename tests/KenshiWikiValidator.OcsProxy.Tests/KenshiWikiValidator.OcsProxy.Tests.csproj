@@ -16,7 +16,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="OpenConstructionSet" Version="2.2.0" />
+    <PackageReference Include="OpenConstructionSet" Version="3.0.1" />
   </ItemGroup>
 
   <ItemGroup>
