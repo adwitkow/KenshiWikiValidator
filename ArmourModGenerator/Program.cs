@@ -82,7 +82,7 @@ foreach (var slot in slots)
     {
         foreach (var armourClass in Enum.GetValues<ArmourClass>())
         {
-            var item = new DataItem(ItemType.Armour, context.LastId + 1, $"{slot}-{material}-{armourClass}", $"{id}-{ModName}");
+            var item = new DataItem(ItemType.Armour, context.LastId + 1, $"{slot}-{armourClass}-{material}", $"{id}-{ModName}");
 
             foreach (var value in sampleItem.Values)
             {
@@ -92,6 +92,9 @@ foreach (var slot in slots)
             item.Values["material type"] = (int)material;
             item.Values["class"] = (int)armourClass;
             item.Values["relative price mult"] = 1f;
+            item.Values["inventory footprint height"] = 1;
+            item.Values["inventory footprint width"] = 1;
+
             item.ReferenceCategories.Add(coverageCategory);
 
             items.Add(item);
