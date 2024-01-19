@@ -27,8 +27,7 @@ namespace KenshiWikiValidator.Armours.Rules
 
         public ArmourTemplateRule(IItemRepository repository)
         {
-            var valueProvider = new BaseArmourValueProvider();
-            this.priceCalculator = new ArmourPriceCalculator(valueProvider);
+            this.priceCalculator = new ArmourPriceCalculator();
             this.repository = repository;
         }
 

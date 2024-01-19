@@ -3,53 +3,297 @@ using KenshiWikiValidator.Armours;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace KenshiWikiValidator.Tests.Armours
 {
-    [TestClass]
     public class ArmourPriceCalculatorTests
     {
-        [TestMethod]
-        public void ShouldCalculateForCoverageItems()
+        [Test]
+        #region Test Cases: Armour Price Multiplier = 1.0f, Relative Price Multiplier = 1.0f
+        #region Prototype Grade
+        #region Body
+        [TestCase(29, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Cloth, MaterialType.Cloth)]
+        [TestCase(62, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Cloth, MaterialType.Leather)]
+        [TestCase(118, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Cloth, MaterialType.Chain)]
+        [TestCase(168, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Cloth, MaterialType.MetalPlate)]
+
+        [TestCase(139, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Light, MaterialType.Cloth)]
+        [TestCase(274, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Light, MaterialType.Leather)]
+        [TestCase(511, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Light, MaterialType.Chain)]
+        [TestCase(711, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Light, MaterialType.MetalPlate)]
+
+        [TestCase(229, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Medium, MaterialType.Cloth)]
+        [TestCase(486, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Medium, MaterialType.Leather)]
+        [TestCase(929, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Medium, MaterialType.Chain)]
+        [TestCase(1328, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Medium, MaterialType.MetalPlate)]
+
+        [TestCase(159, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Heavy, MaterialType.Cloth)]
+        [TestCase(299, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Heavy, MaterialType.Leather)]
+        [TestCase(549, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Heavy, MaterialType.Chain)]
+        [TestCase(748, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Heavy, MaterialType.MetalPlate)]
+        #endregion
+        #region Legs
+        [TestCase(14, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Cloth, MaterialType.Cloth)]
+        [TestCase(31, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Cloth, MaterialType.Leather)]
+        [TestCase(59, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Cloth, MaterialType.Chain)]
+        [TestCase(84, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Cloth, MaterialType.MetalPlate)]
+
+        [TestCase(69, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Light, MaterialType.Cloth)]
+        [TestCase(137, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Light, MaterialType.Leather)]
+        [TestCase(255, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Light, MaterialType.Chain)]
+        [TestCase(355, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Light, MaterialType.MetalPlate)]
+
+        [TestCase(114, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Medium, MaterialType.Cloth)]
+        [TestCase(243, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Medium, MaterialType.Leather)]
+        [TestCase(464, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Medium, MaterialType.Chain)]
+        [TestCase(664, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Medium, MaterialType.MetalPlate)]
+
+        [TestCase(79, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Heavy, MaterialType.Cloth)]
+        [TestCase(149, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Heavy, MaterialType.Leather)]
+        [TestCase(274, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Heavy, MaterialType.Chain)]
+        [TestCase(374, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Heavy, MaterialType.MetalPlate)]
+        #endregion
+        #region Shirt
+        [TestCase(43, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Cloth, MaterialType.Cloth)]
+        [TestCase(93, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Cloth, MaterialType.Leather)]
+        [TestCase(177, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Cloth, MaterialType.Chain)]
+        [TestCase(252, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Cloth, MaterialType.MetalPlate)]
+
+        [TestCase(208, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Light, MaterialType.Cloth)]
+        [TestCase(411, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Light, MaterialType.Leather)]
+        [TestCase(766, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Light, MaterialType.Chain)]
+        [TestCase(1066, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Light, MaterialType.MetalPlate)]
+
+        [TestCase(343, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Medium, MaterialType.Cloth)]
+        [TestCase(729, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Medium, MaterialType.Leather)]
+        [TestCase(1393, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Medium, MaterialType.Chain)]
+        [TestCase(1992, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Medium, MaterialType.MetalPlate)]
+
+        [TestCase(238, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Heavy, MaterialType.Cloth)]
+        [TestCase(448, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Heavy, MaterialType.Leather)]
+        [TestCase(823, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Heavy, MaterialType.Chain)]
+        [TestCase(1122, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Heavy, MaterialType.MetalPlate)]
+        #endregion
+        #region Boots
+        [TestCase(5, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Cloth, MaterialType.Cloth)]
+        [TestCase(12, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Cloth, MaterialType.Leather)]
+        [TestCase(23, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Cloth, MaterialType.Chain)]
+        [TestCase(33, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Cloth, MaterialType.MetalPlate)]
+
+        [TestCase(27, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Light, MaterialType.Cloth)]
+        [TestCase(54, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Light, MaterialType.Leather)]
+        [TestCase(102, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Light, MaterialType.Chain)]
+        [TestCase(142, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Light, MaterialType.MetalPlate)]
+
+        [TestCase(45, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Medium, MaterialType.Cloth)]
+        [TestCase(97, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Medium, MaterialType.Leather)]
+        [TestCase(185, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Medium, MaterialType.Chain)]
+        [TestCase(265, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Medium, MaterialType.MetalPlate)]
+
+        [TestCase(31, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Heavy, MaterialType.Cloth)]
+        [TestCase(59, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Heavy, MaterialType.Leather)]
+        [TestCase(109, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Heavy, MaterialType.Chain)]
+        [TestCase(149, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Heavy, MaterialType.MetalPlate)]
+        #endregion
+        #region Hat
+        [TestCase(8, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Cloth, MaterialType.Cloth)]
+        [TestCase(18, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Cloth, MaterialType.Leather)]
+        [TestCase(35, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Cloth, MaterialType.Chain)]
+        [TestCase(50, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Cloth, MaterialType.MetalPlate)]
+
+        [TestCase(41, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Light, MaterialType.Cloth)]
+        [TestCase(82, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Light, MaterialType.Leather)]
+        [TestCase(153, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Light, MaterialType.Chain)]
+        [TestCase(213, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Light, MaterialType.MetalPlate)]
+
+        [TestCase(68, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Medium, MaterialType.Cloth)]
+        [TestCase(145, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Medium, MaterialType.Leather)]
+        [TestCase(278, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Medium, MaterialType.Chain)]
+        [TestCase(398, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Medium, MaterialType.MetalPlate)]
+
+        [TestCase(47, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Heavy, MaterialType.Cloth)]
+        [TestCase(89, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Heavy, MaterialType.Leather)]
+        [TestCase(164, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Heavy, MaterialType.Chain)]
+        [TestCase(224, 1.0f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Heavy, MaterialType.MetalPlate)]
+        #endregion
+        #endregion
+        #endregion
+        #region Test Cases: Armour Price Multiplier = 0.6f, Relative Price Multiplier = 1.0f
+        #region Prototype Grade
+        #region Body
+        [TestCase(17, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Cloth, MaterialType.Cloth)]
+        [TestCase(37, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Cloth, MaterialType.Leather)]
+        [TestCase(70, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Cloth, MaterialType.Chain)]
+        [TestCase(100, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Cloth, MaterialType.MetalPlate)]
+
+        [TestCase(83, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Light, MaterialType.Cloth)]
+        [TestCase(164, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Light, MaterialType.Leather)]
+        [TestCase(306, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Light, MaterialType.Chain)]
+        [TestCase(426, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Light, MaterialType.MetalPlate)]
+
+        [TestCase(137, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Medium, MaterialType.Cloth)]
+        [TestCase(291, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Medium, MaterialType.Leather)]
+        [TestCase(557, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Medium, MaterialType.Chain)]
+        [TestCase(796, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Medium, MaterialType.MetalPlate)]
+
+        [TestCase(95, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Heavy, MaterialType.Cloth)]
+        [TestCase(179, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Heavy, MaterialType.Leather)]
+        [TestCase(329, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Heavy, MaterialType.Chain)]
+        [TestCase(448, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Heavy, MaterialType.MetalPlate)]
+        #endregion
+        #region Legs
+        [TestCase(8, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Cloth, MaterialType.Cloth)]
+        [TestCase(18, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Cloth, MaterialType.Leather)]
+        [TestCase(35, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Cloth, MaterialType.Chain)]
+        [TestCase(50, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Cloth, MaterialType.MetalPlate)]
+
+        [TestCase(41, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Light, MaterialType.Cloth)]
+        [TestCase(82, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Light, MaterialType.Leather)]
+        [TestCase(153, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Light, MaterialType.Chain)]
+        [TestCase(213, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Light, MaterialType.MetalPlate)]
+
+        [TestCase(68, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Medium, MaterialType.Cloth)]
+        [TestCase(145, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Medium, MaterialType.Leather)]
+        [TestCase(278, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Medium, MaterialType.Chain)]
+        [TestCase(398, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Medium, MaterialType.MetalPlate)]
+
+        [TestCase(47, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Heavy, MaterialType.Cloth)]
+        [TestCase(89, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Heavy, MaterialType.Leather)]
+        [TestCase(164, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Heavy, MaterialType.Chain)]
+        [TestCase(224, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Heavy, MaterialType.MetalPlate)]
+        #endregion
+        #region Shirt
+        [TestCase(25, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Cloth, MaterialType.Cloth)]
+        [TestCase(55, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Cloth, MaterialType.Leather)]
+        [TestCase(105, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Cloth, MaterialType.Chain)]
+        [TestCase(150, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Cloth, MaterialType.MetalPlate)]
+
+        [TestCase(124, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Light, MaterialType.Cloth)]
+        [TestCase(246, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Light, MaterialType.Leather)]
+        [TestCase(459, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Light, MaterialType.Chain)]
+        [TestCase(639, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Light, MaterialType.MetalPlate)]
+
+        [TestCase(205, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Medium, MaterialType.Cloth)]
+        [TestCase(436, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Medium, MaterialType.Leather)]
+        [TestCase(835, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Medium, MaterialType.Chain)]
+        [TestCase(1194, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Medium, MaterialType.MetalPlate)]
+
+        [TestCase(142, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Heavy, MaterialType.Cloth)]
+        [TestCase(268, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Heavy, MaterialType.Leather)]
+        [TestCase(493, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Heavy, MaterialType.Chain)]
+        [TestCase(672, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Shirt, ArmourClass.Heavy, MaterialType.MetalPlate)]
+        #endregion
+        #region Boots
+        [TestCase(3, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Cloth, MaterialType.Cloth)]
+        [TestCase(7, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Cloth, MaterialType.Leather)]
+        [TestCase(14, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Cloth, MaterialType.Chain)]
+        [TestCase(20, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Cloth, MaterialType.MetalPlate)]
+
+        [TestCase(16, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Light, MaterialType.Cloth)]
+        [TestCase(32, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Light, MaterialType.Leather)]
+        [TestCase(61, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Light, MaterialType.Chain)]
+        [TestCase(85, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Light, MaterialType.MetalPlate)]
+
+        [TestCase(27, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Medium, MaterialType.Cloth)]
+        [TestCase(58, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Medium, MaterialType.Leather)]
+        [TestCase(111, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Medium, MaterialType.Chain)]
+        [TestCase(159, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Medium, MaterialType.MetalPlate)]
+
+        [TestCase(19, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Heavy, MaterialType.Cloth)]
+        [TestCase(35, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Heavy, MaterialType.Leather)]
+        [TestCase(65, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Heavy, MaterialType.Chain)]
+        [TestCase(89, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Boots, ArmourClass.Heavy, MaterialType.MetalPlate)]
+        #endregion
+        #region Hat
+        [TestCase(5, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Cloth, MaterialType.Cloth)]
+        [TestCase(11, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Cloth, MaterialType.Leather)]
+        [TestCase(21, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Cloth, MaterialType.Chain)]
+        [TestCase(30, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Cloth, MaterialType.MetalPlate)]
+
+        [TestCase(24, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Light, MaterialType.Cloth)]
+        [TestCase(49, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Light, MaterialType.Leather)]
+        [TestCase(91, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Light, MaterialType.Chain)]
+        [TestCase(127, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Light, MaterialType.MetalPlate)]
+
+        [TestCase(41, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Medium, MaterialType.Cloth)]
+        [TestCase(87, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Medium, MaterialType.Leather)]
+        [TestCase(167, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Medium, MaterialType.Chain)]
+        [TestCase(238, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Medium, MaterialType.MetalPlate)]
+
+        [TestCase(28, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Heavy, MaterialType.Cloth)]
+        [TestCase(53, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Heavy, MaterialType.Leather)]
+        [TestCase(98, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Heavy, MaterialType.Chain)]
+        [TestCase(134, 0.6f, 1.0f, ArmourGrade.Prototype, Slot.Hat, ArmourClass.Heavy, MaterialType.MetalPlate)]
+        #endregion
+        #endregion
+        #endregion
+        #region Test Cases: Armour Price Multiplier = 0.6f, Relative Price Multiplier = 1.4f
+        #region Prototype Grade
+        #region Body
+        [TestCase(23, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Cloth, MaterialType.Cloth)]
+        [TestCase(51, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Cloth, MaterialType.Leather)]
+        [TestCase(98, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Cloth, MaterialType.Chain)]
+        [TestCase(140, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Cloth, MaterialType.MetalPlate)]
+
+        [TestCase(116, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Light, MaterialType.Cloth)]
+        [TestCase(229, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Light, MaterialType.Leather)]
+        [TestCase(428, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Light, MaterialType.Chain)]
+        [TestCase(596, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Light, MaterialType.MetalPlate)]
+
+        [TestCase(191, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Medium, MaterialType.Cloth)]
+        [TestCase(407, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Medium, MaterialType.Leather)]
+        [TestCase(779, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Medium, MaterialType.Chain)]
+        [TestCase(1114, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Medium, MaterialType.MetalPlate)]
+
+        [TestCase(133, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Heavy, MaterialType.Cloth)]
+        [TestCase(250, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Heavy, MaterialType.Leather)]
+        [TestCase(460, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Heavy, MaterialType.Chain)]
+        [TestCase(627, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Body, ArmourClass.Heavy, MaterialType.MetalPlate)]
+        #endregion
+        #region Legs
+        [TestCase(11, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Cloth, MaterialType.Cloth)]
+        [TestCase(25, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Cloth, MaterialType.Leather)]
+        [TestCase(49, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Cloth, MaterialType.Chain)]
+        [TestCase(70, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Cloth, MaterialType.MetalPlate)]
+
+        [TestCase(58, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Light, MaterialType.Cloth)]
+        [TestCase(114, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Light, MaterialType.Leather)]
+        [TestCase(214, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Light, MaterialType.Chain)]
+        [TestCase(298, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Light, MaterialType.MetalPlate)]
+
+        [TestCase(95, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Medium, MaterialType.Cloth)]
+        [TestCase(203, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Medium, MaterialType.Leather)]
+        [TestCase(389, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Medium, MaterialType.Chain)]
+        [TestCase(557, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Medium, MaterialType.MetalPlate)]
+
+        [TestCase(66, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Heavy, MaterialType.Cloth)]
+        [TestCase(125, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Heavy, MaterialType.Leather)]
+        [TestCase(230, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Heavy, MaterialType.Chain)]
+        [TestCase(313, 0.6f, 1.4f, ArmourGrade.Prototype, Slot.Legs, ArmourClass.Heavy, MaterialType.MetalPlate)]
+        #endregion
+        #endregion
+        #endregion
+        public void ShouldCalculatePrice(int expectedResult, float armourPriceMult, float relativePriceMult, ArmourGrade grade, Slot slot, ArmourClass armourClass, MaterialType material)
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
-            var armour = new Armour("string id", "name");
-            armour.PartCoverage = new[] { new ItemReference<LocationalDamage>(new LocationalDamage("locational", "locational"), 100, 0, 0) };
-            armour.Slot = Slot.Body;
-            armour.Class = ArmourClass.Light;
-            armour.MaterialType = MaterialType.Leather;
-            armour.RelativePriceMult = 1;
+            var armour = new Armour("string id", "imaginary armour");
+            armour.Slot = slot;
+            armour.Class = armourClass;
+            armour.MaterialType = material;
+            armour.RelativePriceMult = relativePriceMult;
 
-            var actual = calculator.CalculatePrice(armour, ArmourGrade.Standard);
+            var result = calculator.CalculatePrice(armour, grade, armourPriceMult);
 
-            Assert.AreEqual(2980, actual);
+            NUnit.Framework.Assert.That(result, Is.EqualTo(expectedResult));
         }
 
         [TestMethod]
-        public void ShouldCalculateForNoCoverageItems()
+        public void ShouldCalculateMasterworkHachiganePrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
-
-            var armour = new Armour("string id", "name");
-            armour.Slot = Slot.Shirt;
-            armour.Class = ArmourClass.Cloth;
-            armour.MaterialType = MaterialType.Cloth;
-            armour.RelativePriceMult = 1;
-            armour.Value = 100;
-
-            var actual = calculator.CalculatePrice(armour, ArmourGrade.Standard);
-
-            Assert.AreEqual(150, actual);
-        }
-
-        [TestMethod]
-        public void ShouldCalculateHachiganePrice()
-        {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armour = new Armour("string id", "Hachigane");
             armour.PartCoverage = new[] { new ItemReference<LocationalDamage>(new LocationalDamage("locational", "locational"), 100, 0, 0) };
@@ -64,10 +308,9 @@ namespace KenshiWikiValidator.Tests.Armours
         }
 
         [TestMethod]
-        public void ShouldCalculateArmouredFacePlatesPrice()
+        public void ShouldCalculatePrototypeArmouredFacePlatesPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armour = new Armour("string id", "Armoured Face Plates");
             armour.PartCoverage = new[] { new ItemReference<LocationalDamage>(new LocationalDamage("locational", "locational"), 100, 0, 0) };
@@ -85,8 +328,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculatePrototypeBandanaPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Light;
             var material = MaterialType.Cloth;
@@ -101,8 +343,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateShoddyBlackPlateJacketPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Medium;
             var material = MaterialType.Leather;
@@ -117,8 +358,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculatePrototypeBlackenedChainShirtPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Medium;
             var material = MaterialType.Chain;
@@ -133,8 +373,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateStandardBlackenedChainShirtPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Medium;
             var material = MaterialType.Chain;
@@ -149,8 +388,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateHighBlackenedChainShirtPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Medium;
             var material = MaterialType.Chain;
@@ -165,8 +403,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateSpecialistBlackenedChainShirtPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Medium;
             var material = MaterialType.Chain;
@@ -181,8 +418,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateMasterworkBlackenedChainShirtPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Medium;
             var material = MaterialType.Chain;
@@ -197,8 +433,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculatePrototypeBlackenedChainmailTagelmustPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Medium;
             var material = MaterialType.Chain;
@@ -213,8 +448,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateMasterworkBucketZukinPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Heavy;
             var material = MaterialType.Chain;
@@ -229,8 +463,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateMasterworkChainShirtPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Medium;
             var material = MaterialType.Chain;
@@ -245,8 +478,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculatePrototypeCrabArmourPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Heavy;
             var material = MaterialType.MetalPlate;
@@ -261,8 +493,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateStandardCrabArmourPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Heavy;
             var material = MaterialType.MetalPlate;
@@ -277,8 +508,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateHighDarkLeatherShirtPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Light;
             var material = MaterialType.Leather;
@@ -293,8 +523,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateSpecialistDarkLeatherShirtPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Light;
             var material = MaterialType.Leather;
@@ -309,8 +538,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateMasterworkDarkLeatherShirtPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Light;
             var material = MaterialType.Leather;
@@ -325,8 +553,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculatePrototypeHackStopperJacketPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Medium;
             var material = MaterialType.Leather;
@@ -341,8 +568,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateSpecialistHackStopperJacketPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Medium;
             var material = MaterialType.Leather;
@@ -357,8 +583,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateHighAssassinsRagsPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Light;
             var material = MaterialType.Leather;
@@ -373,8 +598,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateSpecialistAssassinsRagsPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Light;
             var material = MaterialType.Leather;
@@ -389,8 +613,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateMasterworkAssassinsRagsPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Light;
             var material = MaterialType.Leather;
@@ -405,8 +628,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculatePrototypeHiverChainShirtPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Medium;
             var material = MaterialType.Chain;
@@ -421,8 +643,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateStandardHiverChainShirtPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Medium;
             var material = MaterialType.Chain;
@@ -437,8 +658,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateSpecialistHiverChainShirtPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Medium;
             var material = MaterialType.Chain;
@@ -453,8 +673,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateShoddyLeatherHiveVestPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Light;
             var material = MaterialType.Leather;
@@ -469,8 +688,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateHighLeatherHiveVestPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Light;
             var material = MaterialType.Leather;
@@ -485,8 +703,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateMasterworkLeatherHiveVestPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Light;
             var material = MaterialType.Leather;
@@ -501,8 +718,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateHighLeatherShirtPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Light;
             var material = MaterialType.Leather;
@@ -517,8 +733,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateSpecialistLeatherShirtPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Light;
             var material = MaterialType.Leather;
@@ -533,8 +748,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateMasterworkLeatherShirtPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Light;
             var material = MaterialType.Leather;
@@ -549,8 +763,7 @@ namespace KenshiWikiValidator.Tests.Armours
         [TestMethod]
         public void ShouldCalculateMasterworkPlateJacketPrice()
         {
-            var baseProvider = new BaseArmourValueProvider();
-            var calculator = new ArmourPriceCalculator(baseProvider);
+            var calculator = new ArmourPriceCalculator();
 
             var armourClass = ArmourClass.Medium;
             var material = MaterialType.Leather;

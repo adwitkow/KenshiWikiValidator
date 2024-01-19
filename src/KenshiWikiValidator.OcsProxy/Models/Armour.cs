@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Runtime.InteropServices;
 using KenshiWikiValidator.OcsProxy.Models.Interfaces;
 using OpenConstructionSet.Models;
 
@@ -127,7 +128,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public float? RangedSkillMult { get; set; }
 
         [Value("relative price mult")]
-        public float? RelativePriceMult { get; set; }
+        public float RelativePriceMult { get; set; }
 
         [Value("stealth mult")]
         public float? StealthMult { get; set; }
@@ -272,5 +273,10 @@ namespace KenshiWikiValidator.OcsProxy.Models
 
         [Reference("goes well with")]
         public IEnumerable<ItemReference<Armour>> GoesWellWith { get; set; }
+
+        public override string ToString()
+        {
+            return this.Name;
+        }
     }
 }

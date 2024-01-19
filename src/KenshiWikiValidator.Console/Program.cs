@@ -22,6 +22,7 @@ using KenshiWikiValidator.Console;
 using KenshiWikiValidator.Locations;
 using KenshiWikiValidator.MapItems;
 using KenshiWikiValidator.OcsProxy;
+using KenshiWikiValidator.OcsProxy.Models;
 using KenshiWikiValidator.TownResidents;
 using KenshiWikiValidator.Weapons;
 using WikiClientLibrary.Client;
@@ -58,6 +59,13 @@ Console.WriteLine("Loading items...");
 var sw = Stopwatch.StartNew();
 itemRepository.Load();
 sw.Stop();
+
+var groups = itemRepository.GetItems<Armour>()
+    .Where(armour => armour.RelativePriceMult == 1f)
+    .GroupBy(armour => (armour.Class, armour.MaterialType))
+    .OrderBy(group => group.Key.Class)
+    .ThenBy(group => group.Key.MaterialType)
+    .ToDictionary(group => group.Key, group => group.First());
 
 Console.WriteLine($"Loaded all items in {sw.Elapsed}");
 Console.WriteLine();
