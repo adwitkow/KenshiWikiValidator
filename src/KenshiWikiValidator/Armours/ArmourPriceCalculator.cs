@@ -31,14 +31,14 @@ namespace KenshiWikiValidator.Armours
             { Slot.Boots, 0.2f },
         };
 
-        private static readonly Dictionary<ArmourGrade, int> GradeValues = new Dictionary<ArmourGrade, int>()
+        private static readonly Dictionary<ArmourGrade, float> GradeValues = new Dictionary<ArmourGrade, float>()
         {
-            { ArmourGrade.Prototype, 5 },
-            { ArmourGrade.Shoddy, 20 },
-            { ArmourGrade.Standard, 40 },
-            { ArmourGrade.High, 60 },
-            { ArmourGrade.Specialist, 80 },
-            { ArmourGrade.Masterwork, 95 },
+            { ArmourGrade.Prototype, 5f },
+            { ArmourGrade.Shoddy, 19.99999f },
+            { ArmourGrade.Standard, 39.99999f },
+            { ArmourGrade.High, 59.99999f },
+            { ArmourGrade.Specialist, 79.99999f },
+            { ArmourGrade.Masterwork, 95.00001f },
         };
 
         private static readonly Dictionary<(ArmourClass, MaterialType), int> MinValues = new Dictionary<(ArmourClass, MaterialType), int>()
@@ -92,7 +92,7 @@ namespace KenshiWikiValidator.Armours
             var maxValue = MaxValues[(armourClass, material)];
             var gradeValue = GradeValues[grade];
 
-            var qualityMultiplier = Math.Pow((double)gradeValue / 100, 2);
+            var qualityMultiplier = Math.Pow(gradeValue / 100, 2);
             var maxMinDifference = maxValue - minValue;
             var multipliedDifference = (int)(maxMinDifference * qualityMultiplier);
             var basePrice = minValue + multipliedDifference;
