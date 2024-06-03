@@ -41,19 +41,14 @@ namespace KenshiWikiValidator.OcsProxy
                 this.propertyMap.Add(type, propertyContainer);
             }
 
-            foreach (var pair in baseItem.Values)
-            {
-                if (!propertyContainer.HasValueProperty(pair.Key))
-                {
-                    Console.Error.WriteLine($"'{type}' does not have a property that {{ {pair.Key}: {pair.Value} }} could be mapped to.");
-                    continue;
-                }
+            this.ConvertValues(baseItem, builtItem, type, propertyContainer);
+            this.ConvertReferences(baseItem, builtItem, propertyContainer);
 
-                var prop = propertyContainer.GetValueProperty(pair.Key);
-                var convertedValue = ChangeType(pair.Value, prop.PropertyType);
-                prop.SetValue(builtItem, convertedValue);
-            }
+            return builtItem;
+        }
 
+        private void ConvertReferences(ModItem baseItem, IItem builtItem, PropertyContainer propertyContainer)
+        {
             foreach (var refCategory in baseItem.ReferenceCategories)
             {
                 var referenceProperties = propertyContainer.GetReferenceProperties(refCategory.Key);
@@ -98,8 +93,22 @@ namespace KenshiWikiValidator.OcsProxy
                     prop.SetValue(builtItem, list);
                 }
             }
+        }
 
-            return builtItem;
+        private void ConvertValues(ModItem baseItem, IItem builtItem, Type type, PropertyContainer propertyContainer)
+        {
+            foreach (var pair in baseItem.Values)
+            {
+                if (!propertyContainer.HasValueProperty(pair.Key))
+                {
+                    Console.Error.WriteLine($"'{type}' does not have a property that {{ {pair.Key}: {pair.Value} }} could be mapped to.");
+                    continue;
+                }
+
+                var prop = propertyContainer.GetValueProperty(pair.Key);
+                var convertedValue = ChangeType(pair.Value, prop.PropertyType);
+                prop.SetValue(builtItem, convertedValue);
+            }
         }
 
         private static object? ChangeType(object value, Type conversion)

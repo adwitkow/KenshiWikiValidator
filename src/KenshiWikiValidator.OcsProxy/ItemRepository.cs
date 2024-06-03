@@ -112,7 +112,8 @@ namespace KenshiWikiValidator.OcsProxy
             var allBaseTowns = this.GetItems<Town>()
                 .Where(town => town.OverrideTown.Any())
                 .ToList();
-            while (baseItems is not null && baseItems.Any())
+
+            while (baseItems.Count != 0)
             {
                 previousBaseItems = baseItems.ToList();
 
@@ -128,7 +129,7 @@ namespace KenshiWikiValidator.OcsProxy
                     .Distinct()
                     .ToList();
 
-                if (previousBaseItems.All(baseItems.Contains))
+                if (previousBaseItems.TrueForAll(baseItems.Contains))
                 {
                     break;
                 }

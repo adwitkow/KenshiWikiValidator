@@ -128,9 +128,9 @@ namespace KenshiWikiValidator.BaseComponents.SharedRules
             else
             {
                 if (!wasPreviousLineEmpty
-                    && !(line.StartsWith("*")
+                    && !(line.StartsWith('*')
                     || line.StartsWith("__")
-                    || previousLine.StartsWith("=")
+                    || previousLine.StartsWith('=')
                     || previousLine.EndsWith("}}")
                     || previousLine.EndsWith("|]")
                     || previousLine.Equals("<br />")))

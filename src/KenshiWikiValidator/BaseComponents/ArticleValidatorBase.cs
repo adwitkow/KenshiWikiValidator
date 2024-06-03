@@ -67,7 +67,7 @@ namespace KenshiWikiValidator.BaseComponents
                 results.Add(rule.Execute(title, content, data));
             }
 
-            var success = !results.Any(result => !result.Success);
+            var success = !results.Exists(result => !result.Success);
 
             if (!success)
             {

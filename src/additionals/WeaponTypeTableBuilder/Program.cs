@@ -91,7 +91,7 @@ string GetAdditionals(Weapon weapon)
 
 void AppendBaseAdditional(StringBuilder builder, string header, float? value)
 {
-    if (value != 1)
+    if (value > 0.99f && value < 1.01f)
     {
         builder.AppendLine($"<li>'''{header}''': {GetPercentageValue(value - 1)}</li>");
     }
