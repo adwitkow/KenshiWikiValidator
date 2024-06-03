@@ -6,7 +6,9 @@ using KenshiWikiValidator.OcsProxy.Models;
 
 Console.WriteLine("Hello, World!");
 
-var repo = new ItemRepository();
+var contextProvider = new ContextProvider();
+var context = contextProvider.GetDataMiningContext();
+var repo = new ItemRepository(context);
 repo.Load();
 
 var types = new[] { "Katana", "Sabre", "Blunt", "Heavy", "Hackers", "Unarmed", "Bow", "Turret", "Polearms" };

@@ -16,8 +16,7 @@
 
 using KenshiWikiValidator.OcsProxy.Models;
 using OpenConstructionSet;
-using OpenConstructionSet.Data;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Mods.Context;
 
 namespace KenshiWikiValidator.OcsProxy
 {
@@ -26,33 +25,14 @@ namespace KenshiWikiValidator.OcsProxy
         private readonly Dictionary<string, IItem> itemLookup;
         private readonly Dictionary<Type, IEnumerable<IItem>> itemsByType;
 
-        private readonly OcsDataContexOptions contextOptions;
-        private readonly IOcsDataContextBuilder contextBuilder;
+        private readonly IModContext context;
 
-        public ItemRepository(IOcsDiscoveryService discoveryService, IOcsDataContextBuilder contextBuilder)
+        public ItemRepository(IModContext context)
         {
-            var installations = discoveryService.DiscoverAllInstallations();
-            var installation = installations.Values.FirstOrDefault();
-
-            this.contextOptions = new OcsDataContexOptions(
-                Name: Guid.NewGuid().ToString(),
-                Installation: installation,
-                LoadGameFiles: ModLoadType.Base,
-                LoadEnabledMods: ModLoadType.None,
-                ThrowIfMissing: false);
-
-            this.GameDirectory = installation?.Game;
             this.itemLookup = new Dictionary<string, IItem>();
             this.itemsByType = new Dictionary<Type, IEnumerable<IItem>>();
-            this.contextBuilder = contextBuilder;
+            this.context = context;
         }
-
-        public ItemRepository()
-            : this(OcsDiscoveryService.Default, OcsDataContextBuilder.Default)
-        {
-        }
-
-        public string? GameDirectory { get; private set; }
 
         public IEnumerable<IItem> GetItems()
         {
@@ -88,12 +68,17 @@ namespace KenshiWikiValidator.OcsProxy
             return (T)this.GetItemByStringId(id);
         }
 
+        public bool ContainsStringId(string id)
+        {
+            return this.itemLookup.ContainsKey(id);
+        }
+
         public void Load()
         {
-            var contextItems = this.contextBuilder.Build(this.contextOptions).Items.Values.ToList();
-
+            var items = this.context.Items;
             var modelConverter = new ItemModelConverter(this);
-            var convertedItems = modelConverter.Convert(contextItems).ToArray();
+
+            var convertedItems = modelConverter.Convert(items).ToArray();
 
             // First, we add all the newly created (not yet mapped) items to the lookup dictionary
             foreach (var (baseItem, result) in convertedItems)

@@ -9,7 +9,9 @@ if (Directory.Exists("characters"))
     Directory.Delete("characters", true);
 }
 
-var repository = new ItemRepository();
+var contextProvider = new ContextProvider();
+var context = contextProvider.GetDataMiningContext();
+var repository = new ItemRepository(context);
 repository.Load();
 
 var characters = repository.GetItems<Character>();

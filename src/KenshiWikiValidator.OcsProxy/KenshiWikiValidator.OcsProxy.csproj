@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <CodeAnalysisRuleSet>..\..\.sonarlint\adwitkow_kenshiwikivalidatorcsharp.ruleset</CodeAnalysisRuleSet>
@@ -20,7 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenConstructionSet" Version="2.2.0" />
+    <!-- I had to fork OCS and release it myself (unlisted) because the original author did not :(
+         I didn't feel like dealing with submodules or complicated pipelines -->
+    <PackageReference Include="OpenConstructionSet-unofficial" Version="1.0.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

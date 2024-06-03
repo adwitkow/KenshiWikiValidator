@@ -5,7 +5,9 @@ using KenshiWikiValidator.OcsProxy.Models;
 
 var states = new List<string>() { "dead", "alive", "imprisoned" };
 
-var repository = new ItemRepository();
+var contextProvider = new ContextProvider();
+var context = contextProvider.GetDataMiningContext();
+var repository = new ItemRepository(context);
 repository.Load();
 
 var towns = repository.GetItems<Town>();

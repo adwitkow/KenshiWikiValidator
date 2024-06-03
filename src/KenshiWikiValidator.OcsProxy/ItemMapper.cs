@@ -16,8 +16,8 @@
 
 using System.Collections;
 using System.Reflection;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy
 {
@@ -32,7 +32,7 @@ namespace KenshiWikiValidator.OcsProxy
             this.propertyMap = new Dictionary<Type, PropertyContainer>();
         }
 
-        public IItem Map(DataItem baseItem, IItem builtItem)
+        public IItem Map(ModItem baseItem, IItem builtItem)
         {
             var type = builtItem.GetType();
             if (!this.propertyMap.TryGetValue(type, out var propertyContainer))
@@ -43,6 +43,12 @@ namespace KenshiWikiValidator.OcsProxy
 
             foreach (var pair in baseItem.Values)
             {
+                if (!propertyContainer.HasValueProperty(pair.Key))
+                {
+                    Console.Error.WriteLine($"'{type}' does not have a property that {{ {pair.Key}: {pair.Value} }} could be mapped to.");
+                    continue;
+                }
+
                 var prop = propertyContainer.GetValueProperty(pair.Key);
                 var convertedValue = ChangeType(pair.Value, prop.PropertyType);
                 prop.SetValue(builtItem, convertedValue);
@@ -54,7 +60,7 @@ namespace KenshiWikiValidator.OcsProxy
 
                 foreach (var prop in referenceProperties)
                 {
-                    var baseReferences = refCategory.Value.Values;
+                    var baseReferences = refCategory.References;
 
                     var propertyGenericType = prop.PropertyType.GenericTypeArguments[0];
                     var listType = typeof(List<>).MakeGenericType(propertyGenericType);
@@ -69,6 +75,12 @@ namespace KenshiWikiValidator.OcsProxy
 
                     foreach (var baseReference in baseReferences)
                     {
+                        if (!this.itemRepository.ContainsStringId(baseReference.TargetId))
+                        {
+                            Console.Error.WriteLine($"Could not establish a reference of category '{refCategory.Key}' between item: '{baseItem.Name}' ('{baseItem.StringId}') -> '{baseReference.TargetId}' ({baseReference.Value0}, {baseReference.Value1}, {baseReference.Value2}). Item with id '{baseReference.TargetId}' does not exist.");
+                            continue;
+                        }
+
                         var item = this.itemRepository.GetItemByStringId(baseReference.TargetId);
                         var args = new object[] { item, baseReference.Value0, baseReference.Value1, baseReference.Value2 };
 
@@ -131,6 +143,11 @@ namespace KenshiWikiValidator.OcsProxy
                 this.references = properties
                     .Where(prop => prop.IsDefined(typeof(ReferenceAttribute), false))
                     .ToLookup(prop => GetCustomAttribute<ReferenceAttribute>(prop).Category, prop => prop);
+            }
+
+            public bool HasValueProperty(string propertyName)
+            {
+                return this.values.ContainsKey(propertyName);
             }
 
             public PropertyInfo GetValueProperty(string propertyName)

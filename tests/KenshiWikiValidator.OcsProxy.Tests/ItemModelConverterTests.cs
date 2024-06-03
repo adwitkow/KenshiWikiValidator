@@ -4,8 +4,8 @@ using System.Linq;
 using KenshiWikiValidator.OcsProxy.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Tests
 {
@@ -13,14 +13,14 @@ namespace KenshiWikiValidator.OcsProxy.Tests
     public class ItemModelConverterTests
     {
         [TestMethod]
-        public void ShouldConvertWeaponDataItemToWeapon()
+        public void ShouldConvertWeaponModItemToWeapon()
         {
-            var repository = new Mock<ItemRepository>();
+            var repository = new Mock<IItemRepository>();
             var converter = new ItemModelConverter(repository.Object);
 
-            var weaponDataItem = new DataItem(ItemType.Weapon, 0, "name", "stringid");
+            var weaponModItem = new ModItem(ItemType.Weapon, "name", "stringid");
 
-            var convertedItem = converter.Convert(weaponDataItem);
+            var convertedItem = converter.Convert(weaponModItem);
 
             Assert.IsInstanceOfType(convertedItem, typeof(Weapon));
         }
@@ -28,14 +28,14 @@ namespace KenshiWikiValidator.OcsProxy.Tests
         [TestMethod]
         public void ShouldConvertMultipleItems()
         {
-            var repository = new Mock<ItemRepository>();
+            var repository = new Mock<IItemRepository>();
             var converter = new ItemModelConverter(repository.Object);
 
-            var weaponDataItem = new DataItem(ItemType.Weapon, 0, "name", "stringid");
-            var containerDataItem = new DataItem(ItemType.Container, 0, "name", "stringid");
-            var armourDataItem = new DataItem(ItemType.Armour, 0, "name", "stringid");
+            var weaponModItem = new ModItem(ItemType.Weapon, "name", "stringid");
+            var containerModItem = new ModItem(ItemType.Container, "name", "stringid");
+            var armourModItem = new ModItem(ItemType.Armour, "name", "stringid");
 
-            var dataItems = new[] { weaponDataItem, containerDataItem, armourDataItem };
+            var dataItems = new[] { weaponModItem, containerModItem, armourModItem };
 
             var convertedPairs = converter.Convert(dataItems);
 
@@ -62,16 +62,16 @@ namespace KenshiWikiValidator.OcsProxy.Tests
                 ItemType.Boat, ItemType.GamestateBoat, ItemType.BuildGrid, ItemType.BuildingShell, ItemType.ObjectTypeMax
             };
 
-            var repository = new Mock<ItemRepository>();
+            var repository = new Mock<IItemRepository>();
             var converter = new ItemModelConverter(repository.Object);
 
-            var dataItems = new List<DataItem>();
+            var dataItems = new List<ModItem>();
             var itemTypes = Enum.GetValues(typeof(ItemType))
                 .Cast<ItemType>()
                 .Except(unknownItemTypes);
             foreach (var type in itemTypes)
             {
-                dataItems.Add(new DataItem(type, 0, type.ToString(), type.ToString()));
+                dataItems.Add(new ModItem(type, type.ToString(), type.ToString()));
             }
 
             var convertedPairs = converter.Convert(dataItems);
