@@ -15,14 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using KenshiWikiValidator.OcsProxy.Models;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy
 {
     public class ItemModelConverter
     {
-        private readonly Dictionary<ItemType, Func<DataItem, IItem>> conversionMap;
+        private readonly Dictionary<ItemType, Func<ModItem, IItem>> conversionMap;
         private readonly ItemMapper mapper;
 
         public ItemModelConverter(IItemRepository itemRepository)
@@ -31,26 +31,26 @@ namespace KenshiWikiValidator.OcsProxy
             this.mapper = new ItemMapper(itemRepository);
         }
 
-        public IItem Convert(DataItem item)
+        public IItem Convert(ModItem item)
         {
             var result = this.conversionMap[item.Type].Invoke(item);
 
             return result;
         }
 
-        public IEnumerable<(DataItem baseItem, IItem result)> Convert(IEnumerable<DataItem> contextItems)
+        public IEnumerable<(ModItem baseItem, IItem result)> Convert(IEnumerable<ModItem> contextItems)
         {
             return contextItems.Select(baseItem => (baseItem, this.Convert(baseItem)));
         }
 
-        public IItem MapProperties((DataItem Base, IItem Result) convertedPair)
+        public IItem MapProperties((ModItem Base, IItem Result) convertedPair)
         {
             return this.mapper.Map(convertedPair.Base, convertedPair.Result);
         }
 
-        private Dictionary<ItemType, Func<DataItem, IItem>> CreateConversionMap()
+        private Dictionary<ItemType, Func<ModItem, IItem>> CreateConversionMap()
         {
-            return new Dictionary<ItemType, Func<DataItem, IItem>>()
+            return new Dictionary<ItemType, Func<ModItem, IItem>>()
             {
                 { ItemType.LocationalDamage, (item) => new LocationalDamage(item.StringId, item.Name) },
                 { ItemType.Item, (item) => new Models.Item(item.StringId, item.Name) },

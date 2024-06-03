@@ -6,7 +6,9 @@ using KenshiWikiValidator.OcsProxy.Models;
 
 Console.WriteLine("Hello, World!");
 
-var repo = new ItemRepository();
+var contextProvider = new ContextProvider();
+var context = contextProvider.GetDataMiningContext();
+var repo = new ItemRepository(context);
 repo.Load();
 
 var types = new[] { "Katana", "Sabre", "Blunt", "Heavy", "Hackers", "Unarmed", "Bow", "Turret", "Polearms" };
@@ -89,7 +91,7 @@ string GetAdditionals(Weapon weapon)
 
 void AppendBaseAdditional(StringBuilder builder, string header, float? value)
 {
-    if (value != 1)
+    if (value > 0.99f && value < 1.01f)
     {
         builder.AppendLine($"<li>'''{header}''': {GetPercentageValue(value - 1)}</li>");
     }

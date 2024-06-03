@@ -3,8 +3,8 @@ using KenshiWikiValidator.OcsProxy.DialogueComponents;
 using KenshiWikiValidator.OcsProxy.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Tests
 {
@@ -17,7 +17,7 @@ namespace KenshiWikiValidator.OcsProxy.Tests
             var repositoryMock = new Mock<IItemRepository>();
             var mapper = new ItemMapper(repositoryMock.Object);
 
-            var dataItem = new DataItem(ItemType.Weapon, 0, "weapon", "weaponid");
+            var dataItem = new ModItem(ItemType.Weapon, "weapon", "weaponid");
             dataItem.Values.Add("attack mod", 5);
             var builtItem = new Weapon("weaponid", "weapon");
 
@@ -32,7 +32,7 @@ namespace KenshiWikiValidator.OcsProxy.Tests
             var repositoryMock = new Mock<IItemRepository>();
             var mapper = new ItemMapper(repositoryMock.Object);
 
-            var dataItem = new DataItem(ItemType.Weapon, 0, "weapon", "weaponid");
+            var dataItem = new ModItem(ItemType.Weapon, "weapon", "weaponid");
             var builtItem = new Weapon("weaponid", "weapon");
 
             mapper.Map(dataItem, builtItem);
@@ -49,15 +49,15 @@ namespace KenshiWikiValidator.OcsProxy.Tests
             repositoryMock
                 .Setup(repo => repo.GetItemByStringId(builtFaction.StringId))
                 .Returns(builtFaction);
+            repositoryMock
+                .Setup(repo => repo.ContainsStringId(builtFaction.StringId))
+                .Returns(true);
 
             var mapper = new ItemMapper(repositoryMock.Object);
 
-            var dataItem = new DataItem(ItemType.Town, 0, "town", "townid");
-            var referenceCategory = new DataReferenceCategory("faction")
-            {
-                new DataReference("factionid", 0, 0, 0)
-            };
-            dataItem.ReferenceCategories.Add(referenceCategory);
+            var dataItem = new ModItem(ItemType.Town, "town", "townid");
+            dataItem.ReferenceCategories.Add("faction");
+            dataItem.ReferenceCategories.First().References.Add("factionid");
 
             mapper.Map(dataItem, builtItem);
 
@@ -76,12 +76,9 @@ namespace KenshiWikiValidator.OcsProxy.Tests
 
             var mapper = new ItemMapper(repositoryMock.Object);
 
-            var dataItem = new DataItem(ItemType.Town, 0, "town", "townid");
-            var referenceCategory = new DataReferenceCategory("faction")
-            {
-                new DataReference("factionid", 0, 0, 0)
-            };
-            dataItem.ReferenceCategories.Add(referenceCategory);
+            var dataItem = new ModItem(ItemType.Town, "town", "townid");
+            dataItem.ReferenceCategories.Add("faction");
+            dataItem.ReferenceCategories.First().References.Add("factionid");
 
             mapper.Map(dataItem, builtItem);
 
@@ -94,7 +91,7 @@ namespace KenshiWikiValidator.OcsProxy.Tests
             var repositoryMock = new Mock<IItemRepository>();
             var mapper = new ItemMapper(repositoryMock.Object);
 
-            var dataItem = new DataItem(ItemType.Weapon, 0, "weapon", "weaponid");
+            var dataItem = new ModItem(ItemType.Weapon, "weapon", "weaponid");
             var fileValue = new FileValue("path");
             dataItem.Values["icon"] = fileValue;
             var builtItem = new Weapon("weaponid", "weapon");
@@ -110,7 +107,7 @@ namespace KenshiWikiValidator.OcsProxy.Tests
             var repositoryMock = new Mock<IItemRepository>();
             var mapper = new ItemMapper(repositoryMock.Object);
 
-            var dataItem = new DataItem(ItemType.DialogueLine, 0, "line", "lineid");
+            var dataItem = new ModItem(ItemType.DialogueLine, "line", "lineid");
             dataItem.Values["speaker"] = (int)DialogueSpeaker.Me;
             var builtItem = new DialogueLine("lineid", "line");
 

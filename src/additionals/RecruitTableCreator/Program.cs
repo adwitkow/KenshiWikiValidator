@@ -4,7 +4,9 @@ using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.DialogueComponents;
 using KenshiWikiValidator.OcsProxy.Models;
 
-var repository = new ItemRepository();
+var contextProvider = new ContextProvider();
+var context = contextProvider.GetDataMiningContext();
+var repository = new ItemRepository(context);
 repository.Load();
 
 var characterNames = new List<string>();

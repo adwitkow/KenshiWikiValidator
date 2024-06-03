@@ -106,7 +106,7 @@ namespace KenshiWikiValidator.BaseComponents.Creators
 
             var segments = iconPath.Split(Path.DirectorySeparatorChar);
 
-            return segments.Last();
+            return segments[segments.Length - 1];
         }
 
         private record struct ItemInfoboxParameters

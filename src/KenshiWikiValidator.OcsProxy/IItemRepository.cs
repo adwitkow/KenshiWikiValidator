@@ -18,8 +18,6 @@ namespace KenshiWikiValidator.OcsProxy
 {
     public interface IItemRepository
     {
-        string? GameDirectory { get; }
-
         IEnumerable<IItem> GetItems();
 
         IEnumerable<T> GetItems<T>()
@@ -29,6 +27,8 @@ namespace KenshiWikiValidator.OcsProxy
 
         T GetItemByStringId<T>(string id)
             where T : IItem;
+
+        bool ContainsStringId(string id);
 
         void Load();
     }

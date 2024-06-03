@@ -34,7 +34,9 @@ const string WikiApiUrl = "https://kenshi.fandom.com/api.php";
 var zoneDataProvider = new ZoneDataProvider();
 await zoneDataProvider.Load();
 
-var itemRepository = new ItemRepository();
+var contextProvider = new ContextProvider();
+var context = contextProvider.GetDataMiningContext();
+var itemRepository = new ItemRepository(context);
 var wikiTitles = new WikiTitleCache();
 var townResidentValidator = new TownResidentArticleValidator(itemRepository, wikiTitles);
 var validators = new List<IArticleValidator>()
