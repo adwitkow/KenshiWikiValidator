@@ -92,22 +92,24 @@ namespace KenshiWikiValidator.Locations.Templates
             }
 
             var existingTemplate = data.WikiTemplates
-                .SingleOrDefault(template => template.Name.ToLower().Equals("town"));
+                .FirstOrDefault(template => template.Name.ToLower().Equals("town"));
 
             var title = this.GetExistingParameter(existingTemplate, "title1");
+            var leveldata = this.GetExistingParameter(existingTemplate, "leveldata");
 
             var properties = new IndexedDictionary<string, string?>
             {
-                { "string id", string.Join(", ", stringIds) },
+                { "string_id", string.Join(", ", stringIds) },
                 { "fcs_name", string.Join(", ", fcsNames) },
                 { "type", this.townTypes[items.Min(item => (int)item.TownType)] },
                 { "biome", regions },
                 { "image1", this.GetExistingParameter(existingTemplate, "image1") },
-                { "caption1", this.GetExistingParameter(existingTemplate, "caption1") },
+                { "caption-image1", this.GetExistingParameter(existingTemplate, "caption-image1") },
                 { "map", this.GetExistingParameter(existingTemplate, "map") },
                 { "caption2", this.GetExistingParameter(existingTemplate, "caption2") },
                 { "factions", string.Join(", ", factions) },
                 { "title1", title },
+                { "leveldata", leveldata },
             };
 
             if (fcsNames.Any(fcsName => !fcsName.Equals(articleTitle) && string.IsNullOrEmpty(title)))
