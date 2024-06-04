@@ -61,10 +61,16 @@ namespace KenshiWikiValidator.BaseComponents
                 }
             }
 
-            var stringIdValue = this.SelectSingleParameter(validTemplates, "string id");
-            if (!string.IsNullOrEmpty(stringIdValue))
+            var stringIdValues = this.SelectParameters(validTemplates, "string id").ToList();
+            stringIdValues.AddRange(this.SelectParameters(validTemplates, "string_id"));
+
+            var validStringIds = stringIdValues.Where(s => !string.IsNullOrWhiteSpace(s));
+            if (validStringIds.Any())
             {
-                matchingItems = this.CheckStringIds(title, data, matchingItems, stringIdValue);
+                foreach (var stringId in validStringIds)
+                {
+                    matchingItems = this.CheckStringIds(title, data, matchingItems, stringId);
+                }
             }
 
             if (matchingItems.Count == 1)
@@ -114,10 +120,26 @@ namespace KenshiWikiValidator.BaseComponents
 
         private string? SelectSingleParameter(IEnumerable<WikiTemplate> validTemplates, string parameterName)
         {
-            return validTemplates.Where(template => template.Parameters.ContainsKey(parameterName))
-                .Select(template => template.Parameters[parameterName])
-                .Distinct()
+            return this.SelectParameters(validTemplates, parameterName)
                 .SingleOrDefault();
+        }
+
+        private IEnumerable<string> SelectParameters(IEnumerable<WikiTemplate> validTemplates, string parameterName)
+        {
+            return validTemplates.Select(template => this.ExtractParameter(template, parameterName))
+                .Distinct();
+        }
+
+        private string ExtractParameter(WikiTemplate template, string parameterName)
+        {
+            template.Parameters.TryGetValue(parameterName, out var value);
+
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return string.Empty;
+            }
+
+            return value;
         }
 
         private List<IItem> GetMatchingItems(string name)
