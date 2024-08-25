@@ -367,5 +367,18 @@ namespace KenshiWikiValidator.OcsProxy.Models
 
         [Reference("ambient sound")]
         public IEnumerable<ItemReference<AmbientSound>> AmbientSound { get; set; }
+
+        public IEnumerable<StatModifier> StatsGoodModifiers => new int?[]
+            {
+                this.StatsGood0, this.StatsGood1, this.StatsGood2, this.StatsGood3,
+                this.StatsGood4, this.StatsGood5, this.StatsGood6, this.StatsGood7,
+            }.Where(mod => mod is not null).Cast<StatModifier>();
+
+        public IEnumerable<StatModifier> StatBadModifiers => new int?[]
+            {
+                this.StatsBad0, this.StatsBad1, this.StatsBad2, this.StatsBad3,
+                this.StatsBad4, this.StatsBad5, this.StatsBad6, this.StatsBad7,
+                this.StatsBad8, this.StatsBad9,
+            }.Where(mod => mod is not null).Cast<StatModifier>();
     }
 }
