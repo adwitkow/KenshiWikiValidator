@@ -86,11 +86,6 @@ namespace KenshiWikiValidator.Locations.Templates
                 .Select(item => item.Name.Trim())
                 .Distinct();
 
-            if (fcsNames.Count() == 1 && fcsNames.Single().Equals(articleTitle))
-            {
-                fcsNames = Enumerable.Empty<string>();
-            }
-
             var existingTemplate = data.WikiTemplates
                 .SingleOrDefault(template => template.Name.ToLower().Equals("town"));
 
