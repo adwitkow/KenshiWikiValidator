@@ -51,6 +51,11 @@ namespace KenshiWikiValidator.BaseComponents
 
         protected List<string> StringIds { get; }
 
+        public virtual bool ShouldValidate(string title, string content)
+        {
+            return true;
+        }
+
         public ArticleValidationResult Validate(string title, string content)
         {
             var result = new ArticleValidationResult();

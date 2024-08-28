@@ -141,7 +141,10 @@ static async Task RetrieveAndValidate(IArticleValidator validator, WikiClient cl
 
     foreach (var page in pages)
     {
-        exceptions += Convert.ToInt32(ValidateArticle(page, validator));
+        if (validator.ShouldValidate(page.Title, page.Content))
+        {
+            exceptions += Convert.ToInt32(ValidateArticle(page, validator));
+        }
     }
 
     if (exceptions > 0)

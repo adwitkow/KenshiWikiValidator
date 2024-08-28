@@ -24,6 +24,8 @@ namespace KenshiWikiValidator.BaseComponents
 
         public IEnumerable<IArticleValidator> Dependencies { get; }
 
+        bool ShouldValidate(string title, string content);
+
         ArticleValidationResult Validate(string title, string content);
 
         void CachePageData(string title, string content);
