@@ -35,6 +35,7 @@ namespace KenshiWikiValidator.BaseComponents
 
             if (template is null)
             {
+                result.AddIssue("Couldn't generate the template for some reason (missing string id?)");
                 return result;
             }
 
