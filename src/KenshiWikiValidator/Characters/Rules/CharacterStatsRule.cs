@@ -27,15 +27,13 @@ namespace KenshiWikiValidator.WikiCategories.Characters.Rules
     {
         private readonly IItemRepository itemRepository;
         private readonly StatsTemplateCreator statsTemplateCreator;
-        private readonly CharacterStatsTemplateCreator characterStatsTemplateCreator;
         private readonly AnimalStatsTemplateCreator animalStatsTemplateCreator;
 
         public CharacterStatsRule(IItemRepository itemRepository)
         {
             this.itemRepository = itemRepository;
 
-            this.statsTemplateCreator = new StatsTemplateCreator();
-            this.characterStatsTemplateCreator = new CharacterStatsTemplateCreator();
+            this.statsTemplateCreator = new StatsTemplateCreator(itemRepository);
             this.animalStatsTemplateCreator = new AnimalStatsTemplateCreator();
         }
 
@@ -64,27 +62,16 @@ namespace KenshiWikiValidator.WikiCategories.Characters.Rules
                 item = this.itemRepository.GetItemByStringId<Character>(stringId);
             }
 
-            var statsReferences = item.Stats;
-
             ITemplateCreator creator;
-            if (statsReferences.Any())
+            if (isAnimal)
             {
-                this.statsTemplateCreator.Stats = statsReferences.Single().Item;
-                this.statsTemplateCreator.StatsRandomise = item.StatsRandomise;
-                creator = this.statsTemplateCreator;
+                this.animalStatsTemplateCreator.AnimalCharacter = item as AnimalCharacter;
+                creator = this.animalStatsTemplateCreator;
             }
             else
             {
-                if (isAnimal)
-                {
-                    this.animalStatsTemplateCreator.AnimalCharacter = item as AnimalCharacter;
-                    creator = this.animalStatsTemplateCreator;
-                }
-                else
-                {
-                    this.characterStatsTemplateCreator.StatsContainer = item;
-                    creator = this.characterStatsTemplateCreator;
-                }
+                this.statsTemplateCreator.Character = item as Character;
+                creator = this.statsTemplateCreator;
             }
 
             return creator.Generate(data);

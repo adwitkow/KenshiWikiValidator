@@ -16,6 +16,7 @@
 
 using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.BaseComponents.Creators;
+using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.Models;
 
 namespace KenshiWikiValidator.WikiCategories.Characters.Templates
@@ -24,61 +25,130 @@ namespace KenshiWikiValidator.WikiCategories.Characters.Templates
     {
         private const string TemplateName = "Stats";
 
-        public Stats? Stats { get; set; }
+        private IItemRepository itemRepository;
 
-        public int? StatsRandomise { get; set; }
+        public StatsTemplateCreator(IItemRepository itemRepository)
+        {
+            this.itemRepository = itemRepository;
+        }
+
+        public Character? Character { get; set; }
 
         public WikiTemplate? Generate(ArticleData data)
         {
-            if (this.Stats is null)
+            if (this.Character is null)
             {
-                throw new InvalidOperationException("Cannot create a Stats template without a Stats object");
+                throw new InvalidOperationException("Cannot create a Stats template without a Character object");
             }
 
-            var parameters = new IndexedDictionary<string, string?>()
+            IndexedDictionary<string, string?> parameters;
+            bool calculated;
+            if (this.Character.Stats.Any())
             {
-                { "Strength", GetStatsValue(this.Stats.Strength, 1) },
-                { "Toughness", GetStatsValue(this.Stats.Toughness, 1) },
-                { "Dexterity", GetStatsValue(this.Stats.Dexterity, 1) },
-                { "Perception", GetStatsValue(this.Stats.Perception, 1) },
-                { "Melee Attack", GetStatsValue(this.Stats.MeleeAttack, 1) },
-                { "Melee Defence", GetStatsValue(this.Stats.MeleeDefence, 1) },
-                { "Dodge", GetStatsValue(this.Stats.Dodge, 1) },
-                { "Martial Arts", GetStatsValue(this.Stats.MartialArts, 1) },
-                { "Katanas", GetStatsValue(this.Stats.Katana, 1) },
-                { "Sabres", GetStatsValue(this.Stats.Sabres, 1) },
-                { "Hackers", GetStatsValue(this.Stats.Hackers, 1) },
-                { "Heavy Weapons", GetStatsValue(this.Stats.HeavyWeapons, 1) },
-                { "Blunt", GetStatsValue(this.Stats.Blunt, 1) },
-                { "Polearms", GetStatsValue(this.Stats.Polearms, 1) },
-                { "Turrets", GetStatsValue(this.Stats.Turrets, 1) },
-                { "Crossbows", GetStatsValue(this.Stats.Crossbow, 1) },
-                { "Precision Shooting", GetStatsValue(this.Stats.PrecisionShooting, 1) },
-                { "Stealth", GetStatsValue(this.Stats.Stealth, 1) },
-                { "Lockpicking", GetStatsValue(this.Stats.Lockpicking, 1) },
-                { "Thievery", GetStatsValue(this.Stats.Thievery, 1) },
-                { "Assassination", GetStatsValue(this.Stats.Assassination, 1) },
-                { "Athletics", GetStatsValue(this.Stats.Athletics, 1) },
-                { "Swimming", GetStatsValue(this.Stats.Swimming, 1) },
-                { "Field Medic", GetStatsValue(this.Stats.FieldMedic, 1) },
-                { "Engineer", GetStatsValue(this.Stats.Engineer, 1) },
-                { "Robotics", GetStatsValue(this.Stats.Robotics, 1) },
-                { "Science", GetStatsValue(this.Stats.Science, 1) },
-                { "Weapon Smith", GetStatsValue(this.Stats.WeaponSmith, 1) },
-                { "Armour Smith", GetStatsValue(this.Stats.ArmourSmith, 1) },
-                { "Crossbow Smith", GetStatsValue(this.Stats.CrossbowSmith, 1) },
-                { "Labouring", GetStatsValue(this.Stats.Labouring, 1) },
-                { "Farming", GetStatsValue(this.Stats.Farming, 1) },
-                { "Cooking", GetStatsValue(this.Stats.Cooking, 1) },
-                { "stats randomize", GetStatsValue(this.StatsRandomise, 0) },
-            };
+                calculated = false;
 
-            return new WikiTemplate(TemplateName, parameters);
+                var stats = this.Character.Stats.Single().Item;
+                parameters = this.GenerateParamsFromStatsObject(stats, this.Character.StatsRandomise);
+            }
+            else
+            {
+                calculated = true;
+                parameters = this.GenerateParamsFromCharacterObject(this.Character);
+            }
+
+            var unnamedParams = new HashSet<string>();
+            if (calculated)
+            {
+                unnamedParams.Add("calculated");
+            }
+
+            var races = this.GenerateRaces(this.Character);
+            parameters.Insert(0, "Races", string.Join(",", races));
+
+            return new WikiTemplate(TemplateName, unnamedParams, parameters);
         }
 
         private static string? GetStatsValue(float? value, float nullValue)
         {
             return value.GetValueOrDefault() == nullValue ? null : value.ToString();
+        }
+
+        private IndexedDictionary<string, string?> GenerateParamsFromStatsObject(Stats stats, int? randomise)
+        {
+            return new IndexedDictionary<string, string?>()
+            {
+                { "Strength", GetStatsValue(stats.Strength, 1) },
+                { "Toughness", GetStatsValue(stats.Toughness, 1) },
+                { "Dexterity", GetStatsValue(stats.Dexterity, 1) },
+                { "Perception", GetStatsValue(stats.Perception, 1) },
+                { "Melee Attack", GetStatsValue(stats.MeleeAttack, 1) },
+                { "Melee Defence", GetStatsValue(stats.MeleeDefence, 1) },
+                { "Dodge", GetStatsValue(stats.Dodge, 1) },
+                { "Martial Arts", GetStatsValue(stats.MartialArts, 1) },
+                { "Katanas", GetStatsValue(stats.Katana, 1) },
+                { "Sabres", GetStatsValue(stats.Sabres, 1) },
+                { "Hackers", GetStatsValue(stats.Hackers, 1) },
+                { "Heavy Weapons", GetStatsValue(stats.HeavyWeapons, 1) },
+                { "Blunt", GetStatsValue(stats.Blunt, 1) },
+                { "Polearms", GetStatsValue(stats.Polearms, 1) },
+                { "Turrets", GetStatsValue(stats.Turrets, 1) },
+                { "Crossbows", GetStatsValue(stats.Crossbow, 1) },
+                { "Precision Shooting", GetStatsValue(stats.PrecisionShooting, 1) },
+                { "Stealth", GetStatsValue(stats.Stealth, 1) },
+                { "Lockpicking", GetStatsValue(stats.Lockpicking, 1) },
+                { "Thievery", GetStatsValue(stats.Thievery, 1) },
+                { "Assassination", GetStatsValue(stats.Assassination, 1) },
+                { "Athletics", GetStatsValue(stats.Athletics, 1) },
+                { "Swimming", GetStatsValue(stats.Swimming, 1) },
+                { "Field Medic", GetStatsValue(stats.FieldMedic, 1) },
+                { "Engineer", GetStatsValue(stats.Engineer, 1) },
+                { "Robotics", GetStatsValue(stats.Robotics, 1) },
+                { "Science", GetStatsValue(stats.Science, 1) },
+                { "Weapon Smith", GetStatsValue(stats.WeaponSmith, 1) },
+                { "Armour Smith", GetStatsValue(stats.ArmourSmith, 1) },
+                { "Crossbow Smith", GetStatsValue(stats.CrossbowSmith, 1) },
+                { "Labouring", GetStatsValue(stats.Labouring, 1) },
+                { "Farming", GetStatsValue(stats.Farming, 1) },
+                { "Cooking", GetStatsValue(stats.Cooking, 1) },
+                { "stats randomize", GetStatsValue(randomise, 0) },
+            };
+        }
+
+        private IndexedDictionary<string, string?> GenerateParamsFromCharacterObject(Character character)
+        {
+            return new IndexedDictionary<string, string?>()
+            {
+                { "strength", GetStatsValue(character.Strength, 0) },
+                { "combat stats", GetStatsValue(character.CombatStats, 0) },
+                { "stealth stats", GetStatsValue(character.StealthStats, 0) },
+                { "unarmed stats", GetStatsValue(character.UnarmedStats, 0) },
+                { "ranged stats", GetStatsValue(character.RangedStats, 0) },
+                { "stats randomize", GetStatsValue(character.StatsRandomise, 0) },
+            };
+        }
+
+        private IEnumerable<string> GenerateRaces(Character character)
+        {
+            var raceReferences = character.Races;
+            if (!raceReferences.Any())
+            {
+                var referringSquads = this.itemRepository.GetItems<Squad>()
+                    .Where(squad => squad.ContainsCharacter(character));
+                var squadRaces = referringSquads.SelectMany(squad => squad.RaceOverrides);
+
+                raceReferences = raceReferences.Concat(squadRaces);
+
+                if (!squadRaces.Any())
+                {
+                    var factions = referringSquads.SelectMany(squad => squad.Faction)
+                        .Distinct();
+                    var factionRaces = factions.SelectMany(faction => faction.Item.Races);
+
+                    raceReferences = raceReferences.Concat(factionRaces);
+                }
+            }
+
+            return raceReferences.Select(race => race.Item.Name).Distinct();
         }
     }
 }
