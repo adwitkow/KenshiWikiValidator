@@ -40,5 +40,22 @@ namespace KenshiWikiValidator.Characters
         public override string CategoryName => "Characters";
 
         public override IEnumerable<IValidationRule> Rules => this.rules;
+
+        public override bool ShouldValidate(string title, string content)
+        {
+            if (!this.ArticleDataMap.ContainsKey(title))
+            {
+                this.CachePageData(title, content);
+            }
+
+            var data = this.ArticleDataMap[title];
+
+            if (data.Categories.Any(cat => cat is "Lore" or "Animals"))
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }
