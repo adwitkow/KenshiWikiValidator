@@ -16,6 +16,7 @@
 
 using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.BaseComponents.Creators;
+using KenshiWikiValidator.Characters;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.Models;
 
@@ -25,11 +26,11 @@ namespace KenshiWikiValidator.WikiCategories.Characters.Templates
     {
         private const string TemplateName = "Stats";
 
-        private IItemRepository itemRepository;
+        private readonly CharacterRaceExtractor raceExtractor;
 
         public StatsTemplateCreator(IItemRepository itemRepository)
         {
-            this.itemRepository = itemRepository;
+            this.raceExtractor = new CharacterRaceExtractor(itemRepository);
         }
 
         public Character? Character { get; set; }
@@ -62,8 +63,9 @@ namespace KenshiWikiValidator.WikiCategories.Characters.Templates
                 unnamedParams.Add("calculated");
             }
 
-            var races = this.GenerateRaces(this.Character);
-            parameters.Insert(0, "Races", string.Join(",", races));
+            var races = this.raceExtractor.Extract(this.Character);
+            var raceNames = races.Select(race => race.Name);
+            parameters.Insert(0, "Races", string.Join(",", raceNames));
 
             return new WikiTemplate(TemplateName, unnamedParams, parameters);
         }
@@ -125,30 +127,6 @@ namespace KenshiWikiValidator.WikiCategories.Characters.Templates
                 { "ranged stats", GetStatsValue(character.RangedStats, 0) },
                 { "stats randomize", GetStatsValue(character.StatsRandomise, 0) },
             };
-        }
-
-        private IEnumerable<string> GenerateRaces(Character character)
-        {
-            var raceReferences = character.Races;
-            if (!raceReferences.Any())
-            {
-                var referringSquads = this.itemRepository.GetItems<Squad>()
-                    .Where(squad => squad.ContainsCharacter(character));
-                var squadRaces = referringSquads.SelectMany(squad => squad.RaceOverrides);
-
-                raceReferences = raceReferences.Concat(squadRaces);
-
-                if (!squadRaces.Any())
-                {
-                    var factions = referringSquads.SelectMany(squad => squad.Faction)
-                        .Distinct();
-                    var factionRaces = factions.SelectMany(faction => faction.Item.Races);
-
-                    raceReferences = raceReferences.Concat(factionRaces);
-                }
-            }
-
-            return raceReferences.Select(race => race.Item.Name).Distinct();
         }
     }
 }

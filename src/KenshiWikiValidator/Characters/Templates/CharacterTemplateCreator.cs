@@ -44,6 +44,7 @@ namespace KenshiWikiValidator.Characters.Templates
             { "Hive Queen", "Hive" },
             { "Screamer MkI", "Skeleton" },
             { "P4 Unit", "Skeleton" },
+            { "Skeleton", "Skeleton" },
             { "Soldierbot", "Skeleton" },
             { "Skeleton P4MkII", "Skeleton" },
             { "Skeleton Log-Head MKII", "Skeleton" },
@@ -54,10 +55,13 @@ namespace KenshiWikiValidator.Characters.Templates
         };
 
         private readonly IItemRepository itemRepository;
+        private readonly CharacterRaceExtractor raceExtractor;
 
         public CharacterTemplateCreator(IItemRepository itemRepository)
         {
             this.itemRepository = itemRepository;
+
+            this.raceExtractor = new CharacterRaceExtractor(itemRepository);
         }
 
         public Character? Character { get; set; }
@@ -74,11 +78,10 @@ namespace KenshiWikiValidator.Characters.Templates
 
             var existingTemplate = existingTemplates.SingleOrDefault();
 
-            string? title = null;
-            var articleTitle = data.ArticleTitle;
-            if (articleTitle != this.Character.Name)
+            string? title = PullFromTemplate(existingTemplate, "title1");
+            if (title == data.ArticleTitle)
             {
-                title = this.Character.Name;
+                title = null;
             }
 
             var parameters = new IndexedDictionary<string, string?>()
@@ -99,6 +102,9 @@ namespace KenshiWikiValidator.Characters.Templates
             ProcessArmour(this.Character, parameters);
             parameters.Add("inventory", ProcessNullableReferences(this.Character, character => character.Inventory));
             parameters.Add("backpack", ProcessNullableReferences(this.Character, character => character.Backpack));
+
+            parameters.Add("fcs_name", this.Character.Name);
+            parameters.Add("string_id", this.Character.StringId);
 
             return new WikiTemplate(TemplateName, parameters);
         }
@@ -171,26 +177,7 @@ namespace KenshiWikiValidator.Characters.Templates
         private IEnumerable<string> ProcessRaces(Character character, IndexedDictionary<string, string?> parameters)
         {
             var parentRaces = new List<string>();
-            var raceReferences = character.Races;
-            if (!raceReferences.Any())
-            {
-                var referringSquads = this.itemRepository.GetItems<Squad>()
-                    .Where(squad => squad.ContainsCharacter(character));
-                var squadRaces = referringSquads.SelectMany(squad => squad.RaceOverrides);
-
-                raceReferences = raceReferences.Concat(squadRaces);
-
-                if (!squadRaces.Any())
-                {
-                    var factions = referringSquads.SelectMany(squad => squad.Faction)
-                        .Distinct();
-                    var factionRaces = factions.SelectMany(faction => faction.Item.Races);
-
-                    raceReferences = raceReferences.Concat(factionRaces);
-                }
-            }
-
-            var races = raceReferences.Select(race => race.Item).Distinct();
+            var races = this.raceExtractor.Extract(character);
 
             var formattedRaces = new HashSet<string>();
             var formattedSubraces = new HashSet<string>();
