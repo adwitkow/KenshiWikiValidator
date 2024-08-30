@@ -145,6 +145,12 @@ static async Task RetrieveAndValidate(IArticleValidator validator, WikiClient cl
         {
             exceptions += Convert.ToInt32(ValidateArticle(page, validator));
         }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine($"{page.Title}: validation was skipped...");
+            Console.ResetColor();
+        }
     }
 
     if (exceptions > 0)
