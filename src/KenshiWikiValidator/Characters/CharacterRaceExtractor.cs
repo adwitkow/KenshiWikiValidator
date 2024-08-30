@@ -7,6 +7,15 @@ namespace KenshiWikiValidator.Characters
     {
         private const string GreenlanderId = "17-gamedata.quack";
 
+        private static string[] racesOrdered = ["greenlander", "scorchlander", "shek",
+            "hive prince", "hive soldier drone", "hive worker drone",
+            "hive prince south hive", "hive soldier drone south hive",
+            "hive worker drone south hive", "hive queen", "deadhive prince",
+            "deadhive soldier", "deadhive worker", "p4 unit", "skeleton p4mkii",
+            "screamer mki", "skeleton mkii screamer", "skeleton",
+            "skeleton log-head mkii", "skeleton no-head mkii", "soldierbot",
+            "cannibal", "cannibal skav", "fishman", "alpha fishman"];
+
         private readonly IItemRepository itemRepository;
 
         public CharacterRaceExtractor(IItemRepository itemRepository)
@@ -50,7 +59,7 @@ namespace KenshiWikiValidator.Characters
                 races = [greenlander];
             }
 
-            return races;
+            return races.OrderBy(race => Array.IndexOf(racesOrdered, race.Name.ToLower().Trim()));
         }
     }
 }
