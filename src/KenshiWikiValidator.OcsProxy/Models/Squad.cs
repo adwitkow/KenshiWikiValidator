@@ -232,7 +232,8 @@ namespace KenshiWikiValidator.OcsProxy.Models
         {
             return this.Leader.ContainsItem(character)
                 || this.Characters.ContainsItem(character)
-                || this.Squad2.ContainsItem(character);
+                || this.Squad2.ContainsItem(character)
+                || this.ChoosefromList.ContainsItem(character);
         }
 
         public IEnumerable<Town> GetLocations(IItemRepository repository)
