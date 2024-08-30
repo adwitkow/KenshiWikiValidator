@@ -94,7 +94,7 @@ namespace KenshiWikiValidator.Characters.Templates
             var races = this.raceExtractor.Extract(this.Character);
             ProcessRaces(races, parameters);
 
-            if (races.Any(race => race.SingleGender.GetValueOrDefault()))
+            if (races.Any(race => !race.SingleGender.GetValueOrDefault()))
             {
                 ProcessGender(this.Character, parameters);
             }
