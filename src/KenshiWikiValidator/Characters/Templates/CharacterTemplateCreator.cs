@@ -91,17 +91,19 @@ namespace KenshiWikiValidator.Characters.Templates
                 { "caption1", PullFromTemplate(existingTemplate, "caption1") },
             };
 
-            var races = this.ProcessRaces(this.Character, parameters);
-            if (!races.Any() || !races.All(race => race is "Hive" or "Southern Hive" or "Skeleton"))
+            var races = this.raceExtractor.Extract(this.Character);
+            ProcessRaces(races, parameters);
+
+            if (races.Any(race => race.SingleGender.GetValueOrDefault()))
             {
                 ProcessGender(this.Character, parameters);
             }
 
-            parameters.Add("weapons", ProcessNullableReferences(this.Character, character => character.Weapons));
+            parameters.Add("weapons", ProcessNullableReferences(this.Character.Weapons));
 
             ProcessArmour(this.Character, parameters);
-            parameters.Add("inventory", ProcessNullableReferences(this.Character, character => character.Inventory));
-            parameters.Add("backpack", ProcessNullableReferences(this.Character, character => character.Backpack));
+            parameters.Add("inventory", ProcessNullableReferences(this.Character.Inventory));
+            parameters.Add("backpack", ProcessNullableReferences(this.Character.Backpack));
 
             parameters.Add("fcs_name", this.Character.Name);
             parameters.Add("string_id", this.Character.StringId);
@@ -116,11 +118,10 @@ namespace KenshiWikiValidator.Characters.Templates
                 var slot = slotPair.Key;
                 var target = slotPair.Value;
 
-                var items = character.Clothing.Where(armour => armour.Item.Slot == slot)
-                    .OrderByDescending(reference => reference.Value0)
-                    .ThenBy(reference => reference.Item.Name)
-                    .Select(reference => $"[[{reference.Item.Name}]]");
-                parameters.Add(target, string.Join(", ", items));
+                var slotItems = character.Clothing.Where(armour => armour.Item.Slot == slot);
+                var items = ProcessNullableReferences(slotItems);
+
+                parameters.Add(target, items);
             }
         }
 
@@ -143,10 +144,9 @@ namespace KenshiWikiValidator.Characters.Templates
             parameters.Add("gender", result);
         }
 
-        private static string? ProcessNullableReferences<T>(Character character, Func<Character, IEnumerable<ItemReference<T>>> func)
+        private static string? ProcessNullableReferences<T>(IEnumerable<ItemReference<T>> itemRefs)
             where T : IItem
         {
-            var itemRefs = func(character);
             if (!itemRefs.Any())
             {
                 return null;
@@ -174,17 +174,20 @@ namespace KenshiWikiValidator.Characters.Templates
             return result;
         }
 
-        private IEnumerable<string> ProcessRaces(Character character, IndexedDictionary<string, string?> parameters)
+        private static void ProcessRaces(IEnumerable<Race> races, IndexedDictionary<string, string?> parameters)
         {
             var parentRaces = new List<string>();
-            var races = this.raceExtractor.Extract(character);
-
             var formattedRaces = new HashSet<string>();
             var formattedSubraces = new HashSet<string>();
             foreach (var raceName in races.Select(race => race.Name))
             {
                 var hasParent = RaceMap.TryGetValue(raceName, out var parentRace);
                 var trimmedName = raceName.Trim();
+
+                if (trimmedName == "Skeleton")
+                {
+                    trimmedName = "Skeleton (Race)|Skeleton";
+                }
 
                 if (hasParent)
                 {
@@ -200,8 +203,6 @@ namespace KenshiWikiValidator.Characters.Templates
 
             parameters.Add("race", string.Join(", ", formattedRaces));
             parameters.Add("subrace", string.Join(", ", formattedSubraces));
-
-            return parentRaces.Distinct();
         }
     }
 }
