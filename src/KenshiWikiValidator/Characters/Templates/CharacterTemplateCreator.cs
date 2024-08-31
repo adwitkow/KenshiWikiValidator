@@ -105,7 +105,7 @@ namespace KenshiWikiValidator.Characters.Templates
             parameters.Add("inventory", ProcessNullableReferences(this.Character.Inventory));
             parameters.Add("backpack", ProcessNullableReferences(this.Character.Backpack));
 
-            parameters.Add("fcs_name", this.Character.Name);
+            parameters.Add("fcs_name", this.Character.Name.Replace("|", "{{!}}"));
             parameters.Add("string_id", this.Character.StringId);
 
             return new WikiTemplate(TemplateName, parameters);
