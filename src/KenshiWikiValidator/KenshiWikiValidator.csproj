@@ -41,4 +41,10 @@
     <ProjectReference Include="..\KenshiWikiValidator.OcsProxy\KenshiWikiValidator.OcsProxy.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Titles.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

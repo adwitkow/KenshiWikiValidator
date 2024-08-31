@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Text.Json;
 using KenshiWikiValidator.OcsProxy;
 
 namespace KenshiWikiValidator.BaseComponents
@@ -24,7 +25,16 @@ namespace KenshiWikiValidator.BaseComponents
 
         public WikiTitleCache()
         {
-            this.data = new Dictionary<string, string>();
+            var json = File.ReadAllText("Titles.json");
+            var seed = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+            if (seed is null)
+            {
+                this.data = new Dictionary<string, string>();
+            }
+            else
+            {
+                this.data = seed;
+            }
         }
 
         public bool HasArticle(IItem item)
