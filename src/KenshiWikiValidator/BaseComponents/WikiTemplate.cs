@@ -19,24 +19,24 @@ namespace KenshiWikiValidator.BaseComponents
     public class WikiTemplate
     {
         public WikiTemplate(string name)
-            : this(name, new HashSet<string>(), new IndexedDictionary<string, string?>())
+            : this(name, new List<string>(), new IndexedDictionary<string, string?>())
         {
             this.Name = name ?? throw new ArgumentNullException(nameof(name));
         }
 
         public WikiTemplate(string name, IndexedDictionary<string, string?> parameters)
-            : this(name, new HashSet<string>(), parameters)
+            : this(name, new List<string>(), parameters)
         {
             this.Parameters = parameters ?? throw new ArgumentNullException(nameof(parameters));
         }
 
-        public WikiTemplate(string name, ISet<string> unnamedParameters)
+        public WikiTemplate(string name, IList<string> unnamedParameters)
             : this(name, unnamedParameters, new IndexedDictionary<string, string?>())
         {
             this.UnnamedParameters = unnamedParameters ?? throw new ArgumentNullException(nameof(unnamedParameters));
         }
 
-        public WikiTemplate(string name, ISet<string> unnamedParameters, IDictionary<string, string?> parameters)
+        public WikiTemplate(string name, IList<string> unnamedParameters, IDictionary<string, string?> parameters)
         {
             this.Name = name ?? throw new ArgumentNullException(nameof(name));
             this.Parameters = parameters ?? throw new ArgumentNullException(nameof(parameters));
@@ -45,7 +45,7 @@ namespace KenshiWikiValidator.BaseComponents
 
         public string Name { get; set; }
 
-        public ISet<string> UnnamedParameters { get; private set; }
+        public IList<string> UnnamedParameters { get; private set; }
 
         public IDictionary<string, string?> Parameters { get; private set; }
 

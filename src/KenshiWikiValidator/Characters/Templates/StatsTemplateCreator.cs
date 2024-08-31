@@ -57,10 +57,14 @@ namespace KenshiWikiValidator.WikiCategories.Characters.Templates
                 parameters = this.GenerateParamsFromCharacterObject(this.Character);
             }
 
-            var unnamedParams = new HashSet<string>();
+            string[] unnamedParams;
             if (calculated)
             {
-                unnamedParams.Add("calculated");
+                unnamedParams = ["calculated"];
+            }
+            else
+            {
+                unnamedParams = Array.Empty<string>();
             }
 
             var races = this.raceExtractor.Extract(this.Character);

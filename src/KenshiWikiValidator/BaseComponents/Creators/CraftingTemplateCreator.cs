@@ -36,7 +36,7 @@ namespace KenshiWikiValidator.BaseComponents.Creators
 
         public WikiTemplate Generate(ArticleData data)
         {
-            var unnamedProperties = new SortedSet<string>();
+            var unnamedProperties = new List<string>();
             var properties = new IndexedDictionary<string, string?>()
             {
                 { "building", this.BuildingName },

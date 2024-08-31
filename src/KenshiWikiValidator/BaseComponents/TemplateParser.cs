@@ -69,16 +69,15 @@ namespace KenshiWikiValidator.BaseComponents
             var elements = this.SplitOnPipes(trimmed);
 
             var name = trimmed.Substring(0, this.lastPipeIndex).Trim();
-            var properties = PopulateProperties(elements);
-
-            var result = new WikiTemplate(name, properties);
+            var result = CreateWikiTemplate(name, elements);
 
             return result;
         }
 
-        private static IndexedDictionary<string, string?> PopulateProperties(IList<string> elements)
+        private static WikiTemplate CreateWikiTemplate(string name, IList<string> elements)
         {
-            var properties = new List<KeyValuePair<string, string?>>();
+            var namedProperties = new List<KeyValuePair<string, string?>>();
+            var unnamedProperties = new List<string>();
             for (int i = 0; i < elements.Count; i++)
             {
                 var element = elements[i];
@@ -88,17 +87,20 @@ namespace KenshiWikiValidator.BaseComponents
                     var key = splitElements[0].Trim();
                     var value = splitElements[1].Trim();
 
-                    properties.Add(new KeyValuePair<string, string?>(key, value));
+                    namedProperties.Add(new KeyValuePair<string, string?>(key, value));
                 }
                 else
                 {
-                    properties.Add(new KeyValuePair<string, string?>(i.ToString(), element));
+                    unnamedProperties.Add(element);
                 }
             }
 
-            properties.Reverse();
+            namedProperties.Reverse();
 
-            return new IndexedDictionary<string, string?>(properties);
+            return new WikiTemplate(
+                name,
+                unnamedProperties,
+                new IndexedDictionary<string, string?>(namedProperties));
         }
 
         private IList<string> SplitOnPipes(string trimmed)
