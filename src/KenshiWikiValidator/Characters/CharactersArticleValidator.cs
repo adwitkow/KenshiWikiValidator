@@ -32,7 +32,7 @@ namespace KenshiWikiValidator.Characters
             this.rules = new List<IValidationRule>()
             {
                 new ContainsTemplateRule("Character"),
-                new CharacterRule(itemRepository),
+                new CharacterRule(itemRepository, wikiTitles),
                 new CharacterStatsRule(itemRepository),
             };
         }

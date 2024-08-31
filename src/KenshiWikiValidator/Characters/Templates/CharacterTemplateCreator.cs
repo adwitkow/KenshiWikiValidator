@@ -18,6 +18,7 @@ using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.BaseComponents.Creators;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.Models;
+using System.Runtime.CompilerServices;
 
 namespace KenshiWikiValidator.Characters.Templates
 {
@@ -49,18 +50,19 @@ namespace KenshiWikiValidator.Characters.Templates
             { "Skeleton P4MkII", "Skeleton" },
             { "Skeleton Log-Head MKII", "Skeleton" },
             { "Skeleton No-Head MkII", "Skeleton" },
-            { "Hive Prince South Hive", "Southern Hive" },
-            { "Hive Soldier Drone South Hive", "Southern Hive" },
-            { "Hive Worker Drone South Hive", "Southern Hive" },
+            { "Hive Prince South Hive", "Hive" },
+            { "Hive Soldier Drone South Hive", "Hive" },
+            { "Hive Worker Drone South Hive", "Hive" },
         };
 
         private readonly IItemRepository itemRepository;
+        private readonly IWikiTitleCache titleCache;
         private readonly CharacterRaceExtractor raceExtractor;
 
-        public CharacterTemplateCreator(IItemRepository itemRepository)
+        public CharacterTemplateCreator(IItemRepository itemRepository, IWikiTitleCache titleCache)
         {
             this.itemRepository = itemRepository;
-
+            this.titleCache = titleCache;
             this.raceExtractor = new CharacterRaceExtractor(itemRepository);
         }
 
@@ -111,7 +113,7 @@ namespace KenshiWikiValidator.Characters.Templates
             return new WikiTemplate(TemplateName, parameters);
         }
 
-        private static void ProcessArmour(Character character, IndexedDictionary<string, string?> parameters)
+        private void ProcessArmour(Character character, IndexedDictionary<string, string?> parameters)
         {
             foreach (var slotPair in SlotMap)
             {
@@ -119,7 +121,7 @@ namespace KenshiWikiValidator.Characters.Templates
                 var target = slotPair.Value;
 
                 var slotItems = character.Clothing.Where(armour => armour.Item.Slot == slot);
-                var items = ProcessNullableReferences(slotItems);
+                var items = this.ProcessNullableReferences(slotItems);
 
                 parameters.Add(target, items);
             }
@@ -144,24 +146,6 @@ namespace KenshiWikiValidator.Characters.Templates
             parameters.Add("gender", result);
         }
 
-        private static string? ProcessNullableReferences<T>(IEnumerable<ItemReference<T>> itemRefs)
-            where T : IItem
-        {
-            if (!itemRefs.Any())
-            {
-                return null;
-            }
-            else
-            {
-                var items = itemRefs
-                    .Where(reference => reference.Value0 > 0)
-                    .OrderByDescending(reference => reference.Value0)
-                    .ThenBy(reference => reference.Item.Name)
-                    .Select(itemRef => $"[[{itemRef.Item.Name}]]");
-                return string.Join(", ", items);
-            }
-        }
-
         private static string? PullFromTemplate(WikiTemplate? template, string parameter)
         {
             if (template is null)
@@ -174,17 +158,36 @@ namespace KenshiWikiValidator.Characters.Templates
             return result;
         }
 
-        private static void ProcessRaces(IEnumerable<Race> races, IndexedDictionary<string, string?> parameters)
+        private string? ProcessNullableReferences<T>(IEnumerable<ItemReference<T>> itemRefs)
+            where T : IItem
+        {
+            if (!itemRefs.Any())
+            {
+                return null;
+            }
+            else
+            {
+                var items = itemRefs
+                    .Where(reference => reference.Value0 > 0)
+                    .OrderByDescending(reference => reference.Value0)
+                    .ThenBy(reference => reference.Item.Name)
+                    .Select(itemRef => $"[[{this.GetTitleOrName(itemRef.Item)}]]");
+                return string.Join(", ", items);
+            }
+        }
+
+        private void ProcessRaces(IEnumerable<Race> races, IndexedDictionary<string, string?> parameters)
         {
             var parentRaces = new List<string>();
             var formattedRaces = new HashSet<string>();
             var formattedSubraces = new HashSet<string>();
-            foreach (var raceName in races.Select(race => race.Name))
+            foreach (var race in races)
             {
-                var hasParent = RaceMap.TryGetValue(raceName, out var parentRace);
+                var raceName = this.GetTitleOrName(race);
                 var trimmedName = raceName.Trim();
+                var hasParent = RaceMap.TryGetValue(trimmedName, out var parentRace);
 
-                if (trimmedName == "Skeleton")
+                if (trimmedName == "Skeleton (Race)")
                 {
                     trimmedName = "Skeleton (Race)|Skeleton";
                 }
@@ -203,6 +206,18 @@ namespace KenshiWikiValidator.Characters.Templates
 
             parameters.Add("race", string.Join(", ", formattedRaces));
             parameters.Add("subrace", string.Join(", ", formattedSubraces));
+        }
+
+        private string GetTitleOrName(IItem item)
+        {
+            var title = this.titleCache.GetTitle(item);
+
+            if (title == item.StringId)
+            {
+                return item.Name;
+            }
+
+            return title;
         }
     }
 }

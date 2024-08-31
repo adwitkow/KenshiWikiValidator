@@ -68,7 +68,7 @@ namespace KenshiWikiValidator.WikiCategories.Characters.Templates
             }
 
             var races = this.raceExtractor.Extract(this.Character);
-            var raceNames = races.Select(race => race.Name);
+            var raceNames = races.Select(race => race.Name.Trim());
             parameters.Insert(0, "Races", string.Join(",", raceNames));
 
             return new WikiTemplate(TemplateName, unnamedParams, parameters);

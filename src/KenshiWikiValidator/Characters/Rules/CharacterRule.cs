@@ -26,11 +26,11 @@ namespace KenshiWikiValidator.Characters.Rules
         private readonly IItemRepository itemRepository;
         private readonly CharacterTemplateCreator templateCreator;
 
-        public CharacterRule(IItemRepository itemRepository)
+        public CharacterRule(IItemRepository itemRepository, IWikiTitleCache wikiTitleCache)
         {
             this.itemRepository = itemRepository;
 
-            this.templateCreator = new CharacterTemplateCreator(itemRepository);
+            this.templateCreator = new CharacterTemplateCreator(itemRepository, wikiTitleCache);
         }
 
         protected override WikiTemplate? PrepareTemplate(ArticleData data)
