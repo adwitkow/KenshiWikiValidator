@@ -29,7 +29,14 @@ namespace KenshiWikiValidator.BaseComponents
             var templates = new List<WikiTemplate>();
 
             var startingIndex = content.IndexOf("{{");
+            var nextStartingIndex = content.IndexOf("{{", startingIndex + 1);
             var endingIndex = content.IndexOf("}}");
+
+            while (nextStartingIndex < endingIndex)
+            {
+                nextStartingIndex = content.IndexOf("{{", nextStartingIndex + 1);
+                endingIndex = content.IndexOf("}}", endingIndex + 1);
+            }
 
             while (startingIndex != -1 && endingIndex != -1)
             {
