@@ -47,10 +47,10 @@ namespace KenshiWikiValidator.Characters
                     .Where(squad => squad.ContainsCharacter(character));
             var squadRaces = referringSquads.SelectMany(squad => squad.RaceOverrides);
 
-            // towns
             var towns = this.itemRepository.GetItems<Town>()
                 .Where(town => town.BarSquads.Any(squad => squad.Item.ContainsCharacter(character))
-                    || town.RoamingSquads.Any(squad => squad.Item.ContainsCharacter(character)));
+                    || town.RoamingSquads.Any(squad => squad.Item.ContainsCharacter(character))
+                    || town.Residents.Any(squad => squad.Item.ContainsCharacter(character)));
 
             var factions = referringSquads.SelectMany(squad => squad.Faction)
                 .Concat(towns.SelectMany(town => town.Factions));
