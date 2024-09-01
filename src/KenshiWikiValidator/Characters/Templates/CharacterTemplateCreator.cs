@@ -45,14 +45,14 @@ namespace KenshiWikiValidator.Characters.Templates
             { "Hive Queen", "Hive" },
             { "Screamer MkI", "Skeleton" },
             { "P4 Unit", "Skeleton" },
-            { "Skeleton", "Skeleton" },
+            { "Skeleton (Race)", "Skeleton" },
             { "Soldierbot", "Skeleton" },
             { "Skeleton P4MkII", "Skeleton" },
             { "Skeleton Log-Head MKII", "Skeleton" },
             { "Skeleton No-Head MkII", "Skeleton" },
-            { "Hive Prince South Hive", "Hive" },
-            { "Hive Soldier Drone South Hive", "Hive" },
-            { "Hive Worker Drone South Hive", "Hive" },
+            { "Southern Hive Prince", "Hive" },
+            { "Southern Hive Soldier Drone", "Hive" },
+            { "Southern Hive Worker Drone", "Hive" },
         };
 
         private readonly IItemRepository itemRepository;
