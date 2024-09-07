@@ -47,23 +47,34 @@ namespace KenshiWikiValidator.Characters
                     .Where(squad => squad.ContainsCharacter(character));
             var squadRaces = referringSquads.SelectMany(squad => squad.RaceOverrides);
 
-            var towns = this.itemRepository.GetItems<Town>()
-                .Where(town => town.BarSquads.Any(squad => squad.Item.ContainsCharacter(character))
-                    || town.RoamingSquads.Any(squad => squad.Item.ContainsCharacter(character))
-                    || town.Residents.Any(squad => squad.Item.ContainsCharacter(character)));
-
-            var factions = referringSquads.SelectMany(squad => squad.Faction)
-                .Concat(towns.SelectMany(town => town.Factions));
-            var factionRaces = factions.SelectMany(faction => faction.Item.Races)
+            var squadFactions = referringSquads.SelectMany(squad => squad.Faction);
+            var squadFactionRaces = squadFactions.SelectMany(faction => faction.Item.Races)
                 .Distinct();
 
             if (squadRaces.Any())
             {
-                raceReferences = squadRaces; // squads override all
+                // races from squads override all
+                raceReferences = squadRaces;
             }
-            else if (factionRaces.Any() && !raceReferences.Any())
+            else if (!raceReferences.Any())
             {
-                raceReferences = factionRaces; // faction squads are last resort
+                if (squadFactionRaces.Any())
+                {
+                    // faction squads
+                    raceReferences = squadFactionRaces;
+                }
+                else if (!squadFactions.Any())
+                {
+                    // town squads
+                    var towns = this.itemRepository.GetItems<Town>()
+                        .Where(town => town.BarSquads.Any(squad => squad.Item.ContainsCharacter(character))
+                            || town.RoamingSquads.Any(squad => squad.Item.ContainsCharacter(character))
+                            || town.Residents.Any(squad => squad.Item.ContainsCharacter(character)));
+
+                    raceReferences = towns.SelectMany(town => town.Factions)
+                        .SelectMany(faction => faction.Item.Races)
+                        .Distinct();
+                }
             }
 
             var races = raceReferences.Select(race => race.Item).Distinct();
