@@ -31,12 +31,28 @@ using WikiClientLibrary.Wikia.Sites;
 
 const string WikiApiUrl = "https://kenshi.fandom.com/api.php";
 
+var output = "output";
+if (Directory.Exists(output))
+{
+    Console.WriteLine("Clearing the output directory...");
+    Directory.Delete(output, true);
+}
+
 var zoneDataProvider = new ZoneDataProvider();
 await zoneDataProvider.Load();
 
 var contextProvider = new ContextProvider();
 var context = contextProvider.GetDataMiningContext();
 var itemRepository = new ItemRepository(context);
+
+Console.WriteLine("Loading items...");
+var sw = Stopwatch.StartNew();
+itemRepository.Load();
+sw.Stop();
+
+Console.WriteLine($"Loaded all items in {sw.Elapsed}");
+Console.WriteLine();
+
 var wikiTitles = new WikiTitleCache();
 var townResidentValidator = new TownResidentArticleValidator(itemRepository, wikiTitles);
 var validators = new List<IArticleValidator>()
@@ -48,21 +64,6 @@ var validators = new List<IArticleValidator>()
     new MapItemArticleValidator(itemRepository, wikiTitles, zoneDataProvider),
     new ArmourArticleValidator(itemRepository, wikiTitles),
 };
-
-var output = "output";
-if (Directory.Exists(output))
-{
-    Console.WriteLine("Clearing the output directory...");
-    Directory.Delete(output, true);
-}
-
-Console.WriteLine("Loading items...");
-var sw = Stopwatch.StartNew();
-itemRepository.Load();
-sw.Stop();
-
-Console.WriteLine($"Loaded all items in {sw.Elapsed}");
-Console.WriteLine();
 
 Console.WriteLine("Please choose which of the following Wiki categories you wish to validate:");
 for (int i = 1; i <= validators.Count; i++)
