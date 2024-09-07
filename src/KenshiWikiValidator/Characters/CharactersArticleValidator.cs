@@ -34,6 +34,7 @@ namespace KenshiWikiValidator.Characters
                 new ContainsTemplateRule("Character"),
                 new CharacterRule(itemRepository, wikiTitles),
                 new CharacterStatsRule(itemRepository),
+                new EquipmentSectionRule(itemRepository),
             };
         }
 

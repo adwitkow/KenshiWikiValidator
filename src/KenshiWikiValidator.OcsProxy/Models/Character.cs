@@ -37,7 +37,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
             this.Races = Enumerable.Empty<ItemReference<Race>>();
             this.Faction = Enumerable.Empty<ItemReference<Faction>>();
             this.Shopping = Enumerable.Empty<ItemReference<Item>>();
-            this.WeaponLevel = Enumerable.Empty<ItemReference<WeaponManufacturer>>();
+            this.WeaponLevels = Enumerable.Empty<ItemReference<WeaponManufacturer>>();
             this.BountyFactions = Enumerable.Empty<ItemReference<Faction>>();
             this.Color = Enumerable.Empty<ItemReference<ColorData>>();
             this.AnnouncementDialogue = Enumerable.Empty<ItemReference<Dialogue>>();
@@ -202,7 +202,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<Item>> Shopping { get; set; }
 
         [Reference("weapon level")]
-        public IEnumerable<ItemReference<WeaponManufacturer>> WeaponLevel { get; set; }
+        public IEnumerable<ItemReference<WeaponManufacturer>> WeaponLevels { get; set; }
 
         [Reference("bounty factions")]
         public IEnumerable<ItemReference<Faction>> BountyFactions { get; set; }

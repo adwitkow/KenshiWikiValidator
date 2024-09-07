@@ -157,5 +157,8 @@ namespace KenshiWikiValidator.OcsProxy.Models
 
         [Reference("race damage")]
         public IEnumerable<ItemReference<Race>> RaceDamage { get; set; }
+
+        public bool FitsOnHip => this.InventoryFootprintHeight == 1
+            && this.InventoryFootprintWidth <= 7;
     }
 }
