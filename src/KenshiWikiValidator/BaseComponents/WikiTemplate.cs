@@ -45,6 +45,8 @@ namespace KenshiWikiValidator.BaseComponents
 
         public string Name { get; set; }
 
+        public TemplateFormat Format { get; set; }
+
         public IList<string> UnnamedParameters { get; private set; }
 
         public IDictionary<string, string?> Parameters { get; private set; }
@@ -121,6 +123,13 @@ namespace KenshiWikiValidator.BaseComponents
             }
 
             return true;
+        }
+
+        public enum TemplateFormat
+        {
+            Default,
+            Inline,
+            Block,
         }
     }
 }

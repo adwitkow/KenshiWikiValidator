@@ -67,6 +67,14 @@ namespace KenshiWikiValidator.BaseComponents
             return this;
         }
 
+        public WikiSectionBuilder WithEmptyTemplate(string templateName)
+        {
+            var template = new WikiTemplate(templateName);
+            var builtTemplate = this.templateBuilder.Build(template);
+            this.AddComponent(builtTemplate);
+            return this;
+        }
+
         public WikiSectionBuilder WithSubsection(string title, int level)
         {
             if (level < 1 || level > 4)

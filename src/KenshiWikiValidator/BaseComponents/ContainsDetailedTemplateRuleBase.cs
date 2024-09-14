@@ -39,8 +39,7 @@ namespace KenshiWikiValidator.BaseComponents
                 return result;
             }
 
-            var addNewlines = template.Parameters.Count > 3;
-            var correctTemplateString = this.templateBuilder.Build(template, addNewlines);
+            var correctTemplateString = this.templateBuilder.Build(template);
 
             var output = Path.Combine("output", "templates", this.GetType().Name);
 

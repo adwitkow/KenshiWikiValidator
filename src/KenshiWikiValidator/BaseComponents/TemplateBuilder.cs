@@ -20,7 +20,7 @@ namespace KenshiWikiValidator.BaseComponents
 {
     public class TemplateBuilder
     {
-        public string Build(WikiTemplate template, bool newlines = true)
+        public string Build(WikiTemplate template)
         {
             if (string.IsNullOrEmpty(template.Name))
             {
@@ -30,17 +30,17 @@ namespace KenshiWikiValidator.BaseComponents
             var builder = new StringBuilder("{{");
 
             var newlineAfterName = true;
-            if (!(template.Parameters.Any() || template.UnnamedParameters.Any()) || template.UnnamedParameters.Count == 1)
+            if (!(template.Parameters.Any()
+                || template.UnnamedParameters.Any())
+                || template.UnnamedParameters.Count == 1
+                || template.Format == WikiTemplate.TemplateFormat.Inline)
             {
                 newlineAfterName = false;
             }
 
             Append(builder, template.Name, newlineAfterName);
 
-            if (!newlineAfterName && template.UnnamedParameters.Any())
-            {
-                builder.Append(' ');
-            }
+            var newlines = ShouldAddNewlines(template);
 
             foreach (var parameter in template.UnnamedParameters)
             {
@@ -76,6 +76,29 @@ namespace KenshiWikiValidator.BaseComponents
             {
                 builder.Append(toAppend);
             }
+        }
+
+        private static bool ShouldAddNewlines(WikiTemplate template)
+        {
+            if (template.Format == WikiTemplate.TemplateFormat.Block)
+            {
+                return true;
+            }
+
+            if (template.Format == WikiTemplate.TemplateFormat.Inline)
+            {
+                return false;
+            }
+
+            var namedParameterCount = template.Parameters.Count();
+            var unnamedParameterCount = template.UnnamedParameters.Count();
+
+            if (namedParameterCount > 3 || unnamedParameterCount > 5)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
