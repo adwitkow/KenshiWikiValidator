@@ -79,7 +79,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public float? MoneyItemProb { get; set; }
 
         [Value("armour grade")]
-        public int? ArmourGrade { get; set; }
+        public ArmourGrade ArmourGrade { get; set; }
 
         [Value("armour upgrade chance")]
         public int? ArmourUpgradeChance { get; set; }

@@ -20,9 +20,18 @@ using KenshiWikiValidator.OcsProxy.Models;
 
 namespace KenshiWikiValidator.Characters.Rules
 {
-    internal class EquipmentSectionRule : ContainsSectionRuleBase
+    public class EquipmentSectionRule : ContainsSectionRuleBase
     {
         private const string AncientStringId = "917-gamedata.base";
+
+        private static readonly List<(AttachSlot Slot, string Section)> SlotSections = new()
+        {
+            (AttachSlot.Hat, "Headgear"),
+            (AttachSlot.Body, "Body"),
+            (AttachSlot.Shirt, "Shirt"),
+            (AttachSlot.Legs, "Legwear"),
+            (AttachSlot.Boots, "Footwear"),
+        };
 
         private readonly IItemRepository itemRepository;
         private readonly WeaponManufacturer ancient;
@@ -51,126 +60,163 @@ namespace KenshiWikiValidator.Characters.Rules
 
             var builder = new WikiSectionBuilder();
             builder.WithHeader("Equipment");
-            this.AddWeaponSection(character, builder);
 
-            //builder.WithSubsection("Clothing", 1);
-            //builder.WithSubsection("Inventory", 1);
+            builder.WithSubsection("Quality", 1);
+
+            var manufacturerChances = this.CalculateManufacturerChances(character);
+            if (manufacturerChances.Any())
+            {
+                var headerTemplate = new WikiTemplate("Grade Table Header");
+                headerTemplate.UnnamedParameters.Add("weapon");
+
+                builder.WithTemplate(headerTemplate);
+
+                foreach (var manufacturerChance in manufacturerChances)
+                {
+                    var rowTemplate = new WikiTemplate("Grade Table Row")
+                    {
+                        Format = WikiTemplate.TemplateFormat.Inline,
+                    };
+
+                    rowTemplate.UnnamedParameters.Add("weapon");
+                    rowTemplate.UnnamedParameters.Add(manufacturerChance.ItemName);
+                    rowTemplate.UnnamedParameters.Add(manufacturerChance.Chance.ToString());
+
+                    builder.WithTemplate(rowTemplate);
+                }
+
+                builder.WithEmptyTemplate("Grade Table Bottom");
+            }
+
+            builder.WithNewline();
+
+            builder.WithEmptyTemplate("Grade Table Header");
+
+            var gradeRowTemplate = new WikiTemplate("Grade Table Row")
+            {
+                Format = WikiTemplate.TemplateFormat.Inline,
+            };
+            var upgradeChance = character.ArmourUpgradeChance.GetValueOrDefault();
+            gradeRowTemplate.UnnamedParameters.Add(character.ArmourGrade.ToString());
+            gradeRowTemplate.UnnamedParameters.Add((100 - upgradeChance).ToString());
+
+            builder.WithTemplate(gradeRowTemplate);
+
+            if (upgradeChance > 0 && character.ArmourGrade < ArmourGrade.Masterwork)
+            {
+                var gradeUpgradeRowTemplate = new WikiTemplate("Grade Table Row")
+                {
+                    Format = WikiTemplate.TemplateFormat.Inline,
+                };
+                gradeUpgradeRowTemplate.UnnamedParameters.Add((character.ArmourGrade + 1).ToString());
+                gradeUpgradeRowTemplate.UnnamedParameters.Add(upgradeChance.ToString());
+
+                builder.WithTemplate(gradeUpgradeRowTemplate);
+            }
+
+            builder.WithEmptyTemplate("Grade Table Bottom");
+
+            var crossbowChances = CalculateWeaponChances(character.Crossbows, r => r.Value1);
+            var crossbowChanceSum = crossbowChances.Sum(x => x.Chance);
+
+            var validWeapons = character.Weapons.Where(r => r.Value0 > 0);
+
+            var hipReferences = GetHipReferences(validWeapons);
+            var tooBigForHip = hipReferences.Where(r => !r.Item.FitsOnHip);
+            hipReferences = hipReferences.Except(tooBigForHip);
+
+            var hipChances = CalculateWeaponChances(hipReferences, r => r.Value2)
+                .OrderByDescending(x => x.Chance)
+                .Select(itemChance => $"{itemChance.ItemName} ({itemChance.Chance}%)");
+
+            var weaponsMeantForBack = validWeapons.Where(r => r.Value1 == 1);
+            var backReferences = tooBigForHip.Concat(weaponsMeantForBack);
+
+            var rawBackChances = CalculateWeaponChances(backReferences, r => r.Value2);
+            var crossbowSubtraction = crossbowChanceSum / rawBackChances.Count();
+            var backChances = rawBackChances.Select(x => new ChanceItem(x.ItemName, x.Chance - crossbowSubtraction))
+                .Concat(crossbowChances)
+                .OrderByDescending(x => x.Chance)
+                .Select(itemChance => $"{itemChance.ItemName} ({itemChance.Chance}%)");
+
+            if (backChances.Any() || hipChances.Any())
+            {
+                builder.WithSubsection("Weapons", 1);
+            }
+
+            if (backChances.Any())
+            {
+                builder.WithSubsection("Back slot", 2);
+                builder.WithUnorderedList(backChances);
+            }
+
+            if (hipChances.Any())
+            {
+                builder.WithSubsection("Hip slot", 2);
+                builder.WithUnorderedList(hipChances);
+            }
+
+            var validClothing = character.Clothing.Where(clothing => clothing.Value0 != 0);
+            var negativeQuantityClothing = validClothing.Where(clothing => clothing.Value0 < 0);
+            validClothing = validClothing.Except(negativeQuantityClothing);
+            var clothingChances = new List<(string Section, List<ChanceItem> Chances)>();
+            foreach (var slotSection in SlotSections)
+            {
+                var sectionChances = new List<ChanceItem>();
+                var slot = slotSection.Slot;
+                var noItemWeight = negativeQuantityClothing.Where(item => item.Item.Slot == slot)
+                    .Sum(item => item.Value1);
+                var items = validClothing.Where(item => item.Item.Slot == slot);
+                var entireWeight = items.Sum(item => item.Value1) + noItemWeight;
+
+                foreach (var item in items)
+                {
+                    var chance = (double)item.Value1 / entireWeight;
+                    chance *= 100;
+                    chance = Math.Round(chance, 2);
+                    sectionChances.Add(new ChanceItem(item.Item.Name, chance));
+                }
+
+                clothingChances.Add((slotSection.Section, sectionChances));
+            }
+
+            var nonEmptyChances = clothingChances.Where(slot => slot.Chances.Count > 0);
+            if (nonEmptyChances.Any())
+            {
+                builder.WithSubsection("Apparel", 1);
+
+                foreach (var slotSection in nonEmptyChances)
+                {
+                    builder.WithSubsection(slotSection.Section, 2);
+                    builder.WithUnorderedList(slotSection.Chances.Select(itemChance => $"{itemChance.ItemName} ({itemChance.Chance}%)"));
+                }
+            }
+
+            var validInventory = character.Inventory.Where(item => item.Value0 > 0);
+            if (validInventory.Any())
+            {
+                builder.WithSubsection("Inventory", 1);
+
+                var formatted = validInventory.OrderBy(r => r.Item.Name)
+                    .Select(r => r.Item.Name);
+                builder.WithUnorderedList(formatted);
+            }
 
             return builder;
         }
 
-        private void AddWeaponSection(Character character, WikiSectionBuilder builder)
+        private static IEnumerable<ItemReference<Weapon>> GetHipReferences(IEnumerable<ItemReference<Weapon>> weapons)
         {
-            var crossbows = ExtractWeaponReferences(character.Crossbows, r => r.Value1);
+            var invalidSlotReferences = weapons.Where(r => r.Value1 is not 0 or 1);
+            var weaponsMeantForHip = weapons.Where(r => r.Value1 == 0);
 
-            var validWeapons = character.Weapons.Where(r => r.Value0 > 0);
-            var validBackWeapons = validWeapons.Where(r => r.Value1 == 1);
-            var backWeapons = ExtractWeaponReferences(validBackWeapons, r => r.Value2);
-            var validHipWeapons = validWeapons.Where(r => r.Value1 != 1);
-            var hipWeapons = ExtractWeaponReferences(validHipWeapons, r => r.Value2);
-
-            if (!crossbows.Any() && !validWeapons.Any())
-            {
-                return;
-            }
-
-            builder.WithSubsection("Weapons", 1);
-
-            builder.WithSubsection("Grades", 2);
-
-            var grades = this.UnwrapWeaponGrades(character, builder);
-            builder.WithLine("{| class=\"wikitable sortable\" style=\"text-align: center;\"");
-            builder.WithLine("! Manufacturer !! Model !! Chance");
-
-            var groupedGrades = grades.GroupBy(g => g.Manufacturer);
-            foreach (var group in groupedGrades)
-            {
-                bool addManufacturer = true;
-                foreach (var model in group)
-                {
-                    builder.WithLine("|-");
-
-                    if (addManufacturer)
-                    {
-                        builder.WithLine($"| rowspan=\"{group.Count()}\" | [[{model.Manufacturer}]]");
-                    }
-
-                    builder.WithLine($"| {{{{Grade|{model.Model}}}}}");
-                    builder.WithLine($"| {model.Chance:0.##}%");
-
-                    addManufacturer = false;
-                }
-            }
-
-            builder.WithLine("|}");
-            builder.WithNewline();
-
-            if (crossbows.Any() || hipWeapons.Any(weapon => !((Weapon)weapon.Item).FitsOnHip))
-            {
-                builder.WithLine("Edge case");
-                return;
-            }
-
-            if (crossbows.Any())
-            {
-                builder.WithSubsection("Ranged", 2);
-                builder.WithLine("{| class=\"wikitable sortable\" style=\"text-align: center;\"");
-                builder.WithLine("! colspan=\"2\" | Name !! Chance");
-
-                foreach (var crossbow in crossbows)
-                {
-                    builder.WithLine("|-");
-                    builder.WithLine($"| [[File:{crossbow.Item.Name}.png | 200px]]");
-                    builder.WithLine($"| [[{crossbow.Item.Name}]]");
-                    builder.WithLine($"| {crossbow.Chance}%");
-                }
-
-                builder.WithLine("|}");
-                builder.WithNewline();
-            }
-
-            var maxGrade = grades.Last().Model;
-
-            if (backWeapons.Any())
-            {
-                builder.WithSubsection("Back slot", 2);
-                builder.WithLine("{| class=\"wikitable sortable\" style=\"text-align: center;\"");
-                builder.WithLine("! colspan=\"2\" | Name !! Chance");
-
-                foreach (var backWeapon in backWeapons)
-                {
-                    builder.WithLine("|-");
-                    builder.WithLine($"| [[File:{maxGrade} {backWeapon.Item.Name}.png | 200px]]");
-                    builder.WithLine($"| [[{backWeapon.Item.Name}]]");
-                    builder.WithLine($"| {backWeapon.Chance}%");
-                }
-
-                builder.WithLine("|}");
-                builder.WithNewline();
-            }
-
-            if (hipWeapons.Any())
-            {
-                builder.WithSubsection("Hip slot", 2);
-                builder.WithLine("{| class=\"wikitable sortable\" style=\"text-align: center;\"");
-                builder.WithLine("! colspan=\"2\" | Name !! Chance");
-
-                foreach (var hipWeapon in hipWeapons)
-                {
-                    builder.WithLine("|-");
-                    builder.WithLine($"| [[File:{maxGrade} {hipWeapon.Item.Name}.png | 200px]]");
-                    builder.WithLine($"| [[{hipWeapon.Item.Name}]]");
-                    builder.WithLine($"| {hipWeapon.Chance}%");
-                }
-
-                builder.WithLine("|}");
-                builder.WithNewline();
-            }
+            // invalid slot items come after slot = 0
+            return weaponsMeantForHip.Concat(invalidSlotReferences);
         }
 
-        private List<ModelChance> UnwrapWeaponGrades(Character character, WikiSectionBuilder builder)
+        private List<ChanceItem> CalculateManufacturerChances(Character character)
         {
-            var results = new List<ModelChance>();
+            var results = new List<ChanceItem>();
             var manufacturers = character.WeaponLevels;
 
             if (!manufacturers.Any())
@@ -193,32 +239,21 @@ namespace KenshiWikiValidator.Characters.Rules
             foreach (var manufacturer in orderedManufacturers)
             {
                 var manufacturerChance = (double)manufacturer.Value0 / manufacturerWeightSum;
+                manufacturerChance = Math.Round(manufacturerChance * 100, 2);
 
-                var models = manufacturer.Item.WeaponModels.OrderBy(m => m.Value0);
-                var modelWeightSum = models.Sum(r => r.Value1);
-                foreach (var model in models)
-                {
-                    var modelChance = (double)model.Value1 / modelWeightSum;
-                    modelChance *= manufacturerChance;
-                    modelChance *= 100;
-
-                    var result = new ModelChance(
-                        manufacturer.Item.Name,
-                        model.Item.Name,
-                        Math.Round(modelChance, 2));
-                    results.Add(result);
-                }
+                var result = new ChanceItem(manufacturer.Item.Name, manufacturerChance);
+                results.Add(result);
             }
 
             return results;
         }
 
-        private static List<(IItem Item, int Chance)> ExtractWeaponReferences<T>(
+        private static IEnumerable<ChanceItem> CalculateWeaponChances<T>(
             IEnumerable<ItemReference<T>> references,
             Func<ItemReference<T>, int> chanceProperty)
             where T : IItem
         {
-            var results = new List<(IItem item, int Chance)>();
+            var results = new List<ChanceItem>();
             var chanceSum = 0;
             foreach (var weapon in references)
             {
@@ -241,7 +276,7 @@ namespace KenshiWikiValidator.Characters.Rules
 
                 for (int i = 0; i < amount; i++)
                 {
-                    results.Add((weapon.Item, chance));
+                    results.Add(new ChanceItem(weapon.Item.Name, chance));
                 }
 
                 if (chanceSum >= 100)
@@ -253,14 +288,9 @@ namespace KenshiWikiValidator.Characters.Rules
             return results;
         }
 
-        private readonly struct ModelChance(
-            string manufacturer,
-            string model,
-            double chance)
+        private readonly struct ChanceItem(string itemName, double chance)
         {
-            public string Manufacturer => manufacturer;
-
-            public string Model => model;
+            public string ItemName => itemName;
 
             public double Chance => chance;
         }
