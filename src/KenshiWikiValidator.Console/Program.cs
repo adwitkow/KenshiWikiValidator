@@ -22,6 +22,7 @@ using KenshiWikiValidator.Console;
 using KenshiWikiValidator.Locations;
 using KenshiWikiValidator.MapItems;
 using KenshiWikiValidator.OcsProxy;
+using KenshiWikiValidator.OcsProxy.Models;
 using KenshiWikiValidator.TownResidents;
 using KenshiWikiValidator.Weapons;
 using WikiClientLibrary.Client;
@@ -87,6 +88,12 @@ var site = new WikiaSite(client, WikiApiUrl);
 await site.Initialization;
 
 var validator = validators[response - 1];
+
+var page = new WikiPage(site, "Emperor Tengu");
+await page.RefreshAsync(PageQueryOptions.FetchContent);
+await CachePage(validator, page);
+ValidateArticle(page, validator);
+
 if (validator.Dependencies.Any())
 {
     Console.WriteLine($"This validator depends on the following categories: {string.Join(", ", validator.Dependencies.Select(dependency => dependency.CategoryName))}");
