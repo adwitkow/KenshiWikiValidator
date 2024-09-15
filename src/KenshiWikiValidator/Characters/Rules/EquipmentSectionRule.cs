@@ -239,12 +239,23 @@ namespace KenshiWikiValidator.Characters.Rules
 
         private void AddGradeSection(Character character, WikiSectionBuilder builder)
         {
+            var hasWeapons = character.Weapons.Any(r => r.Value0 > 0)
+                || character.Crossbows.Any(r => r.Value0 > 0);
+            var hasGradedArmour = character.Clothing
+                .Where(r => r.Value0 > 0)
+                .Any(r => r.Item.PartCoverage.Any());
+
+            if (!hasWeapons && !hasGradedArmour)
+            {
+                return;
+            }
+
             builder.WithNewline();
             builder.WithSubsection("Quality", 1);
 
-            var manufacturerChances = this.CalculateManufacturerChances(character);
-            if (manufacturerChances.Any())
+            if (hasWeapons)
             {
+                var manufacturerChances = this.CalculateManufacturerChances(character);
                 var headerTemplate = new WikiTemplate("Grade Table Header");
                 headerTemplate.UnnamedParameters.Add("weapon");
 
@@ -267,39 +278,42 @@ namespace KenshiWikiValidator.Characters.Rules
                 builder.WithEmptyTemplate("Grade Table Bottom");
             }
 
-            builder.WithNewline();
-            builder.WithEmptyTemplate("Grade Table Header");
-
-            var gradeRowTemplate = new WikiTemplate("Grade Table Row")
+            if (hasGradedArmour)
             {
-                Format = WikiTemplate.TemplateFormat.Inline,
-            };
+                builder.WithNewline();
+                builder.WithEmptyTemplate("Grade Table Header");
 
-            var upgradeChance = character.ArmourUpgradeChance.GetValueOrDefault();
+                var gradeRowTemplate = new WikiTemplate("Grade Table Row")
+                {
+                    Format = WikiTemplate.TemplateFormat.Inline,
+                };
+
+                var upgradeChance = character.ArmourUpgradeChance.GetValueOrDefault();
                 if (character.ArmourGrade == ArmourGrade.Masterwork)
                 {
                     upgradeChance = 0;
                 }
 
-            gradeRowTemplate.UnnamedParameters.Add(character.ArmourGrade.ToString());
-            gradeRowTemplate.UnnamedParameters.Add((100 - upgradeChance).ToString());
+                gradeRowTemplate.UnnamedParameters.Add(character.ArmourGrade.ToString());
+                gradeRowTemplate.UnnamedParameters.Add((100 - upgradeChance).ToString());
 
-            builder.WithTemplate(gradeRowTemplate);
+                builder.WithTemplate(gradeRowTemplate);
 
                 if (upgradeChance > 0)
-            {
-                var gradeUpgradeRowTemplate = new WikiTemplate("Grade Table Row")
                 {
-                    Format = WikiTemplate.TemplateFormat.Inline,
-                };
+                    var gradeUpgradeRowTemplate = new WikiTemplate("Grade Table Row")
+                    {
+                        Format = WikiTemplate.TemplateFormat.Inline,
+                    };
 
-                gradeUpgradeRowTemplate.UnnamedParameters.Add((character.ArmourGrade + 1).ToString());
-                gradeUpgradeRowTemplate.UnnamedParameters.Add(upgradeChance.ToString());
+                    gradeUpgradeRowTemplate.UnnamedParameters.Add((character.ArmourGrade + 1).ToString());
+                    gradeUpgradeRowTemplate.UnnamedParameters.Add(upgradeChance.ToString());
 
-                builder.WithTemplate(gradeUpgradeRowTemplate);
+                    builder.WithTemplate(gradeUpgradeRowTemplate);
+                }
+
+                builder.WithEmptyTemplate("Grade Table Bottom");
             }
-
-            builder.WithEmptyTemplate("Grade Table Bottom");
         }
 
         private static IEnumerable<ItemReference<Weapon>> GetHipReferences(IEnumerable<ItemReference<Weapon>> weapons)
