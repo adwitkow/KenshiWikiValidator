@@ -29,22 +29,25 @@ namespace KenshiWikiValidator.BaseComponents
 
             var builder = new StringBuilder("{{");
 
-            var newlineAfterName = true;
-            if (!(template.Parameters.Any()
-                || template.UnnamedParameters.Any())
-                || template.UnnamedParameters.Count == 1
-                || template.Format == WikiTemplate.TemplateFormat.Inline)
-            {
-                newlineAfterName = false;
-            }
+            var newlineAfterName = ShouldAddNewlineAfterName(template);
 
             Append(builder, template.Name, newlineAfterName);
 
             var newlines = ShouldAddNewlines(template);
 
+            if (!newlineAfterName && newlines)
+            {
+                builder.Append(' ');
+            }
+
             foreach (var parameter in template.UnnamedParameters)
             {
-                Append(builder, $" | {parameter}", newlines);
+                if (!newlines)
+                {
+                    builder.Append(' ');
+                }
+
+                Append(builder, $"| {parameter}", newlines);
             }
 
             var validParameters = template.Parameters.Where(pair => pair.Value is not null && !string.IsNullOrWhiteSpace(pair.Value));
@@ -57,8 +60,13 @@ namespace KenshiWikiValidator.BaseComponents
 
             foreach (var pair in validParameters)
             {
+                if (!newlines)
+                {
+                    builder.Append(' ');
+                }
+
                 var paddedKey = pair.Key.PadRight(maxLength);
-                Append(builder, $" | {paddedKey} = {pair.Value}", newlines);
+                Append(builder, $"| {paddedKey} = {pair.Value}", newlines);
             }
 
             builder.Append("}}");
@@ -66,16 +74,38 @@ namespace KenshiWikiValidator.BaseComponents
             return builder.ToString();
         }
 
-        private static void Append(StringBuilder builder, string toAppend, bool newlines)
+        private static void Append(StringBuilder builder, string toAppend, bool addNewline)
         {
-            if (newlines)
+            if (addNewline)
             {
-                builder.AppendLine(toAppend.TrimStart());
+                builder.AppendLine(toAppend);
             }
             else
             {
                 builder.Append(toAppend);
             }
+        }
+
+        private static bool ShouldAddNewlineAfterName(WikiTemplate template)
+        {
+            var noParameters = !template.Parameters.Any()
+                && !template.UnnamedParameters.Any();
+            if (noParameters)
+            {
+                return false;
+            }
+
+            if (template.UnnamedParameters.Count == 1)
+            {
+                return false;
+            }
+
+            if (template.Format == WikiTemplate.TemplateFormat.Inline)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private static bool ShouldAddNewlines(WikiTemplate template)
