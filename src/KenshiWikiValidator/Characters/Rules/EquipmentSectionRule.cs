@@ -133,8 +133,11 @@ namespace KenshiWikiValidator.Characters.Rules
 
                 foreach (var slotSection in nonEmptyChances)
                 {
-                    builder.WithNewline();
-                    builder.WithSubsection(slotSection.Section, 2);
+                    if (nonEmptyChances.Count() > 1)
+                    {
+                        builder.WithNewline();
+                        builder.WithSubsection(slotSection.Section, 2);
+                    }
 
                     builder.WithEmptyTemplate("Equipment Table Header");
 
