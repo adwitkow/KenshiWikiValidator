@@ -18,22 +18,12 @@ using KenshiWikiValidator.BaseComponents;
 using KenshiWikiValidator.BaseComponents.Creators;
 using KenshiWikiValidator.OcsProxy;
 using KenshiWikiValidator.OcsProxy.Models;
-using System.Runtime.CompilerServices;
 
 namespace KenshiWikiValidator.Characters.Templates
 {
     public class CharacterTemplateCreator : ITemplateCreator
     {
         private const string TemplateName = "Character";
-
-        private static readonly Dictionary<AttachSlot, string> SlotMap = new Dictionary<AttachSlot, string>()
-        {
-            { AttachSlot.Hat, "headgear" },
-            { AttachSlot.Body, "armour" },
-            { AttachSlot.Shirt, "shirt" },
-            { AttachSlot.Legs, "legwear" },
-            { AttachSlot.Boots, "footwear" },
-        };
 
         private static readonly Dictionary<string, string> RaceMap = new Dictionary<string, string>()
         {
@@ -55,13 +45,11 @@ namespace KenshiWikiValidator.Characters.Templates
             { "Southern Hive Worker Drone", "Hive" },
         };
 
-        private readonly IItemRepository itemRepository;
         private readonly IWikiTitleCache titleCache;
         private readonly CharacterRaceExtractor raceExtractor;
 
         public CharacterTemplateCreator(IItemRepository itemRepository, IWikiTitleCache titleCache)
         {
-            this.itemRepository = itemRepository;
             this.titleCache = titleCache;
             this.raceExtractor = new CharacterRaceExtractor(itemRepository);
         }
@@ -94,37 +82,17 @@ namespace KenshiWikiValidator.Characters.Templates
             };
 
             var races = this.raceExtractor.Extract(this.Character);
-            ProcessRaces(races, parameters);
+            this.ProcessRaces(races, parameters);
 
             if (races.Any(race => !race.SingleGender.GetValueOrDefault()))
             {
                 ProcessGender(this.Character, parameters);
             }
 
-            parameters.Add("weapons", ProcessNullableReferences(this.Character.Weapons));
-
-            ProcessArmour(this.Character, parameters);
-            parameters.Add("inventory", ProcessNullableReferences(this.Character.Inventory));
-            parameters.Add("backpack", ProcessNullableReferences(this.Character.Backpack));
-
             parameters.Add("fcs_name", this.Character.Name.Replace("|", "{{!}}"));
             parameters.Add("string_id", this.Character.StringId);
 
             return new WikiTemplate(TemplateName, parameters);
-        }
-
-        private void ProcessArmour(Character character, IndexedDictionary<string, string?> parameters)
-        {
-            foreach (var slotPair in SlotMap)
-            {
-                var slot = slotPair.Key;
-                var target = slotPair.Value;
-
-                var slotItems = character.Clothing.Where(armour => armour.Item.Slot == slot);
-                var items = this.ProcessNullableReferences(slotItems);
-
-                parameters.Add(target, items);
-            }
         }
 
         private static void ProcessGender(Character character, IndexedDictionary<string, string?> parameters)
@@ -156,24 +124,6 @@ namespace KenshiWikiValidator.Characters.Templates
             template.Parameters.TryGetValue(parameter, out var result);
 
             return result;
-        }
-
-        private string? ProcessNullableReferences<T>(IEnumerable<ItemReference<T>> itemRefs)
-            where T : IItem
-        {
-            if (!itemRefs.Any())
-            {
-                return null;
-            }
-            else
-            {
-                var items = itemRefs
-                    .Where(reference => reference.Value0 > 0)
-                    .OrderByDescending(reference => reference.Value0)
-                    .ThenBy(reference => reference.Item.Name)
-                    .Select(itemRef => $"[[{this.GetTitleOrName(itemRef.Item)}]]");
-                return string.Join(", ", items);
-            }
         }
 
         private void ProcessRaces(IEnumerable<Race> races, IndexedDictionary<string, string?> parameters)
