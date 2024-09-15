@@ -274,18 +274,25 @@ namespace KenshiWikiValidator.Characters.Rules
             {
                 Format = WikiTemplate.TemplateFormat.Inline,
             };
+
             var upgradeChance = character.ArmourUpgradeChance.GetValueOrDefault();
+                if (character.ArmourGrade == ArmourGrade.Masterwork)
+                {
+                    upgradeChance = 0;
+                }
+
             gradeRowTemplate.UnnamedParameters.Add(character.ArmourGrade.ToString());
             gradeRowTemplate.UnnamedParameters.Add((100 - upgradeChance).ToString());
 
             builder.WithTemplate(gradeRowTemplate);
 
-            if (upgradeChance > 0 && character.ArmourGrade < ArmourGrade.Masterwork)
+                if (upgradeChance > 0)
             {
                 var gradeUpgradeRowTemplate = new WikiTemplate("Grade Table Row")
                 {
                     Format = WikiTemplate.TemplateFormat.Inline,
                 };
+
                 gradeUpgradeRowTemplate.UnnamedParameters.Add((character.ArmourGrade + 1).ToString());
                 gradeUpgradeRowTemplate.UnnamedParameters.Add(upgradeChance.ToString());
 
