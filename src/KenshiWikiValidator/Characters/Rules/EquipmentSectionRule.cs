@@ -33,11 +33,13 @@ namespace KenshiWikiValidator.Characters.Rules
             (AttachSlot.Boots, "Footwear"),
         };
 
+        private readonly IWikiTitleCache titleCache;
         private readonly IItemRepository itemRepository;
         private readonly WeaponManufacturer ancient;
 
-        public EquipmentSectionRule(IItemRepository itemRepository)
+        public EquipmentSectionRule(IItemRepository itemRepository, IWikiTitleCache titleCache)
         {
+            this.titleCache = titleCache;
             this.itemRepository = itemRepository;
             this.ancient = itemRepository.GetItemByStringId<WeaponManufacturer>(AncientStringId);
         }
@@ -62,14 +64,14 @@ namespace KenshiWikiValidator.Characters.Rules
             builder.WithHeader("Equipment");
 
             this.AddGradeSection(character, builder);
-            AddWeaponSection(character, builder);
-            AddApparelSection(character, builder);
-            AddInventorySection(character, builder);
+            this.AddWeaponSection(character, builder);
+            this.AddApparelSection(character, builder);
+            this.AddInventorySection(character, builder);
 
             return builder;
         }
 
-        private static void AddInventorySection(Character character, WikiSectionBuilder builder)
+        private void AddInventorySection(Character character, WikiSectionBuilder builder)
         {
             var validInventory = character.Inventory.Where(item => item.Value0 > 0);
             if (validInventory.Any())
@@ -89,7 +91,8 @@ namespace KenshiWikiValidator.Characters.Rules
                         Format = WikiTemplate.TemplateFormat.Inline,
                     };
 
-                    template.UnnamedParameters.Add(item.Item.Name);
+                    var name = this.titleCache.GetTitle(item.Item);
+                    template.UnnamedParameters.Add(name);
                     template.UnnamedParameters.Add(item.Value0.ToString());
 
                     builder.WithTemplate(template);
@@ -99,7 +102,7 @@ namespace KenshiWikiValidator.Characters.Rules
             }
         }
 
-        private static void AddApparelSection(Character character, WikiSectionBuilder builder)
+        private void AddApparelSection(Character character, WikiSectionBuilder builder)
         {
             var validClothing = character.Clothing.Where(clothing => clothing.Value0 != 0);
             var negativeQuantityClothing = validClothing.Where(clothing => clothing.Value0 < 0);
@@ -119,7 +122,9 @@ namespace KenshiWikiValidator.Characters.Rules
                     var chance = (double)item.Value1 / entireWeight;
                     chance *= 100;
                     chance = Math.Round(chance, 2);
-                    sectionChances.Add(new ChanceItem(item.Item.Name, chance));
+
+                    var name = this.titleCache.GetTitle(item.Item);
+                    sectionChances.Add(new ChanceItem(name, chance));
                 }
 
                 clothingChances.Add((slotSection.Section, sectionChances));
@@ -165,7 +170,7 @@ namespace KenshiWikiValidator.Characters.Rules
             }
         }
 
-        private static void AddWeaponSection(Character character, WikiSectionBuilder builder)
+        private void AddWeaponSection(Character character, WikiSectionBuilder builder)
         {
             var crossbowChances = CalculateWeaponChances(character.Crossbows, r => r.Value1);
             var crossbowChanceSum = crossbowChances.Sum(x => x.Chance);
@@ -362,7 +367,7 @@ namespace KenshiWikiValidator.Characters.Rules
             return results;
         }
 
-        private static IEnumerable<ChanceItem> CalculateWeaponChances<T>(
+        private IEnumerable<ChanceItem> CalculateWeaponChances<T>(
             IEnumerable<ItemReference<T>> references,
             Func<ItemReference<T>, int> chanceProperty)
             where T : IItem
@@ -390,7 +395,8 @@ namespace KenshiWikiValidator.Characters.Rules
 
                 for (int i = 0; i < amount; i++)
                 {
-                    results.Add(new ChanceItem(weapon.Item.Name, chance));
+                    var name = this.titleCache.GetTitle(weapon.Item);
+                    results.Add(new ChanceItem(name, chance));
                 }
 
                 if (chanceSum >= 100)
