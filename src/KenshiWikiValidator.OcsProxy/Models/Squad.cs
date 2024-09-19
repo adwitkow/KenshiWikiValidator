@@ -230,10 +230,10 @@ namespace KenshiWikiValidator.OcsProxy.Models
 
         public bool ContainsCharacter(Character character)
         {
-            return this.Leader.ContainsItem(character)
-                || this.Characters.ContainsItem(character)
-                || this.Squad2.ContainsItem(character)
-                || this.ChoosefromList.ContainsItem(character);
+            return ContainsCharacter(character, this.Leader)
+                || ContainsCharacter(character, this.Characters)
+                || ContainsCharacter(character, this.Squad2)
+                || this.ChoosefromList.ContainsItem(character); // maybe?
         }
 
         public IEnumerable<Town> GetLocations(IItemRepository repository)
@@ -249,6 +249,12 @@ namespace KenshiWikiValidator.OcsProxy.Models
                 .Where(town => town.Residents.ContainsItem(this))
                 .Concat(factionLocations)
                 .ToList();
+        }
+
+        private static bool ContainsCharacter(Character character, IEnumerable<ItemReference<Character>> references)
+        {
+            var exists = references.TryGetReference(character, out var reference);
+            return exists && (reference.Value0 > 0 || reference.Value1 > 0);
         }
     }
 }
