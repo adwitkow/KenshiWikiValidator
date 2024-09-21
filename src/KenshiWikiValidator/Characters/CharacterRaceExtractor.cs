@@ -33,60 +33,85 @@ namespace KenshiWikiValidator.Characters
             "cannibal", "cannibal skav", "fishman", "alpha fishman"];
 
         private readonly IItemRepository itemRepository;
+        private readonly Race greenlanderRace;
 
         public CharacterRaceExtractor(IItemRepository itemRepository)
         {
             this.itemRepository = itemRepository;
+
+            this.greenlanderRace = this.itemRepository.GetItemByStringId<Race>(GreenlanderId);
         }
 
         public IEnumerable<Race> Extract(Character character)
         {
-            var raceReferences = character.Races;
-
             var referringSquads = this.itemRepository.GetItems<Squad>()
                     .Where(squad => squad.ContainsCharacter(character));
-            var squadRaces = referringSquads.SelectMany(squad => squad.RaceOverrides);
 
-            var squadFactions = referringSquads.SelectMany(squad => squad.Faction);
-            var squadFactionRaces = squadFactions.SelectMany(faction => faction.Item.Races)
-                .Distinct();
+            var races = new List<Race>();
+            foreach (var squad in referringSquads)
+            {
+                var squadRaces = this.GetPossibleRacesForSquad(character, squad)
+                    .Select(r => r.Item);
+                races.AddRange(squadRaces);
+            }
 
-            if (squadRaces.Any())
+            return races
+                .Distinct()
+                .OrderBy(race => Array.IndexOf(racesOrdered, race.Name.ToLower().Trim()));
+        }
+
+        public IEnumerable<ItemReference<Race>> GetPossibleRacesForSquad(Character character, Squad squad)
+        {
+            var results = new List<ItemReference<Race>>();
+
+            var overrides = squad.RaceOverrides;
+            if (overrides.Any())
             {
                 // races from squads override all
-                raceReferences = squadRaces;
+                results.AddRange(overrides);
+
+                return results;
             }
-            else if (!raceReferences.Any())
+
+            if (character.Races.Any())
             {
-                if (squadFactionRaces.Any())
-                {
-                    // faction squads
-                    raceReferences = squadFactionRaces;
-                }
-                else if (!squadFactions.Any())
-                {
-                    // town squads
-                    var towns = this.itemRepository.GetItems<Town>()
-                        .Where(town => town.BarSquads.Any(squad => squad.Item.ContainsCharacter(character))
-                            || town.RoamingSquads.Any(squad => squad.Item.ContainsCharacter(character))
-                            || town.Residents.Any(squad => squad.Item.ContainsCharacter(character)));
+                // second priority is character race
+                results.AddRange(character.Races);
 
-                    raceReferences = towns.SelectMany(town => town.Factions)
-                        .SelectMany(faction => faction.Item.Races)
-                        .Distinct();
-                }
+                return results;
             }
 
-            var races = raceReferences.Select(race => race.Item).Distinct();
+            var squadFactionRaces = squad.Factions.SelectMany(faction => faction.Item.Races);
 
-            if (!races.Any())
+            if (squadFactionRaces.Any())
             {
-                // greenlander is the default if no race is set at all
-                var greenlander = this.itemRepository.GetItemByStringId<Race>(GreenlanderId);
-                races = [greenlander];
+                // then faction squads
+                results.AddRange(squadFactionRaces);
+
+                return results;
             }
 
-            return races.OrderBy(race => Array.IndexOf(racesOrdered, race.Name.ToLower().Trim()));
+            if (!squad.Factions.Any())
+            {
+                // and town squads
+                var towns = this.itemRepository.GetItems<Town>()
+                    .Where(town => town.ContainsSquad(squad));
+                var townRaces = towns.SelectMany(town => town.Factions)
+                    .SelectMany(faction => faction.Item.Races)
+                    .Distinct();
+
+                if (towns.Any() && townRaces.Any())
+                {
+                    results.AddRange(townRaces);
+
+                    return results;
+                }
+            }
+
+            // in case everything fails, the default is greenlander
+            results.Add(new ItemReference<Race>(this.greenlanderRace));
+
+            return results;
         }
     }
 }

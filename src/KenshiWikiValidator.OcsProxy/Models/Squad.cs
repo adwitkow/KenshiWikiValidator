@@ -28,7 +28,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
             this.Leader = Enumerable.Empty<ItemReference<Character>>();
             this.Personality = Enumerable.Empty<ItemReference<Personality>>();
             this.Vendors = Enumerable.Empty<ItemReference<VendorList>>();
-            this.Faction = Enumerable.Empty<ItemReference<Faction>>();
+            this.Factions = Enumerable.Empty<ItemReference<Faction>>();
             this.Characters = Enumerable.Empty<ItemReference<Character>>();
             this.Animals = Enumerable.Empty<ItemReference<AnimalCharacter>>();
             this.DialogLeader = Enumerable.Empty<ItemReference<DialoguePackage>>();
@@ -171,7 +171,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public IEnumerable<ItemReference<VendorList>> Vendors { get; set; }
 
         [Reference("faction")]
-        public IEnumerable<ItemReference<Faction>> Faction { get; set; }
+        public IEnumerable<ItemReference<Faction>> Factions { get; set; }
 
         [Reference("squad")]
         public IEnumerable<ItemReference<Character>> Characters { get; set; }

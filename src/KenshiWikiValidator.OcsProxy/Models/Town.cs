@@ -130,6 +130,20 @@ namespace KenshiWikiValidator.OcsProxy.Models
 
         public IEnumerable<Town> BaseTowns { get; set; }
 
+        public bool ContainsSquad(Squad squad)
+        {
+            return ContainsSquad(squad, this.BarSquads)
+                || ContainsSquad(squad, this.RoamingSquads)
+                || this.Residents.ContainsItem(squad)
+                || this.DefaultResident.ContainsItem(squad);
+        }
+
+        private static bool ContainsSquad(Squad squad, IEnumerable<ItemReference<Squad>> references)
+        {
+            var exists = references.TryGetReference(squad, out var reference);
+            return exists && (reference.Value0 > 0 || reference.Value1 > 0);
+        }
+
         public override string ToString()
         {
             return this.Name;
