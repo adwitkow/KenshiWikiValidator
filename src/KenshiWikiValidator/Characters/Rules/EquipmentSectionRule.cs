@@ -63,7 +63,6 @@ namespace KenshiWikiValidator.Characters.Rules
             var builder = new WikiSectionBuilder();
             builder.WithHeader("Equipment");
 
-            this.AddGradeSection(character, builder);
             this.AddWeaponSection(character, builder);
             this.AddApparelSection(character, builder);
             this.AddInventorySection(character, builder);
@@ -130,43 +129,88 @@ namespace KenshiWikiValidator.Characters.Rules
                 clothingChances.Add((slotSection.Section, sectionChances));
             }
 
+            builder.WithNewline();
+            builder.WithSubsection("Apparel", 1);
+
             var nonEmptyChances = clothingChances.Where(slot => slot.Chances.Count > 0);
-            if (nonEmptyChances.Any())
+            if (!nonEmptyChances.Any())
+            {
+                builder.WithLine("This character spawns with no apparel.");
+                return;
+            }
+
+            var hasGradedArmour = validClothing.Any(r => r.Item.PartCoverage.Any());
+            if (hasGradedArmour)
             {
                 builder.WithNewline();
-                builder.WithSubsection("Apparel", 1);
+                builder.WithEmptyTemplate("Grade Table Header");
 
-                foreach (var slotSection in nonEmptyChances)
+                var gradeRowTemplate = new WikiTemplate("Grade Table Row")
                 {
-                    if (nonEmptyChances.Count() > 1)
-                    {
-                        builder.WithNewline();
-                        builder.WithSubsection(slotSection.Section, 2);
-                    }
+                    Format = WikiTemplate.TemplateFormat.Inline,
+                };
 
-                    builder.WithEmptyTemplate("Equipment Table Header");
-
-                    var orderedChances = slotSection.Chances.OrderByDescending(chance => chance.Chance);
-                    foreach (var chance in orderedChances)
-                    {
-                        var template = new WikiTemplate("Equipment Table Row")
-                        {
-                            Format = WikiTemplate.TemplateFormat.Inline,
-                        };
-
-                        template.UnnamedParameters.Add(chance.ItemName);
-                        template.UnnamedParameters.Add(chance.Chance.ToString());
-
-                        if (slotSection.Section is not "Body")
-                        {
-                            template.UnnamedParameters.Add("small");
-                        }
-
-                        builder.WithTemplate(template);
-                    }
-
-                    builder.WithEmptyTemplate("Equipment Table Bottom");
+                var upgradeChance = character.ArmourUpgradeChance.GetValueOrDefault();
+                if (character.ArmourGrade == ArmourGrade.Masterwork)
+                {
+                    upgradeChance = 0;
                 }
+
+                gradeRowTemplate.UnnamedParameters.Add(character.ArmourGrade.ToString());
+                gradeRowTemplate.UnnamedParameters.Add((100 - upgradeChance).ToString());
+
+                builder.WithTemplate(gradeRowTemplate);
+
+                if (upgradeChance > 0)
+                {
+                    var gradeUpgradeRowTemplate = new WikiTemplate("Grade Table Row")
+                    {
+                        Format = WikiTemplate.TemplateFormat.Inline,
+                    };
+
+                    gradeUpgradeRowTemplate.UnnamedParameters.Add((character.ArmourGrade + 1).ToString());
+                    gradeUpgradeRowTemplate.UnnamedParameters.Add(upgradeChance.ToString());
+
+                    builder.WithTemplate(gradeUpgradeRowTemplate);
+                }
+
+                builder.WithEmptyTemplate("Grade Table Bottom");
+            }
+            else
+            {
+                builder.WithLine("''Every piece of clothing below offers no coverage and thus, armour grading is not applicable.''");
+            }
+
+            foreach (var slotSection in nonEmptyChances)
+            {
+                if (nonEmptyChances.Count() > 1)
+                {
+                    builder.WithNewline();
+                    builder.WithSubsection(slotSection.Section, 2);
+                }
+
+                builder.WithEmptyTemplate("Equipment Table Header");
+
+                var orderedChances = slotSection.Chances.OrderByDescending(chance => chance.Chance);
+                foreach (var chance in orderedChances)
+                {
+                    var template = new WikiTemplate("Equipment Table Row")
+                    {
+                        Format = WikiTemplate.TemplateFormat.Inline,
+                    };
+
+                    template.UnnamedParameters.Add(chance.ItemName);
+                    template.UnnamedParameters.Add(chance.Chance.ToString());
+
+                    if (slotSection.Section is not "Body")
+                    {
+                        template.UnnamedParameters.Add("small");
+                    }
+
+                    builder.WithTemplate(template);
+                }
+
+                builder.WithEmptyTemplate("Equipment Table Bottom");
             }
         }
 
@@ -193,11 +237,36 @@ namespace KenshiWikiValidator.Characters.Rules
                 .Concat(crossbowChances)
                 .OrderByDescending(x => x.Chance);
 
-            if (backChances.Any() || hipChances.Any())
+            builder.WithNewline();
+            builder.WithSubsection("Weapons", 1);
+
+            if (!backChances.Any() && !hipChances.Any())
             {
-                builder.WithNewline();
-                builder.WithSubsection("Weapons", 1);
+                builder.WithLine("''This character spawns with no weapons.''");
+                return;
             }
+
+            var manufacturerChances = this.CalculateManufacturerChances(character);
+            var headerTemplate = new WikiTemplate("Grade Table Header");
+            headerTemplate.UnnamedParameters.Add("weapon");
+
+            builder.WithTemplate(headerTemplate);
+
+            foreach (var manufacturerChance in manufacturerChances)
+            {
+                var rowTemplate = new WikiTemplate("Grade Table Row")
+                {
+                    Format = WikiTemplate.TemplateFormat.Inline,
+                };
+
+                rowTemplate.UnnamedParameters.Add("weapon");
+                rowTemplate.UnnamedParameters.Add(manufacturerChance.ItemName);
+                rowTemplate.UnnamedParameters.Add(manufacturerChance.Chance.ToString());
+
+                builder.WithTemplate(rowTemplate);
+            }
+
+            builder.WithEmptyTemplate("Grade Table Bottom");
 
             if (backChances.Any())
             {
@@ -242,85 +311,6 @@ namespace KenshiWikiValidator.Characters.Rules
                 }
 
                 builder.WithEmptyTemplate("Equipment Table Bottom");
-            }
-        }
-
-        private void AddGradeSection(Character character, WikiSectionBuilder builder)
-        {
-            var hasWeapons = character.Weapons.Any(r => r.Value0 > 0)
-                || character.Crossbows.Any(r => r.Value0 > 0);
-            var hasGradedArmour = character.Clothing
-                .Where(r => r.Value0 > 0)
-                .Any(r => r.Item.PartCoverage.Any());
-
-            if (!hasWeapons && !hasGradedArmour)
-            {
-                return;
-            }
-
-            builder.WithNewline();
-            builder.WithSubsection("Quality", 1);
-
-            if (hasWeapons)
-            {
-                var manufacturerChances = this.CalculateManufacturerChances(character);
-                var headerTemplate = new WikiTemplate("Grade Table Header");
-                headerTemplate.UnnamedParameters.Add("weapon");
-
-                builder.WithTemplate(headerTemplate);
-
-                foreach (var manufacturerChance in manufacturerChances)
-                {
-                    var rowTemplate = new WikiTemplate("Grade Table Row")
-                    {
-                        Format = WikiTemplate.TemplateFormat.Inline,
-                    };
-
-                    rowTemplate.UnnamedParameters.Add("weapon");
-                    rowTemplate.UnnamedParameters.Add(manufacturerChance.ItemName);
-                    rowTemplate.UnnamedParameters.Add(manufacturerChance.Chance.ToString());
-
-                    builder.WithTemplate(rowTemplate);
-                }
-
-                builder.WithEmptyTemplate("Grade Table Bottom");
-            }
-
-            if (hasGradedArmour)
-            {
-                builder.WithNewline();
-                builder.WithEmptyTemplate("Grade Table Header");
-
-                var gradeRowTemplate = new WikiTemplate("Grade Table Row")
-                {
-                    Format = WikiTemplate.TemplateFormat.Inline,
-                };
-
-                var upgradeChance = character.ArmourUpgradeChance.GetValueOrDefault();
-                if (character.ArmourGrade == ArmourGrade.Masterwork)
-                {
-                    upgradeChance = 0;
-                }
-
-                gradeRowTemplate.UnnamedParameters.Add(character.ArmourGrade.ToString());
-                gradeRowTemplate.UnnamedParameters.Add((100 - upgradeChance).ToString());
-
-                builder.WithTemplate(gradeRowTemplate);
-
-                if (upgradeChance > 0)
-                {
-                    var gradeUpgradeRowTemplate = new WikiTemplate("Grade Table Row")
-                    {
-                        Format = WikiTemplate.TemplateFormat.Inline,
-                    };
-
-                    gradeUpgradeRowTemplate.UnnamedParameters.Add((character.ArmourGrade + 1).ToString());
-                    gradeUpgradeRowTemplate.UnnamedParameters.Add(upgradeChance.ToString());
-
-                    builder.WithTemplate(gradeUpgradeRowTemplate);
-                }
-
-                builder.WithEmptyTemplate("Grade Table Bottom");
             }
         }
 
