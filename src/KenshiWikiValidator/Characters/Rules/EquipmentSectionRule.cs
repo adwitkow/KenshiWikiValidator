@@ -142,7 +142,6 @@ namespace KenshiWikiValidator.Characters.Rules
             var hasGradedArmour = validClothing.Any(r => r.Item.PartCoverage.Any());
             if (hasGradedArmour)
             {
-                builder.WithNewline();
                 builder.WithEmptyTemplate("Grade Table Header");
 
                 var gradeRowTemplate = new WikiTemplate("Grade Table Row")
