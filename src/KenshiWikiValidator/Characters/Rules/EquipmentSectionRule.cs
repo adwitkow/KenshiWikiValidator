@@ -135,7 +135,7 @@ namespace KenshiWikiValidator.Characters.Rules
             var nonEmptyChances = clothingChances.Where(slot => slot.Chances.Count > 0);
             if (!nonEmptyChances.Any())
             {
-                builder.WithLine("This character spawns with no apparel.");
+                builder.WithLine("''This character spawns with no apparel.''");
                 return;
             }
 
