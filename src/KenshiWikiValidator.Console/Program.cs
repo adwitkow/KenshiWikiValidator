@@ -89,7 +89,7 @@ await site.Initialization;
 
 var validator = validators[response - 1];
 
-var page = new WikiPage(site, "Emperor Tengu");
+var page = new WikiPage(site, "Empire Mercenary");
 await page.RefreshAsync(PageQueryOptions.FetchContent);
 await CachePage(validator, page);
 ValidateArticle(page, validator);

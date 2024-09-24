@@ -215,22 +215,23 @@ namespace KenshiWikiValidator.Characters.Rules
 
         private void AddWeaponSection(Character character, WikiSectionBuilder builder)
         {
-            var crossbowChances = CalculateWeaponChances(character.Crossbows, r => r.Value1);
-            var crossbowChanceSum = crossbowChances.Sum(x => x.Chance);
-
             var validWeapons = character.Weapons.Where(r => r.Value0 > 0);
 
-            var hipReferences = GetHipReferences(validWeapons);
+            var hipReferences = validWeapons.Where(r => r.Value1 == 0);
             var tooBigForHip = hipReferences.Where(r => !r.Item.FitsOnHip);
             hipReferences = hipReferences.Except(tooBigForHip);
 
-            var hipChances = CalculateWeaponChances(hipReferences, r => r.Value2)
-                .OrderByDescending(x => x.Chance);
-
+            var invalidSlotReferences = validWeapons.Where(r => r.Value1 is not 0 or 1);
             var weaponsMeantForBack = validWeapons.Where(r => r.Value1 == 1);
-            var backReferences = tooBigForHip.Concat(weaponsMeantForBack);
+            var backReferences = tooBigForHip
+                .Concat(weaponsMeantForBack)
+                .Concat(invalidSlotReferences);
 
-            var rawBackChances = CalculateWeaponChances(backReferences, r => r.Value2);
+            var crossbowChances = this.CalculateWeaponChances(character.Crossbows, r => r.Value1);
+            var crossbowChanceSum = crossbowChances.Sum(x => x.Chance);
+            var hipChances = this.CalculateWeaponChances(hipReferences, r => r.Value2)
+                .OrderByDescending(x => x.Chance);
+            var rawBackChances = this.CalculateWeaponChances(backReferences, r => r.Value2);
             var crossbowSubtraction = crossbowChanceSum / rawBackChances.Count();
             var backChances = rawBackChances.Select(x => new ChanceItem(x.ItemName, x.Chance - crossbowSubtraction))
                 .Concat(crossbowChances)
@@ -313,15 +314,6 @@ namespace KenshiWikiValidator.Characters.Rules
             }
         }
 
-        private static IEnumerable<ItemReference<Weapon>> GetHipReferences(IEnumerable<ItemReference<Weapon>> weapons)
-        {
-            var invalidSlotReferences = weapons.Where(r => r.Value1 is not 0 or 1);
-            var weaponsMeantForHip = weapons.Where(r => r.Value1 == 0);
-
-            // invalid slot items come after slot = 0
-            return weaponsMeantForHip.Concat(invalidSlotReferences);
-        }
-
         private List<ChanceItem> CalculateManufacturerChances(Character character)
         {
             var results = new List<ChanceItem>();
@@ -335,12 +327,11 @@ namespace KenshiWikiValidator.Characters.Rules
                 };
             }
 
-            manufacturers = manufacturers
-                .Select(m =>
-                {
-                    var v0 = m.Value0 == 0 ? 100 : m.Value0;
-                    return new ItemReference<WeaponManufacturer>(m.Item, v0, 0, 0);
-                });
+            manufacturers = manufacturers.Select(m =>
+            {
+                var v0 = m.Value0 == 0 ? 100 : m.Value0;
+                return new ItemReference<WeaponManufacturer>(m.Item, v0, 0, 0);
+            });
 
             var manufacturerWeightSum = manufacturers.Sum(r => r.Value0);
             var orderedManufacturers = manufacturers.OrderBy(r => r.Item.WeaponModels.Min(w => w.Value0));
