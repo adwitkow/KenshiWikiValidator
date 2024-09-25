@@ -48,6 +48,19 @@ namespace KenshiWikiValidator.Characters
                     .Where(squad => squad.ContainsCharacter(character));
 
             var races = new List<Race>();
+            if (!referringSquads.Any())
+            {
+                if (character.Races.Any())
+                {
+                    var characterRaces = character.Races.Select(r => r.Item);
+                    races.AddRange(characterRaces);
+                }
+                else
+                {
+                    races.Add(this.greenlanderRace);
+                }
+            }
+
             foreach (var squad in referringSquads)
             {
                 var squadRaces = this.GetPossibleRacesForSquad(character, squad)
