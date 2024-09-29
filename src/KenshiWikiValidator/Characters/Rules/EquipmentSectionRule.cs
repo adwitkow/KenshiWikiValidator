@@ -201,11 +201,6 @@ namespace KenshiWikiValidator.Characters.Rules
                     template.UnnamedParameters.Add(chance.ItemName);
                     template.UnnamedParameters.Add(chance.Chance.ToString());
 
-                    if (slotSection.Section is not "Body")
-                    {
-                        template.UnnamedParameters.Add("small");
-                    }
-
                     builder.WithTemplate(template);
                 }
 
