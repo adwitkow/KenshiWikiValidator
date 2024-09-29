@@ -16,7 +16,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenConstructionSet" Version="2.2.0" />
+    <PackageReference Include="OpenConstructionSet-unofficial" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\KenshiWikiValidator.OcsProxy\KenshiWikiValidator.OcsProxy.csproj" />
   </ItemGroup>
 
 </Project>

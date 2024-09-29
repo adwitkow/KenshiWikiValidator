@@ -1,6 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using KenshiWikiValidator.OcsProxy;
-using OpenConstructionSet.Data.Models;
+using OpenConstructionSet.Mods;
 using System.Text;
 
 var primitives = new Dictionary<string, string>()
@@ -31,7 +31,7 @@ foreach (var itemTypeGroup in itemsByType)
     Console.WriteLine($"{{ ItemType.{itemTypeGroup.Key}, (item) => new {itemTypeGroup.Key}(item.StringId, item.Name) }},");
 
     var props = new Dictionary<string, object>();
-    var categories = new Dictionary<string, DataItem>();
+    var categories = new Dictionary<string, ModItem>();
     foreach (var item in itemTypeGroup)
     {
         foreach (var prop in item.Values)
@@ -46,12 +46,12 @@ foreach (var itemTypeGroup in itemsByType)
 
         foreach (var refCategory in item.ReferenceCategories)
         {
-            if (!refCategory.Value.Any() || categories.ContainsKey(refCategory.Key))
+            if (!refCategory.References.Any() || categories.ContainsKey(refCategory.Key))
             {
                 continue;
             }
 
-            var firstItem = repository.GetDataItemByStringId(refCategory.Value.FirstOrDefault().Value.TargetId);
+            var firstItem = repository.GetDataItemByStringId(refCategory.References.FirstOrDefault().TargetId);
 
             categories.Add(refCategory.Key, firstItem);
         }

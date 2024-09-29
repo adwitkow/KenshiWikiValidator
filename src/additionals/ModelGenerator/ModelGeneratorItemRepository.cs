@@ -1,48 +1,32 @@
-﻿using OpenConstructionSet;
-using OpenConstructionSet.Data;
-using OpenConstructionSet.Data.Models;
-using OpenConstructionSet.Models;
+﻿using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy
 {
     public class ModelGeneratorItemRepository
     {
-        private Dictionary<string, DataItem> dataItemLookup;
+        private Dictionary<string, ModItem> dataItemLookup;
 
         public ModelGeneratorItemRepository()
         {
-            this.dataItemLookup = new Dictionary<string, DataItem>();
+            this.dataItemLookup = new Dictionary<string, ModItem>();
         }
 
-        public string? GameDirectory { get; private set; }
-
-        public IEnumerable<DataItem> GetDataItems()
+        public IEnumerable<ModItem> GetDataItems()
         {
             return this.dataItemLookup.Values;
         }
 
-        public DataItem GetDataItemByStringId(string id)
+        public ModItem GetDataItemByStringId(string id)
         {
             return this.dataItemLookup[id];
         }
 
         public void Load()
         {
-            var installations = OcsDiscoveryService.Default.DiscoverAllInstallations();
-            var installation = installations.Values.First();
+            var provider = new ContextProvider();
+            var context = provider.GetDataMiningContext();
 
-            var options = new OcsDataContexOptions(
-                Name: Guid.NewGuid().ToString(),
-                Installation: installation,
-                LoadGameFiles: ModLoadType.Base,
-                LoadEnabledMods: ModLoadType.Base,
-                ThrowIfMissing: false);
-
-            var contextItems = OcsDataContextBuilder.Default.Build(options).Items.Values.ToList();
-
-            this.GameDirectory = installation.Game;
-
-            this.dataItemLookup = contextItems.ToDictionary(item => item.StringId, item => item);
+            this.dataItemLookup = context.Items.ToDictionary(item => item.StringId, item => item);
         }
     }
 }
