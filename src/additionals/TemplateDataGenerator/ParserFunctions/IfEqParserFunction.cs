@@ -1,4 +1,4 @@
-﻿namespace TemplateAnalyzer.ParserFunctions
+﻿namespace TemplateDataGenerator.ParserFunctions
 {
     internal class IfEqParserFunction : ParserFunction
     {

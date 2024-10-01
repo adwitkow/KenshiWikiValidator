@@ -1,6 +1,6 @@
 ﻿using System.Reflection.Metadata.Ecma335;
 
-namespace TemplateAnalyzer.ParserFunctions
+namespace TemplateDataGenerator.ParserFunctions
 {
     internal class SwitchParserFunction : ParserFunction
     {

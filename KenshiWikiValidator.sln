@@ -34,9 +34,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KenshiWikiValidator.Console
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KenshiWikiValidator.Console.Tests", "tests\KenshiWikiValidator.Console.Tests\KenshiWikiValidator.Console.Tests.csproj", "{9437F397-9652-48BB-9060-D5C2C8768B50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemplateAnalyzer", "src\additionals\TemplateAnalyzer\TemplateAnalyzer.csproj", "{A4145981-D72E-453D-8F74-99CE0F2B5866}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplateDataGenerator", "src\additionals\TemplateDataGenerator\TemplateDataGenerator.csproj", "{A4145981-D72E-453D-8F74-99CE0F2B5866}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeaponTypeTableBuilder", "src\additionals\WeaponTypeTableBuilder\WeaponTypeTableBuilder.csproj", "{51319AEA-BF46-4228-853D-4898EA3705BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeaponTypeTableBuilder", "src\additionals\WeaponTypeTableBuilder\WeaponTypeTableBuilder.csproj", "{51319AEA-BF46-4228-853D-4898EA3705BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

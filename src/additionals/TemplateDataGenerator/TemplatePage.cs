@@ -1,4 +1,4 @@
-﻿namespace TemplateAnalyzer
+﻿namespace TemplateDataGenerator
 {
     public class TemplatePage
     {

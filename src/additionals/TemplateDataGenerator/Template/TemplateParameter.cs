@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace TemplateAnalyzer.Template
+namespace TemplateDataGenerator.Template
 {
-    internal class TemplateParameter
+    public class TemplateParameter
     {
         [JsonPropertyName("label")]
         public required string Label { get; init; }
