@@ -137,9 +137,9 @@ namespace KenshiWikiValidator.Characters.Templates
                 var trimmedName = raceName.Trim();
                 var hasParent = RaceMap.TryGetValue(trimmedName, out var parentRace);
 
-                if (trimmedName == "Skeleton (Race)")
+                if (trimmedName.EndsWith("(Race)"))
                 {
-                    trimmedName = "Skeleton (Race)|Skeleton";
+                    trimmedName = $"{trimmedName}|{trimmedName[..^7]}";
                 }
 
                 if (hasParent)
