@@ -182,9 +182,9 @@ namespace KenshiWikiValidator.Characters.Rules
 
             foreach (var slotSection in nonEmptyChances)
             {
+                builder.WithNewline();
                 if (nonEmptyChances.Count() > 1)
                 {
-                    builder.WithNewline();
                     builder.WithSubsection(slotSection.Section, 2);
                 }
 
