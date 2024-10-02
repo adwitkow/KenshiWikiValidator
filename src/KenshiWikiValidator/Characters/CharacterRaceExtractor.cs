@@ -44,8 +44,12 @@ namespace KenshiWikiValidator.Characters
 
         public IEnumerable<Race> Extract(Character character)
         {
+            var replacingCharacters = this.itemRepository.GetItems<Character>()
+                .Where(c => c.UniqueReplacementSpawn.ContainsItem(character));
+
             var referringSquads = this.itemRepository.GetItems<Squad>()
-                    .Where(squad => squad.ContainsCharacter(character));
+                .Where(squad => squad.ContainsCharacter(character)
+                    || replacingCharacters.Any(ch => squad.ContainsCharacter(ch)));
 
             var races = new List<Race>();
             if (!referringSquads.Any())
