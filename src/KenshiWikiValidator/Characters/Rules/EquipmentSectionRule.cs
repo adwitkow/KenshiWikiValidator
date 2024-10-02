@@ -210,7 +210,7 @@ namespace KenshiWikiValidator.Characters.Rules
 
         private void AddWeaponSection(Character character, WikiSectionBuilder builder)
         {
-            var validWeapons = character.Weapons.Where(r => r.Value0 > 0);
+            var validWeapons = GatherValidWeapons(character);
 
             var hipReferences = validWeapons.Where(r => r.Value1 == 0);
             var tooBigForHip = hipReferences.Where(r => !r.Item.FitsOnHip);
@@ -349,6 +349,8 @@ namespace KenshiWikiValidator.Characters.Rules
         {
             var results = new List<ChanceItem>();
             var chanceSum = 0;
+
+            // TODO: This is duplicating the work performed in GatherValidWeapons method
             foreach (var weapon in references)
             {
                 var chance = chanceProperty(weapon);
@@ -377,6 +379,54 @@ namespace KenshiWikiValidator.Characters.Rules
                 if (chanceSum >= 100)
                 {
                     break;
+                }
+            }
+
+            return results;
+        }
+
+        private static IEnumerable<ItemReference<Weapon>> GatherValidWeapons(Character character)
+        {
+            var results = new List<ItemReference<Weapon>>();
+            var validWeapons = character.Weapons.Where(r => r.Value0 > 0);
+
+            var hipWeapons = validWeapons.Where(r => r.Value1 == 0);
+            var backWeapons = validWeapons.Where(r => r.Value1 == 1);
+            var remainingWeapons = validWeapons.Where(r => r.Value1 is not 0 or 1);
+
+            var weaponGroups = new[] { hipWeapons, backWeapons, remainingWeapons };
+
+            foreach (var weaponGroup in weaponGroups)
+            {
+                var chanceSum = 0;
+
+                foreach (var reference in weaponGroup)
+                {
+                    var chance = reference.Value2;
+                    if (chance == 0)
+                    {
+                        chance = 100;
+                    }
+                    var candidate = chanceSum + chance;
+
+                    if (candidate > 100)
+                    {
+                        chance = 100 - chanceSum;
+                    }
+
+                    chanceSum += chance;
+
+                    var result = new ItemReference<Weapon>(
+                        reference.Item,
+                        reference.Value0,
+                        reference.Value1,
+                        chance);
+                    results.Add(result);
+
+                    if (chanceSum >= 100)
+                    {
+                        break;
+                    }
                 }
             }
 
