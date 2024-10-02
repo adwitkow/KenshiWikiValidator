@@ -72,15 +72,43 @@ namespace KenshiWikiValidator.Characters.Rules
 
         private void AddInventorySection(Character character, WikiSectionBuilder builder)
         {
+            var validBackpacks = character.Backpack.Where(item => item.Value0 > 0);
             var validInventory = character.Inventory.Where(item => item.Value0 > 0);
-            if (validInventory.Any())
+
+            if (validBackpacks.Any() || validInventory.Any())
             {
                 builder.WithNewline();
                 builder.WithSubsection("Inventory", 1);
+            }
 
-                var formatted = validInventory.OrderBy(r => r.Item.Name)
-                    .Select(r => r.Item.Name);
+            if (validBackpacks.Any())
+            {
+                builder.WithEmptyTemplate("Loot Table Header");
 
+                foreach (var backpack in validBackpacks)
+                {
+                    var template = new WikiTemplate("Loot Table Row")
+                    {
+                        Format = WikiTemplate.TemplateFormat.Inline,
+                    };
+
+                    var name = this.titleCache.GetTitle(backpack.Item);
+                    template.UnnamedParameters.Add(name);
+                    template.UnnamedParameters.Add(backpack.Value0.ToString());
+
+                    builder.WithTemplate(template);
+                }
+
+                builder.WithEmptyTemplate("Loot Table Bottom");
+
+                if (validInventory.Any())
+                {
+                    builder.WithNewline();
+                }
+            }
+
+            if (validInventory.Any())
+            {
                 builder.WithEmptyTemplate("Loot Table Header");
 
                 foreach (var item in validInventory)
