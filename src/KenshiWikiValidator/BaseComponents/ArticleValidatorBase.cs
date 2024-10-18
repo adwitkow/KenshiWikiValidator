@@ -128,6 +128,16 @@ namespace KenshiWikiValidator.BaseComponents
 
         public virtual IEnumerable<RuleResult> AfterValidations()
         {
+            var articlesWithMissingIds = this.ArticleDataMap.Values
+                .Where(data => data.GetAllPossibleStringIds().Count() != 1
+                    && this.ShouldValidate(data.ArticleTitle, string.Empty))
+                .OrderBy(data => data.ArticleTitle)
+                .Select(data => data.ArticleTitle)
+                .ToArray();
+
+            var path = Path.Combine("output", $"{this.CategoryName}-stringIds.txt");
+            File.WriteAllLines(path, articlesWithMissingIds);
+
             return Enumerable.Empty<RuleResult>();
         }
 

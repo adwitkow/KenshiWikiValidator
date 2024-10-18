@@ -57,7 +57,6 @@ namespace KenshiWikiValidator.Locations
             };
 
             var results = new List<RuleResult>();
-
             foreach (var stringId in this.StringIds)
             {
                 var town = this.itemRepository.GetItemByStringId<Town>(stringId);
@@ -74,6 +73,8 @@ namespace KenshiWikiValidator.Locations
 
                 results.Add(this.containsTownTemplateRule.Execute($@"{stringId}-{name}", string.Empty, data));
             }
+
+            results.AddRange(base.AfterValidations());
 
             return results;
         }

@@ -68,7 +68,7 @@ namespace KenshiWikiValidator.Characters
         {
             this.GenerateCharacterTable();
 
-            return Enumerable.Empty<RuleResult>();
+            return base.AfterValidations();
         }
 
         private void GenerateCharacterTable()

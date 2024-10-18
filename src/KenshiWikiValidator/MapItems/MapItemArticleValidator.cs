@@ -62,6 +62,8 @@ namespace KenshiWikiValidator.MapItems
                 results.Add(this.containsItemInfoboxRule.Execute($@"{stringId}-{name}", string.Empty, data));
             }
 
+            results.AddRange(base.AfterValidations());
+
             return results;
         }
     }
