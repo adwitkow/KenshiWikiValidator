@@ -16,13 +16,14 @@
 
 using KenshiWikiValidator.OcsProxy.Models.Interfaces;
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class Character : ItemBase, IStatsContainer
     {
-        public Character(string stringId, string name)
-            : base(stringId, name)
+        public Character(ModItem item)
+            : base(item)
         {
             this.Clothing = Enumerable.Empty<ItemReference<Armour>>();
             this.DialoguePackage = Enumerable.Empty<ItemReference<DialoguePackage>>();

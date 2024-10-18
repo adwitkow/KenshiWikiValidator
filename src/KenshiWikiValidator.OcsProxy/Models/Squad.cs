@@ -15,13 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class Squad : ItemBase
     {
-        public Squad(string stringId, string name)
-            : base(stringId, name)
+        public Squad(ModItem item)
+            : base(item)
         {
             this.AiPackages = Enumerable.Empty<ItemReference<AiPackage>>();
             this.Animals2 = Enumerable.Empty<ItemReference<AnimalCharacter>>();
@@ -228,8 +229,13 @@ namespace KenshiWikiValidator.OcsProxy.Models
             .Any(package => package.Item.LeaderAiGoals
                 .Any(goal => "Shopkeeper".Equals(goal.Item.Name)));
 
-        public bool ContainsCharacter(Character character)
+        public bool ContainsCharacter(Character character, bool includeDeleted = false)
         {
+            if (!includeDeleted && this.WasDeleted)
+            {
+                return false;
+            }
+
             return ContainsCharacter(character, this.Leader)
                 || ContainsCharacter(character, this.Characters)
                 || ContainsCharacter(character, this.Squad2)

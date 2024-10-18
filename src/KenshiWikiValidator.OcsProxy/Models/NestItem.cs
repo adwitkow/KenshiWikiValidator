@@ -16,13 +16,14 @@
 
 using KenshiWikiValidator.OcsProxy.Models.Interfaces;
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class NestItem : ItemBase, IDescriptive
     {
-        public NestItem(string stringId, string name)
-            : base(stringId, name)
+        public NestItem(ModItem item)
+            : base(item)
         {
             this.Material = Enumerable.Empty<ItemReference<MaterialSpec>>();
             this.Cluster = Enumerable.Empty<ItemReference<NestItem>>();

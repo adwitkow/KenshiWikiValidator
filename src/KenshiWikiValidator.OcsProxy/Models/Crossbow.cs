@@ -16,13 +16,14 @@
 
 using KenshiWikiValidator.OcsProxy.Models.Interfaces;
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class Crossbow : ItemBase, IDescriptive
     {
-        public Crossbow(string stringId, string name)
-            : base(stringId, name)
+        public Crossbow(ModItem item)
+            : base(item)
         {
             this.Ammo = Enumerable.Empty<ItemReference<Item>>();
             this.Ingredients = Enumerable.Empty<ItemReference<Item>>();

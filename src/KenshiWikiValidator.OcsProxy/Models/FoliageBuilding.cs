@@ -15,13 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class FoliageBuilding : ItemBase
     {
-        public FoliageBuilding(string stringId, string name)
-            : base(stringId, name)
+        public FoliageBuilding(ModItem item)
+            : base(item)
         {
             this.Building = Enumerable.Empty<ItemReference<Building>>();
         }

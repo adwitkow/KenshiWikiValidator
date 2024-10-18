@@ -15,13 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class Artifacts : ItemBase
     {
-        public Artifacts(string stringId, string name)
-            : base(stringId, name)
+        public Artifacts(ModItem item)
+            : base(item)
         {
             this.Armours = Enumerable.Empty<ItemReference<Armour>>();
             this.ArmoursHq = Enumerable.Empty<ItemReference<Armour>>();

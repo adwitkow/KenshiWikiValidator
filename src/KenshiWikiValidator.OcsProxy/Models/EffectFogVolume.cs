@@ -15,13 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class EffectFogVolume : ItemBase
     {
-        public EffectFogVolume(string stringId, string name)
-            : base(stringId, name)
+        public EffectFogVolume(ModItem item)
+            : base(item)
         {
         }
 

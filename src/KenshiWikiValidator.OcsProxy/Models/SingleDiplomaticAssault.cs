@@ -15,13 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class SingleDiplomaticAssault : ItemBase
     {
-        public SingleDiplomaticAssault(string stringId, string name)
-            : base(stringId, name)
+        public SingleDiplomaticAssault(ModItem item)
+            : base(item)
         {
             this.Conditions = Enumerable.Empty<ItemReference<DialogAction>>();
             this.Dialogue = Enumerable.Empty<ItemReference<Dialogue>>();

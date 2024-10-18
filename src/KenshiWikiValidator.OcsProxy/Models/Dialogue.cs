@@ -15,13 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class Dialogue : ItemBase
     {
-        public Dialogue(string stringId, string name)
-            : base(stringId, name)
+        public Dialogue(ModItem item)
+            : base(item)
         {
             this.Conditions = Enumerable.Empty<ItemReference<DialogAction>>();
             this.Lines = Enumerable.Empty<ItemReference<DialogueLine>>();

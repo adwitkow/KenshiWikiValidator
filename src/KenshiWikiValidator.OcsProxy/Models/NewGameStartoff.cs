@@ -16,13 +16,14 @@
 
 using KenshiWikiValidator.OcsProxy.Models.Interfaces;
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class NewGameStartoff : ItemBase, IDescriptive
     {
-        public NewGameStartoff(string stringId, string name)
-            : base(stringId, name)
+        public NewGameStartoff(ModItem item)
+            : base(item)
         {
             this.ForcedRaces = Enumerable.Empty<ItemReference<Race>>();
             this.Squads = Enumerable.Empty<ItemReference<Squad>>();

@@ -59,14 +59,15 @@ foreach (var itemTypeGroup in itemsByType)
 
     var builder = new StringBuilder();
 
-    builder.AppendLine(@$"using OpenConstructionSet.Models;
+    builder.AppendLine(@$"using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.NamespaceToFix
 {{
     public class {itemTypeGroup.Key} : ItemBase
     {{
-        public {itemTypeGroup.Key}(string stringId, string name)
-            : base(stringId, name)
+        public {itemTypeGroup.Key}(ModItem item)
+            : base(item)
         {{");
     
     foreach (var category in categories)

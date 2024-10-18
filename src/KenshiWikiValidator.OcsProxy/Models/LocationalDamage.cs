@@ -15,13 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class LocationalDamage : ItemBase
     {
-        public LocationalDamage(string stringId, string name)
-            : base(stringId, name)
+        public LocationalDamage(ModItem item)
+            : base(item)
         {
             this.InjuryAnims = Enumerable.Empty<ItemReference<Animation>>();
             this.PainAnim = Enumerable.Empty<ItemReference<Animation>>();

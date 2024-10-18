@@ -25,5 +25,7 @@ namespace KenshiWikiValidator.OcsProxy
         public string StringId { get; }
 
         public string Name { get; }
+
+        public bool WasDeleted { get; }
     }
 }

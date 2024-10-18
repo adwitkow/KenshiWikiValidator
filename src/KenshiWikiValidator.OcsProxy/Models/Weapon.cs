@@ -16,13 +16,14 @@
 
 using KenshiWikiValidator.OcsProxy.Models.Interfaces;
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class Weapon : ItemBase, IDescriptive
     {
-        public Weapon(string stringId, string name)
-            : base(stringId, name)
+        public Weapon(ModItem item)
+            : base(item)
         {
             this.RaceDamage = Enumerable.Empty<ItemReference<Race>>();
         }

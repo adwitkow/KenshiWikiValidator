@@ -16,13 +16,14 @@
 
 using KenshiWikiValidator.OcsProxy.Models.Interfaces;
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class AnimalCharacter : ItemBase, IStatsContainer
     {
-        public AnimalCharacter(string stringId, string name)
-            : base(stringId, name)
+        public AnimalCharacter(ModItem item)
+            : base(item)
         {
             this.AiGoals = Enumerable.Empty<ItemReference<AiTask>>();
             this.Animations = Enumerable.Empty<ItemReference<AnimalAnimation>>();

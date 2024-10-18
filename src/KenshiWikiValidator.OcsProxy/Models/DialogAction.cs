@@ -16,13 +16,14 @@
 
 using KenshiWikiValidator.OcsProxy.DialogueComponents;
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class DialogAction : ItemBase
     {
-        public DialogAction(string stringId, string name)
-            : base(stringId, name)
+        public DialogAction(ModItem item)
+            : base(item)
         {
             this.LeaderAiGoals = Enumerable.Empty<ItemReference<AiTask>>();
             this.ContractEndTalkPassive = Enumerable.Empty<ItemReference<Dialogue>>();

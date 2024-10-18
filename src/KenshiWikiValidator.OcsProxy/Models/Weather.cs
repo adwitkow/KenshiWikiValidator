@@ -15,13 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class Weather : ItemBase
     {
-        public Weather(string stringId, string name)
-            : base(stringId, name)
+        public Weather(ModItem item)
+            : base(item)
         {
             this.Effects = Enumerable.Empty<ItemReference<Effect>>();
         }

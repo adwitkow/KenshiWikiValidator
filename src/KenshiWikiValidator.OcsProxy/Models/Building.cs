@@ -16,13 +16,14 @@
 
 using KenshiWikiValidator.OcsProxy.Models.Interfaces;
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class Building : ItemBase, IDescriptive
     {
-        public Building(string stringId, string name)
-            : base(stringId, name)
+        public Building(ModItem item)
+            : base(item)
         {
             this.Parts = Enumerable.Empty<ItemReference<BuildingPart>>();
             this.Spawns = Enumerable.Empty<ItemReference<Squad>>();

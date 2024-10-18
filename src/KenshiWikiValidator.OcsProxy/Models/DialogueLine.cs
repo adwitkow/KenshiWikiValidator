@@ -16,13 +16,14 @@
 
 using KenshiWikiValidator.OcsProxy.DialogueComponents;
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class DialogueLine : ItemBase
     {
-        public DialogueLine(string stringId, string name)
-            : base(stringId, name)
+        public DialogueLine(ModItem item)
+            : base(item)
         {
             this.Text0 = string.Empty;
             this.Unlocks = Enumerable.Empty<ItemReference<Dialogue>>();

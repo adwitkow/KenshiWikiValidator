@@ -15,13 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class Town : ItemBase
     {
-        public Town(string stringId, string name)
-            : base(stringId, name)
+        public Town(ModItem item)
+            : base(item)
         {
             this.BarSquads = Enumerable.Empty<ItemReference<Squad>>();
             this.Factions = Enumerable.Empty<ItemReference<Faction>>();

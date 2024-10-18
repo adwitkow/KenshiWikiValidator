@@ -16,13 +16,14 @@
 
 using KenshiWikiValidator.OcsProxy.Models.Interfaces;
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class Research : ItemBase, IDescriptive
     {
-        public Research(string stringId, string name)
-            : base(stringId, name)
+        public Research(ModItem item)
+            : base(item)
         {
             this.Costs = Enumerable.Empty<ItemReference<Item>>();
             this.EnableBuildings = Enumerable.Empty<ItemReference<Building>>();

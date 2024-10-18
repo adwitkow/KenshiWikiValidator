@@ -16,13 +16,14 @@
 
 using KenshiWikiValidator.OcsProxy.Models.Interfaces;
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class Race : ItemBase, IDescriptive
     {
-        public Race(string stringId, string name)
-            : base(stringId, name)
+        public Race(ModItem item)
+            : base(item)
         {
             this.AiGoals = Enumerable.Empty<ItemReference<AiTask>>();
             this.CombatAnatomy = Enumerable.Empty<ItemReference<LocationalDamage>>();

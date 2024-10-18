@@ -15,13 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class WorldEventState : ItemBase
     {
-        public WorldEventState(string stringId, string name)
-            : base(stringId, name)
+        public WorldEventState(ModItem item)
+            : base(item)
         {
             this.NpcIs = Enumerable.Empty<ItemReference<Character>>();
             this.NpcIsNot = Enumerable.Empty<ItemReference<Character>>();

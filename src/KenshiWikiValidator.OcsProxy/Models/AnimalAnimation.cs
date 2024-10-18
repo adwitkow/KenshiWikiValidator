@@ -15,13 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class AnimalAnimation : ItemBase
     {
-        public AnimalAnimation(string stringId, string name)
-            : base(stringId, name)
+        public AnimalAnimation(ModItem item)
+            : base(item)
         {
             this.Events = Enumerable.Empty<ItemReference<AnimationEvent>>();
         }

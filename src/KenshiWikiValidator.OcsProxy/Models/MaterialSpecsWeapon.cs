@@ -16,13 +16,14 @@
 
 using KenshiWikiValidator.OcsProxy.Models.Interfaces;
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class MaterialSpecsWeapon : ItemBase, IDescriptive
     {
-        public MaterialSpecsWeapon(string stringId, string name)
-            : base(stringId, name)
+        public MaterialSpecsWeapon(ModItem item)
+            : base(item)
         {
         }
 

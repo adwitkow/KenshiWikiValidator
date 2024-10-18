@@ -16,13 +16,14 @@
 
 using KenshiWikiValidator.OcsProxy.Models.Interfaces;
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class LimbReplacement : ItemBase, IDescriptive
     {
-        public LimbReplacement(string stringId, string name)
-            : base(stringId, name)
+        public LimbReplacement(ModItem item)
+            : base(item)
         {
             this.Material = Enumerable.Empty<ItemReference<MaterialSpecsClothing>>();
             this.Ingredients = Enumerable.Empty<ItemReference<Item>>();

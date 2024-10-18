@@ -15,13 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class WeaponManufacturer : ItemBase
     {
-        public WeaponManufacturer(string stringId, string name)
-            : base(stringId, name)
+        public WeaponManufacturer(ModItem item)
+            : base(item)
         {
             this.WeaponModels = Enumerable.Empty<ItemReference<MaterialSpecsWeapon>>();
             this.WeaponTypes = Enumerable.Empty<ItemReference<Weapon>>();

@@ -15,13 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class ItemsCulture : ItemBase
     {
-        public ItemsCulture(string stringId, string name)
-            : base(stringId, name)
+        public ItemsCulture(ModItem item)
+            : base(item)
         {
             this.ForbiddenItems = Enumerable.Empty<ItemReference<Item>>();
             this.IllegalBuildings = Enumerable.Empty<ItemReference<Building>>();

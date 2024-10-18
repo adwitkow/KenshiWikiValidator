@@ -15,13 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class AmbientSound : ItemBase
     {
-        public AmbientSound(string stringId, string name)
-            : base(stringId, name)
+        public AmbientSound(ModItem item)
+            : base(item)
         {
         }
 

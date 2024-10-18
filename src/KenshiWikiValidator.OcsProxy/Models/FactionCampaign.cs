@@ -15,13 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class FactionCampaign : ItemBase
     {
-        public FactionCampaign(string stringId, string name)
-            : base(stringId, name)
+        public FactionCampaign(ModItem item)
+            : base(item)
         {
             this.Pt1AiLeader = Enumerable.Empty<ItemReference<AiPackage>>();
             this.Pt1AiOthers = Enumerable.Empty<ItemReference<AiPackage>>();

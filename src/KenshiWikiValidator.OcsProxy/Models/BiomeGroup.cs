@@ -15,13 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy.Models
 {
     public class BiomeGroup : ItemBase
     {
-        public BiomeGroup(string stringId, string name)
-            : base(stringId, name)
+        public BiomeGroup(ModItem item)
+            : base(item)
         {
             this.ArrivalDialog = Enumerable.Empty<ItemReference<Dialogue>>();
             this.Resources = Enumerable.Empty<ItemReference<EnvironmentResources>>();

@@ -15,15 +15,17 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using OpenConstructionSet.Data;
+using OpenConstructionSet.Mods;
 
 namespace KenshiWikiValidator.OcsProxy
 {
     public abstract class ItemBase : IItem
     {
-        protected ItemBase(string stringId, string name)
+        protected ItemBase(ModItem item)
         {
-            this.StringId = stringId;
-            this.Name = name;
+            this.StringId = item.StringId;
+            this.Name = item.Name;
+            this.WasDeleted = IsMarkedAsDeleted(item);
         }
 
         public abstract ItemType Type { get; }
@@ -31,5 +33,23 @@ namespace KenshiWikiValidator.OcsProxy
         public string StringId { get; }
 
         public string Name { get; }
+
+        public bool WasDeleted { get; }
+
+        private static bool IsMarkedAsDeleted(ModItem item)
+        {
+            if (item.IsDeleted())
+            {
+                return true;
+            }
+
+            var containsRemoved = item.Values.TryGetValue("REMOVED", out object? obj);
+            if (containsRemoved && (bool)obj! == true)
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }
