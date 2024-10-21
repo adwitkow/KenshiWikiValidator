@@ -79,8 +79,8 @@ namespace KenshiWikiValidator.Characters
                 string.Empty,
                 "{| class=\"article-table sortable\"",
                 "! String ID",
-                "! Article title (or FCS name)",
-                "! Missing or implicit string ID",
+                "! FCS Name",
+                "! Article title"
             };
 
             foreach (var character in this.itemRepository.GetItems<Character>().OrderBy(ch => ch.Name.Trim()))
@@ -96,16 +96,16 @@ namespace KenshiWikiValidator.Characters
                 {
                     lines.Add("|-");
                     lines.Add($"| {character.StringId.Trim()}");
-                    var name = this.wikiTitles.GetTitle(character);
-                    lines.Add($"| [[{name.Trim()}]]");
+                    lines.Add($"| {character.Name.Trim().Replace("|", "&#124;")}");
 
                     if (this.wikiTitles.HasArticle(character))
                     {
-                        lines.Add("| No");
+                        var name = this.wikiTitles.GetTitle(character);
+                        lines.Add($"| [[{name.Trim()}]]");
                     }
                     else
                     {
-                        lines.Add("| Yes");
+                        lines.Add("| ?");
                     }
                 }
             }
