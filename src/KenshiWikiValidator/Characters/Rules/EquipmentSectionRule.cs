@@ -73,7 +73,8 @@ namespace KenshiWikiValidator.Characters.Rules
         private void AddInventorySection(Character character, WikiSectionBuilder builder)
         {
             var validBackpacks = character.Backpack.Where(item => item.Value0 > 0);
-            var validInventory = character.Inventory.Where(item => item.Value0 > 0);
+            var validInventory = character.Inventory.Where(item => item.Value0 > 0)
+                .Concat(character.DeathItems);
 
             if (validBackpacks.Any() || validInventory.Any())
             {
