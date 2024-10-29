@@ -236,7 +236,7 @@ namespace KenshiWikiValidator.OcsProxy.Models
                 return false;
             }
 
-            return ContainsCharacter(character, this.Leader)
+            return this.Leader.ContainsItem(character) // apparently 0 = 1?
                 || ContainsCharacter(character, this.Characters)
                 || ContainsCharacter(character, this.Squad2)
                 || this.ChoosefromList.ContainsItem(character); // maybe?
