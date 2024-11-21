@@ -31,19 +31,19 @@ namespace KenshiWikiValidator.OcsProxy.Models
         public override ItemType Type => ItemType.WeaponManufacturer;
 
         [Value("blunt damage mod")]
-        public float? BluntDamageMod { get; set; }
+        public float BluntDamageMod { get; set; }
 
         [Value("cut damage mod")]
-        public float? CutDamageMod { get; set; }
+        public float CutDamageMod { get; set; }
 
         [Value("price mod")]
-        public float? PriceMod { get; set; }
+        public float PriceMod { get; set; }
 
         [Value("weight mod")]
-        public float? WeightMod { get; set; }
+        public float WeightMod { get; set; }
 
         [Value("min cut damage")]
-        public int? MinCutDamage { get; set; }
+        public int MinCutDamage { get; set; }
 
         [Value("company description")]
         public string? CompanyDescription { get; set; }

@@ -71,7 +71,7 @@ namespace KenshiWikiValidator.BaseComponents.Creators
                 description = Regex.Replace(description, @"\r\n|\r|\n", "<br />");
             }
 
-            var skillCategory = item.SkillCategory.GetValueOrDefault();
+            var skillCategory = item.SkillCategory;
             var weaponClass = this.skillToClassMap[skillCategory];
 
             string? spiderDamage = null;

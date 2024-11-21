@@ -23,6 +23,7 @@ namespace KenshiWikiValidator.BaseComponents
             this.WikiTemplates = new List<WikiTemplate>();
             this.StringIds = new List<string>();
             this.Categories = new List<string>();
+            this.Sections = new List<string>();
             this.PotentialStringId = string.Empty;
             this.ArticleTitle = string.Empty;
         }
@@ -30,6 +31,8 @@ namespace KenshiWikiValidator.BaseComponents
         public ICollection<string> StringIds { get; set; }
 
         public ICollection<string> Categories { get; set; }
+
+        public ICollection<string> Sections { get; set; }
 
         public IEnumerable<WikiTemplate> WikiTemplates { get; set; }
 
