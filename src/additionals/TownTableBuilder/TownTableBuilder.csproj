@@ -5,15 +5,10 @@
     <TargetFramework>net9.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <CodeAnalysisRuleSet>..\..\..\.sonarlint\adwitkow_kenshiwikivalidatorcsharp.ruleset</CodeAnalysisRuleSet>
 	<BaseOutputPath>..\..\..\bin\</BaseOutputPath>
 	<UseCommonOutputDirectory>true</UseCommonOutputDirectory>
 	<GenerateRuntimeConfigDevFile>true</GenerateRuntimeConfigDevFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\..\.sonarlint\adwitkow_kenshiwikivalidator\CSharp\SonarLint.xml" Link="SonarLint.xml" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\KenshiWikiValidator.OcsProxy\KenshiWikiValidator.OcsProxy.csproj" />

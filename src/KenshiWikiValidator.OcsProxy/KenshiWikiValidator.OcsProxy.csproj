@@ -4,7 +4,6 @@
     <TargetFramework>net9.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <CodeAnalysisRuleSet>..\..\.sonarlint\adwitkow_kenshiwikivalidatorcsharp.ruleset</CodeAnalysisRuleSet>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
 	<BaseOutputPath>..\..\bin\</BaseOutputPath>
 	<UseCommonOutputDirectory>true</UseCommonOutputDirectory>
@@ -15,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="..\..\.sonarlint\adwitkow_kenshiwikivalidator\CSharp\SonarLint.xml" Link="SonarLint.xml" />
     <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
 
