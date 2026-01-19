@@ -20,6 +20,7 @@ using NexusMods.Paths;
 using OpenConstructionSet;
 using OpenConstructionSet.Installations;
 using OpenConstructionSet.Installations.Locators;
+using OpenConstructionSet.Installations.Settings;
 using OpenConstructionSet.Mods;
 using OpenConstructionSet.Mods.Context;
 
@@ -33,7 +34,8 @@ namespace KenshiWikiValidator.OcsProxy
             // in any context, but just in case:
             // TODO: Cache
             var locatorHandler = new SteamHandler(FileSystem.Shared, WindowsRegistry.Shared);
-            var locator = new SteamLocator(locatorHandler);
+            var installationFactory = new InstallationFactory(new SaveFolderHelper(new SettingsHelper()));
+            var locator = new SteamLocator(locatorHandler, installationFactory);
             var installationService = new InstallationService([locator]);
             var installation = installationService.LocateAll().First(); // TODO: Handle errors
 

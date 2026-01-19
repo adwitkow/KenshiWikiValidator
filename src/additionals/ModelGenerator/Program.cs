@@ -46,14 +46,14 @@ foreach (var itemTypeGroup in itemsByType)
 
         foreach (var refCategory in item.ReferenceCategories)
         {
-            if (!refCategory.References.Any() || categories.ContainsKey(refCategory.Key))
+            if (!refCategory.References.Any() || categories.ContainsKey(refCategory.Name))
             {
                 continue;
             }
 
             var firstItem = repository.GetDataItemByStringId(refCategory.References.FirstOrDefault().TargetId);
 
-            categories.Add(refCategory.Key, firstItem);
+            categories.Add(refCategory.Name, firstItem);
         }
     }
 

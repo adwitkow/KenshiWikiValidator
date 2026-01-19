@@ -51,7 +51,7 @@ namespace KenshiWikiValidator.OcsProxy
         {
             foreach (var refCategory in baseItem.ReferenceCategories)
             {
-                var referenceProperties = propertyContainer.GetReferenceProperties(refCategory.Key);
+                var referenceProperties = propertyContainer.GetReferenceProperties(refCategory.Name);
 
                 foreach (var prop in referenceProperties)
                 {
@@ -72,7 +72,7 @@ namespace KenshiWikiValidator.OcsProxy
                     {
                         if (!this.itemRepository.ContainsStringId(baseReference.TargetId))
                         {
-                            Console.Error.WriteLine($"Could not establish a reference of category '{refCategory.Key}' between item: '{baseItem.Name}' ('{baseItem.StringId}') -> '{baseReference.TargetId}' ({baseReference.Value0}, {baseReference.Value1}, {baseReference.Value2}). Item with id '{baseReference.TargetId}' does not exist.");
+                            Console.Error.WriteLine($"Could not establish a reference of category '{refCategory.Name}' between item: '{baseItem.Name}' ('{baseItem.StringId}') -> '{baseReference.TargetId}' ({baseReference.Value0}, {baseReference.Value1}, {baseReference.Value2}). Item with id '{baseReference.TargetId}' does not exist.");
                             continue;
                         }
 
@@ -86,7 +86,7 @@ namespace KenshiWikiValidator.OcsProxy
                         }
                         catch (MissingMethodException)
                         {
-                            Console.Error.WriteLine($"Could not establish a reference of category '{refCategory.Key}' between item: '{baseItem.Name}' ('{baseItem.StringId}') -> '{item.Name}' ('{item.StringId}') ({baseReference.Value0}, {baseReference.Value1}, {baseReference.Value2})");
+                            Console.Error.WriteLine($"Could not establish a reference of category '{refCategory.Name}' between item: '{baseItem.Name}' ('{baseItem.StringId}') -> '{item.Name}' ('{item.StringId}') ({baseReference.Value0}, {baseReference.Value1}, {baseReference.Value2})");
                         }
                     }
 
