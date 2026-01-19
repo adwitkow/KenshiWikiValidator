@@ -39,6 +39,7 @@ namespace KenshiWikiValidator.Locations
                 new ContainsTemplateRule("Town"),
                 this.containsTownTemplateRule,
                 new TownOverrideSectionRule(itemRepository, wikiTitles),
+                new ShouldNotContainFcsSectionRule(),
             };
             this.itemRepository = itemRepository;
         }
